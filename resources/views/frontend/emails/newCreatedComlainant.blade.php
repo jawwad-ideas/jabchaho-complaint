@@ -21,7 +21,7 @@
                                 style="vertical-align: top ; background-color: #f5f5f5 ; padding: 40px 25px 0 ; background: #fff ;border:1px solid">
                                 <a class="logo" href="#" style="color: #1979c3 ; text-decoration: none" target="_other"
                                     rel="nofollow"> <img width="190" height="39"
-                                        src="{{$app_url}}/assets/website/images/logo-two.png"
+                                        src="{{$app_url}}/assets/images/jc-logo.svg"
                                         alt="Ideas" border="0"
                                         style="border: 0 ; height: auto ; line-height: 100% ; outline: none ; text-decoration: none ; max-width: 120px"></a>
                             </td>

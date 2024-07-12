@@ -4,7 +4,7 @@
 <div class="sidebar-logo-section px-4 pt-3 pb-1">
     <div class="sidebar-logo">
         <a href="/home" class="text-decoration-none">
-            <img class="img-fluid " src="{{asset('assets//website/images/logo-two-white.png')}}" />
+            <img class="img-fluid " src="{{asset('assets/images/jc-logo.svg')}}" />
         </a>
     </div>
 </div>
@@ -42,7 +42,7 @@
 
     <div class="logo bg-theme-green p-4">
         <a href="/complaints" class="text-decoration-none"><img class="img-fluid px-5 py-2"
-                src="{{asset('/assets/website/images/logo-two.png')}}" /></a>
+                src="{{asset('/assets/images/jc-logo.svg')}}" /></a>
     </div>
 
 

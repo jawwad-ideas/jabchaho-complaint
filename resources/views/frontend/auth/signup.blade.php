@@ -9,7 +9,7 @@
                 <div class="login-inner-section">
                     <div class="logo-section my-5 p-4">
                         <a class="text-decoration-none" href="/home"><img
-                                src="{{asset('assets/images/logo-two-white.png')}}" class="w-50" alt="logo"
+                                src="{{asset('assets/images/jc-logo.svg')}}" class="w-50" alt="logo"
                                 srcset=""></a>
                     </div>
                     <div class="login-form-heading">
@@ -177,9 +177,8 @@
                         <div class="copyright">
                             <small>
                                 <span>© </span>
-                                <small>Copyright</small>
-                                <strong class="mx-1">MQM Connect</strong>
-                                <small>All Rights Reserved</small>
+                                <small>Copyright {{date('Y')}}</small>
+                                <strong class="mx-1">Jabchaho. EZ Life Technologies.</strong>
                             </small>
                         </div>
                     </div>

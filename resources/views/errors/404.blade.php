@@ -84,7 +84,7 @@
 </head>
 <body>
     <div class="container">
-    <img class="img-fluid " src="/assets//website/images/logo-two.png" style="width:350px;margin-top:20px"/>
+    <img class="img-fluid " src="/assets/images/jc-logo.svg" style="width:350px;margin-top:20px"/>
 <div class="d-flex align-items-center">
 <div>
     <h1>404</h1>
@@ -92,24 +92,10 @@
 <div><h3>Not Found</h3></div>
 <div>
     <p>Oops! The page you're looking for can't be found.</p>
-    <p>Let's get you back on track:</p>
-    <a href="/">Return to Home</a> |
-    <a href="/contact-us">Contact Us</a>
 </div>
 </div>
     
-        <div class="complaint-info">
-            <h2>Need to Register a Complaint?</h2>
-            <p>If you have a complaint, please visit our <a href="/complaints">Complaint Registration Page</a>.</p>
-            <p>Our complaint process is straightforward. Here's how it works:</p>
-            <ul>
-                <li>Fill out the complaint form with the necessary details.</li>
-                <li>Submit your complaint.</li>
-                <li>Receive a confirmation and tracking number.</li>
-                <li>Our team will review and address your complaint promptly.</li>
-            </ul>
-            <p>If you need immediate assistance, feel free to <a href="/contact-us">contact our support team</a>.</p>
-        </div>
+
     </div>
 </body>
 </html>
