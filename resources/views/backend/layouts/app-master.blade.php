@@ -123,106 +123,13 @@
                                             Complaints</a>
                                     </li>
                                     @endif
-                                    @if(Auth::user()->can('complainants.index'))
-                                    <li class="py-2 "><a href="{{ route('complainants.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            Complainant</a>
-                                    </li>
-                                    @endif
+                          
 
                                     @if(Auth::user()->can('complaints.track'))
                                     <li class="py-2 "><a href="{{ route('complaints.track') }}"
                                             class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
                                             <i class="fa fa-solid fa-table-columns text-theme-green"></i>
                                             Track</a>
-                                    </li>
-                                    @endif
-                                </ul>
-                            </div>
-
-                        </li>
-                        @endif
-
-                        @if(Auth::user()->can('new.area.index'))
-                        <li class="list-item px-3 py-3">
-                            <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
-                                data-bs-toggle="collapse" data-bs-target="#areaGrid">
-                                <span class="d-flex align-items-center gap-3 text-white">
-                                    <i class="fa fa-th-list fa-2x text-theme-green"></i>
-                                    Area Grid </span>
-                                <i class="fa fa-solid fa-angle-down text-theme-green"></i>
-                            </div>
-
-                            <div class="collapse mt-3 ms-5" id="areaGrid" style="">
-                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    @if(Auth::user()->can('new.area.index'))
-                                    <li class="py-2 "><a href="{{ route('new.area.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            Area</a>
-                                    </li>
-                                    @endif
-                                    @if(Auth::user()->can('district.index'))
-                                    <li class="py-2 "><a href="{{ route('district.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            District</a>
-                                    </li>
-                                    @endif
-
-                                    @if(Auth::user()->can('sub.division.index'))
-                                    <li class="py-2 d-none  "><a href="{{ route('sub.division.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            Sub Division</a>
-                                    </li>
-                                    @endif
-
-                                    @if(Auth::user()->can('union.council.index'))
-                                    <li class="py-2 d-none"><a href="{{ route('union.council.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            UC</a>
-                                    </li>
-                                    @endif
-
-                                    @if(Auth::user()->can('charge.index'))
-                                    <li class="py-2 d-none"><a href="{{ route('charge.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            Charge</a>
-                                    </li>
-                                    @endif
-
-                                    @if(Auth::user()->can('ward.index'))
-                                    <li class="py-2 d-none"><a href="{{ route('ward.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            Ward</a>
-                                    </li>
-                                    @endif
-
-                                    @if(Auth::user()->can('pa.index'))
-                                    <li class="py-2 "><a href="{{ route('pa.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            Provincial Assembly</a>
-                                    </li>
-                                    @endif
-
-                                    @if(Auth::user()->can('na.index'))
-                                    <li class="py-2 "><a href="{{ route('na.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            National Assembly</a>
-                                    </li>
-                                    @endif
-                                    @if(Auth::user()->can('area.mapping.index'))
-                                    <li class="py-2 "><a href="{{ route('area.mapping.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            User Wise Area Mapping</a>
                                     </li>
                                     @endif
                                 </ul>
@@ -258,29 +165,6 @@
                                     @endif
                                 </ul>
                             </div>
-                        </li>
-                        @endif
-
-                        @if(Auth::user()->can('cms.index') )
-                        <li class="list-item px-3 py-3">
-                            <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
-                                data-bs-toggle="collapse" data-bs-target="#cms">
-                                <span class="d-flex align-items-center gap-3 text-white">
-                                    <i class="fa fa-cog fa-2x text-theme-green"></i>
-                                    CMS </span>
-                                <i class="fa fa-solid fa-angle-down text-theme-green"></i>
-                            </div>
-                            @if(Auth::user()->can('cms.index'))
-                            <div class="collapse mt-3 ms-5" id="cms" style="">
-                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li class="py-2 "><a href="{{ route('cms.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-folder-tree text-theme-green"></i>
-                                            Pages</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            @endif
                         </li>
                         @endif
 
