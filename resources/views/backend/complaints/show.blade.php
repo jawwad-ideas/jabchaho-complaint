@@ -1,0 +1,734 @@
+@extends('backend.layouts.app-master')
+@section('content')
+    <style>
+        .row {
+            margin-right: 30px !important;
+            margin-left: 0px !important;
+        }
+
+        body {
+            font-family: Arial;
+        }
+
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+
+        .col-sm-2 {
+            margin-top: 7px !important;
+        }
+    </style>
+
+    <div
+        class="page-title-section border-bottom mb-0.5 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+        <div class="p-title">
+            <h3 class="fw-bold text-white m-0">Complaint Details</h3>
+            {{-- title --}}
+            {{-- <h5 class="text-white mb-0">{{Arr::get($complaintData, 'title')}}</h5> --}}
+            {{-- complaint no --}}
+            <h5 class="text-white mb-0"><b>Complaint #</b>{{ Arr::get($complaintData, 'complaint_num') }}</h5>
+        </div>
+        <div class="text-lg-end text-center">
+            <div class="btn-group chart-filter-btns mt-lg-0 mt-4" role="group">
+                @if (Auth::user()->can('complaints.follow.up'))
+                    <a class="btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold"
+                        href="{{ route('complaints.follow.up', $complaintData->id) }}">Follow
+                        Up</a>
+                @endif
+                @if (Auth::user()->can('assign.complaint'))
+                    <a class="btn btn-sm rounded bg-theme-green-light me-2 assign-to-btn border-0 text-theme-green fw-bold"
+                        data-complaint-id="{{ $complaintData->id }}">Priority</a>
+                @endif
+                @if (Auth::user()->can('re-assign.complaint'))
+                    <a class="btn btn-sm rounded bg-theme-green-light me-2 re-assign-btn border-0 text-theme-green fw-bold"
+                        data-complaint-id="{{ $complaintData->id }}">Re-Assign
+                    </a>
+                @endif
+                @if (Auth::user()->can('complaints.destroy'))
+                    {!! Form::open([
+                        'method' => 'DELETE',
+                        'route' => ['complaints.destroy', $complaintData->id],
+                        'style' => 'display:inline',
+                        'onsubmit' => 'return ConfirmDelete()',
+                    ]) !!}
+                    {!! Form::submit('Delete', [
+                        'class' => 'btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold',
+                    ]) !!}
+                    {!! Form::close() !!}
+                @endif
+                @if (Auth::user()->can('can.approve.complaints') && !$complaintData->is_approved)
+                    {!! Form::open([
+                        'method' => 'POST',
+                        'route' => ['can.approve.complaints', $complaintData->id],
+                        'style' => 'display:inline',
+                        'onsubmit' => 'return ConfirmApprove()',
+                    ]) !!}
+                    {!! Form::submit('Approve', [
+                        'class' => 'btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold',
+                    ]) !!}
+                    {!! Form::close() !!}
+                @endif
+            </div>
+        </div>
+    </div>
+    <div class="page-content bg-white p-lg-5 px-2">
+        <div class="mb-4 border-0">
+            <div class="card-body">
+
+                <div class="inner-row d-flex gap-4 mb-0.5">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Complaint Title:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData, 'title') }}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Status:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{ Arr::get($complaintData->complaintStatus, 'name') }}</p>
+                    </div>
+                </div>
+
+                @if(!empty(Arr::get($refrence_detail, 'full_name')))
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Complainant:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{Arr::get($refrence_detail, 'full_name')}}
+                            ({{ Arr::get($refrence_detail, 'email')}})</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Complainant Mobile Number:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">
+                        {{Arr::get($refrence_detail, 'mobile_number')}}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Complainant CNIC:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">
+                        {{Arr::get($refrence_detail, 'cnic')}}
+                        </p>
+                    </div>
+                </div>
+
+                @else
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Complainant:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{ Arr::get($complaintData->complainant, 'full_name') }}
+                            ({{ Arr::get($complaintData->complainant, 'email') }})</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Complainant Mobile Number:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">
+                            {{ Arr::get($complaintData->complainant, 'mobile_number') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Complainant CNIC:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">
+                            {{ Arr::get($complaintData->complainant, 'cnic') }}
+                        </p>
+                    </div>
+                </div>
+
+                @endif
+                
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Nearby:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">
+                            {{ Arr::get($complaintData, 'nearby') }}
+                        </p>
+                    </div>
+                </div>
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Address:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">
+                            {{ Arr::get($complaintData, 'address') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Assigned To MNA:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{ Arr::get($complaintData->user, 'name') }}
+                            >
+                            @if (!empty(Arr::get($complaintData->user, 'email')))
+                                ({{ Arr::get($complaintData->user, 'email') }})
+                            @endif
+                        </p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Assigned To MPA:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{ Arr::get($complaintData->userMpa, 'name') }}
+                            >
+                            @if (!empty(Arr::get($complaintData->userMpa, 'email')))
+                                ({{ Arr::get($complaintData->userMpa, 'email') }})
+                            @endif
+                        </p>
+                    </div>
+                </div>
+
+
+
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Complaint Category:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->levelOneCategory, 'name') }}</p>
+                    </div>
+                </div>
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Level Two:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->levelTwoCategory, 'name') }}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Level Three:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->levelThreeCategory, 'name') }}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+
+                    <div class="inner-label">
+                        <p class="mb-0"><b>City:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->city, 'name') }}</p>
+                    </div>
+                </div>
+
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>District:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->district, 'name') ? Arr::get($complaintData->district, 'name') : Arr::get($complaintData, 'district_input') }}</p>
+                    </div>
+                </div>
+                <div class="inner-row d-flex gap-4 my-3 d-none">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Sub Division</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->subDivision, 'name') }} -</p>
+                    </div>
+                </div>
+
+
+                <div class="inner-row d-flex gap-4 my-3 d-none">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Charge</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->charge, 'name') }}</p>
+                    </div>
+                </div>
+                <div class="inner-row d-flex gap-4 my-3 d-none">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Union Council</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->unionCouncil, 'name') }}</p>
+                    </div>
+                </div>
+
+
+                <div class="inner-row d-flex gap-4 my-3 d-none ">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Ward</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->ward, 'name') }}</p>
+                    </div>
+                </div>
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>National Assembly:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->nationalAssembly, 'name') ?  Arr::get($complaintData->nationalAssembly, 'name')  : Arr::get($complaintData, 'national_assembly_input') }}</p>
+                    </div>
+                </div>
+
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Provincial Assembly:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->provincialAssembly, 'name') ? Arr::get($complaintData->provincialAssembly, 'name') : Arr::get($complaintData, 'provincial_assembly_input') }}</p>
+                    </div>
+                </div>
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Area:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->newArea, 'name') }}</p>
+                    </div>
+
+                </div>
+                <div class="inner-row d-flex gap-4 my-1">
+
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Priority:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ Arr::get($complaintData->complaintPriority, 'name') }}</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <!--Row 1-->
+            <div class="row">
+                <div class="col-md-12">
+                    <!--card 0-->
+                    <div class="card mb-3">
+                        <h6 class="card-header">Title</h6>
+                        <div class="card-body">
+                            <div class="row">
+                                {{ Arr::get($complaintData, 'title') }}
+                            </div>
+                        </div>
+                    </div>
+                    <!--//card 0-->
+                </div>
+            </div>
+            <!--Row 1-->
+
+            <!--Row 2-->
+            <div class="row">
+                <div class="col-md-12">
+                    <!--card 1-->
+                    <div class="card mb-3">
+                        <h6 class="card-header">Description</h6>
+                        <div class="card-body">
+                            <div class="row">
+                                {!! Arr::get($complaintData, 'description') !!}
+                            </div>
+                        </div>
+                    </div>
+                    <!--//card 1-->
+                </div>
+
+
+
+            </div>
+            <!--Row 2-->
+
+            <!--Row 4-->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-3 p-0">
+                        <h6 class="card-header">Complaint Documents</h6>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="container">
+                                    <div class="row flex-wrap">
+                                        @if (!empty($complaintDocument))
+                                            @foreach ($complaintDocument as $row)
+                                                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 mt-4">
+                                                    <div class="py-2 px-2" style="box-shadow: 0 0 10px 0 #ddd;">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            @if (Helper::isFileExtensionForIcon(Arr::get($row, 'file')))
+                                                                <img class="center"
+                                                                    src="{{ asset(config('constants.files.filetypes')) }}/{{ Helper::isFileExtensionForIcon(Arr::get($row, 'file')) }}">
+                                                            @else
+                                                                <img class="center"
+                                                                    src="{{ asset(config('constants.files.complaint_documents')) }}/{{ Arr::get($row, 'file') }}">
+                                                            @endif
+                                                            <a class="viewFile"
+                                                                data-filepath="{{ asset(config('constants.files.complaint_documents')) }}/{{ Arr::get($row, 'file') }}"
+                                                                download>View</a>
+                                                            <a class="downloadFile"
+                                                                data-filepath="{{ asset(config('constants.files.complaint_documents')) }}/{{ Arr::get($row, 'file') }}"
+                                                                download>Download</a>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            @endforeach
+                                            @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <!--Row 4-->
+
+
+            <!--Row 3-->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-3 p-0">
+                        <h6 class="card-header">Follow Ups</h6>
+                        <div class="card-body">
+                            <div class="row">
+                                @if (!empty($complaintFollowUps))
+                                    @foreach ($complaintFollowUps as $complaintFollowUp)
+                                        <div class="py-2 px-4 border">
+                                            <div class="row">
+                                                <div class="p-0"><strong> Created By:
+                                                        {{ ucwords(Arr::get($complaintFollowUp->user, 'name')) }}</strong>
+                                                    <small>|
+                                                        @if (!empty(Arr::get($complaintFollowUp, 'created_at')))
+                                                            {{ date('M d, Y', strtotime(Arr::get($complaintFollowUp, 'created_at'))) }}
+                                                        @endif
+                                                        | {{ Arr::get($complaintFollowUp->complaintStatus, 'name') }} |
+                                                        Notify
+                                                        Customer:
+                                                        {{ Arr::get($complaintFollowUp, 'is_notify') ? 'Yes' : 'No' }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <p class="font-weight-bold ">{!! Arr::get($complaintFollowUp, 'description') !!}
+                                            </p>
+                                        </div>
+                                    @endforeach
+                                    <div class="d-flex justify-content-start">
+                                        {{ $complaintFollowUps->links() }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <!--Row 3-->
+
+        </div>
+
+
+    </div>
+    <!--Assign To Modal -->
+    <div id="modalDiv"></div>
+
+    <section style="background-color: #eee;" id="printSection" class="mb-3">
+
+
+
+
+
+        </div>
+    </section>
+    <script>
+        $(document).on('click', '.downloadFile', function(e) {
+            e.preventDefault(); //stop the browser from following
+
+            var filepath = $(this).attr('data-filepath');
+            var link = document.createElement('a');
+            link.href = filepath;
+            link.download = filepath.split('/').pop(); // Extract the file name from the path
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        $(document).on('click', '.viewFile', function(e) {
+            e.preventDefault(); //stop the browser from following
+
+            var filepath = $(this).attr('data-filepath');
+            window.open(filepath, '_blank');
+        });
+    </script>
+    <script>
+        //ReAssignComplaint
+        $(document).on('click', '.re-assign-btn', function(event) {
+            // Extract the complaint ID from the data attribute
+            var complaintId = $(this).data('complaint-id');
+            $(".loader").addClass("show");
+            $('#modalDiv').html('');
+            var url = '{{ route('re-assign.complaint.form') }}'
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: url,
+                method: 'post',
+                data: {
+                    complaintId: complaintId,
+                },
+                success: function(response) {
+                    $('#modalDiv').html(response);
+                    $('#reAssignToModal').modal({
+                        backdrop: 'static', // Prevents modal from closing on backdrop click
+                        keyboard: false // Optionally prevent modal closing on Esc key
+                    });
+                    $('#reAssignToModal').modal("show");
+                    $(".loader").removeClass("show");
+                    $('.select2').select2({
+                        dropdownParent: $(
+                        '#reAssignToModal'), // Ensure the dropdown is appended to the modal
+                    });
+                },
+                error: function(data, textStatus, errorThrown) {
+                    $(".loader").removeClass("show");
+                    console.log(JSON.stringify(data));
+                }
+
+            });
+        });
+
+        //ReAssignComplaint
+
+        $(document).ready(function() {
+            // When the "Re Assign" button is clicked
+            // $('#reAssignBtn').click(function() {
+            $(document).on('click', '#reAssignBtn', function(event) {
+
+                $(".loader").addClass("show");
+
+                toastr.options = {
+                    "closeButton": true,
+                    "timeOut": "3000",
+                    "extendedTimeOut": "1000",
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+
+                // Get the form data
+                var formData = $('#reAssignComplaintForm').serialize();
+
+                // Send an AJAX request
+                $.ajax({
+                    type: 'POST',
+                    url: $('#reAssignComplaintForm').attr('action'), // Get the form action URL
+                    data: formData, // Send form data
+                    success: function(response) {
+                        $('#MnaErrorMsg').html('');
+                        $('#MpaErrorMsg').html('');
+
+
+                        if (response.errors) {
+                            //mnaId
+                            if (response.errors.mnaId) {
+                                $('#MnaErrorMsg').show();
+                                $('#MnaErrorMsg').append(response.errors.mnaId);
+                                $(".loader").removeClass("show");
+                            }
+
+                            if (response.errors.mpaId) {
+                                $('#MpaErrorMsg').show();
+                                $('#MpaErrorMsg').append(response.errors.mpaId);
+                                $(".loader").removeClass("show");
+                            }
+
+                        } else if (response.status) {
+                            toastr.success(response.message);
+                            setTimeout(() => {
+                                window.location.href =
+                                    "{{ route('complaints.index') }}";
+                            }, 3000);
+                        } else {
+                            toastr.error(response.message);
+                            $(".loader").removeClass("show");
+                        }
+
+                    },
+                    error: function(xhr, status, error) {
+                        toastr.error(response.message);
+                        $(".loader").removeClass("show");
+                    }
+                });
+            });
+
+            $(document).on('click', '#assignBtn', function(event) {
+
+                $(".loader").addClass("show");
+
+                toastr.options = {
+                    "closeButton": true,
+                    "timeOut": "3000",
+                    "extendedTimeOut": "1000",
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+
+                // Get the form data
+                var formData = $('#assignComplaintForm').serialize();
+
+                // Send an AJAX request
+                $.ajax({
+                    type: 'POST',
+                    url: $('#assignComplaintForm').attr('action'), // Get the form action URL
+                    data: formData, // Send form data
+                    success: function(response) {
+                        $('#UserErrorMsg').html('');
+                        $('#PriorityErrorMsg').html('');
+
+                        if (response.errors) {
+                            //userId
+                            if (response.errors.userId) {
+                                $('#UserErrorMsg').show();
+                                $('#UserErrorMsg').append(response.errors.userId);
+                            }
+
+                            if (response.errors.priorityId) {
+                                $('#PriorityErrorMsg').show();
+                                $('#PriorityErrorMsg').append(response.errors.priorityId);
+                            }
+
+                        } else if (response.status) {
+                            toastr.success(response.message);
+                            setTimeout(() => {
+                                window.location.href =
+                                    "{{ route('complaints.index') }}";
+                            }, 3000);
+                        } else {
+                            toastr.error(response.message);
+                            $(".loader").removeClass("show");
+                        }
+
+                    },
+                    error: function(xhr, status, error) {
+                        toastr.error(response.message);
+                        $(".loader").removeClass("show");
+                    }
+                });
+            });
+
+
+        });
+
+        $(document).on('click', '.assign-to-btn', function(event) {
+
+
+            // Extract the complaint ID from the data attribute
+            var complaintId = $(this).data('complaint-id');
+            $(".loader").addClass("show");
+            $('#modalDiv').html('');
+            var url = '{{ route('assign.complaint.form') }}'
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: url,
+                method: 'post',
+                data: {
+                    complaintId: complaintId,
+                },
+                success: function(response) {
+                    $('#modalDiv').html(response);
+                    $('#assignToModal').modal("show");
+                    $(".loader").removeClass("show");
+                },
+                error: function(data, textStatus, errorThrown) {
+                    $(".loader").removeClass("show");
+                    console.log(JSON.stringify(data));
+                }
+
+            });
+        });
+    </script>
+    <!--Select 2 -->
+    <link href="{!! url('assets/css/select2.min.css') !!}" rel="stylesheet">
+    <script src="{!! url('assets/js/select2.min.js') !!}"></script>
+@endsection

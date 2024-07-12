@@ -1,0 +1,147 @@
+.mt-10{
+    margin-top: 10px;
+}
+.btn-fit{
+    width: 100%;
+    max-width: 100px;
+}
+.bg-happy-green {
+    background-image: linear-gradient(to bottom,#00b09b,#96c93d)!important;
+}
+.bg-arielle-candidates {
+    background-image: radial-gradient(circle 248px at center,#16d9e3 0%,#30c7ec 47%,#46aef7 100%)!important;
+}
+
+.bg-grow-jobs {
+    background-image: linear-gradient(to top,#0ba360 0%,#3cba92 100%)!important;
+}
+
+.bg-night-fade {
+    background-image: linear-gradient(to top,#a18cd1 0%,#fbc2eb 100%)!important;
+}
+
+.bg-midnight-bloom 
+{
+    background-image: linear-gradient(-20deg,#2b5876 0%,#4e4376 100%)!important;
+}
+
+.bg-arielle-smile {
+    background-image: radial-gradient(circle 248px at center,#16d9e3 0%,#30c7ec 47%,#46aef7 100%)!important;
+}
+
+.bg-grow-early {
+    background-image: linear-gradient(to top,#0ba360 0%,#3cba92 100%)!important;
+}
+
+.bg-tempting-azure {
+    background-image: linear-gradient(120deg,#84fab0,#8fd3f4)!important;
+}
+
+.bg-heavy-rain {
+    background-image: linear-gradient(0deg,#cfd9df 0,#e2ebf0)!important;
+}
+
+.bg-plum-plate {
+    background-image: linear-gradient(135deg,#667eea,#764ba2)!important;
+}
+
+.bg-mixed-hopes {
+    background-image: linear-gradient(0deg,#c471f5 0,#fa71cd)!important;
+}
+
+
+.card.mb-3 {
+    margin-bottom: 30px!important;
+}
+.widget-content {
+    padding: 1rem;
+    flex-direction: row;
+    align-items: center;
+}
+
+.card {
+    box-shadow: 0 0.46875rem 2.1875rem rgba(4,9,20,.03), 0 0.9375rem 1.40625rem rgba(4,9,20,.03), 0 0.25rem 0.53125rem rgba(4,9,20,.05), 0 0.125rem 0.1875rem rgba(4,9,20,.03);
+    border-width: 0;
+    transition: all .2s;
+}
+
+.widget-content .widget-content-wrapper {
+    display: flex;
+    flex: 1;
+    position: relative;
+    align-items: center;
+}
+
+.text-white {
+    color: #fff!important;
+}
+
+.widget-content .widget-content-left .widget-heading {
+    opacity: .8;
+    font-weight: 700;
+}
+
+.widget-content .widget-content-left .widget-subheading {
+    opacity: .5;
+}
+
+.widget-content .widget-content-right {
+    margin-left: auto;
+}
+
+.widget-content .widget-content-right {
+    margin-left: auto;
+}
+
+.loader{
+    position: fixed;
+    background-color: rgba(255,255,255,0.5);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background-image: url(../images/loader/loader.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 75px;
+}
+
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+
+  .float-right {
+    float: right;
+  }
+
+  .pagination{
+        float: right;
+        margin-top: 10px;
+    }
+
+    .fa-remove {
+        color: red !important;
+    } 
+    .h3{
+        text-align: center;
+        font-weight:bold;
+        font-size: large;
+    }
+    .p{
+        text-align: center;
+        color: red !important;
+        font-size: medium;
+        font-style: oblique;
+        font-weight: bold;
+    }

@@ -1,0 +1,104 @@
+{
+    "complaints": [
+        {
+            "complaintNo": "123456",
+            "complainantCNIC": "4210139099163",
+            "complainantMobile": "03363121241",
+            "complainantName": "Hussain",
+            "complainantEmail": "hussain@example.com",
+            "complaintTitle": "Lack of water supply issue in my block .",
+            "status": "Pending",
+            "assignedTo": "Water Board DPT"
+        },
+        {
+            "complaintNo": "789012",
+            "complainantCNIC": "0153694206515",
+            "complainantMobile": "03369988277",
+            "complainantName": "Jane Smith",
+            "complainantEmail": "janesmith@example.com",
+            "complaintTitle": "Your service has been unreliable lately.",
+            "status": "In Progress",
+            "assignedTo": "Technical Team"
+        },
+        {
+            "complaintNo": "345678",
+            "complainantCNIC": "2312965421654",
+            "complainantMobile": "03361140844",
+            "complainantName": "Alice Johnson",
+            "complainantEmail": "alicejohnson@example.com",
+            "complaintTitle": "I received a damaged product.",
+            "status": "Resolved",
+            "assignedTo": "Customer Support"
+        },
+        {
+            "complaintNo": "456789",
+            "complainantCNIC": "3468892143021",
+            "complainantMobile": "03364898419",
+            "complainantName": "Michael Brown",
+            "complainantEmail": "michaelbrown@example.com",
+            "complaintTitle": "Your website is experiencing downtime frequently.",
+            "status": "Pending",
+            "assignedTo": "IT Team"
+        },
+        {
+            "complaintNo": "901234",
+            "complainantCNIC": "3140625897416",
+            "complainantMobile": "03369832875",
+            "complainantName": "Emily Davis",
+            "complainantEmail": "emilydavis@example.com",
+            "complaintTitle": "I have not received my order yet.",
+            "status": "Pending",
+            "assignedTo": "Logistics Team"
+        },
+        {
+            "complaintNo": "234567",
+            "complainantCNIC": "2509713624594",
+            "complainantMobile": "03366254738",
+            "complainantName": "Robert Wilson",
+            "complainantEmail": "robertwilson@example.com",
+            "complaintTitle": "Your customer support is not responsive.",
+            "status": "Pending",
+            "assignedTo": "Customer Support Manager"
+        },
+        {
+            "complaintNo": "567890",
+            "complainantCNIC": "1052748936179",
+            "complainantMobile": "03363674391",
+            "complainantName": "Sarah Clark",
+            "complainantEmail": "sarahclark@example.com",
+            "complaintTitle": "The product I received does not match the description.",
+            "status": "Resolved",
+            "assignedTo": "Product Quality Team"
+        },
+        {
+            "complaintNo": "678901",
+            "complainantCNIC": "9384702586435",
+            "complainantMobile": "03364613739",
+            "complainantName": "David Martinez",
+            "complainantEmail": "davidmartinez@example.com",
+            "complaintTitle": "I am unable to login to my account.",
+            "status": "Resolved",
+            "assignedTo": "Technical Support"
+        },
+        {
+            "complaintNo": "789012",
+            "complainantCNIC": "8942013560248",
+            "complainantMobile": "03366290184",
+            "complainantName": "Jessica Lee",
+            "complainantEmail": "jessicalee@example.com",
+            "complaintTitle": "I was charged incorrectly for my subscription.",
+            "status": "In Progress",
+            "assignedTo": "Billing Team"
+        },
+        {
+            "complaintNo": "345678",
+            "complainantCNIC": "7501348265793",
+            "complainantMobile": "03366647538",
+            "complainantName": "Christopher Harris",
+            "complainantEmail": "christopherharris@example.com",
+            "complaintTitle": "Your app crashes frequently on my device.",
+            "status": "Pending",
+            "assignedTo": "App Development Team"
+        }
+    ]
+}

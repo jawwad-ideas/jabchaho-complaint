@@ -1,0 +1,327 @@
+*{
+	margin:0px;
+	padding:0px
+}
+body {
+    background: #e9eaee !important;
+    font: normal 12px 'LucidaGrande' !important;
+}
+#container{
+	margin:0 auto;
+}
+#timelineContainer{
+	width:100%;
+	position:relative
+}
+#timelineBackground {
+	height: 450px;
+	position: relative;
+	border-left: 1px solid #333333;
+	border-right: 1px solid #333333;
+	overflow: hidden;
+	background-color:#ffffff;
+}
+#timelineProfilePic {
+	width: 160px;
+	height: 160px;
+	border: 1px solid #666666;
+	background-color: #ffffff;
+	position: absolute;
+	margin-top: -125px;
+	margin-left: 20px;
+	z-index: 1000;
+	overflow: hidden;
+	border-radius: 50%;
+}
+#timelineTitle {
+	color: #ffffff;
+	font-size: 24px;
+	margin-left: 206px;
+	font-weight: bold;
+	text-rendering: optimizelegibility;
+	text-shadow: 0 0 3px rgba(0,0,0,.8);
+	z-index: 999;
+	text-transform: capitalize;
+}
+#timelineShade {
+	min-height: 95px;
+	position: absolute;
+	margin-top: -95px;
+	width: 100%;
+}
+#timelineNav {
+	border: 1px solid #d6d7da;
+	background-color: #ffffff;
+	min-height: 43px;
+	margin-bottom: 10px;
+	position: relative;
+	border-bottom-left-radius: 4px;
+	-moz-border-bottom-left-radius: 4px;
+	-webkit-border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	-moz-border-bottom-right-radius: 4px;
+	-webkit-border-bottom-right-radius: 4px;
+}
+.timelineUploadBG {
+	position: absolute;
+	margin-top: 50px;
+	margin-left: 850px;
+	height: 32px;
+	width: 32px;
+}
+.uploadFile {
+	background: url('../images/icons/buttons/whitecam.png') no-repeat;
+	height: 32px;
+	width: 32px;
+	overflow: hidden;
+	cursor: pointer;
+}
+.timelineInfo {
+	position: absolute;
+	right: 25px;
+	top: 3px;
+}
+.updateInfo {
+	background-color: white;
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0px 20px;
+    margin: 5px;
+    text-align: center;
+}
+.updateInfo .btn{
+	padding: 0;
+}
+.uploadFile input {
+	filter: alpha(opacity=0);
+	opacity: 0;
+	margin-left: -110px;
+}
+.custom-file-input {
+	height: 25px;
+	cursor: pointer;
+}
+.bgImage,#timelineBGload
+{
+	width:100%;
+}
+.headerimage {
+	cursor: s-resize;
+	position: absolute;
+}
+.wallbutton:hover {
+	text-decoration: none;
+}
+.blackButton {
+	background-color: #666666;
+	border-color: #333333;
+}
+.bgSave {
+	position: absolute;
+	margin-top: 267px;
+	margin-left: 760px;
+	z-index: 4000;
+}
+.wallbutton {
+	font-weight: bold;
+	padding: 7px 9px;
+	background-color: #5fcf80;
+	color: #fff !important;
+	font-size: 12px;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	cursor: pointer;
+	text-decoration: none;
+	border-width: 1px 1px 3px !important;
+	border-style: solid;
+	border-color: #3ac162;
+	white-space: nowrap;
+	display: -moz-inline-stack;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+}
+.button {
+    background-color: #fff;
+    color: #527fd2;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 0px;
+    cursor: pointer;
+}
+.button2 {background-color: #fff;}
+.button3 {background-color: #fff;}
+.button4 {background-color: #fff;}
+.button5 {background-color: #fff;}
+.buttonside{
+	margin-left: 240px;
+}
+#timelineNav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #4caf50;
+}
+#timelineNav li {
+    float: left;
+}
+#timelineNav li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+#timelineNav ul li.active, #timelineNav ul li:hover {
+    background-color: #a0cc44;
+}
+
+
+
+#timelineNav li:first-child {
+	margin-left: 200px;
+}
+
+.custom-nav {
+    display: inline-flex;
+    position: relative;
+    float: right;
+    list-style: none;
+}
+/*
+.custom-nav {	
+	display: flex;
+    flex-wrap: wrap;
+    padding-left: 340px;
+    margin-top: 65px;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 660px;
+    list-style: none;
+}
+*/
+.profile-upload {
+	background: url('../images/icons/buttons/whitecam.png') no-repeat;
+	height: 32px;
+	width: 32px;
+	overflow: hidden;
+	cursor: pointer;
+	position: absolute;
+	margin-bottom: 0px;
+	margin-left: 145px;
+	z-index: 1000;
+}
+
+.profile-upload input {
+	filter: alpha(opacity=0);
+	opacity: 0;
+	margin-left: -110px;
+}
+
+.profile-image-remove {
+	background: url('../images/icons/buttons/remove.png') no-repeat;
+	height: 32px;
+	width: 32px;
+	overflow: hidden;
+	cursor: pointer;
+	position: absolute;
+    margin-top: -120px;
+    margin-left: 148px;
+	z-index: 1000;
+}
+
+.cover-image-remove {
+	background: url('../images/icons/buttons/remove.png') no-repeat;
+	height: 32px;
+	width: 32px;
+	overflow: hidden;
+	cursor: pointer;
+	position: absolute;
+	margin-bottom: 0px;
+	margin-right: 23px;
+	z-index: 1000;
+}
+
+#removeCoverImageDiv {
+	position: absolute;
+	margin-top: -310px;
+	margin-left: 815px;
+	height: 32px;
+	width: 32px;
+}
+
+.cover-image-drag{
+	background: url('../images/icons/buttons/drag.png') no-repeat;
+	height: 32px;
+	width: 32px;
+	overflow: hidden;
+	cursor: pointer;
+	position: absolute;
+	margin-bottom: 0px;
+	margin-right: 23px;
+	z-index: 1000;
+}
+
+#dragCoverImageDiv{
+	position: absolute;
+	margin-top: -310px;
+	margin-left: 855px;
+	height: 32px;
+	width: 32px;
+}
+
+.center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+  }
+
+.dropdownImage{
+	margin-left: auto;
+    margin-right: auto;
+    width: 32px;
+	height: 32px;
+}  
+
+.progress-bar {
+	background-color: #4caf50 !important;
+}
+
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+	background-color: #4caf50 !important;
+    border-color: #4caf50 !important;
+}
+/*profile remove icon css */
+#removeProfileImageDiv {
+	display: none;
+}
+
+#removeProfileImageDiv:hover {
+	display: block;
+}
+
+.profileDiv:hover + #removeProfileImageDiv {
+	display: block;
+}
+
+
+/*Cover remove icon css */
+#coverImageHideButton {
+	display: none;
+}
+#coverImageHideButton:hover{
+	display: block;
+}
+#timelineBackground:hover + #coverImageHideButton {
+	display: block;
+}
+
