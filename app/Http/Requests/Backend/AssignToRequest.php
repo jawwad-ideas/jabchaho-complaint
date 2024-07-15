@@ -26,6 +26,7 @@ class AssignToRequest extends FormRequest
     {
         return 
         [
+            'userId'     => 'required|exists:users,id',
             'priorityId' =>  'required|exists:complaint_priorities,id',
         ];
     }
@@ -33,6 +34,10 @@ class AssignToRequest extends FormRequest
     public function messages()
     {
         return [
+            
+            #
+            'userId.required'   => 'Select a user to assign this complaint to.',
+            'userId.exists'     => 'Invalid ID selected.',
             #
             'priorityId.required'   => 'Priority is required',
             'priorityId.exists'     => 'Priority is invalid!',

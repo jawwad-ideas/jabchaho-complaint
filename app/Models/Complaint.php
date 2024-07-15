@@ -97,10 +97,11 @@ class Complaint extends Model
     public function assignTo($params = array())
     {
 
-        $complaintId = Arr::get($params, 'complaintId');
-        $priorityId = Arr::get($params, 'priorityId');
+        $complaintId    = Arr::get($params, 'complaintId');
+        $userId         = Arr::get($params, 'userId');
+        $priorityId     = Arr::get($params, 'priorityId');
 
-        $assigned = Complaint::where(['id' => $complaintId])->update(['complaint_priority_id' => $priorityId]);
+        $assigned = Complaint::where(['id'=>$complaintId])->update(['user_id'=>$userId, 'complaint_priority_id'=>$priorityId]);
         if ($assigned) {
             return true;
         } else {

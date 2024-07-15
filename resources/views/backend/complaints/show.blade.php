@@ -55,11 +55,8 @@
     <div
         class="page-title-section border-bottom mb-0.5 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
         <div class="p-title">
-            <h3 class="fw-bold text-white m-0">Complaint Details</h3>
-            {{-- title --}}
-            {{-- <h5 class="text-white mb-0">{{Arr::get($complaintData, 'title')}}</h5> --}}
-            {{-- complaint no --}}
-            <h5 class="text-white mb-0"><b>Complaint #</b>{{ Arr::get($complaintData, 'complaint_num') }}</h5>
+            <h3 class="fw-bold text-white m-0">Complaint Details</h3>    
+            <h5 class="text-white mb-0"><b>Complaint #</b>{{ Arr::get($complaintData, 'id') }}</h5>
         </div>
         <div class="text-lg-end text-center">
             <div class="btn-group chart-filter-btns mt-lg-0 mt-4" role="group">
@@ -70,13 +67,9 @@
                 @endif
                 @if (Auth::user()->can('assign.complaint'))
                     <a class="btn btn-sm rounded bg-theme-green-light me-2 assign-to-btn border-0 text-theme-green fw-bold"
-                        data-complaint-id="{{ $complaintData->id }}">Priority</a>
+                        data-complaint-id="{{ $complaintData->id }}">Assign</a>
                 @endif
-                @if (Auth::user()->can('re-assign.complaint'))
-                    <a class="btn btn-sm rounded bg-theme-green-light me-2 re-assign-btn border-0 text-theme-green fw-bold"
-                        data-complaint-id="{{ $complaintData->id }}">Re-Assign
-                    </a>
-                @endif
+
                 @if (Auth::user()->can('complaints.destroy'))
                     {!! Form::open([
                         'method' => 'DELETE',
@@ -89,18 +82,6 @@
                     ]) !!}
                     {!! Form::close() !!}
                 @endif
-                @if (Auth::user()->can('can.approve.complaints') && !$complaintData->is_approved)
-                    {!! Form::open([
-                        'method' => 'POST',
-                        'route' => ['can.approve.complaints', $complaintData->id],
-                        'style' => 'display:inline',
-                        'onsubmit' => 'return ConfirmApprove()',
-                    ]) !!}
-                    {!! Form::submit('Approve', [
-                        'class' => 'btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold',
-                    ]) !!}
-                    {!! Form::close() !!}
-                @endif
             </div>
         </div>
     </div>
@@ -108,12 +89,12 @@
         <div class="mb-4 border-0">
             <div class="card-body">
 
-                <div class="inner-row d-flex gap-4 mb-0.5">
+                <div class="inner-row d-flex gap-4 my-1">
                     <div class="inner-label">
-                        <p class="mb-0"><b>Complaint Title:</b></p>
+                        <p class="mb-0"><b>Order Id:</b></p>
                     </div>
                     <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData, 'title') }}</p>
+                        <p class="text-muted mb-0"> {{ Arr::get($complaintData, 'order_id') }}</p>
                     </div>
                 </div>
 
@@ -126,238 +107,7 @@
                     </div>
                 </div>
 
-                @if(!empty(Arr::get($refrence_detail, 'full_name')))
-
                 <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Complainant:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0"> {{Arr::get($refrence_detail, 'full_name')}}
-                            ({{ Arr::get($refrence_detail, 'email')}})</p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Complainant Mobile Number:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">
-                        {{Arr::get($refrence_detail, 'mobile_number')}}
-                        </p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Complainant CNIC:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">
-                        {{Arr::get($refrence_detail, 'cnic')}}
-                        </p>
-                    </div>
-                </div>
-
-                @else
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Complainant:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0"> {{ Arr::get($complaintData->complainant, 'full_name') }}
-                            ({{ Arr::get($complaintData->complainant, 'email') }})</p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Complainant Mobile Number:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">
-                            {{ Arr::get($complaintData->complainant, 'mobile_number') }}
-                        </p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Complainant CNIC:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">
-                            {{ Arr::get($complaintData->complainant, 'cnic') }}
-                        </p>
-                    </div>
-                </div>
-
-                @endif
-                
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Nearby:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">
-                            {{ Arr::get($complaintData, 'nearby') }}
-                        </p>
-                    </div>
-                </div>
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Address:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">
-                            {{ Arr::get($complaintData, 'address') }}
-                        </p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Assigned To MNA:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0"> {{ Arr::get($complaintData->user, 'name') }}
-                            >
-                            @if (!empty(Arr::get($complaintData->user, 'email')))
-                                ({{ Arr::get($complaintData->user, 'email') }})
-                            @endif
-                        </p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Assigned To MPA:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0"> {{ Arr::get($complaintData->userMpa, 'name') }}
-                            >
-                            @if (!empty(Arr::get($complaintData->userMpa, 'email')))
-                                ({{ Arr::get($complaintData->userMpa, 'email') }})
-                            @endif
-                        </p>
-                    </div>
-                </div>
-
-
-
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Complaint Category:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->levelOneCategory, 'name') }}</p>
-                    </div>
-                </div>
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Level Two:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->levelTwoCategory, 'name') }}</p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Level Three:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->levelThreeCategory, 'name') }}</p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 my-1">
-
-                    <div class="inner-label">
-                        <p class="mb-0"><b>City:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->city, 'name') }}</p>
-                    </div>
-                </div>
-
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>District:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->district, 'name') ? Arr::get($complaintData->district, 'name') : Arr::get($complaintData, 'district_input') }}</p>
-                    </div>
-                </div>
-                <div class="inner-row d-flex gap-4 my-3 d-none">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Sub Division</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->subDivision, 'name') }} -</p>
-                    </div>
-                </div>
-
-
-                <div class="inner-row d-flex gap-4 my-3 d-none">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Charge</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->charge, 'name') }}</p>
-                    </div>
-                </div>
-                <div class="inner-row d-flex gap-4 my-3 d-none">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Union Council</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->unionCouncil, 'name') }}</p>
-                    </div>
-                </div>
-
-
-                <div class="inner-row d-flex gap-4 my-3 d-none ">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Ward</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->ward, 'name') }}</p>
-                    </div>
-                </div>
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>National Assembly:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->nationalAssembly, 'name') ?  Arr::get($complaintData->nationalAssembly, 'name')  : Arr::get($complaintData, 'national_assembly_input') }}</p>
-                    </div>
-                </div>
-
-
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Provincial Assembly:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->provincialAssembly, 'name') ? Arr::get($complaintData->provincialAssembly, 'name') : Arr::get($complaintData, 'provincial_assembly_input') }}</p>
-                    </div>
-                </div>
-                <div class="inner-row d-flex gap-4 my-1">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Area:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ Arr::get($complaintData->newArea, 'name') }}</p>
-                    </div>
-
-                </div>
-                <div class="inner-row d-flex gap-4 my-1">
-
                     <div class="inner-label">
                         <p class="mb-0"><b>Priority:</b></p>
                     </div>
@@ -365,45 +115,92 @@
                         <p class="text-muted mb-0">{{ Arr::get($complaintData->complaintPriority, 'name') }}</p>
                     </div>
                 </div>
-            </div>
-
-
-            <!--Row 1-->
-            <div class="row">
-                <div class="col-md-12">
-                    <!--card 0-->
-                    <div class="card mb-3">
-                        <h6 class="card-header">Title</h6>
-                        <div class="card-body">
-                            <div class="row">
-                                {{ Arr::get($complaintData, 'title') }}
-                            </div>
-                        </div>
+            
+                <div class="inner-row d-flex gap-4 mb-0.5">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Query Type:</b></p>
                     </div>
-                    <!--//card 0-->
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ config('constants.query_type.'.Arr::get($complaintData, 'query_type'));  }}</p>
+                    </div>
                 </div>
-            </div>
-            <!--Row 1-->
 
-            <!--Row 2-->
+                <div class="inner-row d-flex gap-4 mb-0.5">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Complaint Type:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ config('constants.complaint_type.'.Arr::get($complaintData, 'complaint_type'));  }}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 mb-0.5">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Inquiry Type:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0">{{ config('constants.inquiry_type.'.Arr::get($complaintData, 'inquiry_type'));  }}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Name:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{ Arr::get($complaintData, 'name') }}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Email:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{ Arr::get($complaintData, 'email') }}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Mobile Number:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{ Arr::get($complaintData, 'mobile_number') }}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Assigned To:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{ Arr::get($complaintData->user, 'name') }}
+                            @if (!empty(Arr::get($complaintData->user, 'email')))
+                                ({{ Arr::get($complaintData->user, 'email') }})
+                            @endif
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!--Row 1-->
             <div class="row">
                 <div class="col-md-12">
                     <!--card 1-->
                     <div class="card mb-3">
-                        <h6 class="card-header">Description</h6>
+                        <h6 class="card-header">Additional Comments</h6>
                         <div class="card-body">
                             <div class="row">
-                                {!! Arr::get($complaintData, 'description') !!}
+                                {!! Arr::get($complaintData, 'comments') !!}
                             </div>
                         </div>
                     </div>
                     <!--//card 1-->
                 </div>
-
-
-
             </div>
-            <!--Row 2-->
+            <!--Row 1-->
 
             <!--Row 4-->
             <div class="row">
@@ -418,6 +215,7 @@
                                             @foreach ($complaintDocument as $row)
                                                 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 mt-4">
                                                     <div class="py-2 px-2" style="box-shadow: 0 0 10px 0 #ddd;">
+                                                        <h6>{{ config('constants.complaint_form_images.'.Arr::get($row, 'document_name'));  }}</h6>
                                                         <div class="d-flex align-items-center gap-2">
                                                             @if (Helper::isFileExtensionForIcon(Arr::get($row, 'file')))
                                                                 <img class="center"
@@ -433,6 +231,7 @@
                                                                 data-filepath="{{ asset(config('constants.files.complaint_documents')) }}/{{ Arr::get($row, 'file') }}"
                                                                 download>Download</a>
                                                             </div>
+                                                            
                                                         </div>
                                                 </div>
                                             @endforeach
@@ -673,11 +472,13 @@
                                 $('#PriorityErrorMsg').append(response.errors.priorityId);
                             }
 
+                            $(".loader").removeClass("show");
+
                         } else if (response.status) {
                             toastr.success(response.message);
                             setTimeout(() => {
                                 window.location.href =
-                                    "{{ route('complaints.index') }}";
+                                    "{{ route('complaints.show', ['complaintId' => $complaintData->id])}}";
                             }, 3000);
                         } else {
                             toastr.error(response.message);

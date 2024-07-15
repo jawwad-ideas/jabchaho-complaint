@@ -77,10 +77,12 @@ class ComplaintController extends Controller
 
         $complaintObject                = new Complaint;
         $complaintData                  = $complaintObject->getComplaintDataById($complaintId);
+        $users                          = User::get()->toArray();
         $complaintPriorities            = ComplaintPriority::get()->toArray();
 
         $data['complaintPriorities']    = $complaintPriorities;
         $data['complaintData']          = $complaintData;
+        $data['users']                  = $users;
 
         return view('backend.complaints.assign_complaint_form')->with($data);
 
@@ -91,6 +93,7 @@ class ComplaintController extends Controller
         $params = array();
         $params['complaintId']  = $request->input('complaintId');
         $params['priorityId']   = $request->input('priorityId');
+        $params['userId']       = $request->input('userId');
 
         $complaint      = new Complaint;
 
@@ -120,7 +123,6 @@ class ComplaintController extends Controller
         $data['complaintData']      = $complaintData;
         $data['complaintDocument']  = $complaintDocument;
         $data['complaintFollowUps'] = $objectComplaintFollowUp->getComplaintFollowUps($complaintId);
-        $data['refrence_detail'] = json_decode($complaintData->extras, true);
 
         return view('backend.complaints.show')->with($data);
     }

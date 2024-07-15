@@ -5,7 +5,7 @@
             <div class="alert alert-danger" style="display:none"></div>
             <div class="modal-header">
 
-                <h5 class="modal-title">Assign Priority</h5>
+                <h5 class="modal-title">Assign Complaint To</h5>
 
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -16,7 +16,7 @@
                 <form id="assignComplaintForm" method="POST" action="{{ route('assign.complaint') }}">
                     @csrf
                     <input type="hidden" name="complaintId" id="complaintId" value="{{Arr::get($complaintData,'id')}}">
-                    
+                    <p>Select who you want to assign this complaint for resolution.</p>
                     <div class="alert alert-danger" id="error" style="display:none"></div>
                     <div class="alert alert-success" id="success" style="display:none"></div>
                     <div class="row">
@@ -25,8 +25,22 @@
                             {{Arr::get($complaintData,'complaint_num')}}
                         </div>
                         <div class="form-group mb-3">
-                            <label class="control-label col-sm-4" for="userId">Assigned:</label>
-                            {{ Arr::get($complaintData->user, 'name') }}  @if(Arr::get($complaintData->user, 'email') ) ({{ Arr::get($complaintData->user, 'email') }}) @endif
+                        <label class="control-label col-sm-4" for="userId">Assign To:</label>
+                            <select class="form-control c-select" name="userId">
+                                <option value="">Select...</option>
+                                @if(!empty($users))
+                                    @foreach($users as $user)
+                                        @if(Arr::get($user, 'id') == Arr::get($complaintData,'user_id') )
+                                            <option value="{{ Arr::get($user, 'id') }}" selected>{{ Arr::get($user, 'name') }}  ({{ Arr::get($user, 'email') }})</option>
+                                        @else
+                                        <option value="{{ Arr::get($user, 'id') }}">{{ Arr::get($user, 'name') }}  ({{ Arr::get($user, 'email') }})</option>
+                                        @endif
+                                        
+                                    @endforeach
+                                @endif
+                            </select>
+                            <div id="UserErrorMsg" class="text-danger validation-message" style="display:none" ></div>
+
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-4" for="priorityId">Priority:</label>
