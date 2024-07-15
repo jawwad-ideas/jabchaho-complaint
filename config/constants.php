@@ -8,14 +8,15 @@ return [
 	'js_version'=>'1.0',
 	'css_version'=>'1.0',
 	'max_files' => 3,
-    // 'files_supported'=>'psd, doc, docx, xls, xlsx, zip, rar, ppt, pptx, pdf, mp3, mp4, webp, avif',
-    'files_supported'=>'png, jpg, jpeg, doc, docx, xls, xlsx, pdf',
 
+    'files_supported'=>'png, jpg, jpeg, doc, docx, xls, xlsx, pdf',
+	'query_type' => [1=>'Complaint', 2=>'Inquiry'],
+	'complaint_type' =>[1=>'Defective', 2=>'Color issue', 3=>'Wrong Product', 4=>'Wrong order', 5=>'Missing article'],
+	'inquiry_type'=>[1=>'Services', 2=>'Other'],
 	'boolean_options' => [1=>'Yes', 0 =>'No'],
 	'gender_options' => [1=>'Male', 0 =>'Female',3 =>'Others'],
 	'files' =>[
 		'filetypes' 				=> 'assets/images/icons/filetypes',
-		'temp'						=> 'storage/app/temp/',
 		'complaint_documents' 		=> 'assets/uploads/complaint_documents/',
 		'profile'					=> 'assets/uploads/profile/',
     ],

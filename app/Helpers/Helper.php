@@ -306,5 +306,35 @@ class Helper
 	
 		return $result;
 	}
+
+	public static function customErrorMessage()
+    {
+         $responsearray = array();
+         $responsearray['status'] 	= false;
+         $responsearray['message']	= 'Something Went Wrong Try Again';  
+         return response()->json($responsearray, 401);
+    }
+ 
+    public static function returnError($validator=null)
+    {
+         if ($validator->fails()) 
+         {
+             $errorMessages = array();
+             $errors = $validator->errors();
+             
+             if(!empty($errors))
+             {
+                 foreach ($errors->all() as $message) {
+                     $errorMessages[] = $message;
+                 }
+             }
+ 
+             return $errorMessages;
+         }
+         else
+         {
+             return false;
+         }
+    }
 }
 

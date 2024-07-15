@@ -20,3 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/track', [ApiController::class, 'getData']);
+
+Route::group(['namespace' => 'App\Http\Controllers\Api'], function() {//,'middleware' => ['custom.client']
+    Route::post('/create-compalint', 'ComplaintController@create')->name('create.compalint');
+
+});

@@ -4,214 +4,33 @@ namespace App\Http\Controllers\Backend;
 
 use App\Exports\ComplaintsExport;
 use App\Exports\ReportByComplaintsExport;
-use App\Http\Controllers\ComplaintBaseController;
 use App\Models\Complaint;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\Backend\AssignToRequest;
 use App\Models\ComplaintDocument;
-use App\Models\City;
-use App\Models\District;
-use App\Models\Category;
-use App\Http\Requests\Frontend\StoreComplaintRequest;
 use Illuminate\Support\Arr;
 use App\Helpers\Helper;
+use App\Http\Controllers\Controller;
 use App\Models\Complainant;
 use App\Models\ComplaintStatus;
 use App\Models\ComplaintFollowUp;
 use App\Http\Requests\Backend\ComplaintFollowUpRequest;
 use App\Http\Requests\Backend\ReAssignRequest;
-use App\Models\Charge;
 use App\Models\ComplaintPriority;
-use App\Models\NationalAssembly;
-use App\Models\NewArea;
-use App\Models\ProvincialAssembly;
-use App\Models\SubDivision;
-use App\Models\UnionCouncil;
-use App\Models\UserWiseAreaMapping;
-use App\Models\Ward;
+
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ComplaintController extends ComplaintBaseController
+class ComplaintController extends Controller
 {
     public function index(Request $request)
     {
+        $data = $filterData = array();
         // Fetch complaints
-        $complaints   = Complaint::select('complaints.*','complainants.mobile_number', 'complainants.cnic','users.name as approved_by')->join('complainants', 'complaints.complainant_id', '=', 'complainants.id');
-        $complaints->leftJoin('users','users.id','=','complaints.approved_by_user_id');
-        $dashboardFilter                = $request->query('dashboard_filter');
-        $userId                         = Auth::guard('web')->user()->id;
-        $pendingComplaints = Complaint::select("*")->where('complaint_status_id',  1);
+        $complaints   = Complaint::orderBy('complaints.id', 'DESC')->paginate(config('constants.per_page'));
 
-
-
-        if(!empty($dashboardFilter))
-        {
-            $datesArray = Helper::getDateByFilterValue($dashboardFilter);
-
-            $startDate              = Arr::get($datesArray, 'startDate');
-            $endDate                = Arr::get($datesArray, 'endDate');
-
-            $complaints->whereBetween('complaints.created_at', [$startDate, $endDate]);
-        }
-
-        // Apply filters
-        $complaint_number = $request->input('complaint_number');
-        $mobile_number = $request->input('mobile_number');
-        $cnic = $request->input('cnic');
-        $title            = $request->input('title');
-        $levelOne         = $request->input('level_one');
-        $levelTwo         = $request->input('level_two');
-        $levelThree       = $request->input('level_three');
-        $city             = $request->input('city_id');
-        $district         = $request->input('district_id');
-        $status           = $request->input('complaint_status_id');
-        $approvalStatus           = $request->input('complaint_approved_id');
-        //die($approvalStatus);
-        $created_at_from           = $request->input('created_at_from');
-        $created_at_to           = $request->input('created_at_to');
-
-        if (!empty($complaint_number))
-        {
-            $complaints->where('complaints.complaint_num', 'like', '%' . $complaint_number . '%');
-        }
-
-        if (!empty($mobile_number))
-        {
-            $complaints->where('complainants.mobile_number','like', '%' .$mobile_number. '%');
-        }
-
-        if (!empty($cnic))
-        {
-            $complaints->where('complainants.cnic', 'like', '%' . $cnic. '%');
-        }
-
-        if (!empty($title)) {
-            $complaints->where('complaints.title', 'like', '%' . $title . '%');
-        }
-
-        if (!empty($levelOne)) {
-            $complaints->where('complaints.level_one', $levelOne);
-        }
-
-        if (!empty($levelTwo)) {
-            $complaints->where('complaints.level_two', $levelTwo);
-        }
-
-        if (!empty($levelThree)) {
-            $complaints->where('complaints.level_three', $levelThree);
-        }
-
-        if (!empty($city)) {
-            $complaints->where('complaints.city_id', $city);
-        }
-
-        if (!empty($district)) {
-            $complaints->where('complaints.district_id', $district);
-        }
-
-        if (!empty($status)) {
-            $complaints->where('complaints.complaint_status_id', $status);
-        }
-        if (!empty($approvalStatus)) {
-            $flag = ($approvalStatus == 'yes') ? 1 : 0;
-            $complaints->where('complaints.is_approved', $flag);
-        }
-
-        if ($created_at_from) {
-            $created_at_from .= ' 00:00:00';
-            $complaints->where('complaints.created_at', '>=', $created_at_from);
-
-            if ($created_at_to) {
-                $created_at_to .= ' 23:59:59';
-                $complaints->where('complaints.created_at', '<=', $created_at_to);
-            }
-          }
-
-        $filterData = [
-            'complaint_number'    => $complaint_number,
-            'mobile_number'    => $mobile_number,
-            'cnic'    => $cnic,
-            'title'               => $title,
-            'level_one'           => $levelOne,
-            'level_two'           => $levelTwo,
-            'level_three'         => $levelThree,
-            'city'                => $city,
-            'district'            => $district,
-            'complaint_status_id' => $status,
-            'complaint_approved_id' => $approvalStatus,
-            'created_at_from' => $created_at_from,
-            'created_at_to' => $created_at_to,
-        ];
-
-        $userWise = true;
-        if(Auth::user()->hasRole('admin'))
-        {
-            $userWise = false;
-            $pendingComplaints->where('is_approved', 0);
-        }
-
-        if(Auth::user()->hasRole('call-center'))
-        {
-            $userWise = false;
-            $complaints = $complaints->where(['complaints.created_by' =>$userId]);
-            $pendingComplaints->where('created_by', $userId);
-        }
-
-        if(Auth::user()->hasRole('Manager'))
-        {
-            $userWise = false;
-            $complaints = $complaints->where(['complaints.is_approved' =>0]);
-            $pendingComplaints->where('is_approved', 0);
-        }
-        // Paginate the results
-        if($userWise)
-        {
-            if(Auth::user()->hasRole('MPA')){
-                $complaints = $complaints->where(['complaints.mpa_id' =>$userId,'complaints.is_approved' =>1]);
-                $pendingComplaints->where('is_approved', 1);
-                $pendingComplaints->where('mpa_id', $userId);
-            }
-            if(Auth::user()->hasRole('MNA')){
-                $complaints = $complaints->where(['complaints.user_id' =>$userId,'complaints.is_approved' =>1]);
-                $pendingComplaints->where('is_approved', 1);
-                $pendingComplaints->where('user_id', $userId);
-
-            }
-
-
-        }
-
-        $complaintsResult = $complaints->orderBy('complaints.id', 'DESC')->paginate(config('constants.per_page'));
-
-
-        //dd($complaints->toRawSql());
-        // Fetch cities, districts, and complaint numbers
-        $cities = City::all(); // Assuming you have a City model and table
-        $districts = District::all(); // Assuming you have a District model and table
-
-        $categoryObject     = new Category;
-        $levelOneCategory   = $categoryObject->getFirstLevel();
-        $levelTwoCategory   = $categoryObject->getSecondLevel();
-        $levelThreeCategory = $categoryObject->getThirdLevel();
-
-        $complaintStatusIds    = ComplaintStatus::all();
-        //die($pendingComplaints->toRawSql());
-        $data = [
-            'levelOneCategory'   => $levelOneCategory,
-            'levelTwoCategory'   => $levelTwoCategory,
-            'levelThreeCategory' => $levelThreeCategory,
-            'filterData'         => $filterData,
-            'cities'             => $cities,
-            'districts'          => $districts,
-            'complaintStatusIds' => $complaintStatusIds,
-            'pendingComplaints' => $pendingComplaints->count()
-        ];
-
-        $filterData['dashboardFilter']          = $dashboardFilter;
-
-        $data['complaints'] = $complaintsResult;
+        $data['complaints'] = $complaints;
 
         return view('backend.complaints.index')->with($data)->with($filterData);
     }
@@ -306,64 +125,7 @@ class ComplaintController extends ComplaintBaseController
         return view('backend.complaints.show')->with($data);
     }
 
-    public function create(Request $request)
-    {
-        $roleHaveAccess = true;
-        $data = parent::create($request);
-        $data['roleHaveAccess']         = $roleHaveAccess;
-        $data['storeUrl']               = route('rolebase.complaints.store');
-        $data['redirectUrl']            = route('complaints.index');
-        return view('backend.complaints.create')->with($data);
-    }
-
-    public function store(StoreComplaintRequest $request)
-    {
-        //Create account
-        $validateValues = $request->validated();
-
-        $email                          = Arr::get($validateValues,'email');
-        $cnic                           = Arr::get($validateValues,'cnic');
-        $mobileNumber                   = Arr::get($validateValues,'mobile_number');
-        $password                       = Helper::generateAlphaNumeric(10);
-
-        $newComplainantData['full_name']       = Arr::get($validateValues,'full_name');
-        $newComplainantData['gender']          = Arr::get($validateValues,'gender');
-        $newComplainantData['cnic']            = $cnic;
-        $newComplainantData['email']           = $email;
-        $newComplainantData['mobile_number']   = $mobileNumber;
-        $newComplainantData['password']        = $password;
-
-        $complainant                    = Complainant::findByEmailOrCnicOrPhoneNo($email, $cnic, $mobileNumber);
-
-        if ($complainant)
-        {
-            $complainantId              = Arr::get($complainant,'id');
-
-        }
-        else
-        {
-            $complainant                = Complainant::create($newComplainantData);
-            $complainantId              = $complainant->id;
-            $this->sendEmailToNewCreatedComplainant($newComplainantData);
-        }
-
-
-        $this->complainantId            = $complainantId;
-        $this->complaintPriorityId      = Arr::get($validateValues,'priorityId');
-        $this->userId                   = Arr::get($validateValues,'userId');
-
-        unset($validateValues['roleHaveAccess']);
-        unset($validateValues['full_name']);
-        unset($validateValues['gender']);
-        unset($validateValues['cnic']);
-        unset($validateValues['email']);
-        unset($validateValues['userId']);
-        unset($validateValues['priorityId']);
-
-
-
-        return parent::store($request);
-    }
+    
 
     public function report_index(Request $request)
     {
@@ -532,21 +294,21 @@ class ComplaintController extends ComplaintBaseController
         }
 
         // Fetch other necessary data for the filters
-        $data['nic'] = Complainant::getUniqueNicNumbers();
-        $data['phoneNumber'] = Complainant::getUniquePhoneNumbers();
-        $data['levelOne'] = $categoryObject->getFirstLevel();
-        $data['levelTwo'] = $categoryObject->getSecondLevel();
-        $data['levelThree'] = $categoryObject->getThirdLevel();
-        $data['titles'] = Complaint::pluck('title')->whereNull('deleted_at');
-        $data['cities'] = City::all()->whereNull('deleted_at');
-        $data['newAreas'] = NewArea::all()->whereNull('deleted_at');
-        $data['districts'] = District::all()->whereNull('deleted_at');
-        $data['divisions'] = SubDivision::all()->whereNull('deleted_at');
-        $data['ucs'] = UnionCouncil::all()->whereNull('deleted_at');
-        $data['charges'] = Charge::all()->whereNull('deleted_at');
-        $data['wards'] = Ward::all()->whereNull('deleted_at');
-        $data['pas'] = ProvincialAssembly::all()->whereNull('deleted_at');
-        $data['nas'] = NationalAssembly::all()->whereNull('deleted_at');
+        // $data['nic'] = Complainant::getUniqueNicNumbers();
+        // $data['phoneNumber'] = Complainant::getUniquePhoneNumbers();
+        // $data['levelOne'] = $categoryObject->getFirstLevel();
+        // $data['levelTwo'] = $categoryObject->getSecondLevel();
+        // $data['levelThree'] = $categoryObject->getThirdLevel();
+        // $data['titles'] = Complaint::pluck('title')->whereNull('deleted_at');
+        // $data['cities'] = City::all()->whereNull('deleted_at');
+        // $data['newAreas'] = NewArea::all()->whereNull('deleted_at');
+        // $data['districts'] = District::all()->whereNull('deleted_at');
+        // $data['divisions'] = SubDivision::all()->whereNull('deleted_at');
+        // $data['ucs'] = UnionCouncil::all()->whereNull('deleted_at');
+        // $data['charges'] = Charge::all()->whereNull('deleted_at');
+        // $data['wards'] = Ward::all()->whereNull('deleted_at');
+        // $data['pas'] = ProvincialAssembly::all()->whereNull('deleted_at');
+        // $data['nas'] = NationalAssembly::all()->whereNull('deleted_at');
         $complaintStatusObject = new ComplaintStatus;
         $userObject = new User;
         $data['statuses'] = $complaintStatusObject->getComplaintStatuses()->whereNull('deleted_at');
@@ -771,38 +533,6 @@ class ComplaintController extends ComplaintBaseController
         {
             return response()->json(['status' =>false, 'message'=> "Whoops, looks like something went wrong."]);
         }
-    }
-
-    public function getMNADetails(Request $request)
-    {
-        $mnaId = $request->input('mnaId');
-
-        // Fetch all MNAs matching the user_id
-        $mnas = UserWiseAreaMapping::where('user_id', $mnaId)->get();
-
-        if ($mnas->isNotEmpty()) {
-            $mnaDetails = $mnas->map(function ($mna) {
-                return [
-                    'provincial_assembly_id' => $mna->provincial_assembly_id,
-                    'national_assembly_id' => $mna->national_assembly_id,
-                ];
-            });
-            return response()->json($mnaDetails);
-        } else {
-            return response()->json(['error' => 'No MNAs found for the given user_id'], 404);
-        }
-    }
-
-    public function getMnaWiseMpa(Request $request)
-    {
-        $userObject = new User;
-        $mnaId = $request->input('mnaId');
-        $provincialAssemblyId = $request->input('provincialAssemblyId');
-        $nationalAssemblyId = $request->input('nationalAssemblyId');
-
-        $mnaWiseMpa = $userObject->getMnaWiseMpa($mnaId, $provincialAssemblyId, $nationalAssemblyId);
-
-        return response()->json(['mpaList' => $mnaWiseMpa]);
     }
 
     public function reportByComplaints(Request $request)

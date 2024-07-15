@@ -44,18 +44,7 @@
             </li>
             @endif
 
-            @if(Auth::user()->can('cms.index') )
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    CMS
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    @if(Auth::user()->can('cms.index'))
-                    <li><a class="dropdown-item" href="{{ route('cms.index') }}">Pages</a></li>
-                    @endif
-                </ul>
-            </li>
+      
 
             @if(Auth::user()->can('complaints.index'))
             <li class="nav-item dropdown">
@@ -73,22 +62,9 @@
                 </ul>
             </li>
             @endif
-            @endif
+          
 
-            @if(Auth::user()->can('cms.index') )
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    CMS
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    @if(Auth::user()->can('cms.index'))
-                    <li><a class="dropdown-item" href="{{ route('cms.index') }}">Pages</a></li>
-                    @endif
-                </ul>
-            </li>
-
-            @endif
+           
 
             @if(Auth::user()->can('report-assets') || Auth::user()->can('report-categories') ||
             Auth::user()->can('report-tickets') )
@@ -118,24 +94,7 @@
             </li>
             @endif
 
-          @if(Auth::user()->can('area.grid.index'))
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Settings
-              </a>
-              <ul class="dropdown-menu">
-                @if(Auth::user()->can('area.grid.index'))
-                  <li><a href="{{route('area.grid.index')}}" class="dropdown-item">Area Grids</a></li>
-                @endif
-                @if(Auth::user()->can('complaints.status.index'))  
-                  <li><a href="{{ route('complaints.status.index') }}" class="dropdown-item">Complaint Status</a></li>
-                @endif
-                @if(Auth::user()->can('categories.index'))  
-                  <li><a href="{{ route('categories.index') }}" class="dropdown-item">Categories</a></li>
-                @endif
-              </ul>
-            </li>
-          @endif
+          
 
 
             </ul>
