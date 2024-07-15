@@ -23,8 +23,6 @@ class ComplaintDocument extends Model
      */
     protected $fillable = [
         'complaint_id',
-        'table_name',
-        'table_action_id',
         'document_name',
         'file',
         'original_file'

@@ -33,7 +33,7 @@ class CreateComplaintRequest extends FormRequest
             'name'                  => 'required|string|max:100',
             'email'                 => 'required|email|max:150',
             'mobile_number'         => 'required|string|min:10|max:15',
-            'comments'              => 'required|string',
+            'comments'              => 'required|string|max:300',
             'invoice'               => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'picture_1'             => 'required|image|mimes:jpeg,png,jpg|max:2048',  // For multiple pictures
             'picture_2'             => 'image|mimes:jpeg,png,jpg|max:2048',  // For multiple pictures
@@ -74,6 +74,7 @@ class CreateComplaintRequest extends FormRequest
             
             'comments.required' => 'The Comments are required.',
             'comments.string' => 'The Comments must be a string.',
+            'comments.max' => 'The Comments may not be greater than :max characters.',
             
             'invoice.required' => 'The Invoice is required.',
             'invoice.image' => 'The Invoice must be an image.',
