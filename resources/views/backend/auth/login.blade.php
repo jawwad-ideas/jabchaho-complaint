@@ -8,7 +8,7 @@
                 <div class="login-inner-section">
                     <div class="logo-section my-5 p-4">
                         <a class="text-decoration-none" href="/complaint/admin"><img
-                                src="{{asset('assets/images/jc-logo.svg')}}" class="w-50" alt="logo"
+                                src="{{asset('assets/images/jc-logo.png')}}" class="w-50" alt="logo"
                                 srcset=""></a>
                     </div>
                     <div class="login-form-heading">

@@ -56,7 +56,7 @@
         class="page-title-section border-bottom mb-0.5 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
         <div class="p-title">
             <h3 class="fw-bold text-white m-0">Complaint Details</h3>    
-            <h5 class="text-white mb-0"><b>Complaint #</b>{{ Arr::get($complaintData, 'id') }}</h5>
+            <h5 class="text-white mb-0"><b>Complaint #</b>{{ Arr::get($complaintData, 'complaint_number') }}</h5>
         </div>
         <div class="text-lg-end text-center">
             <div class="btn-group chart-filter-btns mt-lg-0 mt-4" role="group">
@@ -121,7 +121,7 @@
                         <p class="mb-0"><b>Query Type:</b></p>
                     </div>
                     <div class="inner-value">
-                        <p class="text-muted mb-0">{{ config('constants.query_type.'.Arr::get($complaintData, 'query_type'));  }}</p>
+                        <p class="text-muted mb-0">{{ config('constants.query_type.'.Arr::get($complaintData, 'query_type'))  }}</p>
                     </div>
                 </div>
 
@@ -130,7 +130,7 @@
                         <p class="mb-0"><b>Complaint Type:</b></p>
                     </div>
                     <div class="inner-value">
-                        <p class="text-muted mb-0">{{ config('constants.complaint_type.'.Arr::get($complaintData, 'complaint_type'));  }}</p>
+                        <p class="text-muted mb-0">{{ config('constants.complaint_type.'.Arr::get($complaintData, 'complaint_type'))  }}</p>
                     </div>
                 </div>
 
@@ -139,7 +139,7 @@
                         <p class="mb-0"><b>Inquiry Type:</b></p>
                     </div>
                     <div class="inner-value">
-                        <p class="text-muted mb-0">{{ config('constants.inquiry_type.'.Arr::get($complaintData, 'inquiry_type'));  }}</p>
+                        <p class="text-muted mb-0">{{ config('constants.inquiry_type.'.Arr::get($complaintData, 'inquiry_type'))  }}</p>
                     </div>
                 </div>
 

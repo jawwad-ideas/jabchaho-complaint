@@ -8,7 +8,7 @@ return [
 	'js_version'=>'1.0',
 	'css_version'=>'1.0',
 	'max_files' => 3,
-
+	'complaint_number_starting_index' =>1000,
     'files_supported'=>'png, jpg, jpeg, doc, docx, xls, xlsx, pdf',
 	'query_type' => [1=>'Complaint', 2=>'Inquiry'],
 	'complaint_type' =>[1=>'Defective', 2=>'Color issue', 3=>'Wrong Product', 4=>'Wrong order', 5=>'Missing article'],

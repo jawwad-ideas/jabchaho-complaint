@@ -84,7 +84,7 @@
 </head>
 <body>
     <div class="container">
-    <img class="img-fluid " src="/assets/images/jc-logo.svg" style="width:350px;margin-top:20px"/>
+    <img class="img-fluid " src="/assets/images/jc-logo.png" style="width:350px;margin-top:20px"/>
 <div class="d-flex align-items-center">
 <div>
     <h1>404</h1>

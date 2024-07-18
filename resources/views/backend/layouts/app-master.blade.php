@@ -49,7 +49,7 @@
                 <div class="sidebar-logo-section px-4 pt-3 pb-1">
                     <div class="sidebar-logo">
                         <a href="/complaint/admin" class="text-decoration-none">
-                            <img class="img-fluid " src="{{asset('assets/images/jc-logo.svg')}}" />
+                            <img class="img-fluid " src="{{asset('assets/images/jc-logo.png')}}" />
                         </a>
                     </div>
                 </div>

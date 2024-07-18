@@ -8,6 +8,8 @@ use App\Models\ComplaintDocument;
 use App\Http\Requests\Api\CreateComplaintRequest;
 use App\Helpers\Helper;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 
 class ComplaintController extends Controller
 {
@@ -41,9 +43,16 @@ class ComplaintController extends Controller
             $complaintData =array();
             $complaintData  = Complaint::create($insertData);
             $complaintId    = Arr::get($complaintData, 'id',0);
-            
+
+            $prefix =config('constants.complaint_number_starting_index'); //complaint_number_starting_index
+            $complaintNumber = ($prefix + $complaintId);
+
+            $complaintData->update(['complaint_number' => $complaintNumber]);
+
             //Files upload code
             $this->uploadImages($request,$complaintId);
+
+            $this->sendEmailToComplainant($complaintId);
 
             if(!empty($complaintData))
             { 
@@ -102,7 +111,45 @@ class ComplaintController extends Controller
             }
 
             ComplaintDocument::insert($complaintDocumnets);
-        }
+        }        
+    }
+
+
+    public function sendEmailToComplainant($complaintId)
+    {
+
+        $complaintObject = new Complaint;
+        $complaintData = $complaintObject->getComplaintDataById($complaintId);
         
+        try 
+        {
+            Mail::send(
+                'backend.emails.complaintGenerated',
+                [
+                    'complaintNumber'       => Arr::get($complaintData, 'complaint_number'),
+                    'orderId'               => Arr::get($complaintData, 'order_id'),
+                    'queryType'             => config('constants.query_type.'.Arr::get($complaintData, 'query_type')),
+                    'complaintType'         => config('constants.complaint_type.'.Arr::get($complaintData, 'complaint_type')),
+                    'inquiryType'           => config('constants.inquiry_type.'.Arr::get($complaintData, 'inquiry_type')),
+                    'name'                  => Arr::get($complaintData, 'name'),
+                    'email'                 => Arr::get($complaintData, 'email'),
+                    'mobileNumber'          => Arr::get($complaintData, 'mobile_number'),
+                    'additionalComments'    => Arr::get($complaintData, 'comments'),
+                    'app_url'               => URL::to('/'),
+                ],
+                function ($message) use ($complaintData) {
+                    $message->to(trim(Arr::get($complaintData, 'email')));
+                    $message->subject('Complaint Registered Successfully');
+                }
+            );
+
+            //return true;
+            \Log::info('Email sent successfully to ' . Arr::get($complaintData, 'email'));
+        } catch (\Exception $e) 
+        {
+            \Log::error('Failed to send email: ' . $e->getMessage());
+            return false;
+        }
+
     }
 }
