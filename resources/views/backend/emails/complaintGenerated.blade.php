@@ -8,7 +8,7 @@
                             <td class="header" style="vertical-align:top;background-color:#ec23262b;padding:40px 25px 25px;">
                                 <div>
                                     <a class="logo" href="#" style="color:#ed2024;text-decoration:none" target="_other" rel="nofollow">
-                                        <img width="190" height="39" src="{{$app_url}}{{asset('assets/images/jc-logo.png')}}" alt="Ideas" style="border:0;height:auto;line-height:100%;outline:none;text-decoration:none;max-width:150px">
+                                        <img width="190" height="39" src="{{ $app_url }}/assets/images/jc-logo.png" alt="Ideas" style="border:0;height:auto;line-height:100%;outline:none;text-decoration:none;max-width:150px">
                                     </a>
                                 </div>
                             </td>
