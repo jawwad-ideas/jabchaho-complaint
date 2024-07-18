@@ -34,12 +34,7 @@
                 </li>
 
                 @endif
-                @if(Auth::user()->can('complainants.index'))
-                <li><a href="{{ route('complainants.index') }}" class="dropdown-item">Complainants</a></li>
-                @endif
-                @if(Auth::user()->can('complaints.track'))
-                <li><a href="{{ route('complaints.track') }}" class="dropdown-item">Track Complaints</a></li>
-                @endif
+               
               </ul>
             </li>
             @endif

@@ -125,13 +125,7 @@
                                     @endif
                           
 
-                                    @if(Auth::user()->can('complaints.track'))
-                                    <li class="py-2 "><a href="{{ route('complaints.track') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                            Track</a>
-                                    </li>
-                                    @endif
+                                    
                                 </ul>
                             </div>
 
