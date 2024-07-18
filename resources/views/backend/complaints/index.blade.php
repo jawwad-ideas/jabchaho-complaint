@@ -21,17 +21,67 @@
         <!--Assign To Modal -->
         <div id="modalDiv"></div>
 
-        <div class="" id="filterBox" style="display:none;">
+        <div class="" id="filterBox" 
+                @if (request()->has('complaint_number') || request()->has('name')) 
+                        style="display:block;" 
+                @else 
+                        style="display:none;" 
+                @endif
+        >
             <form class="form-inline" method="GET" action="{{ route('complaints.index') }}">
                 <div class="row mb-3">
                     <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
-                        <input type="text" class="form-control p-2" autocomplete="off" name="complaint_number" value="" placeholder="Complaint No.">
+                        <input type="text" class="form-control p-2" autocomplete="off" name="complaint_number" value="{{ $complaint_number ?? '' }}" placeholder="Complaint No.">
+                    </div>
+
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
+                        <input type="text" class="form-control p-2" autocomplete="off" name="order_id" value="{{ $order_id ?? '' }}" placeholder="Order No.">
+                    </div>
+
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
+                        <input type="text" class="form-control p-2" autocomplete="off" name="mobile_number" value="{{ $mobile_number ?? '' }}" placeholder="Mobile">
                     </div>
 
                 </div>
                 <div class="row mb-3">
 
-                    
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
+                        <input type="text" class="form-control p-2" autocomplete="off" name="name" value="{{ $name ?? '' }}" placeholder="Name">
+                    </div>
+
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
+                        <input type="text" class="form-control p-2" autocomplete="off" name="email" value="{{ $email ?? '' }}" placeholder="Email">
+                    </div>
+
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
+                        <select class="form-control form-control-sm" id="complaint_status_id" name="complaint_status_id">
+                            <option value=''>Select Status</option>
+                            @if(!empty($complaintStatuses) )
+                            @foreach($complaintStatuses as $complaintStatus)
+                            @if($complaint_status_id == Arr::get($complaintStatus, 'id'))
+                            <option value="{{ trim(Arr::get($complaintStatus, 'id')) }}" selected>
+                                {{trim(Arr::get($complaintStatus, 'name'))}}</option>
+                            @else
+                            <option value="{{trim(Arr::get($complaintStatus, 'id'))}}">
+                                {{trim(Arr::get($complaintStatus, 'name'))}}</option>
+                            @endif
+                            @endforeach
+                            @endif
+                        </select>
+                    </div>
+
+                    <div class="col-lg-12 text-end mt-4">
+                        <button type="submit"
+                            class="btn bg-theme-green text-white p-2 d-inline-flex align-items-center gap-1"
+                            id="consult">
+                            <span>Search</span>
+                            <i alt="Search" class="fa fa-search"></i>
+                        </button>
+                        <a href="{{ route('complaints.index') }}"
+                            class="btn bg-theme-dark text-white p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
+                            <span>Clear</span>
+                            <i class="fa fa-solid fa-arrows-rotate"></i></a>
+                    </div>
                 </div>
             </form>
         </div>
@@ -50,10 +100,10 @@
 
 
                     <tr>
-                        <th>Id #</th>
+                        <th>Complaint #</th>
                         <th>Order Id</th>
-                        <th>Name</th>
                         <th>Mobile</th>
+                        <th>Name</th>
                         <th>Email</th>
                         <th>Status</th>
                         <th>Created</th>
@@ -64,10 +114,10 @@
                     <?php $complaintTitle = ''; ?>
                     @foreach ($complaints as $key => $complaint)
                     <tr>
-                        <td>{{Arr::get($complaint, 'id')}}</td>
+                        <td>{{Arr::get($complaint, 'complaint_number')}}</td>
                         <td>{{Arr::get($complaint, 'order_id')}}</td>
-                        <td>{{Arr::get($complaint, 'name')}}</td>
                         <td>{{Arr::get($complaint, 'mobile_number')}}</td>
+                        <td>{{Arr::get($complaint, 'name')}}</td>
                         <td>{{Arr::get($complaint, 'email')}}</td>
                         <td>{{Arr::get($complaint->complaintStatus,'name')}}</td>
                         <td>{{ date("d,M,Y", strtotime(Arr::get($complaint, 'created_at'))) }}

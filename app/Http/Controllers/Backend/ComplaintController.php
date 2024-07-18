@@ -18,7 +18,6 @@ use App\Models\ComplaintFollowUp;
 use App\Http\Requests\Backend\ComplaintFollowUpRequest;
 use App\Http\Requests\Backend\ReAssignRequest;
 use App\Models\ComplaintPriority;
-
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -27,11 +26,71 @@ class ComplaintController extends Controller
     public function index(Request $request)
     {
         $data = $filterData = array();
-        // Fetch complaints
-        $complaints   = Complaint::orderBy('complaints.id', 'DESC')->paginate(config('constants.per_page'));
 
-        $data['complaints'] = $complaints;
+        $query                    = Complaint::select('*');
+        $objectComplaintStatus    = new ComplaintStatus;
+        
+        // Apply filters
+        $complaint_number           = $request->input('complaint_number');
+        $order_id                   = $request->input('order_id');
+        $mobile_number              = $request->input('mobile_number');
+        $name                       = $request->input('name');
+        $email                      = $request->input('email');
+        $complaint_status_id        = $request->input('complaint_status_id');
 
+        //complaint_number condition
+        if (!empty($complaint_number)) 
+        {
+            $query->where('complaints.complaint_number', 'like', '%' . $complaint_number . '%');
+        }
+
+        if (!empty($order_id))
+        {
+            $query->where('complaints.order_id','like', '%' .$order_id. '%');
+        }
+
+        if (!empty($mobile_number))
+        {
+            $query->where('complaints.mobile_number','like', '%' .$mobile_number. '%');
+        }
+
+        if (!empty($name))
+        {
+            $query->where('complaints.name','like', '%' .$name. '%');
+        }
+
+        if (!empty($email))
+        {
+            $query->where('complaints.email','like', '%' .$email. '%');
+        }
+
+        if (!empty($complaint_status_id))
+        {
+            $query->where('complaints.complaint_status_id','=', $complaint_status_id);
+        }
+        
+ 
+        $filterData = [
+            'complaint_number'      => $complaint_number,
+            'order_id'              => $order_id,
+            'mobile_number'         => $mobile_number,
+            'name'                  => $name,
+            'email'                 => $email,
+            'complaint_status_id'   => $complaint_status_id
+
+        ];
+
+        if(!Auth::user()->hasRole('admin'))
+        {
+            $userId= Auth::guard('web')->user()->id;
+            $query = $query->where(['user_id' =>$userId]);
+        }
+
+        $complaints = $query->orderBy('id', 'DESC')->paginate(config('constants.per_page'));
+        
+        $data['complaints']             = $complaints;
+        $data['complaintStatuses']      = $objectComplaintStatus->getComplaintStatuses();
+        
         return view('backend.complaints.index')->with($data)->with($filterData);
     }
 
