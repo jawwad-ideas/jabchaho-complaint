@@ -113,14 +113,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::get('/report-complains', 'ComplaintController@report_index')->name('report-complains');
         Route::get('/report-by-complains', 'ComplaintController@reportByComplaints')->name('report-by-complaints');
 
-        //Complainants
-        Route::group(['prefix' => 'complainants'], function() {
-            Route::get('/', 'ComplainantController@index')->name('complainants.index');
-            Route::get('/{complainant}/show', 'ComplainantController@show')->name('complainants.show');
-            Route::delete('/{complainant}/delete', 'ComplainantController@destroy')->name('complainants.destroy');
-            Route::get('/{complainant}/edit', 'ComplainantController@edit')->name('complainants.edit');
-            Route::patch('/{complainant}/update', 'ComplainantController@update')->name('complainants.update');
-        });
+        
         //Complaint Status
         Route::group(['prefix' => 'complaint-status'], function() {
             Route::get('/','ComplaintStatusController@index')->name('complaints.status.index');

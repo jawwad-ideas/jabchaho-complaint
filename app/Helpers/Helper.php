@@ -336,5 +336,31 @@ class Helper
              return false;
          }
     }
+
+	#excetion response
+	public static function getCustomExceptionMessage($exception='')
+	{
+		\Log::info($exception);
+	}
+
+	#Remove image
+	public static function removeFile($fileNameWithPath='')
+	{
+
+		try{
+
+			if(\File::exists($fileNameWithPath)){
+				\File::delete($fileNameWithPath);
+			}
+
+			return true;
+
+		}catch(\Exception $e)
+		{
+			return Helper::getCustomExceptionMessage($e);
+			
+		}	
+	}
+	
 }
 

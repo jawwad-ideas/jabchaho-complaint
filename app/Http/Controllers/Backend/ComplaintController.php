@@ -38,9 +38,38 @@ class ComplaintController extends Controller
 
     public function destroy($complaintId)
     {
-        $complaint  = new Complaint;
-        $deleted    = $complaint->deleteComplaint($complaintId);
+        
+        //remove complaint documents
+        $complaintDocuments= ComplaintDocument::where(['complaint_id'=> $complaintId])->get();
+        if ($complaintDocuments->isNotEmpty())
+        {
+            
+            foreach($complaintDocuments as $complaintDocument)
+            {
+               //file name
+               $fileName = Arr::get($complaintDocument, 'file');
 
+               if(!empty($fileName))
+               {
+                    //folder path
+                    $uploadFolderPath = config('constants.files.complaint_documents');
+
+                    //file path
+                    $filePath               = public_path($uploadFolderPath);
+
+                    // file name with path
+                    $fileNameWithPath = $filePath . '/' . $fileName;
+
+                    //remove File
+                    Helper::removeFile($fileNameWithPath);
+               }
+
+               $complaintDocument->delete();
+            }
+        }
+        
+        ComplaintFollowUp::where(['complaint_id'=> $complaintId])->delete();
+        $deleted = Complaint::where(['id'=> $complaintId])->delete();
         if($deleted)
         {
             return redirect()->route('complaints.index')->with('success', 'Complaint has been deleted successfully.');
