@@ -79,5 +79,6 @@ class Kernel extends HttpKernel
         'complainant.auth' => \App\Http\Middleware\ComplainantAuthentication::class,
         'complainant.guest' => \App\Http\Middleware\ComplainantRedirectIfAuthenticated::class,
         'auth.role.base' => \App\Http\Middleware\RoleBasedMiddleware::class,
+        'ipcheck' => \App\Http\Middleware\IpMiddleware::class,
     ];
 }
