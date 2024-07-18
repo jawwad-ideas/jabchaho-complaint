@@ -265,10 +265,7 @@
                                                         @if (!empty(Arr::get($complaintFollowUp, 'created_at')))
                                                             {{ date('M d, Y', strtotime(Arr::get($complaintFollowUp, 'created_at'))) }}
                                                         @endif
-                                                        | {{ Arr::get($complaintFollowUp->complaintStatus, 'name') }} |
-                                                        Notify
-                                                        Customer:
-                                                        {{ Arr::get($complaintFollowUp, 'is_notify') ? 'Yes' : 'No' }}
+                                                        | {{ Arr::get($complaintFollowUp->complaintStatus, 'name') }} 
                                                     </small>
                                                 </div>
                                             </div>

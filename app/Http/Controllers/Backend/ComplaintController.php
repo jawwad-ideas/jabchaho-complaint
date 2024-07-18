@@ -388,7 +388,6 @@ class ComplaintController extends Controller
         $validateValues = $request->validated();
 
         $complaintStatusId  = Arr::get($validateValues, 'complaint_status_id');
-        $isNotify = $request->get('notify_customer') ? 1 : 0;
         $description      = Arr::get($validateValues, 'description');
         $complaintId        = Arr::get($complaint, 'id');
 
@@ -398,7 +397,6 @@ class ComplaintController extends Controller
         $followUp = ComplaintFollowUp::create([
             'complaint_status_id'       => $complaintStatusId,
             'description'               => $description,
-            'is_notify'               => $isNotify,
             'created_by'                => auth()->id(),
             'complaint_id'              => $complaintId,
         ]);
@@ -409,18 +407,6 @@ class ComplaintController extends Controller
             'complaint_status_id' => $complaintStatusId,
             'updated_by' => auth()->id()
         ]);
-
-        if($isNotify){
-            $newComplainantData= [];
-            $objectComplaintFollowUp  = new ComplaintFollowUp;
-            $followUpDetail = $objectComplaintFollowUp->getNotifyFollowUp($followUp->id);
-            $userDetails = $complaint->getComplaintsWithComplainant($complaintId);
-            $newComplainantData['full_name']       = Arr::get($userDetails,'full_name');
-            $newComplainantData['email']       = Arr::get($userDetails,'email');
-            $newComplainantData['complainId']          = Arr::get($followUpDetail,'complaint_id');
-            $newComplainantData['description']            = Arr::get($followUpDetail,'description');
-            $this->sendEmailToIsNotifyCustomer($newComplainantData);
-        }
 
         return redirect()->back()->with('success', "Description Added successfully.");
     }

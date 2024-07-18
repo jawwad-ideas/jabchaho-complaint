@@ -10,7 +10,7 @@
 
 <div class="card">
     <div class="card-header">
-        <span><strong>Follow up #{{ Arr::get($complaint,'complaint_num') }}</strong></span>
+        <span><strong>Follow up #{{ Arr::get($complaint,'complaint_number') }}</strong></span>
         <span class="float-right"><strong>{{ Arr::get($complaint->complaintStatus,'name') }}</strong></span>
     </div>
     <div class="card-body">
@@ -23,10 +23,10 @@
             <div class="col-md-12">
                 <!--card 0-->
                 <div class="card mb-3">
-                    <h6 class="card-header">{{ Arr::get($complaint,'title') }}</h6>
+                    <h6 class="card-header">Additional Comments</h6>
                     <div class="card-body">
                         <div class="row">
-                            {!! Arr::get($complaint,'description') !!}
+                            {!! Arr::get($complaint,'comments') !!}
                         </div>
                     </div>
 
@@ -81,11 +81,6 @@
                     
                 </div>
 
-                <div class="form-check-group  mt-4">
-                    <input class="form-check-input" type="checkbox" id="notify_customer" name="notify_customer"
-                        value="1">
-                    <label for="job_notify_customer" class="form-check-label">Notify Customer</label>
-                </div>
                 <div class="mt-3 text-end">
                     <button class="btn btn-sm py-2 px-3 btn-info">Submit</button>
 
@@ -114,8 +109,7 @@
                             {{ ucwords(Arr::get($complaintFollowUp->user,'name'))}}</strong> <small>|
                             @if(!empty(Arr::get($complaintFollowUp,
                             'created_at'))){{ date("M d, Y", strtotime(Arr::get($complaintFollowUp, 'created_at'))) }}@endif
-                            | {{ Arr::get($complaintFollowUp->complaintStatus,'name') }} | Notify Customer:
-                            {{ Arr::get($complaintFollowUp,'is_notify') ? 'Yes' : 'No' }} </small></div>
+                            | {{ Arr::get($complaintFollowUp->complaintStatus,'name') }} </small></div>
                 </div>
                 <p class="font-weight-bold ">{!! Arr::get($complaintFollowUp,'description') !!}</p>
                 @if(Auth::user()->hasRole('admin') && Auth::user()->can('follow.up.Destroy'))

@@ -26,7 +26,6 @@ class ComplaintFollowUp extends Model
         'complaint_id',
         'complaint_status_id',
         'description',
-        'is_notify',
         'created_by',
         'updated_by'
     ];
@@ -53,14 +52,4 @@ class ComplaintFollowUp extends Model
         // ->get();
     }
 
-    public function getComplaintIsNotifyFollowUps($complaintId=0)
-    {
-        return ComplaintFollowUp::with(['user','complaintStatus'])->where(['complaint_id' => $complaintId,'is_notify' => 1])->orderBy('id', 'DESC')->paginate(4); 
-        // ->get();
-    }
-
-    public function getNotifyFollowUp($followUpId=0)
-    {
-        return ComplaintFollowUp::with(['complaintStatus'])->where(['id' =>  $followUpId])->orderBy('id', 'DESC')->first();
-    }
 }
