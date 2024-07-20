@@ -81,6 +81,12 @@
                             
                             </div>
 
+                            <div class="mb-3">
+                                <label for="api_ips_whitelist" class="form-label">Api Ips Whitelist:</label>
+                                <textarea class="form-control" id="api_ips_whitelist" name="api_ips_whitelist">{{Arr::get($configurations, 'api_ips_whitelist')}}</textarea>
+                            
+                            </div>
+
                             <button type="submit"
                                 class="btn bg-theme-green text-white d-inline-flex align-items-center gap-3">Save Changes</button>
                         </div>

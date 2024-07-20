@@ -5,9 +5,13 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Traits\Configuration\ConfigurationTrait;
+use Illuminate\Support\Arr;
 
 class IpMiddleware
 {
+    use ConfigurationTrait;
+
     /**
      * Handle an incoming request.
      *
@@ -15,7 +19,14 @@ class IpMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     { 
-        $ips = env('API_IP_WHITELIST');
+        //configuration filters
+        $filters            = ['api_ips_whitelist'];
+            
+        //get configurations
+        $configurations     = $this->getConfigurations($filters);
+        
+        $ips                = Arr::get($configurations, 'api_ips_whitelist');
+        
         $ipsArray =  explode(',',$ips);
         if (in_array($request->ip(), $ipsArray)) {
             return $next($request);
