@@ -11,6 +11,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use App\Http\Traits\Configuration\ConfigurationTrait;
+use App\Jobs\NotifyComplainant as NotifyComplainant;
 
 class ComplaintController extends Controller
 {
@@ -25,9 +26,6 @@ class ComplaintController extends Controller
     {
         try
         {
-            
-            $this->sendSmsToComplainant(2);
-
             $responsearray                      = array();
             $responseStatus                     = false;
             $responseMessage                    = array();
@@ -44,24 +42,27 @@ class ComplaintController extends Controller
             $insertData['comments']             = Arr::get($validateValues, 'comments');
              
             
-            $complaintData =array();
+            $complaintData  = array();
             $complaintData  = Complaint::create($insertData);
-            $complaintId    = Arr::get($complaintData, 'id',0);
-
-            $prefix =config('constants.complaint_number_starting_index'); //complaint_number_starting_index
-            $complaintNumber = ($prefix + $complaintId);
-
-            $complaintData->update(['complaint_number' => $complaintNumber]);
-
-            //Files upload code
-            $this->uploadImages($request,$complaintId);
-
-            $this->sendEmailToComplainant($complaintId);
 
             if(!empty($complaintData))
             { 
                 $responseStatus 	        = true;
                 $responseMessage	        = 'Successful';
+
+                $complaintId    = Arr::get($complaintData, 'id',0);
+
+                $prefix =config('constants.complaint_number_starting_index'); //complaint_number_starting_index
+                $complaintNumber = ($prefix + $complaintId);
+    
+                $complaintData->update(['complaint_number' => $complaintNumber]);
+    
+                //Files upload code
+                $this->uploadImages($request,$complaintId);
+                
+                // Dispatch job to send emails and SMS
+                dispatch(new NotifyComplainant($complaintId));
+                $this->queueWorker();
             }
             else
             {
@@ -119,93 +120,5 @@ class ComplaintController extends Controller
     }
 
 
-    public function sendSmsToComplainant($complaintId)
-    {
-        try 
-        {
-            //configuration filters
-            $filters            = ['complaint_sms_api_enable','complaint_sms_action','complaint_sms_sender','complaint_sms_username','complaint_sms_password','complaint_sms_format','complaint_sms_api_url','complaint_sms_template'];
-            
-            //get configurations
-            $configurations     = $this->getConfigurations($filters);
-
-             //Check sms api is enabled or not
-            if(!empty(Arr::get($configurations, 'complaint_sms_api_enable')))
-            {
-
-                $complaintObject = new Complaint;
-                $complaintData = $complaintObject->getComplaintDataById($complaintId);
-
-                $data = [
-                    'name' => Arr::get($complaintData, 'name'),
-                    'order_id' => Arr::get($complaintData, 'order_id')
-                ];
-                
-                $message = Helper::replaceSmsTemplate(Arr::get($configurations, 'complaint_sms_template '),$data);
-
-                $input 						    = array(); 
-                $input['action']                = Arr::get($configurations, 'complaint_sms_action');
-                $input['sender']                = Arr::get($configurations, 'complaint_sms_sender');
-                $input['username']              = Arr::get($configurations, 'complaint_sms_username');
-                $input['password']              = Arr::get($configurations, 'complaint_sms_password');
-                $input['recipient']             = Helper::formatPhoneNumber(Arr::get($complaintData, 'mobile_number'));
-                $input['messagedata']           = $message;
-                $input['format']                = Arr::get($configurations, 'complaint_sms_format');
-                
-                $params 						= array(); 	
-                $params['apiUrl']     			= Arr::get($configurations, 'complaint_sms_api_url');
-                $params['input']     			= $input;
-                $params['httpMethod']     		= config('constants.http_methods.get');
-                $params['apiType']     			= config('constants.content_type.xml');
-
-                #call api
-                $axApiResponseDecode = Helper::sendRequestToGateway($params);
-                dd($axApiResponseDecode);
-                return true;
-            }
-        } 
-        catch (\Exception $e) 
-        {
-            \Log::error('Failed to send sms: ' . $e->getMessage());
-            return false;
-        }
-    }
-
-    public function sendEmailToComplainant($complaintId)
-    {
-
-        $complaintObject = new Complaint;
-        $complaintData = $complaintObject->getComplaintDataById($complaintId);
-        
-        try 
-        {
-            Mail::send(
-                'backend.emails.complaintGenerated',
-                [
-                    'complaintNumber'       => Arr::get($complaintData, 'complaint_number'),
-                    'orderId'               => Arr::get($complaintData, 'order_id'),
-                    'queryType'             => config('constants.query_type.'.Arr::get($complaintData, 'query_type')),
-                    'complaintType'         => config('constants.complaint_type.'.Arr::get($complaintData, 'complaint_type')),
-                    'inquiryType'           => config('constants.inquiry_type.'.Arr::get($complaintData, 'inquiry_type')),
-                    'name'                  => Arr::get($complaintData, 'name'),
-                    'email'                 => Arr::get($complaintData, 'email'),
-                    'mobileNumber'          => Arr::get($complaintData, 'mobile_number'),
-                    'additionalComments'    => Arr::get($complaintData, 'comments'),
-                    'app_url'               => URL::to('/'),
-                ],
-                function ($message) use ($complaintData) {
-                    $message->to(trim(Arr::get($complaintData, 'email')));
-                    $message->subject('Complaint Registered Successfully');
-                }
-            );
-
-            return true;
-            //\Log::info('Email sent successfully to ' . Arr::get($complaintData, 'email'));
-        } catch (\Exception $e) 
-        {
-            \Log::error('Failed to send email: ' . $e->getMessage());
-            return false;
-        }
-
-    }
+    
 }
