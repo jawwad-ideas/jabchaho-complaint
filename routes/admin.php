@@ -32,14 +32,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
     });
 
-    Route::group(['middleware' => ['auth', 'permission']], function() {
+   // Route::group(['middleware' => ['auth', 'permission']], function() {
         /**
          * Logout Routes
          */
         Route::get('/logout', 'LogoutController@perform')->name('logout.perform');
-        Route::get('/', 'HomeController@index')->name('home.index');
-        Route::post('/get-jobs-graph-data', 'HomeController@getComplaintsGraphData')->name('complaints.graph.data');
-        Route::post('/get-count-data', 'HomeController@getCountData')->name('get.count.data');
+        //Route::get('/', 'HomeController@index')->name('home.index');
+        //Route::post('/get-jobs-graph-data', 'HomeController@getComplaintsGraphData')->name('complaints.graph.data');
+        //Route::post('/get-count-data', 'HomeController@getCountData')->name('get.count.data');
 
 
         /**
@@ -76,15 +76,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::post('{complaint}/follow-up', 'ComplaintController@followUpSaved')->name('complaints.follow.up.saved');
             Route::delete('/{complaintFollowUp}/delete-follow-up', 'ComplaintController@followUpDestroy')->name('follow.up.Destroy');
 
-            Route::post('/re-assign-form','ComplaintController@reAssignComplaintForm')->name('re-assign.complaint.form');
-            Route::post('/re-assign','ComplaintController@reAssignComplaint')->name('re-assign.complaint');
-
-            Route::post('/get-mna-details', 'ComplaintController@getMNADetails')->name('get.mna.details');
-            Route::post('/get-mna-wise-mpa', 'ComplaintController@getMnaWiseMpa')->name('get.mna.wise.mpa');
-
-            #ajax-data
-            //Route::get('/ajax-data/{className?}/{fieldName?}/{fieldId?}', 'AjaxController@getData')->name('get.ajax.data');
-
         });
 
         //profile
@@ -96,22 +87,22 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
 
             //Categories
-        Route::group(['prefix' => 'categories'], function() {
-            Route::get('/', 'CategoryController@index')->name('categories.index');
-            Route::delete('/{categoryId}/delete', 'CategoryController@destroy')->name('categories.destroy');
-            Route::get('/{categoryId}/edit-form', 'CategoryController@editForm')->name('categories.editForm');
-            Route::post('/edit', 'CategoryController@edit')->name('categories.edit');
-            Route::get('/add-category-form', 'CategoryController@addForm')->name('categories.addForm');
-            Route::post('/add-category', 'CategoryController@createCategory')->name('categories.create');
-        });
+        // Route::group(['prefix' => 'categories'], function() {
+        //     Route::get('/', 'CategoryController@index')->name('categories.index');
+        //     Route::delete('/{categoryId}/delete', 'CategoryController@destroy')->name('categories.destroy');
+        //     Route::get('/{categoryId}/edit-form', 'CategoryController@editForm')->name('categories.editForm');
+        //     Route::post('/edit', 'CategoryController@edit')->name('categories.edit');
+        //     Route::get('/add-category-form', 'CategoryController@addForm')->name('categories.addForm');
+        //     Route::post('/add-category', 'CategoryController@createCategory')->name('categories.create');
+        // });
 
 
         #Reports
-        Route::get('/report-assets', 'AssetsController@report_index')->name('report-assets');
-        Route::get('/report-categories', 'CategoryController@report_index')->name('report-categories');
-        Route::get('/report-tickets', 'ComplaintController@report_index')->name('report-tickets');
-        Route::get('/report-complains', 'ComplaintController@report_index')->name('report-complains');
-        Route::get('/report-by-complains', 'ComplaintController@reportByComplaints')->name('report-by-complaints');
+        // Route::get('/report-assets', 'AssetsController@report_index')->name('report-assets');
+        // Route::get('/report-categories', 'CategoryController@report_index')->name('report-categories');
+        // Route::get('/report-tickets', 'ComplaintController@report_index')->name('report-tickets');
+        // Route::get('/report-complains', 'ComplaintController@report_index')->name('report-complains');
+        // Route::get('/report-by-complains', 'ComplaintController@reportByComplaints')->name('report-by-complaints');
 
         
         //Complaint Status
@@ -124,7 +115,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::post('/{complaintStatus}/update', 'ComplaintStatusController@update')->name('complaints.status.update');
         });
 
+
+        #Configurations
+        Route::get('/configurations','ConfigurationController@form')->name('configurations.form');
+        Route::post('/configuration','ConfigurationController@save')->name('configurations.save');
+
+
         
-    });
+    //});
 });
 

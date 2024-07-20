@@ -70,51 +70,6 @@
                         </select>
                     </div>
 
-                    <!-- <div class="mb-3" id="new_area_id_div">
-                            <label for="new_area_id" class="col-sm-3 col-form-label col-form-label-sm fw-light">New
-                                Area</label>
-                            <select class="mySelect form-control form-control-sm" id="new_area_id"  name="new_area_id" onchange="getNewAreaGridData(event);checkFieldValidation(this);"
-                                onchange="getAjaxData('NewArea', 'new_area_id', event, 'new_area_id', 'area');">
-                                <option value=''>--Select--</option>
-                                @foreach ($newArea as $area)
-                                    <option value="{{ $area->id }}"
-                                        {{ old('new_area_id') == $area->id ? 'selected' : '' }}>
-                                        {{ $area->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div> -->
-
-                    <div class="mb-3" id="provincial_assembly_id_div">
-                        <label for="provincial_assembly_id"
-                            class="col-sm-3 col-form-label col-form-label-sm fw-light">PS</label>
-                        <select class="mySelect form-control form-control-sm" id="provincial_assembly_id"
-                            name="provincial_assembly_id">
-                            <option value=''>--Select--</option>
-                            @foreach ($pA as $ps)
-                            <option value="{{ $ps->id }}"
-                                {{ old('provincial_assembly_id') == $ps->id ? 'selected' : '' }}>
-                                {{ $ps->name }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mb-3" id="national_assembly_id_div">
-                        <label for="national_assembly_id"
-                            class="col-sm-3 col-form-label col-form-label-sm fw-light">NA</label>
-                        <select class="mySelect form-control form-control-sm" id="national_assembly_id"
-                            name="national_assembly_id">
-                            <option value=''>--Select--</option>
-                            @foreach ($nA as $na)
-                            <option value="{{ $na->id }}"
-                                {{ old('national_assembly_id') == $na->id ? 'selected' : '' }}>
-                                {{ $na->name }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-
                     <div>&nbsp;</div>
                     <div class="mb-3">
                         <button type="submit"
@@ -166,78 +121,7 @@ function generateDropDownOption(data, id) {
     }
 }
 
-// function getNewAreaGridData() {
-//     $(".loader").addClass("show");
 
-//     toastr.options =
-//     {
-//         "closeButton": true,
-//         "timeOut": "3000",
-//         "extendedTimeOut": "1000",
-//         "progressBar": true,
-//         "positionClass": "toast-top-right",
-//         "showEasing": "swing",
-//         "hideEasing": "linear",
-//         "showMethod": "fadeIn",
-//         "hideMethod": "fadeOut"
-//     };
-
-//     $.ajaxSetup({
-//         headers: {
-//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//         }
-//     });
-
-//     var newAreaId = $('#new_area_id').val();
-//     var url = '{{ route("get.new.area.grid.data") }}'+'/'+newAreaId;
-
-//     $.ajax({
-//         url: url,
-//         method: 'get',
-//         success: function (result) {
-
-//             $('.new_area').val('');
-//             //$('.new_area').select2('destroy').val("").select2();
-
-//             $('.new_area').html('');
-//             $('.new_area').html("<option value=''>--Select--</option>");
-
-//             //District
-//             // generateDropDownOption(result.district,'district_id');
-
-//             //Sub Division
-//             // generateDropDownOption(result.sub_division,'sub_division_id');
-
-//             //union_council_id
-//             // generateDropDownOption(result.union_council,'union_council_id');
-
-//             //Charge
-//             // generateDropDownOption(result.charge,'charge_id');
-
-//             //Ward
-//             //generateDropDownOption(result.ward,'ward_id');
-
-//             //NA
-//             generateDropDownOption(result.national_assembly, 'national_assembly_id');
-
-//             //PS
-//             generateDropDownOption(result.provincial_assembly, 'provincial_assembly_id');
-
-//             $(".loader").removeClass("show");
-
-//         },
-//         error: function (data, textStatus, errorThrown) {
-//             $(".loader").removeClass("show");
-//             if (data) {
-//                 toastr.error('Something went wrong. Please try again.');
-//                 console.log(JSON.stringify(data));
-//             }
-
-
-//         }
-
-//     });
-// }
 $(document).ready(function(e) {
     $('.mySelect').select2();
 });

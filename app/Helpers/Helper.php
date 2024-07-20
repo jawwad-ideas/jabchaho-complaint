@@ -267,10 +267,10 @@ class Helper
 		}
 		
 		//For Get Method
-		if($httpMethod == config('constants.http_methods.get')){
-				
+		if($httpMethod == config('constants.http_methods.get'))
+		{
 			//get response
-			$response = $client->get($apiUrl,['verify' => $sslVerify,'timeout' => 120]);
+			$response = $client->get($apiUrl,['verify' => $sslVerify,'timeout' => 120,'query'=>$input]);
 		}
 			
 		//Respond is 200 , All ok .
@@ -278,13 +278,29 @@ class Helper
 		{
 			if(!empty($response->getStatusCode()) && $response->getStatusCode() == 200) 
 			{
-				if(!empty($response->getBody())){
+				if(!empty($response->getBody()) && $apiType==config('constants.content_type.json')){
 					$returnRespone = json_decode($response->getBody(),true);
+				}
+				else if(!empty($response->getBody()) && $apiType==config('constants.content_type.xml'))
+				{
+					//XML response parsing here
+					$body = $response->getBody();
+					$xmlContent = $body->getContents();
+
+					// Parse the XML response
+					$xmlObject = simplexml_load_string($xmlContent);
+					if($xmlObject)
+					{
+						// Convert the SimpleXMLElement object to JSON
+						$jsonContent = json_encode($xmlObject);
+						// Convert the JSON to an associative array
+						$returnRespone = json_decode($jsonContent, true);
+					}					
+					
 				}
 			}
 		}
 		
-
 		return $returnRespone; 
 
 	}
@@ -361,6 +377,37 @@ class Helper
 			
 		}	
 	}
+
+	#replace sms template
+	public static function replaceSmsTemplate($template, $data) 
+	{
+		if(!empty($data))
+		{
+			foreach ($data as $key => $value) {
+				// Replace placeholder with value
+				$template = str_replace('{{$' . $key . '}}', $value, $template);
+			}
+		}
+		
+		return $template;
+	}
+
+	public static function formatPhoneNumber($phoneNumber) {
+		// Remove any non-digit characters from the phone number
+		$phoneNumber = preg_replace('/\D/', '', $phoneNumber);
+		
+		// Check if the phone number starts with '0'
+		if (strpos($phoneNumber, '0') === 0) {
+			// Replace the starting '0' with '92'
+			$phoneNumber = '92' . substr($phoneNumber, 1);
+		} else {
+			// If it does not start with '0', just prepend '92'
+			$phoneNumber = '92' . $phoneNumber;
+		}
+		
+		return $phoneNumber;
+	}
+	
 	
 }
 

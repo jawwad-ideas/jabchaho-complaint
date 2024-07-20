@@ -162,7 +162,7 @@
                         </li>
                         @endif
 
-                        @if(Auth::user()->can('area.grid.index'))
+                        
                         <li class="list-item px-3 py-3">
                             <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
                                 data-bs-toggle="collapse" data-bs-target="#settings">
@@ -175,11 +175,19 @@
                             <div class="collapse mt-3 ms-5" id="settings" style="">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     @if(Auth::user()->can('categories.index'))
-                                    <li class="py-2 "><a href="{{ route('categories.index') }}"
+                                    <!--<li class="py-2 "><a href="{{ route('categories.index') }}"
                                             class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
                                             <i class="fa fa-solid fa-table-columns text-theme-green"></i>
                                             Categories</a>
-                                    </li>
+                                    </li>-->
+                                    @endif
+
+                                    @if(Auth::user()->can('configurations.form'))
+                                        <li class="py-2 "><a href="{{ route('configurations.form') }}"
+                                                class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
+                                                <i class="fa fa-solid fa-table-columns text-theme-green"></i>
+                                                Configurations</a>
+                                        </li>
                                     @endif
 
                                     @if(Auth::user()->can('complaints.status.index'))
@@ -193,7 +201,7 @@
                             </div>
 
                         </li>
-                        @endif
+                        
                     </ul>
                 </div>
             </div>

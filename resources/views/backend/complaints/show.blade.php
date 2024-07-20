@@ -323,112 +323,12 @@
     </script>
     <script>
         //ReAssignComplaint
-        $(document).on('click', '.re-assign-btn', function(event) {
-            // Extract the complaint ID from the data attribute
-            var complaintId = $(this).data('complaint-id');
-            $(".loader").addClass("show");
-            $('#modalDiv').html('');
-            var url = '{{ route('re-assign.complaint.form') }}'
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                url: url,
-                method: 'post',
-                data: {
-                    complaintId: complaintId,
-                },
-                success: function(response) {
-                    $('#modalDiv').html(response);
-                    $('#reAssignToModal').modal({
-                        backdrop: 'static', // Prevents modal from closing on backdrop click
-                        keyboard: false // Optionally prevent modal closing on Esc key
-                    });
-                    $('#reAssignToModal').modal("show");
-                    $(".loader").removeClass("show");
-                    $('.select2').select2({
-                        dropdownParent: $(
-                        '#reAssignToModal'), // Ensure the dropdown is appended to the modal
-                    });
-                },
-                error: function(data, textStatus, errorThrown) {
-                    $(".loader").removeClass("show");
-                    console.log(JSON.stringify(data));
-                }
-
-            });
-        });
+        
 
         //ReAssignComplaint
 
         $(document).ready(function() {
-            // When the "Re Assign" button is clicked
-            // $('#reAssignBtn').click(function() {
-            $(document).on('click', '#reAssignBtn', function(event) {
-
-                $(".loader").addClass("show");
-
-                toastr.options = {
-                    "closeButton": true,
-                    "timeOut": "3000",
-                    "extendedTimeOut": "1000",
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                };
-
-                // Get the form data
-                var formData = $('#reAssignComplaintForm').serialize();
-
-                // Send an AJAX request
-                $.ajax({
-                    type: 'POST',
-                    url: $('#reAssignComplaintForm').attr('action'), // Get the form action URL
-                    data: formData, // Send form data
-                    success: function(response) {
-                        $('#MnaErrorMsg').html('');
-                        $('#MpaErrorMsg').html('');
-
-
-                        if (response.errors) {
-                            //mnaId
-                            if (response.errors.mnaId) {
-                                $('#MnaErrorMsg').show();
-                                $('#MnaErrorMsg').append(response.errors.mnaId);
-                                $(".loader").removeClass("show");
-                            }
-
-                            if (response.errors.mpaId) {
-                                $('#MpaErrorMsg').show();
-                                $('#MpaErrorMsg').append(response.errors.mpaId);
-                                $(".loader").removeClass("show");
-                            }
-
-                        } else if (response.status) {
-                            toastr.success(response.message);
-                            setTimeout(() => {
-                                window.location.href =
-                                    "{{ route('complaints.index') }}";
-                            }, 3000);
-                        } else {
-                            toastr.error(response.message);
-                            $(".loader").removeClass("show");
-                        }
-
-                    },
-                    error: function(xhr, status, error) {
-                        toastr.error(response.message);
-                        $(".loader").removeClass("show");
-                    }
-                });
-            });
-
+           
             $(document).on('click', '#assignBtn', function(event) {
 
                 $(".loader").addClass("show");

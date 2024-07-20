@@ -10,8 +10,8 @@ return [
 	'max_files' => 3,
 	'complaint_number_starting_index' =>1000,
     'files_supported'=>'png, jpg, jpeg, doc, docx, xls, xlsx, pdf',
-	'query_type' => [1=>'Complaint', 2=>'Inquiry'],
-	'complaint_type' =>[1=>'Defective', 2=>'Color issue', 3=>'Wrong Product', 4=>'Wrong order', 5=>'Missing article'],
+	'query_type' => [1=>'Delivery person', 2=>'Late delivery'],
+	'complaint_type' =>[1=>'Damaged', 2=>'Incomplete Component', 3=>'Missing Article', 4=>'Stains', 5=>'Shrinkage issue', 6=>'Others'],
 	'inquiry_type'=>[1=>'Services', 2=>'Other'],
 	'complaint_form_images' =>['invoice' => 'Invoice', 'picture_1' => 'Picture 1', 'picture_2' => 'Picture 2', 'picture_3' => 'Picture 3', 'picture_4' => 'Picture 4', 'picture_5' => 'Picture 5' ],
 	'boolean_options' => [1=>'Yes', 0 =>'No'],
@@ -45,6 +45,8 @@ return [
 	'countries' => [
 		'PK' => 'Pakistan',
 	],
+
+	'complaint_sms_api_enable' => [1=>'Enable', 0 =>'Disable'],
 
 	'admin_action_with_description' =>[
 			'logout.perform'				 			=> 'Logout',
@@ -86,5 +88,13 @@ return [
 		'pending'			=> 3,
 		'resolved'			=> 4,
 		'closed'			=> 5,
+	],
+	'content_type'=>['formUrlencoded'=>'formUrlencoded','json'=>'json','xml' => 'xml'],
+	'http_methods'=>[
+		'get'  		=> 'GET',
+		'post'		=> 'POST',
+		'put'  		=> 'PUT',
+		'delete'	=> 'DELETE',
+		'patch'		=> 'PATCH'
 	],
 ];

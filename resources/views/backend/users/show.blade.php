@@ -17,17 +17,8 @@
             <div>
                 Username: {{ $user->username }}
             </div>
-            <div>
-                Role: {{$user->roles->first()->name}}
-            </div>
-            @if($user->roles->first()->name === 'MNA' || $user->roles->first()->name === 'MPA')
-            <div>
-                NA: {{Arr::get($areas, 'na_name')}}
-            </div>
-            <div>
-                PS: {{Arr::get($areas, 'ps_name')}}
-            </div>
-            @endif
+            
+            
         </div>
 
     </div>
