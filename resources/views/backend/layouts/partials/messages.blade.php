@@ -1,25 +1,25 @@
-@if(Session::has('success'))
-    @if (is_array(Session::get('success')))
-        @foreach (Session::get('success') as $msg)
-            <script>
-                toastr.success('{{ $msg }}');
-                setTimeout(() => {
-                }, 3000);
-            </script>
+@if(Session::get('success', false))
+    <?php $data = Session::get('success'); ?>
+    @if (is_array($data))
+        @foreach ($data as $msg)
+            <div class="alert alert-success" role="alert">
+                <i class="fa fa-check"></i>
+                {{ $msg }}
+            </div>
         @endforeach
     @else
-        <script>
-            toastr.success('{{ Session::get('success') }}');
-            setTimeout(() => {
-            }, 3000);
-        </script>
+        <div class="alert alert-success" role="alert">
+            <i class="fa fa-check"></i>
+            {{ $data }}
+        </div>
     @endif
-@endif
 
-@if ($errors->any())
-    <script>
-        @foreach ($errors->all() as $error)
-            toastr.error('{{ $error }}');
-        @endforeach
-    </script>
+@elseif ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>  
 @endif
