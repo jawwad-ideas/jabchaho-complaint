@@ -27,6 +27,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         /**
          * Login Routes
          */
+        Route::get('/', 'LoginController@show')->name('login.form');
         Route::get('/login', 'LoginController@show')->name('login.show');
         Route::post('/login', 'LoginController@login')->name('login.perform');
 
