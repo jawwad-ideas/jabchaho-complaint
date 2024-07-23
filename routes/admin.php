@@ -33,7 +33,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
     });
 
-   // Route::group(['middleware' => ['auth', 'permission']], function() {
+    Route::group(['middleware' => ['auth', 'permission']], function() {
         /**
          * Logout Routes
          */
@@ -123,6 +123,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
 
         
-    //});
+    });
 });
 
