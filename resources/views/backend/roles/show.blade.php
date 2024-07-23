@@ -1,7 +1,7 @@
 @extends('backend.layouts.app-master')
 
 @section('content')
-    <div class="bg-light p-4 rounded">
+    <div class="bg-light p-2 rounded">
         <h1>{{ ucfirst($role->name) }} Role</h1>
         <div class="lead">
             
@@ -44,6 +44,6 @@
     </div>
     <div class="mt-4">
         <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-info">Edit</a>
-        <a href="{{ route('roles.index') }}" class="btn btn-default">Back</a>
+        <a href="{{ route('roles.index') }}" class="btn bg-theme-dark-300 text-light">Back</a>
     </div>
 @endsection

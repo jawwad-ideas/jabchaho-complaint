@@ -2,10 +2,10 @@
 
 @section('content')
     <div
-        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
-            <h3 class="fw-bold text-white m-0">Categories</h3>
-            <small class="text-white">Manage your Categories here.</small>
+            <h3 class="fw-bold text-dark m-0">Categories</h3>
+            <small class="text-dark">Manage your Categories here.</small>
 
         </div>
         <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
@@ -13,11 +13,11 @@
                 @if (Auth::user()->can('categories.addForm'))
                     <a href="{{ route('categories.addForm') }}" class="text-decoration-none">
                         <small type="button"
-                            class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold d-flex align-items-center p-2 gap-2"><i
+                            class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
                                 class="fa fa-solid fa-file-circle-plus"></i><span>New Category</span></small>
                     </a>
                     <small id="showFilterBox" type="button"
-                        class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold d-flex align-items-center p-2 gap-2"><i
+                        class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
                             class="fa fa-solid fa-filter"></i> <span>Filter</span></small>
                 @endif
             </div>
@@ -25,7 +25,7 @@
 
     </div>
     <div class="page-content bg-white p-lg-5 px-2">
-        <div class="bg-light p-4 rounded">
+        <div class="bg-light p-2 rounded">
             <div class="" id="filterBox" style="display:none;">
                 <form class="form-inline" method="GET" action="{{ route('categories.index') }}">
                     <div class="row mb-3">
@@ -55,13 +55,13 @@
                         </div>
                         <div class="col-lg-12 text-end mt-4">
                             <button type="submit"
-                                class="btn bg-theme-green text-white p-2 d-inline-flex align-items-center gap-1"
+                                class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
                                 id="consult">
                                 <span>Search</span>
                                 <i alt="Search" class="fa fa-search"></i>
                             </button>
                             <a href="{{ route('categories.index') }}"
-                                class="btn bg-theme-dark text-white p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
+                                class="btn bg-theme-dark-300 text-light p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
                                 <span>Clear</span>
                                 <i class="fa fa-solid fa-arrows-rotate"></i></a>
                         </div>
@@ -74,7 +74,7 @@
                 {{ $categories->total() }}
             </div>
             <div class="table-scroll-hr">
-                <table class="table table-bordered table-striped table-compact">
+                <table class="table table-bordered table-striped table-compact table-sm">
                     <thead>
                         <th>Category Title</th>
                         <th>Level</th>
@@ -95,7 +95,7 @@
                             @if (Auth::user()->can('categories.editForm'))
                                 <td>
                                     <a class="btn btn-info btn-sm"
-                                        href="{{ route('categories.editForm', $category->id) }}">Edit</a>
+                                        href="{{ route('categories.editForm', $category->id) }}"><i class="fa fa-pencil"></i></a>
                                 </td>
                             @endif
 

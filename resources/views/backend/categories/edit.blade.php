@@ -2,9 +2,9 @@
 
 @section('content')
     <div
-        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
-            <h3 class="fw-bold text-white m-0">Edit Category</h3>
+            <h3 class="fw-bold text-dark m-0">Edit Category</h3>
         </div>
 
     </div>
@@ -60,9 +60,9 @@
 
 
                             <button type="submit"
-                                class="btn bg-theme-green text-white d-inline-flex align-items-center gap-3">Update
+                                class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Update
                                 Category</button>
-                            <a href="{{ route('categories.index') }}" class="btn btn-default">Back</a>
+                            <a href="{{ route('categories.index') }}" class="btn bg-theme-dark-300 text-light">Back</a>
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                 @if (Auth::user()->can('categories.destroy'))
                     {!! Form::open(['method' => 'DELETE','route' => ['categories.destroy',
                     Arr::get($categoryData, 'id')],'style'=>'display:inline','onsubmit' => 'return ConfirmDelete()' ]) !!}
-                    {!! Form::submit('Delete Category', ['class' => 'btn bg-danger text-white d-inline-flex align-items-center gap-3']) !!}
+                    {!! Form::submit('Delete Category', ['class' => 'btn bg-danger text-dark d-inline-flex align-items-center gap-3']) !!}
                     {!! Form::close() !!}
                 @endif
             </div>

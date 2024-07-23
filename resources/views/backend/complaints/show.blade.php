@@ -53,20 +53,20 @@
     </style>
 
     <div
-        class="page-title-section border-bottom mb-0.5 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+        class="page-title-section border-bottom mb-0.5 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
-            <h3 class="fw-bold text-white m-0">Complaint Details</h3>    
-            <h5 class="text-white mb-0"><b>Complaint #</b>{{ Arr::get($complaintData, 'complaint_number') }}</h5>
+            <h3 class="fw-bold text-dark m-0">Complaint Details</h3>    
+            <h5 class="text-dark mb-0"><b>Complaint #</b>{{ Arr::get($complaintData, 'complaint_number') }}</h5>
         </div>
         <div class="text-lg-end text-center">
             <div class="btn-group chart-filter-btns mt-lg-0 mt-4" role="group">
                 @if (Auth::user()->can('complaints.follow.up'))
-                    <a class="btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold"
+                    <a class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold"
                         href="{{ route('complaints.follow.up', $complaintData->id) }}">Follow
                         Up</a>
                 @endif
                 @if (Auth::user()->can('assign.complaint'))
-                    <a class="btn btn-sm rounded bg-theme-green-light me-2 assign-to-btn border-0 text-theme-green fw-bold"
+                    <a class="btn btn-sm rounded bg-theme-dark-300 me-2 assign-to-btn border-0 text-theme-yellow-light fw-bold"
                         data-complaint-id="{{ $complaintData->id }}">Assign</a>
                 @endif
 
@@ -78,7 +78,7 @@
                         'onsubmit' => 'return ConfirmDelete()',
                     ]) !!}
                     {!! Form::submit('Delete', [
-                        'class' => 'btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold',
+                        'class' => 'btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold',
                     ]) !!}
                     {!! Form::close() !!}
                 @endif

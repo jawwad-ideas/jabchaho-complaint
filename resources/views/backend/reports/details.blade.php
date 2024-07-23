@@ -2,14 +2,14 @@
 @section('title', 'Complaints')
 @section('content')
     <div
-        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
-            <h3 class="fw-bold text-white m-0">Search Complains</h3>
+            <h3 class="fw-bold text-dark m-0">Search Complains</h3>
         </div>
         <div class="text-end">
             <div class="btn-group" role="group">
                 <small id="showFilterBox" type="button"
-                    class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold d-flex align-items-center p-2 gap-2"><i
+                    class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
                         class="fa fa-solid fa-filter"></i> <span>Filter</span></small>
 
             </div>
@@ -353,12 +353,12 @@
 
                         <div class="form-group  mb-3 col-md-12 mt-2 gap-2 d-inline-flex justify-content-end">
                             <button type="submit"
-                                class="btn bg-theme-green text-white p-2 d-flex align-items-center gap-1" id="consult">
+                                class="btn bg-theme-yellow text-dark p-2 d-flex align-items-center gap-1" id="consult">
                                 <span>Search</span>
                                 <i alt="Search" class="fa fa-search"></i>
                             </button>
                             <a href="{{ route('report-by-complaints') }}"
-                                class="btn bg-theme-dark text-white p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
+                                class="btn bg-theme-dark-300 text-light p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
                                 <span>Clear</span>
                                 <i class="fa fa-solid fa-arrows-rotate"></i></a>
                         </div>
@@ -393,7 +393,7 @@
                             <input type="hidden" name="provincial_assembly_id" value="{{ request('provincial_assembly_id') }}">
                             <input type="hidden" name="national_assembly_id" value="{{ request('national_assembly_id') }}">
                             <button type="submit" name="export" value="excel" 
-                                class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold d-flex align-items-center p-2 gap-2">
+                                class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
                                 <span><i class="fa fa-file-export"></i> Export CSV </span>
                             </button>
                         </form>
@@ -403,7 +403,7 @@
             
             
             <div class="table-scroll-hr">
-                <table class="table table-bordered table-striped table-compact">
+                <table class="table table-bordered table-striped table-compact table-sm">
                     <thead>
                         <tr>
                             <th scope="col">Title</th>

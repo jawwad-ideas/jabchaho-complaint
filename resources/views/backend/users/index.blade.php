@@ -2,20 +2,20 @@
 
 @section('content')
     <div
-        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
-            <h3 class="fw-bold text-white m-0">Users</h3>
-            <small class="text-white">Manage your users here.</small>
+            <h3 class="fw-bold text-dark m-0">Users</h3>
+            <small class="text-dark">Manage your users here.</small>
         </div>
         <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
             <div class="btn-group" role="group">
                 <a href="{{ route('users.create') }}" class="text-decoration-none">
                     <small id="" type="button"
-                        class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold d-flex align-items-center p-2 gap-2"><i
+                        class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
                             class="fa fa-solid fa-user-plus"></i><span>New User</span></small>
                 </a>
                 <small id="showFilterBox" type="button"
-                    class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold d-flex align-items-center p-2 gap-2"><i
+                    class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
                         class="fa fa-solid fa-filter"></i> <span>Filter</span>
                 </small>
 
@@ -24,7 +24,7 @@
 
     </div>
     <div class="page-content bg-white p-lg-5 px-2">
-        <div class="bg-light p-4 rounded">
+        <div class="bg-light p-2 rounded">
 
 
             {{-- <form class="form-inline" method="GET">
@@ -55,13 +55,13 @@
 
                         <div class="col-lg-12 text-end mt-4">
                             <button type="submit"
-                                class="btn bg-theme-green text-white p-2 d-inline-flex align-items-center gap-1"
+                                class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
                                 id="consult">
                                 <span>Search</span>
                                 <i alt="Search" class="fa fa-search"></i>
                             </button>
                             <a href="{{ route('users.index') }}"
-                                class="btn bg-theme-dark text-white p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
+                                class="btn bg-theme-dark-300 text-light p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
                                 <span>Clear</span>
                                 <i class="fa fa-solid fa-arrows-rotate"></i></a>
                         </div>
@@ -75,7 +75,7 @@
             </div>
 
             <div class="table-scroll-hr">
-                <table class="table table-bordered table-striped table-compact">
+                <table class="table table-bordered table-striped table-compact table-sm">
                     <thead>
                         <tr>
                             <th scope="col" width="1%">#</th>
@@ -99,22 +99,26 @@
                                 <td>{{ $user->username }}</td>
                                 <td>
                                     @foreach ($user->roles as $role)
-                                        <span class="badge bg-primary">{{ $role->name }}</span>
+                                        <span class="badge bg-theme-dark-300">{{ $role->name }}</span>
                                     @endforeach
                                 </td>
-                                <td><a href="{{ route('users.show', $user->id) }}" class="btn btn-warning btn-sm">Show</a>
+                                <td><a href="{{ route('users.show', $user->id) }}" class="btn bg-theme-yellow btn-sm"><i class="fa fa-eye"></i></a>
                                 </td>
-                                <td><a href="{{ route('users.edit', $user->id) }}" class="btn btn-info btn-sm">Edit</a>
+                                <td><a href="{{ route('users.edit', $user->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
                                 </td>
                                 <td>
-                                    {!! Form::open([
-                                        'method' => 'DELETE',
-                                        'route' => ['users.destroy', $user->id],
-                                        'style' => 'display:inline',
-                                        'onsubmit' => 'return ConfirmDelete()',
+                                {!! Form::open([
+                                    'method' => 'DELETE',
+                                    'route' => ['users.destroy', $user->id],
+                                    'style' => 'display:inline',
+                                    'onsubmit' => 'return ConfirmDelete()',
+                                ]) !!}
+                                    {!! Form::button('<i class="fa fa-trash"></i>', [
+                                        'type' => 'submit',
+                                        'class' => 'btn btn-danger btn-sm',
+                                        'title' => 'Delete'
                                     ]) !!}
-                                    {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}
-                                    {!! Form::close() !!}
+                                {!! Form::close() !!}
                                 </td>
                             </tr>
                         @endforeach

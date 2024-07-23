@@ -7,31 +7,39 @@
 
 /*######################################################## color css ########################################################*/
 .bg-theme-dark {
-    background-color: #323246 !important;
+    background-color: #252525 !important;
 }
 
-.bg-theme-green {
-    background-color: #64c5ba !important;
+.bg-theme-dark-300 {
+    background-color: #2525258f;
 }
 
-.border-theme-green {
-    border-color: #64c5ba !important;
+.bg-theme-yellow {
+    background-color: #f7dd02 !important;
 }
 
-.bg-theme-green-light {
+.border-theme-yellow {
+    border-color: #fce100 !important;
+}
+
+/* .bg-theme-dark-300 {
     background-color: #bef2e5 !important;
+} */
+
+.text-theme-yellow {
+    color: #fce100;
 }
 
-.text-theme-green {
-    color: #64c5ba;
+.text-theme-yellow-light {
+    color: #f7dd0299;
 }
 
 .text-theme-dark {
-    color: #323246;
+    color: #252525;
 }
 
 .bg-dark-gradient-blue-green {
-    background-image: linear-gradient(to bottom right, #64c5ba, #323246);
+    background-image: linear-gradient(to bottom right, #fce100, #252525);
 }
 
 /*######################################################## general css ########################################################*/
@@ -130,12 +138,12 @@
 
 .secondary-menu .header_right .profile_info .profile_info_iner .profile_author_name {
     padding: 20px 25px;
-    background: #64c5ba;
+    background: #fce100;
     border-radius: 10px 15px 0 0;
 }
 
 .secondary-menu .header_right .profile_info .profile_info_iner .profile_author_name {
-    background-image: linear-gradient(to bottom right, #64c5ba, #323246);
+    background: #252525;
 }
 
 .secondary-menu .header_right .profile_info .profile_info_iner p {
@@ -181,7 +189,7 @@
     width: 150px !important;
     height: 150px;
     object-fit: cover;
-    border: 5px solid #64c5ba;
+    border: 5px solid #fce100;
     border-style: outset;
     object-position: top center;
 }
@@ -225,20 +233,20 @@
 
 .admin-side-menu-section::-webkit-scrollbar {
     width: 8px;
-    background: #64c5ba14;
+    background: #fce10014;
     border-radius: 10px;
     margin: 0 20px;
 }
 
 /* Handle */
 .admin-side-menu-section::-webkit-scrollbar-thumb {
-    background: #57a79e;
+    background: #a39410;
     border-radius: 10px;
 }
 
 /* Handle on hover */
 .admin-side-menu-section::-webkit-scrollbar-thumb:hover {
-    background: rgb(100 197 186);
+    background: rgb(249 223 1 / 70%);
 }
 
 ul.btn-toggle-nav {
@@ -250,9 +258,9 @@ ul.btn-toggle-nav {
 
 ul.btn-toggle-nav::-webkit-scrollbar {
     width: 5px;
-    -webkit-box-shadow: inset 0 0 10px rgb(100 197 186);
+    /* -webkit-box-shadow: inset 0 0 10px rgb(100 197 186); */
     border-radius: 10px;
-    /* background-color: #F5F5F5; */
+    background-color: #fce10014;
 }
 
 /* Track */
@@ -263,13 +271,13 @@ ul.btn-toggle-nav:-webkit-scrollbar-track {
 /* Handle */
 ul.btn-toggle-nav::-webkit-scrollbar-thumb {
     /* background: #fff; */
-    background: #57a79e;
+    background: #a39410;
     border-radius: 10px;
 }
 
 /* Handle on hover */
 ul.btn-toggle-nav::-webkit-scrollbar-thumb:hover {
-    background: rgb(100 197 186);
+    background: rgb(249 223 1 / 70%);
 }
 
 ul.btn-toggle-nav li {
@@ -291,7 +299,7 @@ ul.btn-toggle-nav li:before {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #64c5ba7a;
+    background: #fce1007a;
     position: absolute;
     left: -12px;
     z-index: 1;
@@ -303,7 +311,7 @@ ul.btn-toggle-nav li:not(:last-child):after {
     content: '';
     width: 1px;
     height: 100%;
-    background: #64c5ba4a;
+    background: #fce1004a;
     position: absolute;
     left: -8px;
     top: 50%;
@@ -376,7 +384,7 @@ ul.btn-toggle-nav li:not(:last-child):after {
 }
 
 .chart-section {
-    background: #64c5ba47;
+    background: #fce10047;
     padding: 10px !important;
     text-align: center;
     border-radius: 15px;
@@ -386,7 +394,7 @@ ul.btn-toggle-nav li:not(:last-child):after {
 }
 
 .chart-section-heading.my-3 {
-    background: #64c5ba;
+    background: #fce100;
     margin: 0 !important;
     color: #fff;
     padding: 25px 0;
@@ -413,7 +421,7 @@ ul.btn-toggle-nav li:not(:last-child):after {
 }
 
 .table-striped>tbody>tr:nth-of-type(odd) {
-    background-color: #64c5ba26 !important;
+    background-color: #fce10026 !important;
 }
 
 .inner-content table tr th,
@@ -425,8 +433,8 @@ ul.btn-toggle-nav li:not(:last-child):after {
 
 /*########################################################  pagination css ######################################################## */
 .page-item.active .page-link {
-    border-color: #64c5ba;
-    background: #64c5ba !important;
+    border-color: #a39410;
+    background: #a39410 !important;
 }
 
 .page-item .page-link {
@@ -486,7 +494,7 @@ div#dateFilterBox {
     /* border: 1px solid #ddd; */
     border-radius: 20px;
     padding: 10px 14px;
-    background: #64c5ba36;
+    background: #fce10036;
     width: 30%;
 }
 
@@ -501,7 +509,7 @@ div#dateFilterBox {
     align-items: center !IMPORTANT;
     color: #fff;
     font-size: 12px;
-    background: #64c5ba;
+    background: #fce100;
     border: none;
 }
 

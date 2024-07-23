@@ -44,7 +44,7 @@
 
             <div class="admin-sidebar sidebar bg-theme-dark p-0">
                 <div class="sidebar-close-btn text-end">
-                    <i class="fa fa-close fa-2x text-white"></i>
+                    <i class="fa fa-close fa-2x text-light"></i>
                 </div>
                 <div class="sidebar-logo-section px-4 pt-3 pb-1">
                     <div class="sidebar-logo">
@@ -57,8 +57,8 @@
                     <ul class="list-group list-group-flush mt-4 list-unstyled">
                         @if(Auth::user()->can('home.index'))
                         <li class="list-item px-3 py-3"><a href="{{ route('home.index') }}"
-                                class="text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                <i class="fa fa-solid fa-chart-pie text-theme-green fa-2x"></i>
+                                class="text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                <i class="fa fa-solid fa-chart-pie text-theme-yellow-light fa-2x"></i>
                                 Dashboard</a>
                         </li>
                         @endif
@@ -69,32 +69,32 @@
                         <li class="list-item px-3 py-3">
                             <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
                                 data-bs-toggle="collapse" data-bs-target="#users">
-                                <span class="d-flex align-items-center gap-3 text-white">
-                                    <i class="fa fa-users fa-2x text-theme-green"></i>
+                                <span class="d-flex align-items-center gap-3 text-light">
+                                    <i class="fa fa-users fa-2x text-theme-yellow-light"></i>
                                     Users </span>
-                                <i class="fa fa-solid fa-angle-down text-theme-green"></i>
+                                <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
                             </div>
                             <div class="collapse mt-3 ms-5" id="users" style="">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 
                                     @if(Auth::user()->can('users.index'))
                                     <li class="py-2 "><a href="{{ route('users.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-users text-theme-green"></i>
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-users text-theme-yellow-light"></i>
                                             Users</a>
                                     </li>
                                     @endif
                                     @if(Auth::user()->can('roles.index'))
                                     <li class="py-2 "><a href="{{ route('roles.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-users-gear text-theme-green"></i>
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-users-gear text-theme-yellow-light"></i>
                                             Roles </a>
                                     </li>
                                     @endif
                                     @if(Auth::user()->can('permissions.index'))
                                     <li class="py-2 "><a href="{{ route('permissions.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-person-chalkboard text-theme-green"></i>
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-person-chalkboard text-theme-yellow-light"></i>
                                             Permission </a>
                                     </li>
                                     @endif
@@ -108,24 +108,24 @@
                         <li class="list-item px-3 py-3">
                             <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
                                 data-bs-toggle="collapse" data-bs-target="#complaints">
-                                <span class="d-flex align-items-center gap-3 text-white">
-                                    <i class="fa fa-solid fa-boxes-packing fa-2x text-theme-green"></i>
+                                <span class="d-flex align-items-center gap-3 text-light">
+                                    <i class="fa fa-solid fa-boxes-packing fa-2x text-theme-yellow-light"></i>
                                     Complaints </span>
-                                <i class="fa fa-solid fa-angle-down text-theme-green"></i>
+                                <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
                             </div>
 
                             <div class="collapse mt-3 ms-5" id="complaints" style="">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     @if(Auth::user()->can('complaints.index'))
                                     <li class="py-2 "><a href="{{ route('complaints.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-folder-tree text-theme-green"></i>
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-folder-tree text-theme-yellow-light"></i>
                                             Complaints</a>
                                     </li>
                                     @endif
-                          
 
-                                    
+
+
                                 </ul>
                             </div>
 
@@ -136,24 +136,24 @@
                         <li class="list-item px-3 py-3">
                             <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
                                 data-bs-toggle="collapse" data-bs-target="#reports">
-                                <span class="d-flex align-items-center gap-3 text-white">
-                                    <i class="fa fa-solid fa-file-export fa-2x text-theme-green"></i>
+                                <span class="d-flex align-items-center gap-3 text-light">
+                                    <i class="fa fa-solid fa-file-export fa-2x text-theme-yellow-light"></i>
                                     Reports </span>
-                                <i class="fa fa-solid fa-angle-down text-theme-green"></i>
+                                <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
                             </div>
                             <div class="collapse mt-3 ms-5" id="reports" style="">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     @if(Auth::user()->can('report-complains'))
                                     <li class="py-2 "><a href="{{route('report-complains')}}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-file-arrow-down text-theme-green"></i>
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-file-arrow-down text-theme-yellow-light"></i>
                                             Complaints Summary</a>
                                     </li>
                                     @endif
                                     @if(Auth::user()->can('report-by-complaints'))
                                     <li class="py-2 "><a href="{{route('report-by-complaints')}}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-file-arrow-down text-theme-green"></i>
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-file-arrow-down text-theme-yellow-light"></i>
                                             Reports by Complaints</a>
                                     </li>
                                     @endif
@@ -162,38 +162,38 @@
                         </li>
                         @endif
 
-                        
+
                         <li class="list-item px-3 py-3">
                             <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
                                 data-bs-toggle="collapse" data-bs-target="#settings">
-                                <span class="d-flex align-items-center gap-3 text-white">
-                                    <i class="fa fa-cogs fa-boxes-packing fa-2x text-theme-green"></i>
+                                <span class="d-flex align-items-center gap-3 text-light">
+                                    <i class="fa fa-cogs fa-boxes-packing fa-2x text-theme-yellow-light"></i>
                                     Settings </span>
-                                <i class="fa fa-solid fa-angle-down text-theme-green"></i>
+                                <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
                             </div>
 
                             <div class="collapse mt-3 ms-5" id="settings" style="">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     @if(Auth::user()->can('categories.index'))
                                     <!--<li class="py-2 "><a href="{{ route('categories.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-table-columns text-theme-yellow-light"></i>
                                             Categories</a>
                                     </li>-->
                                     @endif
 
                                     @if(Auth::user()->can('configurations.form'))
-                                        <li class="py-2 "><a href="{{ route('configurations.form') }}"
-                                                class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                                <i class="fa fa-solid fa-table-columns text-theme-green"></i>
-                                                Configurations</a>
-                                        </li>
+                                    <li class="py-2 "><a href="{{ route('configurations.form') }}"
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-table-columns text-theme-yellow-light"></i>
+                                            Configurations</a>
+                                    </li>
                                     @endif
 
                                     @if(Auth::user()->can('complaints.status.index'))
                                     <li class="py-2 "><a href="{{ route('complaints.status.index') }}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-white">
-                                            <i class="fa fa-solid fa-table-columns text-theme-green"></i>
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-table-columns text-theme-yellow-light"></i>
                                             Complaint Status</a>
                                     </li>
                                     @endif
@@ -201,7 +201,7 @@
                             </div>
 
                         </li>
-                        
+
                     </ul>
                 </div>
             </div>

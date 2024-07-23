@@ -1,22 +1,22 @@
 @extends('backend.layouts.app-master')
 
 @section('content')
-<div class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+<div class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
     <div class="p-title">
-        <h3 class="fw-bold text-white m-0">Search Complains</h3>
-        <small class="text-white">Manage your Complaints here.</small>
+        <h3 class="fw-bold text-dark m-0">Search Complains</h3>
+        <small class="text-dark">Manage your Complaints here.</small>
 
     </div>
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
         <div class="btn-group" role="group">
-            <small id="showFilterBox" type="button" class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold d-flex align-items-center p-2 gap-2"><i class="fa fa-solid fa-filter"></i> <span>Filter</span>
+            <small id="showFilterBox" type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i class="fa fa-solid fa-filter"></i> <span>Filter</span>
             </small>
         </div>
     </div>
 
 </div>
 <div class="page-content bg-white p-lg-5 px-2">
-    <div class="bg-light p-4 rounded">
+    <div class="bg-light p-2 rounded">
 
         <!--Assign To Modal -->
         <div id="modalDiv"></div>
@@ -30,31 +30,29 @@
         >
             <form class="form-inline" method="GET" action="{{ route('complaints.index') }}">
                 <div class="row mb-3">
-                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
                         <input type="text" class="form-control p-2" autocomplete="off" name="complaint_number" value="{{ $complaint_number ?? '' }}" placeholder="Complaint No.">
                     </div>
 
-                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
                         <input type="text" class="form-control p-2" autocomplete="off" name="order_id" value="{{ $order_id ?? '' }}" placeholder="Order No.">
                     </div>
 
-                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
                         <input type="text" class="form-control p-2" autocomplete="off" name="mobile_number" value="{{ $mobile_number ?? '' }}" placeholder="Mobile">
                     </div>
 
-                </div>
-                <div class="row mb-3">
 
-                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
                         <input type="text" class="form-control p-2" autocomplete="off" name="name" value="{{ $name ?? '' }}" placeholder="Name">
                     </div>
 
-                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
                         <input type="text" class="form-control p-2" autocomplete="off" name="email" value="{{ $email ?? '' }}" placeholder="Email">
                     </div>
 
-                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12">
-                        <select class="form-control form-control-sm" id="complaint_status_id" name="complaint_status_id">
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
+                        <select class="form-select p-2" id="complaint_status_id" name="complaint_status_id">
                             <option value=''>Select Status</option>
                             @if(!empty($complaintStatuses) )
                             @foreach($complaintStatuses as $complaintStatus)
@@ -72,13 +70,13 @@
 
                     <div class="col-lg-12 text-end mt-4">
                         <button type="submit"
-                            class="btn bg-theme-green text-white p-2 d-inline-flex align-items-center gap-1"
+                            class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
                             id="consult">
                             <span>Search</span>
                             <i alt="Search" class="fa fa-search"></i>
                         </button>
                         <a href="{{ route('complaints.index') }}"
-                            class="btn bg-theme-dark text-white p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
+                            class="btn bg-theme-dark-300 text-light p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
                             <span>Clear</span>
                             <i class="fa fa-solid fa-arrows-rotate"></i></a>
                     </div>
@@ -95,7 +93,7 @@
         </div>
 
         <div class="table-scroll-hr">
-            <table class="table table-bordered table-striped table-compact table-sm">
+            <table class="table table-bordered table-striped table-compact table-sm table-sm">
                 <thead>
 
 
@@ -126,7 +124,7 @@
                         </td>
                         @if(Auth::user()->can('complaints.show'))
                         <td>
-                            <a class="btn btn-info btn-sm" href="{{ route('complaints.show', $complaint->id) }}">View</a>
+                            <a class="btn bg-theme-yellow btn-sm" href="{{ route('complaints.show', $complaint->id) }}"><i class="fa fa-eye"></i></a>
                         </td>
                         @endif
                         

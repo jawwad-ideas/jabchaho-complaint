@@ -638,7 +638,7 @@ input.form-check-input {
 
 .navbar.profile-nav .side-bar .sidenav {
     height: 100%;
-    background: #64c5ba26;
+    background: #fce10026;
     /* box-shadow: 0 12px 30px rgb(97 168 160 / 39%); */
     border-radius: 15px;
 
@@ -1412,20 +1412,20 @@ body.drop-your-cv form.form-horizontal .show-drop-your-cv {
 }
 
 /* color css */
-.bg-theme-green {
-    background-color: #64c5ba !important;
+.bg-theme-yellow {
+    background-color: #f7dd02 !important;
 }
 
-.border-theme-green {
-    border-color: #64c5ba !important;
+.border-theme-yellow {
+    border-color: #fce100 !important;
 }
 
-.bg-theme-green-light {
+/* .bg-theme-dark-300 {
     background-color: #bef2e5 !important;
-}
+} */
 
-.text-theme-green {
-    color: #64c5ba;
+.text-theme-yellow {
+    color: #fce100;
 }
 
 /* sidebar css start */
@@ -1463,7 +1463,7 @@ ul.btn-toggle-nav li {
 }
 
 .table-striped>tbody>tr:nth-of-type(odd) {
-    background-color: #64c5ba26 !important;
+    background-color: #fce10026 !important;
 }
 
 .page-content .table-section {

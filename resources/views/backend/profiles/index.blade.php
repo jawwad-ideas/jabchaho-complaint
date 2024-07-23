@@ -34,7 +34,7 @@
     width: 100%;
     height: 100%;
     background: #ecf0f1;
-    color: #64c5ba;
+    color: #fce100;
     text-align: center;
     font-size: 70px;
 }
@@ -57,7 +57,7 @@
 .upload-button .fa-arrow-up {
     font-size: 80px;
     colo font-size: 70px;
-    color: #64c5ba;
+    color: #fce100;
 }
 
 .avatar-wrapper:hover .profile-pic {
@@ -70,9 +70,9 @@
 </style>
 @section('content')
 <div
-    class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+    class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
     <div class="p-title">
-        <h3 class="fw-bold text-white m-0">My Profile</h3>
+        <h3 class="fw-bold text-dark m-0">My Profile</h3>
     </div>
 
 </div>
@@ -146,7 +146,7 @@
                     @if(Auth::user()->can('profile.update'))
                         <div class="mb-3">
                             <button type="submit"
-                                class="btn bg-theme-green text-white d-inline-flex align-items-center gap-3">Save</button>
+                                class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Save</button>
                         </div>
                     @endif
                 </div>

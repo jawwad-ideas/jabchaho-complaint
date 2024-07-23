@@ -8,24 +8,23 @@
                 <div class="login-inner-section">
                     <div class="logo-section my-5 p-4">
                         <a class="text-decoration-none" href="/complaint/admin"><img
-                                src="{{asset('assets/images/jc-logo.png')}}" class="w-50" alt="logo"
-                                srcset=""></a>
+                                src="{{asset('assets/images/jc-logo.png')}}" class="w-50" alt="logo" srcset=""></a>
                     </div>
                     <div class="login-form-heading">
-                        <h1 class=""><span class="text-theme-green fw-bold"> Admin</span>
+                        <h1 class="text-light"><span class=" fw-bold"> Admin</span>
                         </h1>
                     </div>
-                    <div class="login-form-heading">
+                    <div class="login-form-heading text-light">
 
                         <h6>Please Login to our Complaint Portal.</h6>
                     </div>
                     <div class="back-to-home">
                         <a href="/complaint/admin"
-                            class="text-end text-white d-flex justify-content-center text-white text-decoration-none gap-2 p-3">
+                            class="text-end text-dark d-flex justify-content-center text-light text-decoration-none gap-2 p-3">
                             <i class="fa fa-solid fa-arrow-left-long"></i> <small> Back to Home</small>
                         </a>
                     </div>
-                    <div class="login-form-section p-4 bg-theme-dark  my-5">
+                    <div class="login-form-section p-4  my-5">
                         <div class="login-form">
                             @include('backend.layouts.partials.messages')
                             <form method="post" action="{{ route('login.perform') }}" class="login-form">
@@ -49,7 +48,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <button type="submit"
-                                                class="form-control btn text-white bg-theme-green rounded submit p-2">Login</button>
+                                                class="form-control btn text-dark bg-theme-yellow rounded submit p-2">Login</button>
                                         </div>
                                         <div class="col-lg-6  text-end">
                                             <div class="form-check">
@@ -72,24 +71,24 @@
                             <div class="d-lg-flex text-center align-items-center justify-content-center gap-4">
                                 <div class="social-btns d-flex justify-content-center gap-2 my-3">
                                     <i
-                                        class="fa fa-brands fa-facebook-f rounded-circle p-2 border-light text-white bg-theme-green"></i>
+                                        class="fa fa-brands fa-facebook-f rounded-circle p-2 border-light text-dark bg-theme-yellow"></i>
 
                                     <i
-                                        class="fa fa-brands fa-twitter rounded-circle p-2 border-light text-white bg-theme-green"></i>
+                                        class="fa fa-brands fa-twitter rounded-circle p-2 border-light text-dark bg-theme-yellow"></i>
 
                                     <i
-                                        class="fa fa-solid fa-globe rounded-circle p-2 border-light text-white bg-theme-green"></i>
+                                        class="fa fa-solid fa-globe rounded-circle p-2 border-light text-dark bg-theme-yellow"></i>
 
                                     <i
-                                        class="fa fa-brands fa-youtube rounded-circle p-2 border-light text-white bg-theme-green"></i>
+                                        class="fa fa-brands fa-youtube rounded-circle p-2 border-light text-dark bg-theme-yellow"></i>
 
                                     <i
-                                        class="fa fa-brands fa-instagram rounded-circle p-2 border-light text-white bg-theme-green"></i>
+                                        class="fa fa-brands fa-instagram rounded-circle p-2 border-light text-dark bg-theme-yellow"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="login-form-footer bg-theme-green p-1">
+                    <div class="login-form-footer bg-theme-yellow p-1">
                         <div class="copyright">
                             <small>
                                 <span>© </span>

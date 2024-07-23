@@ -1,7 +1,7 @@
 @extends('backend.layouts.app-master')
 
 @section('content')
-<div class="bg-light p-4 rounded">
+<div class="bg-light p-2 rounded">
     <h2>Update Candidates</h2>
     <div class="lead">
         Edit Candidates.
@@ -97,7 +97,7 @@
 
 
                 <button type="submit" class="btn btn-primary">Save</button>
-                <a href="{{ route('candidates.index') }}" class="btn btn-default">Back</a>
+                <a href="{{ route('candidates.index') }}" class="btn bg-theme-dark-300 text-light">Back</a>
         </form>
     </div>
 

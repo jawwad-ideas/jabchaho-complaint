@@ -2,9 +2,9 @@
 
 @section('content')
     <div
-        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
-            <h3 class="fw-bold text-white m-0">Add Complaint Status</h3>
+            <h3 class="fw-bold text-dark m-0">Add Complaint Status</h3>
         </div>
 
     </div>
@@ -39,9 +39,9 @@
                                 </select>
                             </div>
                             <button type="submit"
-                                class="btn bg-theme-green text-white d-inline-flex align-items-center gap-3">Create
+                                class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Create
                                 Complaint Status</button>
-                            <a href="{{ route('complaints.status.index') }}" class="btn btn-default">Back</a>
+                            <a href="{{ route('complaints.status.index') }}" class="btn bg-theme-dark-300 text-light">Back</a>
                         </div>
                     </div>
                 </div>

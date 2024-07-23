@@ -2,16 +2,16 @@
 
 @section('content')
     <div
-        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+        class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
-            <h3 class="fw-bold text-white m-0">Permissions</h3>
-            <small class="text-white">Manage your Permissions here.</small>
+            <h3 class="fw-bold text-dark m-0">Permissions</h3>
+            <small class="text-dark">Manage your Permissions here.</small>
         </div>
         <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
             <div class="btn-group" role="group">
                 <a href="{{ route('permissions.create') }}" class="text-decoration-none">
                     <small id="showFilterBox" type="button"
-                        class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold d-flex align-items-center p-2 gap-2"><i
+                        class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
                             class="fa fa-solid fa-plus-circle"></i><span>New Permission</span></small>
                 </a>
 
@@ -20,9 +20,9 @@
 
     </div>
     <div class="page-content bg-white p-lg-5 px-2">
-        <div class="bg-light p-4 rounded">
+        <div class="bg-light p-2 rounded">
             <div class="table-scroll-hr">
-                <table class="table table-bordered table-striped table-compact">
+                <table class="table table-bordered table-striped table-compact table-sm">
                     <thead>
                         <tr>
                             <th scope="col" width="40%">Description</th>
@@ -47,16 +47,23 @@
                                 <td>{{ $permission->name }}</td>
                                 <td>{{ $permission->guard_name }}</td>
                                 <td><a href="{{ route('permissions.edit', $permission->id) }}"
-                                        class="btn btn-info btn-sm">Edit</a></td>
+                                        class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a></td>
                                 <td>
+                                    
+
                                     {!! Form::open([
                                         'method' => 'DELETE',
                                         'route' => ['permissions.destroy', $permission->id],
                                         'style' => 'display:inline',
                                         'onsubmit' => 'return ConfirmDelete()',
-                                    ]) !!}
-                                    {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}
+                                     ]) !!}
+                                        {!! Form::button('<i class="fa fa-trash"></i>', [
+                                            'type' => 'submit',
+                                            'class' => 'btn btn-danger btn-sm',
+                                            'title' => 'Delete'
+                                        ]) !!}
                                     {!! Form::close() !!}
+
                                 </td>
                             </tr>
                         @endforeach

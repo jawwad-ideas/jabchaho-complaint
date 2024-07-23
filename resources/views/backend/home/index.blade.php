@@ -27,26 +27,26 @@
 </style>
 <!-- <script src="{!! url('assets/js/charts/chart.min.js') !!}"></script> -->
 <div
-    class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-green">
+    class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
     <div class="p-title">
-        <h3 class="fw-bold text-white m-0">Dashboard</h3>
+        <h3 class="fw-bold text-dark m-0">Dashboard</h3>
     </div>
     <div class="text-lg-end text-center position-relative">
         <div class="btn-group chart-filter-btns mt-lg-0 mt-4" role="group">
             <small type="button" id="showDateFilterBox"
-                class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold">
+                class="btn btn-sm rounded bg-theme-dark-300 me-2 border-0 text-theme-yellow-light fw-bold">
                 Custom</small>
 
             <small type="button" data-value=""
-                class="btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold">All</small>
+                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold">All</small>
             <small type="button" data-value="day"
-                class="btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold">Day</small>
+                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold">Day</small>
             <small type="button" data-value="week"
-                class="btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold">Week</small>
+                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold">Week</small>
             <small type="button" data-value="month"
-                class="btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold">Month</small>
+                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold">Month</small>
             <small type="button" data-value="3-months"
-                class="btn btn-sm rounded bg-theme-green-light me-2 filters border-0 text-theme-green fw-bold">3
+                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold">3
                 Months</small>
         </div>
         <div id="dateFilterBox" class="my-4 shadow rounded p-4" style="display:none;">
@@ -64,12 +64,12 @@
                 </div>
                 <div class="col-lg-12 text-end border-top border-white pt-2 mt-4">
                     <button type="submit"
-                        class="btn btn-sm rounded bg-theme-green mt-2 border-0 text-white fw-bold d-inline-flex align-items-center custom-date-search"
+                        class="btn btn-sm rounded bg-theme-yellow mt-2 border-0 text-dark fw-bold d-inline-flex align-items-center custom-date-search"
                         data-value="custom-date-search">
                         <i class="fa fa-solid fa fa-search me-2"></i> Search
                     </button>
                     <a href="{{ route('home.index') }}"><small type="button"
-                            class="btn btn-sm rounded bg-theme-green mt-2 border-0 text-white fw-bold d-inline-flex align-items-center "><i
+                            class="btn btn-sm rounded bg-theme-yellow mt-2 border-0 text-dark fw-bold d-inline-flex align-items-center "><i
                                 class="fa fa-solid fa-arrows-rotate me-2"></i> Clear</small></a>
                 </div>
             </div>
@@ -86,76 +86,76 @@
         <div
             class="col-xxl-2 col-xl-4 col-lg-4 col-md-12 col-sm-12 order-xxl-1 order-xl-1 order-xl-1 order-lg-1 order-1 count-chart mb-3">
             <div class="d-flex flex-column  align-items-center">
-                <div class="stats-card border bg-theme-green px-2 w-100">
+                <div class="stats-card border bg-theme-yellow px-2 w-100">
                     <div
                         class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
                         <div class="stats-icon">
-                            <i class="fa fa-solid fa-circle-info fa-2x text-white mb-2"></i>
+                            <i class="fa fa-solid fa-circle-info fa-2x text-dark mb-2"></i>
                         </div>
                         <div class="stats-count">
-                            <h1 class="fw-bold text-white" id="total-complaints"></h1>
-                            <h6 class="mb-0 text-white">Total Complaints</h6>
+                            <h1 class="fw-bold text-dark" id="total-complaints"></h1>
+                            <h6 class="mb-0 text-dark">Total Complaints</h6>
                         </div>
                     </div>
                 </div>
-                <div class="stats-card border bg-theme-green px-2 w-100">
+                <div class="stats-card border bg-theme-yellow px-2 w-100">
                     <div
                         class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
                         <div class="stats-icon">
-                            <i class="fa fa-solid fa-clipboard-check fa-2x text-white mb-2"></i>
+                            <i class="fa fa-solid fa-clipboard-check fa-2x text-dark mb-2"></i>
                         </div>
                         <div class="stats-count">
-                            <h1 class="fw-bold text-white" id="total-resolved"></h1>
-                            <h6 class="mb-0 text-white">Resolved</h6>
+                            <h1 class="fw-bold text-dark" id="total-resolved"></h1>
+                            <h6 class="mb-0 text-dark">Resolved</h6>
                         </div>
                     </div>
                 </div>
-                <div class="stats-card border bg-theme-green px-2 w-100">
+                <div class="stats-card border bg-theme-yellow px-2 w-100">
                     <div
                         class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
                         <div class="stats-icon">
-                            <i class="fa fa-solid fa-user-check fa-2x text-white mb-2"></i>
+                            <i class="fa fa-solid fa-user-check fa-2x text-dark mb-2"></i>
                         </div>
                         <div class="stats-count">
-                            <h1 class="fw-bold text-white" id="total-registered"></h1>
-                            <h6 class="mb-0 text-white">Registered</h6>
+                            <h1 class="fw-bold text-dark" id="total-registered"></h1>
+                            <h6 class="mb-0 text-dark">Registered</h6>
                         </div>
                     </div>
                 </div>
-                <div class="stats-card border bg-theme-green px-2 w-100">
+                <div class="stats-card border bg-theme-yellow px-2 w-100">
                     <div
                         class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
                         <div class="stats-icon">
-                            <i class="fa fa-solid fa-spinner fa-2x text-white mb-2"></i>
+                            <i class="fa fa-solid fa-spinner fa-2x text-dark mb-2"></i>
                         </div>
                         <div class="stats-count">
-                            <h1 class="fw-bold text-white" id="total-inprocess"></h1>
+                            <h1 class="fw-bold text-dark" id="total-inprocess"></h1>
 
-                            <h6 class="mb-0 text-white">Inprocess</h6>
+                            <h6 class="mb-0 text-dark">Inprocess</h6>
                         </div>
                     </div>
                 </div>
-                <div class="stats-card border bg-theme-green px-2 w-100">
+                <div class="stats-card border bg-theme-yellow px-2 w-100">
                     <div
                         class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
                         <div class="stats-icon">
-                            <i class="fa fa-regular fa-hourglass fa-2x text-white mb-2"></i>
+                            <i class="fa fa-regular fa-hourglass fa-2x text-dark mb-2"></i>
                         </div>
                         <div class="stats-count">
-                            <h1 class="fw-bold text-white" id="total-onhold"></h1>
-                            <h6 class="mb-0 text-white">On Hold</h6>
+                            <h1 class="fw-bold text-dark" id="total-onhold"></h1>
+                            <h6 class="mb-0 text-dark">On Hold</h6>
                         </div>
                     </div>
                 </div>
-                <div class="stats-card border bg-theme-green px-2 w-100">
+                <div class="stats-card border bg-theme-yellow px-2 w-100">
                     <div
                         class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
                         <div class="stats-icon">
-                            <i class="fa fa-solid fa-check-double fa-2x text-white mb-2"></i>
+                            <i class="fa fa-solid fa-check-double fa-2x text-dark mb-2"></i>
                         </div>
                         <div class="stats-count">
-                            <h1 class="fw-bold text-white" id="total-closed"></h1>
-                            <h6 class="mb-0 text-white">Closed</h6>
+                            <h1 class="fw-bold text-dark" id="total-closed"></h1>
+                            <h6 class="mb-0 text-dark">Closed</h6>
                         </div>
                     </div>
                 </div>
@@ -223,12 +223,12 @@
                     <h6 class="mb-lg-0 mb-3 fw-bold">Complaints</h6>
                     @if(Auth::user()->hasRole('admin'))
                     <button onclick="updateChartTypeMnaMpa('mna',this)" type="button"
-                        class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold updateChartyTypeMnaMpa Active">
+                        class="btn btn-sm rounded bg-theme-dark-300 me-2 border-0 text-theme-yellow-light fw-bold updateChartyTypeMnaMpa Active">
                         Mna Wise
                     </button>
 
                     <button onclick="updateChartTypeMnaMpa('mpa',this)" type="button"
-                        class="btn btn-sm rounded bg-theme-green-light me-2 border-0 text-theme-green fw-bold updateChartyTypeMnaMpa ">
+                        class="btn btn-sm rounded bg-theme-dark-300 me-2 border-0 text-theme-yellow-light fw-bold updateChartyTypeMnaMpa ">
                         Mpa Wise
                     </button>
                     @endif
