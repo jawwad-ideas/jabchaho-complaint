@@ -93,7 +93,7 @@
         </div>
 
         <div class="table-scroll-hr">
-            <table class="table table-bordered table-striped table-compact table-sm table-sm">
+            <table class="table table-bordered table-striped table-compact  table-sm">
                 <thead>
 
 

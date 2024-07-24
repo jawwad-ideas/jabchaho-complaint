@@ -1413,7 +1413,7 @@ body.drop-your-cv form.form-horizontal .show-drop-your-cv {
 
 /* color css */
 .bg-theme-yellow {
-    background-color: #f7dd02 !important;
+    background-color: #f7dd0282 !important;
 }
 
 .border-theme-yellow {
@@ -1470,12 +1470,12 @@ ul.btn-toggle-nav li {
     overflow: auto;
 }
 
-.page-content table tr th,
+/* .page-content table tr th,
 .page-content table tr td {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-}
+} */
 
 /* .footerDiv {
     position: fixed;

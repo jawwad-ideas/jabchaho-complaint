@@ -24,7 +24,7 @@
     <div class="page-content bg-white p-lg-5 px-2">
         <div class="bg-light p-2 rounded">
             <div class="table-scroll-hr">
-                <table class="table table-bordered table-striped table-compact table-sm">
+                <table class="table table-bordered table-striped table-compact ">
                     <thead>
                         <th width="1%">#</th>
                         <th>Name</th>

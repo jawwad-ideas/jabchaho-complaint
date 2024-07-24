@@ -27,7 +27,7 @@
             </div>
     
             <div class="table-scroll-hr">
-            <table class="table table-bordered table-striped table-compact table-sm">
+            <table class="table table-bordered table-striped table-compact ">
                 <thead>
                     <th scope="col" width="1%">#</th>
                     <th scope="col">Name</th>
