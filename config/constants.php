@@ -1,7 +1,7 @@
 <?php
 //Checkout Constants  markOrderPaid
 return [
-	'admin_url_prefix'=> 'complaint/admin',
+	'admin_url_prefix'=> '',//complaint/admin
 	'complainant_landing_route' => 'complaints',
     'per_page'=>20,
 	'report_per_page'=>50,
