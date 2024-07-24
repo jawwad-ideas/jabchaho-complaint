@@ -75,12 +75,12 @@
             </div>
 
             <div class="table-scroll-hr">
-                <table class="table table-bordered table-striped table-compact table-sm">
+                <table class="table table-bordered table-striped table-compact ">
                     <thead>
                         <tr>
                             <th scope="col" width="1%">#</th>
                             <th scope="col" width="15%">Name</th>
-                            <th scope="col">Email</th>
+                            <th scope="col" width="15%">Email</th>
                             <th scope="col" width="10%">Username</th>
                             <th scope="col" width="10%">Roles</th>
                             <th scope="col" width="1%" colspan="3">Action</th>
@@ -94,8 +94,8 @@
 
                             <tr>
                                 <th scope="row">{{ $user->id }}</th>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
+                                <td width="15%">{{ $user->name }}</td>
+                                <td width="15%">{{ $user->email }}</td>
                                 <td>{{ $user->username }}</td>
                                 <td>
                                     @foreach ($user->roles as $role)

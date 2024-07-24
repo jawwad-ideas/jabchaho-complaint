@@ -74,7 +74,7 @@
                 {{ $categories->total() }}
             </div>
             <div class="table-scroll-hr">
-                <table class="table table-bordered table-striped table-compact table-sm">
+                <table class="table table-bordered table-striped table-compact ">
                     <thead>
                         <th>Category Title</th>
                         <th>Level</th>
