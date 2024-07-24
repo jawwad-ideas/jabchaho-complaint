@@ -205,14 +205,22 @@ class ComplaintController extends Controller
         $objectComplaintFollowUp  = new ComplaintFollowUp;
         $complaintId        = $request->route('complaintId');
         $complaintData      = $complaintObject->getComplaintDataById($complaintId);
-        $complaintDocument  = $complaintDocumentObject->getComplaintDocumentById($complaintId);
+        if(!empty($complaintData))
+        {
+            $complaintDocument  = $complaintDocumentObject->getComplaintDocumentById($complaintId);
 
-        //Full data of complaint
-        $data['complaintData']      = $complaintData;
-        $data['complaintDocument']  = $complaintDocument;
-        $data['complaintFollowUps'] = $objectComplaintFollowUp->getComplaintFollowUps($complaintId);
+            //Full data of complaint
+            $data['complaintData']      = $complaintData;
+            $data['complaintDocument']  = $complaintDocument;
+            $data['complaintFollowUps'] = $objectComplaintFollowUp->getComplaintFollowUps($complaintId);
 
-        return view('backend.complaints.show')->with($data);
+            return view('backend.complaints.show')->with($data);
+        }
+        else
+        {
+            return redirect()->route('complaints.index')->withErrors(['error' => "Invalid Complaint"]);
+        }
+        
     }
 
     
