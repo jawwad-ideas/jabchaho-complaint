@@ -38,9 +38,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
          * Logout Routes
          */
         Route::get('/logout', 'LogoutController@perform')->name('logout.perform');
-        //Route::get('/', 'HomeController@index')->name('home.index');
-        //Route::post('/get-jobs-graph-data', 'HomeController@getComplaintsGraphData')->name('complaints.graph.data');
-        //Route::post('/get-count-data', 'HomeController@getCountData')->name('get.count.data');
+        Route::get('/', 'HomeController@index')->name('home.index');
+        Route::post('/get-jobs-graph-data', 'HomeController@getComplaintsGraphData')->name('complaints.graph.data');
+        Route::post('/get-count-data', 'HomeController@getCountData')->name('get.count.data');
 
 
         /**

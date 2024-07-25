@@ -97,7 +97,6 @@ class Complaint extends Model
 
     public function assignTo($params = array())
     {
-
         $complaintId    = Arr::get($params, 'complaintId');
         $userId         = Arr::get($params, 'userId');
         $priorityId     = Arr::get($params, 'priorityId');
@@ -112,85 +111,41 @@ class Complaint extends Model
 
     function complaintCount($params = array())
     {
-        
+        $query = Complaint::select('*');
         if (!empty($params['startDate']) && !empty($params['endDate'])) {
             $startDate = $params['startDate'];
             $endDate = $params['endDate'];
-
-            $result = Complaint::whereBetween('created_at', [$startDate, $endDate]);
-            if (!empty($params['userId'])) {
-                $result = $result->where($params['userType'],$params['userId']);
-                $result = $result->where('is_approved',1);
-            } 
-        }
-        else
-        {
-            if (!empty($params['userId'])) {
-                $result = Complaint::where($params['userType'],$params['userId']);
-                $result = $result->where('is_approved',1);
-            }
-            else
-            {
-                $result = Complaint::all();
-            }
-        }
-        
-        if(!empty($params['customStartDate']) && !empty($params['customEndDate'])) {
-            $customStartDate = $params['customStartDate'];
-            $customEndDate   = $params['customEndDate'];
-
-            $result = Complaint::whereBetween('created_at', [$customStartDate, $customEndDate]);
-            if (!empty($params['userId'])) {
-                $result = $result->where($params['userType'],$params['userId']);
-                $result = $result->where('is_approved',1);
-            } 
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
-        return $result->count();
+        $result  = $query->count(); 
+        return $result;
     }
 
     function complaintStatusCount($params = array())
     {
         $wherecondition = '';
-        $complaintStatusesWithCounts = ComplaintStatus::select('name')->withCount([
+        $complaintStatusesWithCounts = ComplaintStatus::select('id','name')->withCount([
             'complaints' => function ($query) use ($params) {
                 if (!empty($params['startDate']) && !empty($params['endDate'])) {
                     $startDate = $params['startDate'];
                     $endDate = $params['endDate'];
                     $query->whereBetween('created_at', [$startDate, $endDate]);
-                    if(!empty($params['userId']))
-                    {
-                        $userId = $params['userId'];
-                        $query->where([$params['userType'] =>$userId]);
-                        $query->where('is_approved',1);
-                    }
                 }
-                if (!empty($params['customStartDate']) && !empty($params['customEndDate'])) {
-                    $customStartDate = $params['customStartDate'];
-                    $customEndDate = $params['customEndDate'];
-                    $query->whereBetween('created_at', [$customStartDate, $customEndDate]);
-                    if(!empty($params['userId']))
-                    {
-                        $userId = $params['userId'];
-                        $query->where([$params['userType'] =>$userId]);
-                        $query->where('is_approved',1);
-                    }
-                }
-                elseif(!empty($params['userId']))
-                {
-                    $userId = $params['userId'];
-                    $query->where([$params['userType']=>$userId]);
-                    $query->where('is_approved',1);
-                }
-                
             }
         ])->get();
 
         $statusCount = array();
         if (!empty($complaintStatusesWithCounts)) {
-            foreach ($complaintStatusesWithCounts as $row) {
+            foreach ($complaintStatusesWithCounts as $row) 
+            {
+                $id =  Arr::get($row, 'id');
                 $name = str_replace(' ', '', Arr::get($row, 'name'));
-                $statusCount[$name] = Arr::get($row, 'complaints_count');
+                $count = Arr::get($row, 'complaints_count');
+                $statusCount[$id] = [
+                    'name' => $name,
+                    'count' => $count
+                ];
             }
         }
 

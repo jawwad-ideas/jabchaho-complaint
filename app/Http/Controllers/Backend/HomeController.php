@@ -95,177 +95,44 @@ class HomeController extends Controller
             $complaintStatusObject = new ComplaintStatus;
 
             $filterValue = '';
-            $complaintStatusCount = array();
-            $userId = Auth::guard('web')->user()->id;
-            $customStartDate = $request->get('customStartDate');
-            $customEndDate = $request->get('customEndDate');
-            //if filters are clicked 
-            if(!empty($request->get('filterValue')) || !empty($request->get('userId')) || (!empty($customStartDate) && !empty($customEndDate)))
+            $applicantStatusCount = array();
+            if(!empty($request->get('filterValue')))
             {
-                $filterValue                 = $request->get('filterValue');
-
-                if (!is_null($request->get('filterValue'))){
-
-                    $datesArray                  = Helper::getDateByFilterValue($filterValue);
-
-                    $startDate                   = Arr::get($datesArray, 'startDate');
-                    $endDate                     = Arr::get($datesArray, 'endDate');
-
-                    $usersCount                  = User::whereBetween('created_at', [$startDate, $endDate])->count();
-                    $complainantsCount           = Complainant::whereBetween('created_at', [$startDate, $endDate])->count();
-
-                    $params['startDate']         = $startDate;
-                    $params['endDate']           = $endDate;
-
-                }else{
-                    $usersCount                  = User::count();
-                    $complainantsCount           = Complainant::count();
-                }
-
-                //dashboard for admin
-                if(Auth::user()->hasRole('admin'))
-                {
+                $filterValue  = $request->get('filterValue');
                 
-                    $params['userType']         = 'user_id';
-                    if (!is_null($request->get('userId'))){
-                        $params['userId']            = $request->get('userId');
-                        $params['userType']            = $request->get('usertype');
-                    }
-                    if(!is_null($request->get('customStartDate')) && !is_null($request->get('customEndDate')))
-                    {
-                        $params['customStartDate']            = $request->get('customStartDate');
-                        $params['customEndDate']              = $request->get('customEndDate');
-                    }
-                    
-                    $complaints                  = $complaintObject->complaintCount($params);
-                    $complaintStatusCount        = $complaintObject->complaintStatusCount($params);
-                    
-                    if($request->get('usertype') == 'mpa_id'){
-                        //fetch data mpa wise with respect to complaints with filter dates
-                        $mpaComplaintAreaWise        = $complaintObject->mpaComplaintCount($params);
-                        //fetch data mna wise with respect to complaints with filter dates
-                        $mnaComplaintAreaWise        = [];
-                    }elseif ($request->get('usertype') == 'user_id') {
-                        //fetch data mpa wise with respect to complaints with filter dates
-                        $mpaComplaintAreaWise        = [];
-                        //fetch data mna wise with respect to complaints with filter dates
-                        $mnaComplaintAreaWise        =  $complaintObject->mnaComplaintCount($params);
-                    }else{
-                        //fetch data mpa wise with respect to complaints with filter dates
-                        $mpaComplaintAreaWise        = $complaintObject->mpaComplaintCount($params);
-                        //fetch data mna wise with respect to complaints with filter dates
-                        $mnaComplaintAreaWise        = $complaintObject->mnaComplaintCount($params);
-                    }
+                $datesArray = Helper::getDateByFilterValue($filterValue);
+ 
+                $startDate              = Arr::get($datesArray, 'startDate');
+                $endDate                = Arr::get($datesArray, 'endDate');
 
-                    
-
-                    //fetch data category wise with respect to complaints with filter dates
-                    $categoryComplaintAreaWise   = $complaintObject->categoriesComplaintCount($params);
-                }
-                //dashboard for mna
-                elseif(Auth::user()->hasRole('MNA'))
-                {
-                    if(!is_null($request->get('customStartDate')) && !is_null($request->get('customEndDate')))
-                    {
-                        $params['customStartDate']            = $request->get('customStartDate');
-                        $params['customEndDate']              = $request->get('customEndDate');
-                    }
-
-                    $params['userId']            = $userId;
-                    $params['userType']            = 'user_id';
-                    $complaints                  = $complaintObject->complaintCount($params);
-                    $complaintStatusCount        = $complaintObject->complaintStatusCount($params);
-                    $mpaComplaintAreaWise        = [];
-                    $mnaComplaintAreaWise        = $complaintObject->mnaComplaintCount($params);
-                    $categoryComplaintAreaWise   = $complaintObject->categoriesComplaintCount($params);
-                }
-                //dashboard for mpa
-                elseif (Auth::user()->hasRole('MPA'))
-                {
-                    if(!is_null($request->get('customStartDate')) && !is_null($request->get('customEndDate')))
-                    {
-                        $params['customStartDate']            = $request->get('customStartDate');
-                        $params['customEndDate']              = $request->get('customEndDate');
-                    }
-                    $params['userId']            = $userId;
-                    $params['userType']            = 'mpa_id';
-                    $complaints                  = $complaintObject->complaintCount($params);
-                    $complaintStatusCount        = $complaintObject->complaintStatusCount($params);
-                    $mpaComplaintAreaWise        = $complaintObject->mpaComplaintCount($params);
-                    $mnaComplaintAreaWise        = [];
-                    $categoryComplaintAreaWise   = $complaintObject->categoriesComplaintCount($params);
-                }
-                //fetch data areas wise with respect to complaints
-                $areasWiseComplaint              = $complaintObject->areasComplaintCount($params);
+                $params['startDate']    = $startDate;
+                $params['endDate']      = $endDate;
+                               
             }
-            //default view before filters are clicked
-            else
-            {
-                $usersCount                 = User::count();
-                $complainantsCount          = Complainant::count();
+            else if(!empty($request->get('customStartDate')) && !empty($request->get('customEndDate')))
+            {   
+                $customStartDate        = date("Y-m-d 00:00:00", strtotime($request->get('customStartDate')));
+                $customEndDate          = date("Y-m-d 23:59:59", strtotime($request->get('customEndDate')));
 
-                if(Auth::user()->hasRole('admin'))
-                {
-                    $params['userType']         = 'user_id';
-                    $complaints                 = $complaintObject->complaintCount($params);
-                    //fetch data mpa wise with respect to complaints
-                    $mpaComplaintAreaWise       = $complaintObject->mpaComplaintCount($params);
-                    //fetch data mna wise with respect to complaints
-                    $mnaComplaintAreaWise       = $complaintObject->mnaComplaintCount($params);
-                    //fetch data category wise with respect to complaints
-                    $categoryComplaintAreaWise  = $complaintObject->categoriesComplaintCount($params);
-
-                    $complaintStatusCount       = $complaintObject->complaintStatusCount($params);
-                }
-                elseif(Auth::user()->hasRole('MNA'))
-                {
-                    
-                    $params['userId']           = $userId;
-                    $params['userType']         = 'user_id';
-                    $complaints                 = $complaintObject->complaintCount($params);
-                    $mnaComplaintAreaWise       = $complaintObject->mnaComplaintCount($params);
-                    $mpaComplaintAreaWise       = [];
-                    $categoryComplaintAreaWise  = $complaintObject->categoriesComplaintCount($params);
-                    $complaintStatusCount       = $complaintObject->complaintStatusCount($params);
-                }
-                elseif(Auth::user()->hasRole('MPA'))
-                {
-
-                    $params['userId']           = $userId;
-                    $params['userType']         = 'mpa_id';
-                    $complaints                 = $complaintObject->complaintCount($params);
-                    $mnaComplaintAreaWise       = [];
-                    $mpaComplaintAreaWise       = $complaintObject->mpaComplaintCount($params);
-                    $categoryComplaintAreaWise  = $complaintObject->categoriesComplaintCount($params);
-                    $complaintStatusCount       = $complaintObject->complaintStatusCount($params);
-                }
-                //fetch data areas wise with respect to complaints
-                $areasWiseComplaint             = $complaintObject->areasComplaintCount();
+                $params['startDate']    = $customStartDate;
+                $params['endDate']      = $customEndDate;
             }
 
-            $data['users']                  = $usersCount;
-            $data['complainants']           = $complainantsCount;
-            $data['complaintStatus']        = $complaintStatusCount;
-            //mpaComplaintCount
-            $data['mpaComplaintsCount']     = $mpaComplaintAreaWise;
-            //mnaComplaintCount
-            $data['mnaComplaintsCount']     = $mnaComplaintAreaWise;
-            
-            //categoryComplaintCount
-            $data['categoryComplaintCount'] = $categoryComplaintAreaWise;
-            //areaComplaintCount
-            $data['areasComplaintCount']    = $areasWiseComplaint;
+
+            $complaints                  = $complaintObject->complaintCount($params);
+            $complaintStatusCount        = $complaintObject->complaintStatusCount($params);
+
             $data['complaints']             = $complaints;
-            $data['hasRole']                = Auth::user()->getRoleNames();
-
-            $data =  array_merge($data,$complaintStatusCount);
+            $data['complaintStatus']        = $complaintStatusCount;
+           
+           $data =  array_merge($data,$complaintStatusCount);
 
             return response()->json($data);
 
         }catch(\Exception $e)
         {
             return $this->getCustomExceptionMessage($e);
-
+            
         }
     }
 
