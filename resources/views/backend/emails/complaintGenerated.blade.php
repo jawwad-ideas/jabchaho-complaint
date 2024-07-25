@@ -27,23 +27,10 @@
                                         <b style="width:25%;">Order Id: </b><span>{{$orderId}}</span>
                                     </div>
                                     <div style="width:100%;display:flex;padding:10px 5px;">
-<<<<<<< HEAD
                                         <b style="width:25%;">Complaint Type</b><span>{{$complaintType}}</span>
                                     </div>
                                     <div style="width:100%;display:flex;padding:10px 5px;">
                                         <b style="width:25%;">Name</b><span>{{$name}}</span>
-=======
-                                        <b style="width:25%;">Query Type: </b><span>{{$queryType}}</span>
-                                    </div>
-                                    <div style="width:100%;display:flex;padding:10px 5px;">
-                                        <b style="width:25%;">Complaint Type: </b><span>{{$complaintType}}</span>
-                                    </div>
-                                    <div style="width:100%;display:flex;padding:10px 5px;">
-                                        <b style="width:25%;">Inquiry Type: </b><span>{{$inquiryType}}</span>
-                                    </div>
-                                    <div style="width:100%;display:flex;padding:10px 5px;">
-                                        <b style="width:25%;">Name: </b><span>{{$name}}</span>
->>>>>>> faed591a19a2c7bbd8823b753980c5a5877c712a
                                     </div>
                                     <div style="width:100%;display:flex;padding:10px 5px;">
                                         <b style="width:25%;">Email: </b><span>{{$email}}</span>
