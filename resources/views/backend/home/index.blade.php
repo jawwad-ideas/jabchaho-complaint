@@ -154,7 +154,7 @@
                         </div>
                         <div class="stats-count">
                             <h1 class="fw-bold text-dark" id="under-investigation"></h1>
-                            <h6 class="mb-0 text-dark">under Investigation</h6>
+                            <h6 class="mb-0 text-dark">Under Investigation</h6>
                         </div>
                     </div>
                 </div>
