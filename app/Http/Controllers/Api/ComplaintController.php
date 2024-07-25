@@ -32,9 +32,7 @@ class ComplaintController extends Controller
             
             $validateValues                     = $request->validated();
 
-            $insertData['query_type']           = Arr::get($validateValues, 'query_type');
-            $insertData['complaint_type']       = Arr::get($validateValues, 'complaint_type');
-            $insertData['inquiry_type']         = Arr::get($validateValues, 'inquiry_type');
+            $insertData['complaint_type']       = Arr::get($validateValues, 'complaint_type');   
             $insertData['order_id']             = Arr::get($validateValues, 'order_id');
             $insertData['name']                 = Arr::get($validateValues, 'name');
             $insertData['email']                = Arr::get($validateValues, 'email');

@@ -25,10 +25,7 @@ class CreateComplaintRequest extends FormRequest
     {
         return 
         [
-            
-            'query_type'            => 'required|in:' . implode(',', array_keys(config('constants.query_type'))),
             'complaint_type'        => 'required|in:' . implode(',', array_keys(config('constants.complaint_type'))),
-            'inquiry_type'          => 'nullable|in:' . implode(',', array_keys(config('constants.inquiry_type'))),
             'order_id'              => 'required|unique:complaints,order_id|integer|min:1',
             'name'                  => 'required|string|max:100',
             'email'                 => 'required|email|max:150',
@@ -46,13 +43,8 @@ class CreateComplaintRequest extends FormRequest
     public function messages()
     {
         return [
-            'query_type.required' => 'The Query Type is required.',
-            'query_type.in' => 'The selected Query Type is invalid.',
-
             'complaint_type.required' => 'The Complaint Type is required.',
             'complaint_type.in' => 'The selected Complaint Type is invalid.',
-            
-            'inquiry_type.in' => 'The selected Inquiry Type is invalid.',
             
             'order_id.required' => 'The order ID is required.',
             'order_id.integer' => 'The order ID must be an integer.',

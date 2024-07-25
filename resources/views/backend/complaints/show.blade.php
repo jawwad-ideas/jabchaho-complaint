@@ -118,28 +118,10 @@
             
                 <div class="inner-row d-flex gap-4 mb-0.5">
                     <div class="inner-label">
-                        <p class="mb-0"><b>Query Type:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ config('constants.query_type.'.Arr::get($complaintData, 'query_type'))  }}</p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 mb-0.5">
-                    <div class="inner-label">
                         <p class="mb-0"><b>Complaint Type:</b></p>
                     </div>
                     <div class="inner-value">
                         <p class="text-muted mb-0">{{ config('constants.complaint_type.'.Arr::get($complaintData, 'complaint_type'))  }}</p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 mb-0.5">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Inquiry Type:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ config('constants.inquiry_type.'.Arr::get($complaintData, 'inquiry_type'))  }}</p>
                     </div>
                 </div>
 
