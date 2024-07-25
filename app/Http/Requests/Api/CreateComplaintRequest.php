@@ -31,68 +31,44 @@ class CreateComplaintRequest extends FormRequest
             'email'                 => 'required|email|max:150',
             'mobile_number'         => 'required|string|min:10|max:15',
             'comments'              => 'required|string|max:300',
-            'invoice'               => 'required|image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',
-            'picture_1'             => 'required|image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',  // For multiple pictures
-            'picture_2'             => 'image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',  // For multiple pictures
-            'picture_3'             => 'image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',  // For multiple pictures
-            'picture_4'             => 'image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',  // For multiple pictures
-            'picture_5'             => 'image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',  // For multiple pictures
+            'attachments'           => 'required',
+            'attachments.*'         => 'image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',
         ];
     }
 
     public function messages()
     {
         return [
-            'complaint_type.required' => 'The Complaint Type is required.',
-            'complaint_type.in' => 'The selected Complaint Type is invalid.',
+            'complaint_type.required'       => 'The Complaint/Inquiry Type is required.',
+            'complaint_type.in'             => 'The selected Complaint/Inquiry Type is invalid.',
             
-            'order_id.required' => 'The order ID is required.',
-            'order_id.integer' => 'The order ID must be an integer.',
-            'order_id.min' => 'The order ID must be a positive integer.',
-            'order_id.unique'  => 'Complaint has already been submitted for this order.',
+            'order_id.required'             => 'The order ID is required.',
+            'order_id.integer'              => 'The order ID must be an integer.',
+            'order_id.min'                  => 'The order ID must be a positive integer.',
+            'order_id.unique'               => 'Complaint has already been submitted for this order.',
             
-            'name.required' => 'The Name is required.',
-            'name.string' => 'The Name must be a string.',
-            'name.max' => 'The Name may not be greater than :max characters.',
+            'name.required'                 => 'The Name is required.',
+            'name.string'                   => 'The Name must be a string.',
+            'name.max'                      => 'The Name may not be greater than :max characters.',
             
-            'email.required' => 'The Email is required.',
-            'email.email' => 'The Email must be a valid email address.',
-            'email.max' => 'The Email may not be greater than :max characters.',
+            'email.required'                => 'The Email is required.',
+            'email.email'                   => 'The Email must be a valid email address.',
+            'email.max'                     => 'The Email may not be greater than :max characters.',
             
-            'mobile_number.required' => 'The Mobile number is required.',
-            'mobile_number.string' => 'The Mobile number must be a string.',
-            'mobile_number.min' => 'The Mobile number must be at least 10 characters.',
-            'mobile_number.max' => 'The Mobile number may not be greater than 15 characters.',
+            'mobile_number.required'        => 'The Mobile number is required.',
+            'mobile_number.string'          => 'The Mobile number must be a string.',
+            'mobile_number.min'             => 'The Mobile number must be at least 10 characters.',
+            'mobile_number.max'             => 'The Mobile number may not be greater than 15 characters.',
             
-            'comments.required' => 'The Comments are required.',
-            'comments.string' => 'The Comments must be a string.',
-            'comments.max' => 'The Comments may not be greater than :max characters.',
+            'comments.required'             => 'The Comments are required.',
+            'comments.string'               => 'The Comments must be a string.',
+            'comments.max'                  => 'The Comments may not be greater than :max characters.',
             
-            'invoice.required' => 'The Invoice is required.',
-            'invoice.image' => 'The Invoice must be an image.',
-            'invoice.mimes' => 'The Invoice must be a file of type: jpeg, png, jpg, gif.',
-            'invoice.max' => 'The Invoice may not be greater than 2048 kilobytes.',
+            'attachments.required'          => 'Please upload at least one file.',
+            'attachments.*.image'           => 'The Attachments must be an image.',
+            'attachments.*.mimes'           => 'The Attachments must be a file of type: jpeg, png, jpg',
+            'attachments.*.max'             => 'The Attachments may not be greater than :max kilobytes.',
 
-            'picture_1.required' => 'Picture 1 is required.',
-            'picture_1.image' => 'Picture 1 must be an image.',
-            'picture_1.mimes' => 'Picture 1 must be a file of type: jpeg, png, jpg, gif.',
-            'picture_1.max' => 'Picture 1 may not be greater than 2048 kilobytes.',
-            
-            'picture_2.image' => 'Picture 2 must be an image.',
-            'picture_2.mimes' => 'Picture 2 must be a file of type: jpeg, png, jpg, gif.',
-            'picture_2.max' => 'Picture 2 may not be greater than 2048 kilobytes.',
-            
-            'picture_3.image' => 'Picture 3 must be an image.',
-            'picture_3.mimes' => 'Picture 3 must be a file of type: jpeg, png, jpg, gif.',
-            'picture_3.max' => 'Picture 3 may not be greater than 2048 kilobytes.',
-           
-            'picture_4.image' => 'Picture 4 must be an image.',
-            'picture_4.mimes' => 'Picture 4 must be a file of type: jpeg, png, jpg, gif.',
-            'picture_4.max' => 'Picture 4 may not be greater than 2048 kilobytes.',
-            
-            'picture_5.image' => 'Picture 5 must be an image.',
-            'picture_5.mimes' => 'Picture 5 must be a file of type: jpeg, png, jpg, gif.',
-            'picture_5.max' => 'Picture 5 may not be greater than 2048 kilobytes.',
         ];
     }
 

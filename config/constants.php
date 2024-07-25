@@ -11,9 +11,9 @@ return [
 	'complaint_number_starting_index' =>1000,
     'files_supported'=>'png, jpg, jpeg, doc, docx, xls, xlsx, pdf',
 	'complaint_type' =>[1=>'Damaged', 2=>'Incomplete Component', 3=>'Missing Article', 4=>'Stains', 5=>'Shrinkage issue', 6=>'Others'],
-	'complaint_form_images' =>['invoice' => 'Invoice', 'picture_1' => 'Picture 1', 'picture_2' => 'Picture 2', 'picture_3' => 'Picture 3', 'picture_4' => 'Picture 4', 'picture_5' => 'Picture 5' ],
 	'boolean_options' => [1=>'Yes', 0 =>'No'],
 	'gender_options' => [1=>'Male', 0 =>'Female',3 =>'Others'],
+	'document_name'  => ['complaint'=>'Complaint'],
 	'files' =>[
 		'filetypes' 				=> 'assets/images/icons/filetypes',
 		'complaint_documents' 		=> 'assets/uploads/complaint_documents/',

@@ -83,7 +83,8 @@ class ComplaintController extends Controller
 
     public function uploadImages($request=null,$complaintId=0)
     {
-        $files = $request->allFiles();
+        $files = $request->file('attachments');
+  
         if(!empty($files))
         {
             $counter = 1;
@@ -103,7 +104,7 @@ class ComplaintController extends Controller
 
                     $complaintDocumnet                      = array();
                     $complaintDocumnet['complaint_id']      = $complaintId;
-                    $complaintDocumnet['document_name']     = $fieldName;
+                    $complaintDocumnet['document_name']     = config('constants.document_name.complaint');
                     $complaintDocumnet['file']              = $newName;
                     $complaintDocumnet['original_file']     = $filename;
                     
