@@ -34,12 +34,12 @@ class CreateComplaintRequest extends FormRequest
             'email'                 => 'required|email|max:150',
             'mobile_number'         => 'required|string|min:10|max:15',
             'comments'              => 'required|string|max:300',
-            'invoice'               => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'picture_1'             => 'required|image|mimes:jpeg,png,jpg|max:2048',  // For multiple pictures
-            'picture_2'             => 'image|mimes:jpeg,png,jpg|max:2048',  // For multiple pictures
-            'picture_3'             => 'image|mimes:jpeg,png,jpg|max:2048',  // For multiple pictures
-            'picture_4'             => 'image|mimes:jpeg,png,jpg|max:2048',  // For multiple pictures
-            'picture_5'             => 'image|mimes:jpeg,png,jpg|max:2048',  // For multiple pictures
+            'invoice'               => 'required|image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',
+            'picture_1'             => 'required|image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',  // For multiple pictures
+            'picture_2'             => 'image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',  // For multiple pictures
+            'picture_3'             => 'image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',  // For multiple pictures
+            'picture_4'             => 'image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',  // For multiple pictures
+            'picture_5'             => 'image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',  // For multiple pictures
         ];
     }
 

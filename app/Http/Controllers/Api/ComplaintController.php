@@ -53,7 +53,7 @@ class ComplaintController extends Controller
                 $complaintId    = Arr::get($complaintData, 'id',0);
 
                 $prefix =config('constants.complaint_number_starting_index'); //complaint_number_starting_index
-                $complaintNumber = ($prefix + $complaintId);
+                $complaintNumber = "JB-".($prefix + $complaintId)."-".date('Y');
     
                 $complaintData->update(['complaint_number' => $complaintNumber]);
     

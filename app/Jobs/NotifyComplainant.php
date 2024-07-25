@@ -58,8 +58,7 @@ class NotifyComplainant implements ShouldQueue
             {
 
                 $data = [
-                    'name' => Arr::get($complaintData, 'name'),
-                    'order_id' => Arr::get($complaintData, 'order_id')
+                    'complaint_number' => Arr::get($complaintData, 'complaint_number')
                 ];
                 
                 $message = Helper::replaceSmsTemplate(Arr::get($configurations, 'complaint_sms_template'),$data);
