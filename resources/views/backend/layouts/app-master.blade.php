@@ -57,7 +57,7 @@
                     <ul class="list-group list-group-flush mt-4 list-unstyled">
                         @if(Auth::user()->can('home.index'))
                         <li class="list-item px-3 py-3"><a href="{{ route('home.index') }}"
-                                class="text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                class="text-start text-decoration-none d-flex gap-3 align-items-center text-light">
                                 <i class="fa fa-solid fa-chart-pie text-theme-yellow-light fa-2x"></i>
                                 Dashboard</a>
                         </li>
