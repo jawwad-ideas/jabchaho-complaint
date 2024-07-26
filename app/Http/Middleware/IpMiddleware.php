@@ -26,9 +26,9 @@ class IpMiddleware
         $configurations     = $this->getConfigurations($filters);
         
         $ips                = Arr::get($configurations, 'api_ips_whitelist');
-    
+        
         $ipsArray =  explode(',',$ips);
-        if (in_array(request()->server('SERVER_ADDR'), $ipsArray)) {
+        if (in_array($request->ip(), $ipsArray)) {
             return $next($request);
         }
         
