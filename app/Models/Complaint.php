@@ -138,7 +138,8 @@ class Complaint extends Model
             foreach ($complaintStatusesWithCounts as $row) 
             {
                 $id =  Arr::get($row, 'id');
-                $name = str_replace(' ', '', Arr::get($row, 'name'));
+                //$name = str_replace(' ', '', Arr::get($row, 'name'));
+                $name = Arr::get($row, 'name');
                 $count = Arr::get($row, 'complaints_count');
                 $statusCount[$id] = [
                     'name' => $name,
