@@ -34,18 +34,18 @@
     <div class="text-lg-end text-center position-relative">
         <div class="btn-group chart-filter-btns mt-lg-0 mt-4" role="group">
             <small type="button" data-value=""
-                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold btn-outline-dark">All</small>
+                class="btn btn-sm rounded bg-theme-yellow me-2 filters border-0 text-theme-dark fw-bold">All</small>
             <small type="button" data-value="day"
-                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold btn-outline-dark">Day</small>
+                class="btn btn-sm rounded bg-theme-yellow me-2 filters border-0 text-theme-dark fw-bold">Day</small>
             <small type="button" data-value="week"
-                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold btn-outline-dark">Week</small>
+                class="btn btn-sm rounded bg-theme-yellow me-2 filters border-0 text-theme-dark fw-bold">Week</small>
             <small type="button" data-value="month"
-                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold btn-outline-dark">Month</small>
+                class="btn btn-sm rounded bg-theme-yellow me-2 filters border-0 text-theme-dark fw-bold">Month</small>
             <small type="button" data-value="3-months"
-                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold btn-outline-dark">3
+                class="btn btn-sm rounded bg-theme-yellow me-2 filters border-0 text-theme-dark fw-bold">3
                 Months</small>
             <small type="button" id="showDateFilterBox"
-                class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold btn-outline-dark">
+                class="btn btn-sm rounded bg-theme-yellow me-2 filters border-0 text-theme-dark fw-bold">
                 Custom</small>
         </div>
         <div id="dateFilterBox" class="my-4 shadow rounded p-4" style="display:none;">
@@ -217,9 +217,9 @@
 
 
         <div
-            class="col-xxl-3 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
+            class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
             <div class="chart-section">
-                <div class=" chart-section-heading my-3">
+                <div class=" chart-section-heading my-3 bg-theme-yellow text-theme-dark">
                     <h6 class="mb-0 fw-bold">Complaints Status Report</h6>
                 </div>
                 <div class="chart-box">
@@ -227,9 +227,21 @@
                 </div>
             </div>
         </div>
-    
+
+        <div style="display:none;"
+            class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
+            <div class="chart-section">
+                <div class=" chart-section-heading my-3 bg-theme-yellow text-theme-dark">
+                    <h6 class="mb-0 fw-bold">Category Wise Complaints Report</h6>
+                </div>
+                <div class="chart-box">
+                    <div class="categoryWiseComplaintsChart" id="categoryWiseComplaintsChart"></div>
+                </div>
+            </div>
+        </div>
+
     </div>
-    
+
 
 
 
@@ -252,17 +264,12 @@
     justify-content: center;
 }
 </style>
-<style>
-#complaintChartMnaMpaWise {
-    width: 100%;
-    height: 500px;
-}
-</style>
+
 
 <style>
 #complaintsPieChart {
     width: 100%;
-    height: 500px;
+    height: 350px;
 }
 </style>
 
@@ -274,14 +281,131 @@
 </style>
 
 <script>
+function categoryWiseComplaintsChart(dataset) {
+    var categoryWiseComplaintsChart = am4core.create("categoryWiseComplaintsChart", am4charts.XYChart);
+    categoryWiseComplaintsChart.hiddenState.properties.opacity = 0;
+
+
+    if (dataset.length > 0) {
+        categoryWiseComplaintsChart.data = dataset;
+    } else {
+        categoryWiseComplaintsChart.hidden = true;
+        $("#categoryWiseComplaintsChart").html(
+            '<div class="no-data-found">No Complaints found!</div>');
+    }
+
+    categoryWiseComplaintsChart.paddingRight = 40;
+
+    var categoryWiseComplaintsChartCategoryAxis = categoryWiseComplaintsChart.yAxes.push(new am4charts.CategoryAxis());
+    categoryWiseComplaintsChartCategoryAxis.dataFields.category = "name";
+    categoryWiseComplaintsChartCategoryAxis.renderer.grid.template.strokeOpacity = 0;
+    categoryWiseComplaintsChartCategoryAxis.renderer.minGridDistance = 10;
+    categoryWiseComplaintsChartCategoryAxis.renderer.labels.template.dx = -40;
+    categoryWiseComplaintsChartCategoryAxis.renderer.minWidth = 120;
+    categoryWiseComplaintsChartCategoryAxis.renderer.tooltip.dx = -40;
+
+    var categoryWiseComplaintsChartValueAxis = categoryWiseComplaintsChart.xAxes.push(new am4charts.ValueAxis());
+    categoryWiseComplaintsChartValueAxis.renderer.inside = true;
+    categoryWiseComplaintsChartValueAxis.renderer.labels.template.fillOpacity = 0.3;
+    categoryWiseComplaintsChartValueAxis.renderer.grid.template.strokeOpacity = 0;
+    categoryWiseComplaintsChartValueAxis.min = 0;
+    categoryWiseComplaintsChartValueAxis.cursorTooltipEnabled = false;
+    categoryWiseComplaintsChartValueAxis.renderer.baseGrid.strokeOpacity = 0;
+    categoryWiseComplaintsChartValueAxis.renderer.labels.template.dy = 20;
+
+    var categoryWiseComplaintsChartSeries = categoryWiseComplaintsChart.series.push(new am4charts.ColumnSeries);
+    categoryWiseComplaintsChartSeries.dataFields.valueX = "steps";
+    categoryWiseComplaintsChartSeries.dataFields.categoryY = "name";
+    categoryWiseComplaintsChartSeries.tooltipText = "{valueX.value}";
+    categoryWiseComplaintsChartSeries.tooltip.pointerOrientation = "vertical";
+    categoryWiseComplaintsChartSeries.tooltip.dy = -30;
+    categoryWiseComplaintsChartSeries.columnsContainer.zIndex = 100;
+
+    var columnTemplate = categoryWiseComplaintsChartSeries.columns.template;
+    columnTemplate.height = am4core.percent(50);
+    columnTemplate.maxHeight = 50;
+    columnTemplate.column.cornerRadius(60, 10, 60, 10);
+    columnTemplate.strokeOpacity = 0;
+
+    categoryWiseComplaintsChartSeries.heatRules.push({
+        target: columnTemplate,
+        property: "fill",
+        dataField: "valueX",
+        min: am4core.color("#e5dc36"),
+        max: am4core.color("#5faa46")
+    });
+    categoryWiseComplaintsChartSeries.mainContainer.mask = undefined;
+
+    var cursor = new am4charts.XYCursor();
+    categoryWiseComplaintsChart.cursor = cursor;
+    cursor.lineX.disabled = true;
+    cursor.lineY.disabled = true;
+    cursor.behavior = "none";
+
+    var bullet = columnTemplate.createChild(am4charts.CircleBullet);
+    bullet.circle.radius = 30;
+    bullet.valign = "middle";
+    bullet.align = "left";
+    bullet.isMeasured = true;
+    bullet.interactionsEnabled = false;
+    bullet.horizontalCenter = "right";
+    bullet.interactionsEnabled = false;
+
+    var hoverState = bullet.states.create("hover");
+    var outlineCircle = bullet.createChild(am4core.Circle);
+    outlineCircle.adapter.add("radius", function(radius, target) {
+        var circleBullet = target.parent;
+        return circleBullet.circle.pixelRadius + 10;
+    })
+
+    var image = bullet.createChild(am4core.Image);
+    image.width = 60;
+    image.height = 60;
+    image.horizontalCenter = "middle";
+    image.verticalCenter = "middle";
+    image.propertyFields.href = "href";
+
+    image.adapter.add("mask", function(mask, target) {
+        var circleBullet = target.parent;
+        return circleBullet.circle;
+    })
+
+    var previousBullet;
+    categoryWiseComplaintsChart.cursor.events.on("cursorpositionchanged", function(event) {
+        var dataItem = categoryWiseComplaintsChartSeries.tooltipDataItem;
+
+        if (dataItem.column) {
+            var bullet = dataItem.column.children.getIndex(1);
+
+            if (previousBullet && previousBullet != bullet) {
+                previousBullet.isHover = false;
+            }
+
+            if (previousBullet != bullet) {
+
+                var hs = bullet.states.getKey("hover");
+                hs.properties.dx = dataItem.column.pixelWidth;
+                bullet.isHover = true;
+
+                previousBullet = bullet;
+            }
+        }
+    })
+
+
+}
 
 function generatecomplaintsPieChart(dataset) {
 
-// console.log(dataset);
+    // console.log(dataset);
     // Create Complain Pie Chart Instance
     var complaintsPieChart = am4core.create("complaintsPieChart", am4charts
         .PieChart);
+
+
     complaintsPieChart.legend = new am4charts.Legend();
+    complaintsPieChart.legend.position = "right";
+    complaintsPieChart.legend.valign = "middle";
     complaintsPieChart.legend.maxHeight = 200;
     complaintsPieChart.legend.scrollable = true;
     complaintsPieChart.legend.fontSize = 12;
@@ -305,14 +429,14 @@ function generatecomplaintsPieChart(dataset) {
 
         let int = 0;
 
-        const colors = ["#1ccab8", "#a01497", "#e64b55", "#508ff4", "#ffbf43", "#FA8072"];
+        const colors = ["#4b49ac", "#fa9fab", "#fe4747", "#508ff4", "#ffbf43", "#ab47bc"];
         for (const key in dataset) {
             complaintsPieChart.data.push({
                 category: dataset[key].name,
                 value: dataset[key].count,
                 color: colors[int++],
-                statusId :key
-                
+                statusId: key
+
             });
             if (int == colors.length) {
                 int = 0;
@@ -363,6 +487,7 @@ function generatecomplaintsPieChart(dataset) {
     complaintsPieChartSeries.hiddenState.properties.startAngle = -90;
 
     // complaintsPieChart.radius = am4core.percent();
+    complaintsPieChart.radius = am4core.percent(80);
     complaintsPieChart.innerRadius = am4core.percent(10);
     complaintsPieChart.logo
         .disabled = true;
@@ -370,9 +495,9 @@ function generatecomplaintsPieChart(dataset) {
         .percent(0);
 
 
-        // Set the Slice Click Event and set the url as per status
+    // Set the Slice Click Event and set the url as per status
 
-        complaintsPieChartSeries.slices.template.events.on("hit", function(event) {
+    complaintsPieChartSeries.slices.template.events.on("hit", function(event) {
         let statusCategory = event.target.dataItem.category;
         let statusValue = event.target.dataItem.value;
         let statusId = event.target.dataItem.statusId;
@@ -386,6 +511,27 @@ function generatecomplaintsPieChart(dataset) {
 
 }
 
+
+
+
+// dummy data for categorywise complaints
+categoryWisComplaintseData = [{
+    "name": "Dry Cleaing",
+    "steps": 45688,
+    "href": "https://www.amcharts.com/wp-content/uploads/2019/04/monica.jpg"
+}, {
+    "name": "Wash Only",
+    "steps": 35781,
+    "href": "https://www.amcharts.com/wp-content/uploads/2019/04/joey.jpg"
+}, {
+    "name": "Iron Only",
+    "steps": 25464,
+    "href": "https://www.amcharts.com/wp-content/uploads/2019/04/ross.jpg"
+}, {
+    "name": "Wash & Iron",
+    "steps": 18788,
+    "href": "https://www.amcharts.com/wp-content/uploads/2019/04/phoebe.jpg"
+}];
 
 function getCountData(filterValue, customStartDate = null, customEndDate = null) {
     $.ajaxSetup({
@@ -403,10 +549,9 @@ function getCountData(filterValue, customStartDate = null, customEndDate = null)
             customStartDate: customStartDate,
             customEndDate: customEndDate,
         },
-        success: function(result) 
-        {
+        success: function(result) {
             //result.complaintStatus[0]?result.complaintStatus[0].count:0
-            
+
             $('#total-complaints').text(JSON.stringify(result.complaints));
             $('#duplicate-case').text(JSON.stringify(result.complaintStatus[1]?result.complaintStatus[1].count:0));
             $('#pending-for-approval').text(JSON.stringify(result.complaintStatus[2]?result.complaintStatus[2].count:0));
@@ -421,7 +566,7 @@ function getCountData(filterValue, customStartDate = null, customEndDate = null)
             var complaintStatus = result.complaintStatus;
 
             console.log(complaintStatus);
- 
+
             am4core.ready(function() {
 
                 // Chart Themes begin
@@ -431,6 +576,13 @@ function getCountData(filterValue, customStartDate = null, customEndDate = null)
                 // ################################################### complaintsPieChart CODE STARTS FROM HERE ################################################### //
                 generatecomplaintsPieChart(complaintStatus);
                 // ################################################### complaintsPieChart CODE ENDS HERE ################################################### //
+
+
+
+                // ################################################### complaintsPieChart CODE STARTS FROM HERE ################################################### //
+                categoryWiseComplaintsChart(categoryWisComplaintseData);
+                // ################################################### complaintsPieChart CODE ENDS HERE ################################################### //
+
 
                 $(".loader").hide();
 
@@ -478,7 +630,6 @@ $(document).on('click', '.custom-date-search', function() {
 });
 
 getCountData('');
-
 </script>
 
 @endsection

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Complaint;
 use App\Models\ComplaintDocument;
 use App\Http\Requests\Api\CreateComplaintRequest;
+use App\Http\Requests\Api\TrackComplaintRequest;
 use App\Helpers\Helper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
@@ -32,9 +33,7 @@ class ComplaintController extends Controller
             
             $validateValues                     = $request->validated();
 
-            $insertData['query_type']           = Arr::get($validateValues, 'query_type');
-            $insertData['complaint_type']       = Arr::get($validateValues, 'complaint_type');
-            $insertData['inquiry_type']         = Arr::get($validateValues, 'inquiry_type');
+            $insertData['complaint_type']       = Arr::get($validateValues, 'complaint_type');   
             $insertData['order_id']             = Arr::get($validateValues, 'order_id');
             $insertData['name']                 = Arr::get($validateValues, 'name');
             $insertData['email']                = Arr::get($validateValues, 'email');
@@ -85,7 +84,8 @@ class ComplaintController extends Controller
 
     public function uploadImages($request=null,$complaintId=0)
     {
-        $files = $request->allFiles();
+        $files = $request->file('attachments');
+  
         if(!empty($files))
         {
             $counter = 1;
@@ -105,7 +105,7 @@ class ComplaintController extends Controller
 
                     $complaintDocumnet                      = array();
                     $complaintDocumnet['complaint_id']      = $complaintId;
-                    $complaintDocumnet['document_name']     = $fieldName;
+                    $complaintDocumnet['document_name']     = config('constants.document_name.complaint');
                     $complaintDocumnet['file']              = $newName;
                     $complaintDocumnet['original_file']     = $filename;
                     
@@ -117,6 +117,52 @@ class ComplaintController extends Controller
 
             ComplaintDocument::insert($complaintDocumnets);
         }        
+    }
+
+
+    public function track(TrackComplaintRequest $request)
+    {
+        try
+        {
+            $responsearray                      = array();
+            $responseStatus                     = false;
+            $responseMessage                    = array();
+            $complainData                       = array();
+            
+            $validateValues                     = $request->validated();
+
+            $complaintNumber                    = Arr::get($validateValues, 'complaint_number');   
+            
+            $complaint =  Complaint::where(['complaint_number' =>$complaintNumber])->first();
+            if(!empty($complaint))
+            {
+                $responseMessage                = 'Successful';
+                $complainData['order_id']       = Arr::get($complaint, 'order_id');
+                $complainData['status']         = Arr::get($complaint->complaintStatus, 'name');
+                $complainData['complaint_type'] = config('constants.complaint_type.'.Arr::get($complaint, 'complaint_type'));
+                $complainData['name']           = Arr::get($complaint, 'name');
+                $complainData['email']          = Arr::get($complaint, 'email');
+                $complainData['mobile_number']  = Arr::get($complaint, 'mobile_number');
+                $complainData['comments']       = Arr::get($complaint, 'comments');
+            } 
+            else
+            {
+                $responseMessage                = 'No Complaint Found';
+                
+            }
+
+            $responsearray['status'] 	        = $responseStatus;
+            $responsearray['message'] 	        = $responseMessage;
+            $responsearray['complainData'] 	    = $complainData;
+        
+            
+            return response()->json($responsearray);
+        }    
+        catch(\Exception $e) 
+        {
+            \Log::error("api/ComplaintController -> track =>".$e->getMessage());
+            return Helper::customErrorMessage();
+        }
     }
 
 

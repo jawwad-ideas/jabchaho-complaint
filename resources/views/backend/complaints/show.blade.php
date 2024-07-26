@@ -118,28 +118,10 @@
             
                 <div class="inner-row d-flex gap-4 mb-0.5">
                     <div class="inner-label">
-                        <p class="mb-0"><b>Query Type:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ config('constants.query_type.'.Arr::get($complaintData, 'query_type'))  }}</p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 mb-0.5">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Complaint Type:</b></p>
+                        <p class="mb-0"><b>Complaint/Inquiry Type:</b></p>
                     </div>
                     <div class="inner-value">
                         <p class="text-muted mb-0">{{ config('constants.complaint_type.'.Arr::get($complaintData, 'complaint_type'))  }}</p>
-                    </div>
-                </div>
-
-                <div class="inner-row d-flex gap-4 mb-0.5">
-                    <div class="inner-label">
-                        <p class="mb-0"><b>Inquiry Type:</b></p>
-                    </div>
-                    <div class="inner-value">
-                        <p class="text-muted mb-0">{{ config('constants.inquiry_type.'.Arr::get($complaintData, 'inquiry_type'))  }}</p>
                     </div>
                 </div>
 
@@ -215,7 +197,7 @@
                                             @foreach ($complaintDocument as $row)
                                                 <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 mt-4">
                                                     <div class="py-2 px-2" style="box-shadow: 0 0 10px 0 #ddd;">
-                                                        <h6>{{ config('constants.complaint_form_images.'.Arr::get($row, 'document_name'));  }}</h6>
+                                                        
                                                         <div class="d-flex align-items-center gap-2">
                                                             @if (Helper::isFileExtensionForIcon(Arr::get($row, 'file')))
                                                                 <img class="center"

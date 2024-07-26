@@ -47,7 +47,14 @@
     cursor: pointer;
 }
 
+.chart-filter-btns .btn {
+    box-shadow: inset -3px -3px 16px 0px #2125293b;
+    transition: all .2s ease-in-out;
+}
 
+.chart-filter-btns .btn:hover {
+    transform: scale(1.05);
+}
 
 /* FOR SMALL LAPTOP SCREENS */
 @media only screen and (max-width:1024px) {
@@ -346,6 +353,10 @@ ul.btn-toggle-nav li:not(:last-child):after {
     margin-bottom: 20px;
 }
 
+.stats-card:last-child {
+    margin-bottom: 0;
+}
+
 .stats-card .stats-card-content .stats-icon {
     font-size: 15px;
 }
@@ -394,9 +405,9 @@ ul.btn-toggle-nav li:not(:last-child):after {
 }
 
 .chart-section-heading.my-3 {
-    background: #fce100;
+    /* background: #fce100; */
     margin: 0 !important;
-    color: #fff;
+    /* color: #fff; */
     padding: 25px 0;
 }
 
