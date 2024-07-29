@@ -102,6 +102,7 @@ class NotifyComplainant implements ShouldQueue
                     'complaintNumber'       => Arr::get($complaintData, 'complaint_number'),
                     'orderId'               => Arr::get($complaintData, 'order_id'),
                     'complaintType'         => config('constants.complaint_type.'.Arr::get($complaintData, 'complaint_type')),
+                    'service'               => Arr::get($complaintData->service, 'name'),
                     'name'                  => Arr::get($complaintData, 'name'),
                     'email'                 => Arr::get($complaintData, 'email'),
                     'mobileNumber'          => Arr::get($complaintData, 'mobile_number'),

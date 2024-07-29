@@ -35,6 +35,7 @@ class ComplaintController extends Controller
 
             $insertData['complaint_type']       = Arr::get($validateValues, 'complaint_type');   
             $insertData['order_id']             = Arr::get($validateValues, 'order_id');
+            $insertData['service_id']           = Arr::get($validateValues, 'service_id');
             $insertData['name']                 = Arr::get($validateValues, 'name');
             $insertData['email']                = Arr::get($validateValues, 'email');
             $insertData['mobile_number']        = Arr::get($validateValues, 'mobile_number');
@@ -140,6 +141,7 @@ class ComplaintController extends Controller
                 $complainData['order_id']       = Arr::get($complaint, 'order_id');
                 $complainData['status']         = Arr::get($complaint->complaintStatus, 'name');
                 $complainData['complaint_type'] = config('constants.complaint_type.'.Arr::get($complaint, 'complaint_type'));
+                $complainData['service']        = Arr::get($complaint->service, 'name');
                 $complainData['name']           = Arr::get($complaint, 'name');
                 $complainData['email']          = Arr::get($complaint, 'email');
                 $complainData['mobile_number']  = Arr::get($complaint, 'mobile_number');

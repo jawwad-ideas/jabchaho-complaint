@@ -109,6 +109,15 @@
 
                 <div class="inner-row d-flex gap-4 my-1">
                     <div class="inner-label">
+                        <p class="mb-0"><b>Service:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{ Arr::get($complaintData->service, 'name') }}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
                         <p class="mb-0"><b>Priority:</b></p>
                     </div>
                     <div class="inner-value">
