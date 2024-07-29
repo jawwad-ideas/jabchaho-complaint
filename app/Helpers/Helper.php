@@ -407,6 +407,28 @@ class Helper
 		
 		return $phoneNumber;
 	}
+
+	public static function getdevice($request=null)
+	{
+		$userAgent = $request->header('User-Agent');
+
+		if (stripos($userAgent, 'Postman') !== false) {
+            $deviceType = 'Postman';
+        } elseif (stripos($userAgent, 'Insomnia') !== false) {
+            $deviceType = 'Insomnia';
+        } elseif (stripos($userAgent, 'curl') !== false) {
+            $deviceType = 'cURL';
+        } elseif (stripos($userAgent, 'iPhone') !== false || stripos($userAgent, 'iPad') !== false) {
+            $deviceType = 'iOS';
+        } elseif (stripos($userAgent, 'Android') !== false) {
+            $deviceType = 'Android';
+        } else {
+            $deviceType = 'Web';
+        }
+
+		return $deviceType;
+
+	}
 	
 	
 }

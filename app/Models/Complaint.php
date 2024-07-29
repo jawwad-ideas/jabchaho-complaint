@@ -24,6 +24,7 @@ class Complaint extends Model
      * @var array
      */
     protected $fillable = [
+        'device_type',
         'complaint_number',
         'complaint_status_id',
         'complaint_priority_id',

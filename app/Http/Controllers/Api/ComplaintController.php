@@ -32,7 +32,8 @@ class ComplaintController extends Controller
             $responseMessage                    = array();
             
             $validateValues                     = $request->validated();
-
+            
+            $insertData['device_type']          = Helper::getdevice($request); 
             $insertData['complaint_type']       = Arr::get($validateValues, 'complaint_type');   
             $insertData['order_id']             = Arr::get($validateValues, 'order_id');
             $insertData['service_id']           = Arr::get($validateValues, 'service_id');
