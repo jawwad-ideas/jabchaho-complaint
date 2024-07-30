@@ -91,9 +91,17 @@ class UsersController extends Controller
         // you should create a generated random password and email it to the user
 
        $postUserData = $request->validated();
+   
        unset($postUserData['confirm_password']);
+       unset($postUserData['role']);
+       //encrypt password
+       //$postUserData['password'] = bcrypt($postUserData['password']);
+       $userId = User::insertGetId($postUserData);
+       $roleId = (int) $request->input('role');
+       $roleIdArray = [$roleId];
 
-        $user->create($postUserData);
+       // Sync roles for the newly created user
+       $user->find($userId)->syncRoles($roleIdArray);
 
         return redirect()->route('users.index')
             ->withSuccess(__('User created successfully.'));

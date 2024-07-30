@@ -79,8 +79,8 @@ class ComplaintController extends Controller
             'complaint_status_id'   => $complaint_status_id
 
         ];
-
-        if(!Auth::user()->hasRole('admin'))
+        
+        if(!Auth::user()->hasRole(config('constants.roles.admin')) && !Auth::user()->hasRole(config('constants.roles.complaint_management_team')))
         {
             $userId= Auth::guard('web')->user()->id;
             $query = $query->where(['user_id' =>$userId]);

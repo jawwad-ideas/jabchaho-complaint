@@ -24,6 +24,7 @@ return [
 		'logout.perform' => 'logout.perform',
 		//'home.index'     => 'home.index'
 	],
+	'roles'=>['admin'=>'admin','complaint_management_team' => 'complaint management team'],
 
 	'mobile_code' =>[
 		'0300', '0301', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309', '0310', '0311', '0312', '0313', '0314', '0315', '0316', '0317', '0318', '0320',
