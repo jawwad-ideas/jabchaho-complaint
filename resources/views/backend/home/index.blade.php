@@ -217,7 +217,7 @@
 
 
         <div
-            class="col-xxl-4 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
+            class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
             <div class="chart-section">
                 <div class=" chart-section-heading my-3 bg-theme-yellow text-theme-dark">
                     <h6 class="mb-0 fw-bold">Complaints Status Report</h6>
@@ -228,8 +228,8 @@
             </div>
         </div>
 
-        <div
-            class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
+        <div class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3"
+            style="display:none;">
             <div class="chart-section">
                 <div class=" chart-section-heading my-3 bg-theme-yellow text-theme-dark">
                     <h6 class="mb-0 fw-bold">Category Wise Complaints Report</h6>
@@ -553,15 +553,24 @@ function getCountData(filterValue, customStartDate = null, customEndDate = null)
             //result.complaintStatus[0]?result.complaintStatus[0].count:0
 
             $('#total-complaints').text(JSON.stringify(result.complaints));
-            $('#duplicate-case').text(JSON.stringify(result.complaintStatus[1]?result.complaintStatus[1].count:0));
-            $('#pending-for-approval').text(JSON.stringify(result.complaintStatus[2]?result.complaintStatus[2].count:0));
-            $('#pending-at-finance').text(JSON.stringify(result.complaintStatus[3]?result.complaintStatus[3].count:0));
-            $('#refunded').text(JSON.stringify(result.complaintStatus[4]?result.complaintStatus[4].count:0));
-            $('#under-investigation').text(JSON.stringify(result.complaintStatus[5]?result.complaintStatus[5].count:0));
-            $('#voucher-issued').text(JSON.stringify(result.complaintStatus[6]?result.complaintStatus[6].count:0));
-            $('#hold').text(JSON.stringify(result.complaintStatus[7]?result.complaintStatus[7].count:0));
-            $('#resolved').text(JSON.stringify(result.complaintStatus[8]?result.complaintStatus[8].count:0));
-            $('#closed').text(JSON.stringify(result.complaintStatus[9]?result.complaintStatus[9].count:0));
+            $('#duplicate-case').text(JSON.stringify(result.complaintStatus[1] ? result.complaintStatus[1]
+                .count : 0));
+            $('#pending-for-approval').text(JSON.stringify(result.complaintStatus[2] ? result
+                .complaintStatus[2].count : 0));
+            $('#pending-at-finance').text(JSON.stringify(result.complaintStatus[3] ? result.complaintStatus[
+                3].count : 0));
+            $('#refunded').text(JSON.stringify(result.complaintStatus[4] ? result.complaintStatus[4].count :
+                0));
+            $('#under-investigation').text(JSON.stringify(result.complaintStatus[5] ? result
+                .complaintStatus[5].count : 0));
+            $('#voucher-issued').text(JSON.stringify(result.complaintStatus[6] ? result.complaintStatus[6]
+                .count : 0));
+            $('#hold').text(JSON.stringify(result.complaintStatus[7] ? result.complaintStatus[7].count :
+            0));
+            $('#resolved').text(JSON.stringify(result.complaintStatus[8] ? result.complaintStatus[8].count :
+                0));
+            $('#closed').text(JSON.stringify(result.complaintStatus[9] ? result.complaintStatus[9].count :
+                0));
 
             var complaintStatus = result.complaintStatus;
 
