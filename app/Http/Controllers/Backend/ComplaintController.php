@@ -20,6 +20,7 @@ use App\Http\Requests\Backend\ReAssignRequest;
 use App\Models\ComplaintPriority;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Jobs\AssignedComplaint as AssignedComplaint;
 
 class ComplaintController extends Controller
 {
@@ -179,16 +180,24 @@ class ComplaintController extends Controller
     public function assignComplaint(AssignToRequest $request)
     {
         $params = array();
-        $params['complaintId']  = $request->input('complaintId');
+        
+        $complaintId            = $request->input('complaintId');;
+        $userId                 = $request->input('userId');
+
+        $params['complaintId']  = $complaintId;
         $params['priorityId']   = $request->input('priorityId');
-        $params['userId']       = $request->input('userId');
+        $params['userId']       = $userId;
 
-        $complaint      = new Complaint;
+        $complaint              = new Complaint;
 
-        $assigned       = $complaint->assignTo($params);
+        $assigned               = $complaint->assignTo($params);
 
         if($assigned)
         {
+             // Dispatch job to send emails and SMS
+             dispatch(new AssignedComplaint($complaintId,$userId));
+             $this->queueWorker();
+
             return response()->json(['status' => true, 'message'=>"Complaint has been assigned successfully."]);
         }
         else
