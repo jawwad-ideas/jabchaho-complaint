@@ -11,6 +11,7 @@ use App\Http\Requests\Backend\StoreUserRequest;
 use App\Http\Requests\Backend\UpdateUserRequest;
 use App\Helpers\Helper;
 use Illuminate\Support\Arr;
+use App\Jobs\UserCreated as UserCreated;
 
 class UsersController extends Controller
 {
@@ -95,13 +96,20 @@ class UsersController extends Controller
        unset($postUserData['confirm_password']);
        unset($postUserData['role']);
        //encrypt password
-       //$postUserData['password'] = bcrypt($postUserData['password']);
+       $passwordText             = $postUserData['password']; 
+       $postUserData['password'] = bcrypt($postUserData['password']);
        $userId = User::insertGetId($postUserData);
        $roleId = (int) $request->input('role');
        $roleIdArray = [$roleId];
 
        // Sync roles for the newly created user
        $user->find($userId)->syncRoles($roleIdArray);
+
+
+        // Dispatch job to send emails
+        $postUserData['password'] = $passwordText;
+        dispatch(new UserCreated($postUserData));
+        $this->queueWorker();
 
         return redirect()->route('users.index')
             ->withSuccess(__('User created successfully.'));

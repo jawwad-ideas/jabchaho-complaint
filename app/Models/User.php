@@ -93,4 +93,9 @@ class User extends Authenticatable
         return $users;
     }
 
+    function getUserById($userId=0)
+    {
+        return User::where(['id' => $userId])->first();
+    }
+
 }
