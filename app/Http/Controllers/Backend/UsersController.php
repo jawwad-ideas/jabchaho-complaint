@@ -96,7 +96,7 @@ class UsersController extends Controller
        unset($postUserData['confirm_password']);
        unset($postUserData['role']);
        //encrypt password
-       //$postUserData['password'] = bcrypt($postUserData['password']);
+       $postUserData['password'] = bcrypt($postUserData['password']);
        $userId = User::insertGetId($postUserData);
        $roleId = (int) $request->input('role');
        $roleIdArray = [$roleId];
