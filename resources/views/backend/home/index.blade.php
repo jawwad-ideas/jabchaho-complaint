@@ -217,7 +217,7 @@
 
 
         <div
-            class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
+            class="col-xxl-4 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
             <div class="chart-section">
                 <div class=" chart-section-heading my-3 bg-theme-yellow text-theme-dark">
                     <h6 class="mb-0 fw-bold">Complaints Status Report</h6>
@@ -228,7 +228,7 @@
             </div>
         </div>
 
-        <div style="display:none;"
+        <div
             class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
             <div class="chart-section">
                 <div class=" chart-section-heading my-3 bg-theme-yellow text-theme-dark">
@@ -276,7 +276,7 @@
 <style>
 #categoryWiseComplaintsChart {
     width: 100%;
-    height: 300px;
+    height: 500px;
 }
 </style>
 
@@ -285,6 +285,8 @@ function categoryWiseComplaintsChart(dataset) {
     var categoryWiseComplaintsChart = am4core.create("categoryWiseComplaintsChart", am4charts.XYChart);
     categoryWiseComplaintsChart.hiddenState.properties.opacity = 0;
 
+    // categoryWiseComplaintsChart.scrollbarY = new am4core.Scrollbar();
+    // categoryWiseComplaintsChart.scrollbarX = new am4core.Scrollbar();
 
     if (dataset.length > 0) {
         categoryWiseComplaintsChart.data = dataset;
@@ -294,47 +296,45 @@ function categoryWiseComplaintsChart(dataset) {
             '<div class="no-data-found">No Complaints found!</div>');
     }
 
-    categoryWiseComplaintsChart.paddingRight = 40;
+    // categoryWiseComplaintsChart.paddingRight = 40;
 
-    var categoryWiseComplaintsChartCategoryAxis = categoryWiseComplaintsChart.yAxes.push(new am4charts.CategoryAxis());
-    categoryWiseComplaintsChartCategoryAxis.dataFields.category = "name";
-    categoryWiseComplaintsChartCategoryAxis.renderer.grid.template.strokeOpacity = 0;
-    categoryWiseComplaintsChartCategoryAxis.renderer.minGridDistance = 10;
-    categoryWiseComplaintsChartCategoryAxis.renderer.labels.template.dx = -40;
-    categoryWiseComplaintsChartCategoryAxis.renderer.minWidth = 120;
-    categoryWiseComplaintsChartCategoryAxis.renderer.tooltip.dx = -40;
+    var categoryAxis = categoryWiseComplaintsChart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "name";
+    categoryAxis.renderer.grid.template.strokeOpacity = 0;
+    categoryAxis.renderer.minGridDistance = 0;
+    categoryAxis.renderer.labels.template.dy = 35;
+    categoryAxis.renderer.tooltip.dy = 35;
 
-    var categoryWiseComplaintsChartValueAxis = categoryWiseComplaintsChart.xAxes.push(new am4charts.ValueAxis());
-    categoryWiseComplaintsChartValueAxis.renderer.inside = true;
-    categoryWiseComplaintsChartValueAxis.renderer.labels.template.fillOpacity = 0.3;
-    categoryWiseComplaintsChartValueAxis.renderer.grid.template.strokeOpacity = 0;
-    categoryWiseComplaintsChartValueAxis.min = 0;
-    categoryWiseComplaintsChartValueAxis.cursorTooltipEnabled = false;
-    categoryWiseComplaintsChartValueAxis.renderer.baseGrid.strokeOpacity = 0;
-    categoryWiseComplaintsChartValueAxis.renderer.labels.template.dy = 20;
+    var valueAxis = categoryWiseComplaintsChart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.renderer.inside = true;
+    valueAxis.renderer.labels.template.fillOpacity = 0.3;
+    valueAxis.renderer.grid.template.strokeOpacity = 0;
+    valueAxis.min = 0;
+    valueAxis.cursorTooltipEnabled = false;
+    valueAxis.renderer.baseGrid.strokeOpacity = 0;
 
-    var categoryWiseComplaintsChartSeries = categoryWiseComplaintsChart.series.push(new am4charts.ColumnSeries);
-    categoryWiseComplaintsChartSeries.dataFields.valueX = "steps";
-    categoryWiseComplaintsChartSeries.dataFields.categoryY = "name";
-    categoryWiseComplaintsChartSeries.tooltipText = "{valueX.value}";
-    categoryWiseComplaintsChartSeries.tooltip.pointerOrientation = "vertical";
-    categoryWiseComplaintsChartSeries.tooltip.dy = -30;
-    categoryWiseComplaintsChartSeries.columnsContainer.zIndex = 100;
+    var series = categoryWiseComplaintsChart.series.push(new am4charts.ColumnSeries);
+    series.dataFields.valueY = "steps";
+    series.dataFields.categoryX = "name";
+    series.tooltipText = "{valueY.value}";
+    series.tooltip.pointerOrientation = "vertical";
+    series.tooltip.dy = -6;
+    series.columnsContainer.zIndex = 100;
 
-    var columnTemplate = categoryWiseComplaintsChartSeries.columns.template;
-    columnTemplate.height = am4core.percent(50);
-    columnTemplate.maxHeight = 50;
-    columnTemplate.column.cornerRadius(60, 10, 60, 10);
+    var columnTemplate = series.columns.template;
+    columnTemplate.width = am4core.percent(50);
+    columnTemplate.maxWidth = 66;
+    columnTemplate.column.cornerRadius(60, 60, 10, 10);
     columnTemplate.strokeOpacity = 0;
 
-    categoryWiseComplaintsChartSeries.heatRules.push({
+    series.heatRules.push({
         target: columnTemplate,
         property: "fill",
-        dataField: "valueX",
+        dataField: "valueY",
         min: am4core.color("#e5dc36"),
         max: am4core.color("#5faa46")
     });
-    categoryWiseComplaintsChartSeries.mainContainer.mask = undefined;
+    series.mainContainer.mask = undefined;
 
     var cursor = new am4charts.XYCursor();
     categoryWiseComplaintsChart.cursor = cursor;
@@ -344,11 +344,11 @@ function categoryWiseComplaintsChart(dataset) {
 
     var bullet = columnTemplate.createChild(am4charts.CircleBullet);
     bullet.circle.radius = 30;
-    bullet.valign = "middle";
-    bullet.align = "left";
+    bullet.valign = "bottom";
+    bullet.align = "center";
     bullet.isMeasured = true;
-    bullet.interactionsEnabled = false;
-    bullet.horizontalCenter = "right";
+    bullet.mouseEnabled = false;
+    bullet.verticalCenter = "bottom";
     bullet.interactionsEnabled = false;
 
     var hoverState = bullet.states.create("hover");
@@ -372,7 +372,7 @@ function categoryWiseComplaintsChart(dataset) {
 
     var previousBullet;
     categoryWiseComplaintsChart.cursor.events.on("cursorpositionchanged", function(event) {
-        var dataItem = categoryWiseComplaintsChartSeries.tooltipDataItem;
+        var dataItem = series.tooltipDataItem;
 
         if (dataItem.column) {
             var bullet = dataItem.column.children.getIndex(1);
@@ -384,7 +384,7 @@ function categoryWiseComplaintsChart(dataset) {
             if (previousBullet != bullet) {
 
                 var hs = bullet.states.getKey("hover");
-                hs.properties.dx = dataItem.column.pixelWidth;
+                hs.properties.dy = -bullet.parent.pixelHeight + 30;
                 bullet.isHover = true;
 
                 previousBullet = bullet;

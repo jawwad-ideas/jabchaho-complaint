@@ -49,7 +49,6 @@ class ComplaintController extends Controller
             if(!empty($complaintData))
             { 
                 $responseStatus 	        = true;
-                $responseMessage	        = 'Successful';
 
                 $complaintId    = Arr::get($complaintData, 'id',0);
 
@@ -64,24 +63,24 @@ class ComplaintController extends Controller
                 // Dispatch job to send emails and SMS
                 dispatch(new NotifyComplainant($complaintId));
                 $this->queueWorker();
+                $responsearray['message'] 	        = 'Complaint Submitted Successfully';
             }
             else
             {
-                $responseMessage	        = array();
+                $responsearray['message'] 	        = 'Error Submitting Complaint';
             }
             
             
             $responsearray['status'] 	        = $responseStatus;
-            $responsearray['message'] 	        = $responseMessage;
-        
-            
-            return response()->json($responsearray);
-        }    
+        }
         catch(\Exception $e) 
         {
-            \Log::error("api/ComplaintController -> create =>".$e->getMessage());
-            return Helper::customErrorMessage();
+            $responsearray['message'] 	        = 'Error Submitting Complaint '.$e->getMessage();
+            $responsearray['status'] 	        = false;
+
+            // \Log::error("api/ComplaintController -> create =>".$e->getMessage());
         }
+        return response()->json($responsearray);
     }
 
     public function uploadImages($request=null,$complaintId=0)

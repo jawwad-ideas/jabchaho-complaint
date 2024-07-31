@@ -89,7 +89,7 @@ class CreateComplaintRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'status' => false,
-            'message' => $validator->errors(),
+            'errors' => $validator->errors(),
         ]));
     }
 }
