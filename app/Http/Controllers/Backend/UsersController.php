@@ -96,6 +96,7 @@ class UsersController extends Controller
        unset($postUserData['confirm_password']);
        unset($postUserData['role']);
        //encrypt password
+       $passwordText             = $postUserData['password']; 
        $postUserData['password'] = bcrypt($postUserData['password']);
        $userId = User::insertGetId($postUserData);
        $roleId = (int) $request->input('role');
@@ -106,6 +107,7 @@ class UsersController extends Controller
 
 
         // Dispatch job to send emails
+        $postUserData['password'] = $passwordText;
         dispatch(new UserCreated($postUserData));
         $this->queueWorker();
 
