@@ -24,17 +24,25 @@ class Complaint extends Model
      * @var array
      */
     protected $fillable = [
+        'device_type',
         'complaint_number',
         'complaint_status_id',
         'complaint_priority_id',
         'complaint_type',
         'order_id',
+        'service_id',
         'name',
         'mobile_number',
         'email',
         'comments',
         'user_id',
     ];
+
+     //relationship b/w Complaint & ComplaintStatus
+     public function service()
+     {
+         return $this->belongsTo(Service::class, 'service_id');
+     }
 
     //relationship b/w Complaint & ComplaintStatus
     public function complaintStatus()
@@ -149,27 +157,6 @@ class Complaint extends Model
         }
 
         return $statusCount;
-    }
-
-    
-    public function reAssignTo($params = array())
-    {
-
-        $complaintId = Arr::get($params, 'complaintId');
-        $mnaId       = Arr::get($params,'mnaId');
-        $mpaId       = Arr::get($params,'mpaId');
-
-        $data = [
-            'user_id' => $mnaId,
-            'mpa_id'  => $mpaId  
-        ];
-        
-        $reAssigned = Complaint::where(['id' => $complaintId])->update($data);
-        if ($reAssigned) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
 }

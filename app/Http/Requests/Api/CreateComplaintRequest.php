@@ -30,6 +30,7 @@ class CreateComplaintRequest extends FormRequest
             'name'                  => 'required|string|max:100',
             'email'                 => 'required|email|max:150',
             'mobile_number'         => 'required|string|min:10|max:15',
+            'service_id'            => 'required|exists:services,id',
             'comments'              => 'required|string|max:300',
             'attachments'           => 'required',
             'attachments.*'         => 'image|mimes:jpeg,png,jpg,image/jpeg,image/png,image/jpg|max:1048576',
@@ -59,6 +60,9 @@ class CreateComplaintRequest extends FormRequest
             'mobile_number.string'          => 'The Mobile number must be a string.',
             'mobile_number.min'             => 'The Mobile number must be at least 10 characters.',
             'mobile_number.max'             => 'The Mobile number may not be greater than 15 characters.',
+
+            'service_id.required'           => 'The Service field is required!',
+            'service_id.exists'             => 'The Service field is Invalid!',
             
             'comments.required'             => 'The Comments are required.',
             'comments.string'               => 'The Comments must be a string.',

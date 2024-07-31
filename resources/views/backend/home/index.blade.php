@@ -170,6 +170,47 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="stats-card border bg-theme-yellow px-2 w-100">
+                    <div
+                        class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
+                        <div class="stats-icon">
+                            <i class="fa fa-solid fa-check-double fa-2x text-dark mb-2"></i>
+                        </div>
+                        <div class="stats-count">
+                            <h1 class="fw-bold text-dark" id="hold"></h1>
+                            <h6 class="mb-0 text-dark">Hold</h6>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card border bg-theme-yellow px-2 w-100">
+                    <div
+                        class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
+                        <div class="stats-icon">
+                            <i class="fa fa-solid fa-check-double fa-2x text-dark mb-2"></i>
+                        </div>
+                        <div class="stats-count">
+                            <h1 class="fw-bold text-dark" id="resolved"></h1>
+                            <h6 class="mb-0 text-dark">Resolved</h6>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card border bg-theme-yellow px-2 w-100">
+                    <div
+                        class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
+                        <div class="stats-icon">
+                            <i class="fa fa-solid fa-check-double fa-2x text-dark mb-2"></i>
+                        </div>
+                        <div class="stats-count">
+                            <h1 class="fw-bold text-dark" id="closed"></h1>
+                            <h6 class="mb-0 text-dark">Closed</h6>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
         </div>
@@ -512,18 +553,15 @@ function getCountData(filterValue, customStartDate = null, customEndDate = null)
             //result.complaintStatus[0]?result.complaintStatus[0].count:0
 
             $('#total-complaints').text(JSON.stringify(result.complaints));
-            $('#duplicate-case').text(JSON.stringify(result.complaintStatus[1] ? result.complaintStatus[1]
-                .count : 0));
-            $('#pending-for-approval').text(JSON.stringify(result.complaintStatus[2] ? result
-                .complaintStatus[2].count : 0));
-            $('#pending-at-finance').text(JSON.stringify(result.complaintStatus[3] ? result.complaintStatus[
-                3].count : 0));
-            $('#refunded').text(JSON.stringify(result.complaintStatus[4] ? result.complaintStatus[4].count :
-                0));
-            $('#under-investigation').text(JSON.stringify(result.complaintStatus[5] ? result
-                .complaintStatus[5].count : 0));
-            $('#voucher-issued').text(JSON.stringify(result.complaintStatus[6] ? result.complaintStatus[6]
-                .count : 0));
+            $('#duplicate-case').text(JSON.stringify(result.complaintStatus[1]?result.complaintStatus[1].count:0));
+            $('#pending-for-approval').text(JSON.stringify(result.complaintStatus[2]?result.complaintStatus[2].count:0));
+            $('#pending-at-finance').text(JSON.stringify(result.complaintStatus[3]?result.complaintStatus[3].count:0));
+            $('#refunded').text(JSON.stringify(result.complaintStatus[4]?result.complaintStatus[4].count:0));
+            $('#under-investigation').text(JSON.stringify(result.complaintStatus[5]?result.complaintStatus[5].count:0));
+            $('#voucher-issued').text(JSON.stringify(result.complaintStatus[6]?result.complaintStatus[6].count:0));
+            $('#hold').text(JSON.stringify(result.complaintStatus[7]?result.complaintStatus[7].count:0));
+            $('#resolved').text(JSON.stringify(result.complaintStatus[8]?result.complaintStatus[8].count:0));
+            $('#closed').text(JSON.stringify(result.complaintStatus[9]?result.complaintStatus[9].count:0));
 
             var complaintStatus = result.complaintStatus;
 
