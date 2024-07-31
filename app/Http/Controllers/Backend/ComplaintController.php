@@ -194,7 +194,7 @@ class ComplaintController extends Controller
 
         if($assigned)
         {
-             // Dispatch job to send emails and SMS
+             // Dispatch job to send emails
              dispatch(new AssignedComplaint($complaintId,$userId));
              $this->queueWorker();
 

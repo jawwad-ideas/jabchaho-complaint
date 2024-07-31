@@ -11,6 +11,7 @@ use App\Http\Requests\Backend\StoreUserRequest;
 use App\Http\Requests\Backend\UpdateUserRequest;
 use App\Helpers\Helper;
 use Illuminate\Support\Arr;
+use App\Jobs\UserCreated as UserCreated;
 
 class UsersController extends Controller
 {
@@ -102,6 +103,11 @@ class UsersController extends Controller
 
        // Sync roles for the newly created user
        $user->find($userId)->syncRoles($roleIdArray);
+
+
+        // Dispatch job to send emails
+        dispatch(new UserCreated($postUserData));
+        $this->queueWorker();
 
         return redirect()->route('users.index')
             ->withSuccess(__('User created successfully.'));
