@@ -82,6 +82,12 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="complaint_status_changed_sms_template" class="form-label">Complaint Status Changed SMS Template:</label>
+                                <textarea class="form-control" id="complaint_status_changed_sms_template" name="complaint_status_changed_sms_template">{{Arr::get($configurations, 'complaint_status_changed_sms_template')}}</textarea>
+                            
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="api_ips_whitelist" class="form-label">Api Ips Whitelist:</label>
                                 <textarea class="form-control" id="api_ips_whitelist" name="api_ips_whitelist">{{Arr::get($configurations, 'api_ips_whitelist')}}</textarea>
                             

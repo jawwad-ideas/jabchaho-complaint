@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use App\Models\Complaint;
 use App\Models\ComplaintStatus;
+use App\Helpers\Helper;
+use App\Http\Traits\Configuration\ConfigurationTrait;
 
 class ComplaintStatusChanged implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ConfigurationTrait;
 
     /**
      * Create a new job instance.
@@ -41,6 +43,8 @@ class ComplaintStatusChanged implements ShouldQueue
     
         //Send Email
         $this->sendStatusChangedEmailToComplainant($complaintData,$complaintStatusData);
+        //Send Email
+        $this->sendStatusChangedSmsToComplainant($complaintData,$complaintStatusData);
     }
 
 
@@ -70,5 +74,56 @@ class ComplaintStatusChanged implements ShouldQueue
             return false;
         }
     }
+
+    public function sendStatusChangedSmsToComplainant($complaintData=array(),$complaintStatusData=array())
+    {
+        try 
+        {
+            //configuration filters
+            $filters            = ['complaint_sms_api_enable','complaint_sms_action','complaint_sms_sender','complaint_sms_username','complaint_sms_password','complaint_sms_format','complaint_sms_api_url','complaint_status_changed_sms_template'];
+            
+            //get configurations
+            $configurations     = $this->getConfigurations($filters);
+
+            //Check sms api is enabled or not
+            if(!empty(Arr::get($configurations, 'complaint_sms_api_enable')))
+            {
+
+                $data = [
+                    'complaint_number' => Arr::get($complaintData, 'complaint_number'),
+                    'name' => Arr::get($complaintStatusData, 'name'),
+                ];
+                
+                $message = Helper::replaceSmsTemplate(Arr::get($configurations, 'complaint_status_changed_sms_template'),$data);
+
+                $input 						    = array(); 
+                $input['action']                = Arr::get($configurations, 'complaint_sms_action');
+                $input['sender']                = Arr::get($configurations, 'complaint_sms_sender');
+                $input['username']              = Arr::get($configurations, 'complaint_sms_username');
+                $input['password']              = Arr::get($configurations, 'complaint_sms_password');
+                $input['recipient']             = Helper::formatPhoneNumber(Arr::get($complaintData, 'mobile_number'));
+                $input['messagedata']           = $message;
+                $input['format']                = Arr::get($configurations, 'complaint_sms_format');
+                
+                $params 						= array(); 	
+                $params['apiUrl']     			= Arr::get($configurations, 'complaint_sms_api_url');
+                $params['input']     			= $input;
+                $params['httpMethod']     		= config('constants.http_methods.get');
+                $params['apiType']     			= config('constants.content_type.xml');
+
+                #call api
+                $axApiResponseDecode = Helper::sendRequestToGateway($params);
+                //\Log::info('SMS sent successfully to ');
+                //\Log::info(''.print_r($axApiResponseDecode,true));
+                return true;
+            }
+        } 
+        catch (\Exception $e) 
+        {
+            \Log::error('Failed to send sms: ' . $e->getMessage());
+            return false;
+        }
+    }
+
     
 }
