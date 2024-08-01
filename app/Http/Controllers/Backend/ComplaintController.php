@@ -21,7 +21,7 @@ use App\Models\ComplaintPriority;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Jobs\AssignedComplaint as AssignedComplaint;
-
+use App\Jobs\ComplaintStatusChanged as ComplaintStatusChanged; 
 class ComplaintController extends Controller
 {
     public function index(Request $request)
@@ -512,6 +512,10 @@ class ComplaintController extends Controller
             'complaint_status_id' => $complaintStatusId,
             'updated_by' => auth()->id()
         ]);
+
+        // Dispatch job to send emails
+        dispatch(new ComplaintStatusChanged($complaintId,$complaintStatusId));
+        $this->queueWorker();
 
         return redirect()->back()->with('success', "Description Added successfully.");
     }

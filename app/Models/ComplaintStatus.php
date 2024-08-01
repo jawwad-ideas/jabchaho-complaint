@@ -82,4 +82,14 @@ class ComplaintStatus extends Model
             return false;
         }
     }
+
+    function getEnabledComplaintStatusById($complaintStatusId=0)
+    {
+        return ComplaintStatus::where(['is_enabled' => 1,'id'=>$complaintStatusId])->get(['id','name']);
+    }
+
+    function getComplaintStatusById($complaintStatusId=0)
+    {
+        return ComplaintStatus::where(['id'=>$complaintStatusId])->first(['id','name']);
+    }
 }
