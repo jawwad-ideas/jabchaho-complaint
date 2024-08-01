@@ -24,11 +24,13 @@ class ComplaintStatusChanged implements ShouldQueue
      */
     protected $complaintId;
     protected $complaintStatusId;
+    protected $configurations;
 
-    public function __construct($complaintId,$complaintStatusId)
+    public function __construct($complaintId,$complaintStatusId,$configurations)
     {
         $this->complaintId              = $complaintId;
         $this->complaintStatusId        = $complaintStatusId;
+        $this->configurations        = $configurations;
     }
 
     /**
@@ -36,15 +38,27 @@ class ComplaintStatusChanged implements ShouldQueue
      */
     public function handle(): void
     {
-        $complaintObject            = new Complaint;
-        $objectComplaintStatus      = new ComplaintStatus;
-        $complaintData              = $complaintObject->getComplaintDataById($this->complaintId);
-        $complaintStatusData        = $objectComplaintStatus->getComplaintStatusById($this->complaintStatusId );
-    
-        //Send Email
-        $this->sendStatusChangedEmailToComplainant($complaintData,$complaintStatusData);
-        //Send Email
-        $this->sendStatusChangedSmsToComplainant($complaintData,$complaintStatusData);
+            $complaintObject            = new Complaint;
+            $objectComplaintStatus      = new ComplaintStatus;
+            $complaintData              = $complaintObject->getComplaintDataById($this->complaintId);
+            $complaintStatusData        = $objectComplaintStatus->getComplaintStatusById($this->complaintStatusId);
+
+            
+        if(Arr::get($this->configurations, 'complaint_status_notify_type') == config('constants.complaint_status_notify_type_id.email') || Arr::get($this->configurations, 'complaint_status_notify_type') == config('constants.complaint_status_notify_type_id.both'))
+        { 
+            \Log::info('complaint_status_notify_type=>email or both');
+            //Send Email
+            $this->sendStatusChangedEmailToComplainant($complaintData,$complaintStatusData);
+        }
+        
+        if(Arr::get($this->configurations, 'complaint_status_notify_type') == config('constants.complaint_status_notify_type_id.sms') || Arr::get($this->configurations, 'complaint_status_notify_type') == config('constants.complaint_status_notify_type_id.both'))
+        {    
+            \Log::info('complaint_status_notify_type=>sms or both');
+            //Send Email
+            $this->sendStatusChangedSmsToComplainant($complaintData,$complaintStatusData,$this->configurations);
+
+        }
+        
     }
 
 
@@ -75,16 +89,10 @@ class ComplaintStatusChanged implements ShouldQueue
         }
     }
 
-    public function sendStatusChangedSmsToComplainant($complaintData=array(),$complaintStatusData=array())
+    public function sendStatusChangedSmsToComplainant($complaintData=array(),$complaintStatusData=array(),$configurations=array())
     {
         try 
         {
-            //configuration filters
-            $filters            = ['complaint_sms_api_enable','complaint_sms_action','complaint_sms_sender','complaint_sms_username','complaint_sms_password','complaint_sms_format','complaint_sms_api_url','complaint_status_changed_sms_template'];
-            
-            //get configurations
-            $configurations     = $this->getConfigurations($filters);
-
             //Check sms api is enabled or not
             if(!empty(Arr::get($configurations, 'complaint_sms_api_enable')))
             {

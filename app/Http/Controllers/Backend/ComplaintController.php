@@ -22,8 +22,11 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Jobs\AssignedComplaint as AssignedComplaint;
 use App\Jobs\ComplaintStatusChanged as ComplaintStatusChanged; 
+use App\Http\Traits\Configuration\ConfigurationTrait;
 class ComplaintController extends Controller
 {
+    use ConfigurationTrait;
+
     public function index(Request $request)
     {
         $data = $filterData = array();
@@ -513,9 +516,20 @@ class ComplaintController extends Controller
             'updated_by' => auth()->id()
         ]);
 
-        // Dispatch job to send emails
-        dispatch(new ComplaintStatusChanged($complaintId,$complaintStatusId));
-        $this->queueWorker();
+        //configuration filters
+        $filters            = ['complaint_sms_api_enable','complaint_sms_action','complaint_sms_sender','complaint_sms_username','complaint_sms_password','complaint_sms_format','complaint_sms_api_url','complaint_status_changed_sms_template','complaint_status_id','complaint_status_notify_type'];
+        
+        //get configurations
+        $configurations     = $this->getConfigurations($filters);
+
+        if(Arr::get($configurations, 'complaint_status_id') == $complaintStatusId)
+        {
+            \Log::info(print_r(Arr::get($configurations, 'complaint_status_id')));
+            \Log::info('complaint_status_id'.Arr::get($configurations, 'complaint_status_id'));
+            // Dispatch job to send emails
+            dispatch(new ComplaintStatusChanged($complaintId,$complaintStatusId,$configurations));
+            $this->queueWorker();
+        }
 
         return redirect()->back()->with('success', "Description Added successfully.");
     }
