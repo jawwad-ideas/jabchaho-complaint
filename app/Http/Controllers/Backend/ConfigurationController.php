@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Traits\Configuration\ConfigurationTrait;
 use App\Models\Configuration; 
+use App\Models\ComplaintStatus;
 
 class ConfigurationController extends Controller
 {
@@ -13,10 +14,13 @@ class ConfigurationController extends Controller
     {
         $data = array();
 
+        $objectComplaintStatus                  = new ComplaintStatus;
         //get configurations
         $configurations                         = $this->getConfigurations();
-        $data['enableDisableSmsApi']  = config('constants.complaint_sms_api_enable');
+        $data['enableDisableSmsApi']            = config('constants.complaint_sms_api_enable');
         $data['configurations']                 = $configurations;
+        $data['complaintStatuses']              = $objectComplaintStatus->getComplaintStatuses();//
+        $data['complaintStatusNotifyType']      = config('constants.complaint_status_notify_type');
 
         return view('backend.configurations.form')->with($data);
     }

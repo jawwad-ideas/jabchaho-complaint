@@ -82,9 +82,50 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="complaint_status_changed_sms_template" class="form-label">Complaint Status Changed SMS Template:</label>
+                                <textarea class="form-control" id="complaint_status_changed_sms_template" name="complaint_status_changed_sms_template">{{Arr::get($configurations, 'complaint_status_changed_sms_template')}}</textarea>
+                            
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="api_ips_whitelist" class="form-label">Api Ips Whitelist:</label>
                                 <textarea class="form-control" id="api_ips_whitelist" name="api_ips_whitelist">{{Arr::get($configurations, 'api_ips_whitelist')}}</textarea>
-                            
+                            </div>
+                            <h4>Complaint Status Change Notify Configuration</h4>
+                            <div class="mb-3">
+                                <label for="complaint_status_id" class="form-label">Complaint Status:</label>
+                                <select class="form-select p-2" id="complaint_status_id" name="complaint_status_id">
+                                    <option value=''>Select Status</option>
+                                    @if(!empty($complaintStatuses) )
+                                        @foreach($complaintStatuses as $complaintStatus)
+                                            @if(Arr::get($configurations, 'complaint_status_id') == Arr::get($complaintStatus, 'id'))
+                                            <option value="{{ trim(Arr::get($complaintStatus, 'id')) }}" selected>
+                                                {{trim(Arr::get($complaintStatus, 'name'))}}</option>
+                                            @else
+                                            <option value="{{trim(Arr::get($complaintStatus, 'id'))}}">
+                                                {{trim(Arr::get($complaintStatus, 'name'))}}</option>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="inputName">Complaint Status Notify Type:</label>
+                                <select id="complaint_status_notify_type" class="form-control" name="complaint_status_notify_type">
+                                    <option value=''>--Select--</option>
+                                    @if(!empty($complaintStatusNotifyType) )
+                                        @foreach($complaintStatusNotifyType as $key =>$value)
+                                            @if(old('_token') && old('complaint_status_notify_type') === $key)
+                                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option> 
+                                            @elseif( old('_token') === null && Arr::get($configurations, 'complaint_status_notify_type')==$key && array_key_exists(Arr::get($configurations, 'complaint_status_notify_type'), config('constants.complaint_status_notify_type')) )
+                                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option> 
+                                            @else
+                                                <option  value="{{trim($key)}}" >{{trim($value)}}</option>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </select>
                             </div>
 
                             <button type="submit"
