@@ -124,5 +124,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
         
     });
+
+
+    #report
+    Route::get('/report-by-user', 'ReportController@getReportByUser')->name('report.by.user');
+
 });
 
