@@ -45,18 +45,15 @@ class ComplaintStatusChanged implements ShouldQueue
 
             
         if(Arr::get($this->configurations, 'complaint_status_notify_type') == config('constants.complaint_status_notify_type_id.email') || Arr::get($this->configurations, 'complaint_status_notify_type') == config('constants.complaint_status_notify_type_id.both'))
-        { 
-            \Log::info('complaint_status_notify_type=>email or both');
+        {
             //Send Email
             $this->sendStatusChangedEmailToComplainant($complaintData,$complaintStatusData);
         }
         
         if(Arr::get($this->configurations, 'complaint_status_notify_type') == config('constants.complaint_status_notify_type_id.sms') || Arr::get($this->configurations, 'complaint_status_notify_type') == config('constants.complaint_status_notify_type_id.both'))
-        {    
-            \Log::info('complaint_status_notify_type=>sms or both');
+        {   
             //Send Email
             $this->sendStatusChangedSmsToComplainant($complaintData,$complaintStatusData,$this->configurations);
-
         }
         
     }

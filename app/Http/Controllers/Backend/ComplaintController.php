@@ -524,8 +524,6 @@ class ComplaintController extends Controller
 
         if(Arr::get($configurations, 'complaint_status_id') == $complaintStatusId)
         {
-            \Log::info(print_r(Arr::get($configurations, 'complaint_status_id')));
-            \Log::info('complaint_status_id'.Arr::get($configurations, 'complaint_status_id'));
             // Dispatch job to send emails
             dispatch(new ComplaintStatusChanged($complaintId,$complaintStatusId,$configurations));
             $this->queueWorker();
