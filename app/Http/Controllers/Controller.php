@@ -17,7 +17,7 @@ class Controller extends BaseController
         
         \Log::info($exception);
         //return '******Whoops, looks like something went wrong*****';
-        return view('frontend.includes.exceptions.500');
+        return view('errors.500');
     }
 
 

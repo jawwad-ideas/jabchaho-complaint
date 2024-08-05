@@ -159,4 +159,35 @@ class Complaint extends Model
         return $statusCount;
     }
 
+    public function getComplaintByUserReport()
+    {
+        // Get all status names
+        $statusNames = ComplaintStatus::where(['is_enabled' =>1])->pluck('name');
+            
+        // Build dynamic query with case statements
+        $query = Complaint::query()
+        ->join('complaint_statuses as cs', 'complaints.complaint_status_id', '=', 'cs.id')
+        ->leftJoin('users as u', 'complaints.user_id', '=', 'u.id')
+        ->select('u.name as user_name');
+
+        $query->addSelect(DB::raw('COUNT(*) as total_complaints'),);
+        
+        foreach ($statusNames as $status) 
+        {
+            $query->addSelect(DB::raw("COUNT(CASE WHEN cs.name = '$status' THEN 1 END) AS `{$status}_count` "));
+        }
+
+        $query->groupBy('u.name');
+        $reportData = $query->get();
+
+        // Calculate totals
+        $totals = $statusNames->mapWithKeys(function ($status) use ($reportData) {
+            $total = $reportData->sum($status.'_count');
+            return [$status.'_count' => $total];
+        });
+
+        return ['reportData' => $reportData, 'statusNames' => $statusNames,'totals' => $totals];
+             
+    }
+
 }

@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Backend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Complaint;
+use App\Models\ComplaintStatus;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReportsByUser;
 
 class ReportController extends Controller
 {
@@ -12,9 +16,16 @@ class ReportController extends Controller
     {
         try
         {
-            // Fetch users with their associated complaints and statuses
-            $users = User::with('complaints')->get();
-            dd($users);
+            $complaintObject    = new Complaint;
+            $result             = $complaintObject->getComplaintByUserReport();
+
+            if ($request->input('export') == 'excel') 
+            {
+                return Excel::download(new ReportsByUser($result), 'complaints_reports_by_user.xlsx');
+            }
+            
+            return view('backend.reports.user_complaint_counts', $result);
+            
         }
         catch(\Exception $e)
         {
