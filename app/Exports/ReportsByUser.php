@@ -31,29 +31,27 @@ class ReportsByUser implements FromCollection, WithHeadings
         {
             $reportData = Arr::get($this->resultSet,'reportData');
             $statusNames = Arr::get($this->resultSet,'statusNames');
-            $totals = Arr::get($this->resultSet,'totals');
+            $totals = Arr::get($this->resultSet,'totals',0);
 
             $sumComplaints = 0;
-
-            dd($reportData);
 
             if(!empty($reportData))
             {
                
                 foreach ($reportData as $row)
                 {
-                    $sumComplaints+= Arr::get($row,'total_complaints');
+                    $sumComplaints+= Arr::get($row,'total_complaints',0);
                     
                     $dataStart = array(
                         'user_name'             => Arr::get($row,'user_name'),
-                        'total_complaints'      => Arr::get($row,'total_complaints')
+                        'total_complaints'      => Arr::get($row,'total_complaints',0)
                     );
 
                     if(!empty($statusNames))
                     {
                         foreach($statusNames as $status)
                         {
-                          $dataEnd[$status]=  Arr::get($row,$status.'_count');
+                          $dataEnd[$status]=  Arr::get($row,$status.'_count',0);
                         }
                     }
 
@@ -70,7 +68,7 @@ class ReportsByUser implements FromCollection, WithHeadings
                     foreach ($statusNames as $status)
                     {
                     
-                        $dataFooter[$status]=  Arr::get($totals,$status.'_count');
+                        $dataFooter[$status]=  Arr::get($totals,$status.'_count',0);
                     }
                 }
 
