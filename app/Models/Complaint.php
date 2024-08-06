@@ -159,10 +159,14 @@ class Complaint extends Model
         return $statusCount;
     }
 
-    public function getComplaintByUserReport($request=null)
+    public function getComplaintByUserReport($request=null,$complaintStatuses)
     {
         // Get all status names
-        $statusNames = ComplaintStatus::where(['is_enabled' =>1])->pluck('name');
+        $statusNames = array();
+        foreach($complaintStatuses as $complaintStatus)
+        {
+            $statusNames[] = Arr::get($complaintStatus, 'name');
+        }
             
         // Build dynamic query with case statements
         $query = Complaint::query()
@@ -193,16 +197,33 @@ class Complaint extends Model
             $query->where('complaints.created_at', '<=', $request->input('end_date'));
         }
 
+        //statuses
+        if(!empty($request->input('complaint_status_id')))
+        {
+            if (is_array($request->input('complaint_status_id'))) 
+            {
+                $query->whereIn('complaints.complaint_status_id', $request->input('complaint_status_id'));
+            } else 
+            {
+                $explodedArray = explode(",", $request->input('complaint_status_id'));
+                $query->whereIn('complaints.complaint_status_id', $explodedArray);
+            }
+        }
+
         ////////////////////End Apply Filter \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
         $query->groupBy('u.name');
         $reportData = $query->get();
 
-        // Calculate totals
-        $totals = $statusNames->mapWithKeys(function ($status) use ($reportData) {
-            $total = $reportData->sum($status.'_count');
-            return [$status.'_count' => $total];
-        });
+        // // Calculate totals
+        $totals = array_combine(
+            array_map(function ($status) {
+                return $status . '_count';
+            }, $statusNames),
+            array_map(function ($status) use ($reportData) {
+                return $reportData->sum($status . '_count');
+            }, $statusNames)
+        );
 
         return ['reportData' => $reportData, 'statusNames' => $statusNames,'totals' => $totals];
              

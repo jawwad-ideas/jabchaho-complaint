@@ -86,7 +86,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         });
 
 
-
+        //report
+        Route::get('/report-by-user', 'ReportController@getReportByUser')->name('report.by.user');
             //Categories
         // Route::group(['prefix' => 'categories'], function() {
         //     Route::get('/', 'CategoryController@index')->name('categories.index');
@@ -126,8 +127,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
     });
 
 
-    #report
-    Route::get('/report-by-user', 'ReportController@getReportByUser')->name('report.by.user');
+
 
 });
 

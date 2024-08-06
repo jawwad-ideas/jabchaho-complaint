@@ -132,37 +132,7 @@
                         </li>
                         @endif
 
-                        @if(Auth::user()->can('report-complains'))
-                        <li class="list-item px-3 py-3">
-                            <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
-                                data-bs-toggle="collapse" data-bs-target="#reports">
-                                <span class="d-flex align-items-center gap-3 text-light">
-                                    <i class="fa fa-solid fa-file-export fa-2x text-theme-yellow-light"></i>
-                                    Reports </span>
-                                <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
-                            </div>
-                            <div class="collapse mt-3 ms-5" id="reports" style="">
-                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    @if(Auth::user()->can('report-complains'))
-                                    <li class="py-2 "><a href="{{route('report-complains')}}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
-                                            <i class="fa fa-solid fa-file-arrow-down text-theme-yellow-light"></i>
-                                            Complaints Summary</a>
-                                    </li>
-                                    @endif
-                                    @if(Auth::user()->can('report-by-complaints'))
-                                    <li class="py-2 "><a href="{{route('report-by-complaints')}}"
-                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
-                                            <i class="fa fa-solid fa-file-arrow-down text-theme-yellow-light"></i>
-                                            Reports by Complaints</a>
-                                    </li>
-                                    @endif
-                                </ul>
-                            </div>
-                        </li>
-                        @endif
-
-
+                        @if(Auth::user()->can('configurations.form') || Auth::user()->can('complaints.status.index') )
                         <li class="list-item px-3 py-3">
                             <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
                                 data-bs-toggle="collapse" data-bs-target="#settings">
@@ -201,6 +171,31 @@
                             </div>
 
                         </li>
+                        @endif
+
+                        @if(Auth::user()->can('report.by.user'))
+                        <li class="list-item px-3 py-3">
+                            <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
+                                data-bs-toggle="collapse" data-bs-target="#reports">
+                                <span class="d-flex align-items-center gap-3 text-light">
+                                    <i class="fa fa-solid fa-file-export fa-2x text-theme-yellow-light"></i>
+                                    Reports </span>
+                                <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
+                            </div>
+
+                            <div class="collapse mt-3 ms-5" id="reports" style="">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    @if(Auth::user()->can('report.by.user'))
+                                        <li class="py-2 "><a href="{{ route('report.by.user') }}"
+                                                class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                <i class="fa fa-solid fa-table-columns text-theme-yellow-light"></i>
+                                                Reports by User</a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </li>
+                        @endif
 
                     </ul>
                 </div>

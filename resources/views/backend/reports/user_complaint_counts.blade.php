@@ -5,7 +5,7 @@
     <div
         class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
-            <h3 class="fw-bold text-dark m-0">Search Reports by User.</h3>
+            <h3 class="fw-bold text-dark m-0">Search Reports by User</h3>
         </div>
         <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
             <div class="btn-group" role="group">
@@ -45,17 +45,34 @@
                             <input type="datetime-local" class="form-control" id="end_date" name="end_date"
                                 value="{{ request('end_date') }}">
                         </div>
+
+                        <div class="form-group  mb-3 col-md-3">
+                            <h6 class="fw-bold" for="end_date">Name:</h6>
+                                <input type="text" class="form-control p-2" autocomplete="off" name="name"
+                                    value="{{ request('name') }}" >
+                            </div>
                     </div>
 
 
                     <div class="row mb-3">
-                        <div class="col-lg-8 d-flex flex-wrap">
+                        <div class="col-lg-12 d-flex flex-wrap">
 
-                            <div class="col-sm-6 px-2">
-                                <input type="text" class="form-control p-2" autocomplete="off" name="name"
-                                    value="{{ request('name') }}" placeholder="Name">
+                            <div class="form-group  mb-3 col-md-3">
+                                <h6 class="fw-bold" for="model">Status:</h6>
+                                <select class="mySelect form-control form-control-sm" id="complaint_status_id"
+                                    name="complaint_status_id[]" multiple="multiple">
+                                    <option value="">--Select--</option>
+                                    @if (!empty($complaintStatuses))
+                                        @foreach ($complaintStatuses as $row)
+                                            <option value="{{ trim(Arr::get($row, 'id')) }}"
+                                                {{ in_array(trim(Arr::get($row, 'id')), request('complaint_status_id', [])) ? 'selected' : '' }}>
+                                                {{ trim(Arr::get($row, 'name')) }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                               
                             </div>
-
                         </div>
 
                         
@@ -86,9 +103,11 @@
                    
                         <form action="{{ route('report.by.user') }}" method="GET">
                             
-                        <input type="text"  name="name" value="{{ request('name') }}" placeholder="Name">
-                        <input type="text" name="start_date" value="{{ request('start_date') }}">
-                        <input type="text" name="end_date" value="{{ request('end_date') }}">
+                        <input type="hidden"  name="name" value="{{ request('name') }}" placeholder="Name">
+                        <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                        <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+                        <input type="hidden" name="complaint_status_id"
+                        value="{{ is_array(request('complaint_status_id')) ? implode(',', request('complaint_status_id')) : request('complaint_status_id') }}">
 
 
                                 <button type="submit" name="export" value="excel"
@@ -146,9 +165,18 @@
         </div>
     </div>
 
-<script>
+    <script>
         $("#showFilterBox").click(function() {
             $("#filterBox").toggle();
         });
+
+        $(document).ready(function() 
+        {
+            $('.mySelect').select2();
+        });
 </script>
+
+    <!--Select 2 -->
+    <link href="{!! url('assets/css/select2.min.css') !!}" rel="stylesheet">
+    <script src="{!! url('assets/js/select2.min.js') !!}"></script>
 @endsection

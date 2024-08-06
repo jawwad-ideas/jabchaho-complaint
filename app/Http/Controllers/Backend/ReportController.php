@@ -19,7 +19,7 @@ class ReportController extends Controller
             $complaintObject    = new Complaint;
             $complaintStatusObject = new ComplaintStatus;
             $complaintStatuses = $complaintStatusObject->getComplaintStatuses();
-            $result             = $complaintObject->getComplaintByUserReport($request);
+            $result             = $complaintObject->getComplaintByUserReport($request,$complaintStatuses);
 
             if ($request->input('export') == 'excel') 
             {
