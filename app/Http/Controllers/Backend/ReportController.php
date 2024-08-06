@@ -17,14 +17,17 @@ class ReportController extends Controller
         try
         {
             $complaintObject    = new Complaint;
-            $result             = $complaintObject->getComplaintByUserReport();
+            $complaintStatusObject = new ComplaintStatus;
+            $complaintStatuses = $complaintStatusObject->getComplaintStatuses();
+            $result             = $complaintObject->getComplaintByUserReport($request);
 
             if ($request->input('export') == 'excel') 
             {
                 return Excel::download(new ReportsByUser($result), 'complaints_reports_by_user.xlsx');
             }
-            
-            return view('backend.reports.user_complaint_counts', $result);
+            $data['complaintStatuses']       = $complaintStatuses;
+
+            return view('backend.reports.user_complaint_counts', $result)->with($data);
             
         }
         catch(\Exception $e)

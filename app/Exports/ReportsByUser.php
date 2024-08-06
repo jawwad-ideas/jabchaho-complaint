@@ -10,9 +10,9 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Collection;
 use App\Models\ComplaintStatus;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
-
-class ReportsByUser implements FromCollection, WithHeadings
+class ReportsByUser implements FromCollection, WithHeadings,WithStrictNullComparison
 {
     use Exportable;
 
@@ -51,7 +51,7 @@ class ReportsByUser implements FromCollection, WithHeadings
                     {
                         foreach($statusNames as $status)
                         {
-                          $dataEnd[$status]=  Arr::get($row,$status.'_count',0);
+                          $dataEnd[$status]=  (int) Arr::get($row,$status.'_count',0);
                         }
                     }
 
@@ -86,14 +86,13 @@ class ReportsByUser implements FromCollection, WithHeadings
     {
         $header = ['Name', 'Total Complaints'];
 
-        $complaintStatusObject = new ComplaintStatus;
-        $complaintStatuses = $complaintStatusObject->getComplaintStatuses();
+        $statusNames = Arr::get($this->resultSet,'statusNames');
 
-        if(!empty($complaintStatuses))
+        if(!empty($statusNames))
         {
-            foreach($complaintStatuses as $complaintStatus)
+            foreach($statusNames as $statusName)
             {
-                $header[] = ucfirst(Arr::get($complaintStatus, 'name'));
+                $header[] = ucfirst($statusName);
             }
         }
 

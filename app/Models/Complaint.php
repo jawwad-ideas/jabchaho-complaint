@@ -159,7 +159,7 @@ class Complaint extends Model
         return $statusCount;
     }
 
-    public function getComplaintByUserReport()
+    public function getComplaintByUserReport($request=null)
     {
         // Get all status names
         $statusNames = ComplaintStatus::where(['is_enabled' =>1])->pluck('name');
@@ -176,6 +176,24 @@ class Complaint extends Model
         {
             $query->addSelect(DB::raw("COUNT(CASE WHEN cs.name = '$status' THEN 1 END) AS `{$status}_count` "));
         }
+        
+        ////////////////////Start Apply Filter \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        //name
+        if (!empty($request->input('name'))) {
+            $query->where('u.name', 'like', '%' . $request->input('name') . '%');
+        }
+
+        // Start date time
+        if (!empty($request->input('start_date'))) {
+            $query->where('complaints.created_at', '>=', $request->input('start_date'));
+        }
+
+        //End date time
+        if (!empty($request->input('end_date'))) {
+            $query->where('complaints.created_at', '<=', $request->input('end_date'));
+        }
+
+        ////////////////////End Apply Filter \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
         $query->groupBy('u.name');
         $reportData = $query->get();
