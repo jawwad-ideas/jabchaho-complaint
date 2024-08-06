@@ -138,7 +138,7 @@
                                 @foreach ($reportData as $data)
                                     @php $sumComplaints+= Arr::get($data,'total_complaints'); @endphp
                                     <tr>
-                                        <td width="15%">{{ Arr::get($data,'user_name') }}</td>
+                                        <td width="15%">@if(!empty(Arr::get($data,'user_name'))) {{ Arr::get($data,'user_name') }} @else <span class="text-danger">Unassigned</span> @endif</td>
                                         <td width="15%">{{  Arr::get($data,'total_complaints') }}</td> 
                                         @foreach ($statusNames as $status)
                                             <td>{{ $data->{$status.'_count'} }}</td>
