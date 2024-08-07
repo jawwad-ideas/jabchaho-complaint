@@ -44,7 +44,7 @@ return [
 	'countries' => [
 		'PK' => 'Pakistan',
 	],
-
+	'complaint_tracking_status' => ['initiated' => 'Initiated', 'in_progress' =>'In Progress', 'completed'=>'Completed'],
 	'complaint_sms_api_enable' => [1=>'Enable', 0 =>'Disable'],
 	'complaint_status_notify_type'  =>[0=>'Disabled',1=>'SMS',2=>'Email', 3=>'Both'],
 	'complaint_status_notify_type_id'  =>['disabled'=>0,'sms'=>1 ,'email'=>2, 'both'=>3],

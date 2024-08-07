@@ -137,9 +137,35 @@ class ComplaintController extends Controller
             $complaint =  Complaint::where(['complaint_number' =>$complaintNumber])->first();
             if(!empty($complaint))
             {
+                //configuration filters
+                $filters            = ['complaint_track_initiated','complaint_track_in_progress','complaint_track_completed'];
+                    
+                //get configurations
+                $configurations     = $this->getConfigurations($filters);
+
+                $complaintTrackInitiated  = explode(",", Arr::get($configurations, 'complaint_track_initiated'));
+                $complaintTrackInProgress = explode(",",Arr::get($configurations, 'complaint_track_in_progress'));
+                $complaintTrackCompleted  = explode(",",Arr::get($configurations, 'complaint_track_completed'));
+
+                
+                $status = '';
+                if(in_array(Arr::get($complaint, 'complaint_status_id'),$complaintTrackInitiated))
+                {
+                    $status = config('constants.complaint_tracking_status.initiated');
+                }
+                else if(in_array(Arr::get($complaint, 'complaint_status_id'),$complaintTrackInProgress))
+                {
+                    $status = config('constants.complaint_tracking_status.in_progress');
+                }
+                else if(in_array(Arr::get($complaint, 'complaint_status_id'),$complaintTrackCompleted))
+                {
+                    $status = config('constants.complaint_tracking_status.completed');
+                }
+                
+                $responseStatus                 = true;
                 $responseMessage                = 'Successful';
                 $complainData['order_id']       = Arr::get($complaint, 'order_id');
-                $complainData['status']         = Arr::get($complaint->complaintStatus, 'name');
+                $complainData['status']         = $status;
                 $complainData['complaint_type'] = config('constants.complaint_type.'.Arr::get($complaint, 'complaint_type'));
                 $complainData['service']        = Arr::get($complaint->service, 'name');
                 $complainData['name']           = Arr::get($complaint, 'name');

@@ -128,6 +128,22 @@
                                 </select>
                             </div>
 
+                            <h4>Tracking Status</h4>
+                            <div class="mb-3">
+                                <label for="complaint_track_initiated" class="form-label">Initiated:</label>
+                                <input type = 'text'  class="form-control" id="complaint_track_initiated" name="complaint_track_initiated" value="{{Arr::get($configurations, 'complaint_track_initiated')}}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="complaint_track_in_progress" class="form-label">In progress:</label>
+                                <input type = 'text'  class="form-control" id="complaint_track_in_progress" name="complaint_track_in_progress" value="{{Arr::get($configurations, 'complaint_track_in_progress')}}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="complaint_track_completed" class="form-label">Completed:</label>
+                                <input type = 'text'  class="form-control" id="complaint_track_completed" name="complaint_track_completed" value="{{Arr::get($configurations, 'complaint_track_completed')}}">
+                            </div>
+
                             <button type="submit"
                                 class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Save Changes</button>
                         </div>
