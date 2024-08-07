@@ -100,6 +100,7 @@
                     <tr>
                         <th>Complaint #</th>
                         <th>Order Id</th>
+                        <th>Assigned</th>
                         <th>Mobile</th>
                         <th>Name</th>
                         <th>Email</th>
@@ -114,6 +115,7 @@
                     <tr>
                         <td>{{Arr::get($complaint, 'complaint_number')}}</td>
                         <td>{{Arr::get($complaint, 'order_id')}}</td>
+                        <td>@if(!empty(Arr::get($complaint->user, 'name'))){{ Arr::get($complaint->user, 'name') }} @else <span class="text-danger">Unassigned</span> @endif</td>
                         <td>{{Arr::get($complaint, 'mobile_number')}}</td>
                         <td>{{Arr::get($complaint, 'name')}}</td>
                         <td>{{Arr::get($complaint, 'email')}}</td>
