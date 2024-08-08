@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Complaint;
 use App\Models\ComplaintDocument;
+use App\Models\Review;
 use App\Http\Requests\Api\CreateComplaintRequest;
 use App\Http\Requests\Api\TrackComplaintRequest;
+use App\Http\Requests\Api\ReviewRequest;
 use App\Helpers\Helper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
@@ -193,6 +195,46 @@ class ComplaintController extends Controller
         }
     }
 
+    public function review(ReviewRequest $request)
+    {
+        try
+        {
+            $responsearray                      = array();
+            $responseStatus                     = false;
+            $responseMessage                    = array();
 
-    
+            $validateValues                     = $request->validated();
+            
+            $insertData['device_type']          = Helper::getdevice($request);  
+            $insertData['order_id']             = Arr::get($validateValues, 'order_id');
+            $insertData['name']                 = Arr::get($validateValues, 'name');
+            $insertData['email']                = Arr::get($validateValues, 'email');
+            $insertData['mobile_number']        = Arr::get($validateValues, 'mobile_number');
+            $insertData['rating']               = Arr::get($validateValues, 'rating');
+            $insertData['comments']             = Arr::get($validateValues, 'comments');
+
+            $reviewInserted  = array();
+            $reviewInserted  = Review::create($insertData);
+
+            if(!empty($reviewInserted))
+            { 
+                $responseStatus 	                = true;
+                $responsearray['message'] 	        = 'Review Submitted Successfully';
+            }
+            else
+            {
+                $responsearray['message'] 	        = 'Error Submitting Review';
+            }
+            
+            
+            $responsearray['status'] 	        = $responseStatus;
+        
+            return response()->json($responsearray);
+        }    
+        catch(\Exception $e) 
+        {
+            \Log::error("api/ComplaintController -> rating =>".$e->getMessage());
+            return Helper::customErrorMessage();
+        }
+    }    
 }
