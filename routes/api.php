@@ -22,5 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['namespace' => 'App\Http\Controllers\Api','middleware' => ['custom.client']], function() {//,'middleware' => ['custom.client'] ,'middleware' => ['ipcheck']
     Route::post('/create-complaint', 'ComplaintController@create')->name('create.complaint');
     Route::post('/track-complaint', 'ComplaintController@track')->name('track.complaint');
-
+    Route::post('/review', 'ComplaintController@review')->name('review');
 });
