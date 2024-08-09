@@ -150,12 +150,8 @@ class ComplaintController extends Controller
                 $complaintTrackCompleted  = explode(",",Arr::get($configurations, 'complaint_track_completed'));
 
                 
-                $status = '';
-                if(in_array(Arr::get($complaint, 'complaint_status_id'),$complaintTrackInitiated))
-                {
-                    $status = config('constants.complaint_tracking_status.initiated');
-                }
-                else if(in_array(Arr::get($complaint, 'complaint_status_id'),$complaintTrackInProgress))
+                $status = config('constants.complaint_tracking_status.initiated');
+                if(in_array(Arr::get($complaint, 'complaint_status_id'),$complaintTrackInProgress))
                 {
                     $status = config('constants.complaint_tracking_status.in_progress');
                 }
