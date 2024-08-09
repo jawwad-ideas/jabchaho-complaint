@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Review extends Model
 {
     use HasFactory;
+     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'device_type',
+        'order_id',
+        'name',
+        'mobile_number',
+        'email',
+        'rating',
+        'comments',
+    ];
 }
