@@ -131,17 +131,50 @@
                             <h4>Tracking Status</h4>
                             <div class="mb-3">
                                 <label for="complaint_track_initiated" class="form-label">Initiated:</label>
-                                <input type = 'text'  class="form-control" id="complaint_track_initiated" name="complaint_track_initiated" value="{{Arr::get($configurations, 'complaint_track_initiated')}}">
+                                <select class="mySelect form-control form-control-sm" id="complaint_status_id"
+                                    name="complaint_track_initiated[]" multiple="multiple">
+                                    <option value="">--Select--</option>
+                                    @if (!empty($complaintStatuses))
+                                        @foreach ($complaintStatuses as $row)
+                                            <option value="{{ trim(Arr::get($row, 'id')) }}"
+                                                {{ in_array(trim(Arr::get($row, 'id')), explode(',',Arr::get($configurations, 'complaint_track_initiated'))) ? 'selected' : '' }}>
+                                                {{ trim(Arr::get($row, 'name')) }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
                             </div>
 
                             <div class="mb-3">
                                 <label for="complaint_track_in_progress" class="form-label">In progress:</label>
-                                <input type = 'text'  class="form-control" id="complaint_track_in_progress" name="complaint_track_in_progress" value="{{Arr::get($configurations, 'complaint_track_in_progress')}}">
+                                <select class="mySelect form-control form-control-sm" id="complaint_status_id"
+                                    name="complaint_track_in_progress[]" multiple="multiple">
+                                    <option value="">--Select--</option>
+                                    @if (!empty($complaintStatuses))
+                                        @foreach ($complaintStatuses as $row)
+                                            <option value="{{ trim(Arr::get($row, 'id')) }}"
+                                                {{ in_array(trim(Arr::get($row, 'id')), explode(',',Arr::get($configurations, 'complaint_track_in_progress'))) ? 'selected' : '' }}>
+                                                {{ trim(Arr::get($row, 'name')) }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
                             </div>
 
                             <div class="mb-3">
                                 <label for="complaint_track_completed" class="form-label">Completed:</label>
-                                <input type = 'text'  class="form-control" id="complaint_track_completed" name="complaint_track_completed" value="{{Arr::get($configurations, 'complaint_track_completed')}}">
+                                <select class="mySelect form-control form-control-sm" id="complaint_status_id"
+                                    name="complaint_track_completed[]" multiple="multiple">
+                                    <option value="">--Select--</option>
+                                    @if (!empty($complaintStatuses))
+                                        @foreach ($complaintStatuses as $row)
+                                            <option value="{{ trim(Arr::get($row, 'id')) }}"
+                                                {{ in_array(trim(Arr::get($row, 'id')), explode(',',Arr::get($configurations, 'complaint_track_completed'))) ? 'selected' : '' }}>
+                                                {{ trim(Arr::get($row, 'name')) }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
                             </div>
 
                             <button type="submit"
@@ -153,6 +186,19 @@
         </div>
 
     </div>
+
+
+<script>
+    $(document).ready(function() 
+    {
+        $('.mySelect').select2();
+    });
+
+</script>
+
+    <!--Select 2 -->
+    <link href="{!! url('assets/css/select2.min.css') !!}" rel="stylesheet">
+    <script src="{!! url('assets/js/select2.min.js') !!}"></script>
 
 
 @endsection

@@ -36,6 +36,11 @@ class ConfigurationController extends Controller
 
             foreach($input as $name=>$value)
             {
+                if (is_array($value)) 
+                {
+                    $value = implode(',',$value);
+                }
+                
                 $updateConfiguration = Configuration::updateOrCreate(['name' => $name], [ 
                     'value' => $value
                 ]);
