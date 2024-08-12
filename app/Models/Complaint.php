@@ -41,7 +41,7 @@ class Complaint extends Model
      //relationship b/w Complaint & ComplaintStatus
      public function service()
      {
-         return $this->belongsTo(Service::class, 'service_id');
+        return $this->belongsTo(Service::class);
      }
 
     //relationship b/w Complaint & ComplaintStatus
@@ -228,5 +228,43 @@ class Complaint extends Model
         return ['reportData' => $reportData, 'statusNames' => $statusNames,'totals' => $totals];
              
     }
+
+    public function getComplaintCountByService($params = array())
+    {
+        $complaintCountByService  = array();
+        $query = Complaint::
+            join('services', 'complaints.service_id', '=', 'services.id')
+            ->select('services.name', DB::raw('COUNT(*) as count'), 'services.icon')
+            ->groupBy('complaints.service_id');
+        
+        // Apply date filtering if startDate and endDate are provided
+        if (!empty($params['startDate']) && !empty($params['endDate'])) {
+            $startDate = $params['startDate'];
+            $endDate = $params['endDate'];
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        $results = $query->get();
+        
+        if(!empty($results))
+        {
+            foreach($results as $result )
+            {
+                $icon  = Arr::get($result,'icon');
+                if(!empty($icon))
+                {
+                    $icon = asset('assets/uploads/services').'/'.$icon;
+                }
+                
+                $row['name']        = Arr::get($result,'name');
+                $row['steps']       = Arr::get($result,'count');
+                $row['href']        = $icon;
+
+                $complaintCountByService[] = $row;
+            }
+        }
+
+        return $complaintCountByService;
+    } 
 
 }

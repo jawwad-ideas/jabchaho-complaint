@@ -45,7 +45,7 @@
                 class="btn btn-sm rounded bg-theme-yellow me-2 filters border-0 text-theme-dark fw-bold">3
                 Months</small>
             <small type="button" id="showDateFilterBox"
-                class="btn btn-sm rounded bg-theme-yellow me-2 filters border-0 text-theme-dark fw-bold">
+                class="btn btn-sm rounded bg-theme-yellow me-2  border-0 text-theme-dark fw-bold">
                 Custom</small>
         </div>
         <div id="dateFilterBox" class="my-4 shadow rounded p-4" style="display:none;">
@@ -228,8 +228,7 @@
             </div>
         </div>
 
-        <div class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3"
-            style="display:none;">
+        <div class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
             <div class="chart-section">
                 <div class=" chart-section-heading my-3 bg-theme-yellow text-theme-dark">
                     <h6 class="mb-0 fw-bold">Category Wise Complaints Report</h6>
@@ -281,7 +280,7 @@
 </style>
 
 <script>
-function categoryWiseComplaintsChart(dataset) {
+function generatecategoryWiseComplaintsChart(dataset) {
     var categoryWiseComplaintsChart = am4core.create("categoryWiseComplaintsChart", am4charts.XYChart);
     categoryWiseComplaintsChart.hiddenState.properties.opacity = 0;
 
@@ -515,23 +514,23 @@ function generatecomplaintsPieChart(dataset) {
 
 
 // dummy data for categorywise complaints
-categoryWisComplaintseData = [{
-    "name": "Dry Cleaing",
-    "steps": 45688,
-    "href": "https://www.amcharts.com/wp-content/uploads/2019/04/monica.jpg"
-}, {
-    "name": "Wash Only",
-    "steps": 35781,
-    "href": "https://www.amcharts.com/wp-content/uploads/2019/04/joey.jpg"
-}, {
-    "name": "Iron Only",
-    "steps": 25464,
-    "href": "https://www.amcharts.com/wp-content/uploads/2019/04/ross.jpg"
-}, {
-    "name": "Wash & Iron",
-    "steps": 18788,
-    "href": "https://www.amcharts.com/wp-content/uploads/2019/04/phoebe.jpg"
-}];
+// categoryWisComplaintseData = [{
+//     "name": "Dry Cleaing",
+//     "steps": 45688,
+//     "href": "https://www.amcharts.com/wp-content/uploads/2019/04/monica.jpg"
+// }, {
+//     "name": "Wash Only",
+//     "steps": 35781,
+//     "href": "https://www.amcharts.com/wp-content/uploads/2019/04/joey.jpg"
+// }, {
+//     "name": "Iron Only",
+//     "steps": 25464,
+//     "href": "https://www.amcharts.com/wp-content/uploads/2019/04/ross.jpg"
+// }, {
+//     "name": "Wash & Iron",
+//     "steps": 18788,
+//     "href": "https://www.amcharts.com/wp-content/uploads/2019/04/phoebe.jpg"
+// }];
 
 function getCountData(filterValue, customStartDate = null, customEndDate = null) {
     $.ajaxSetup({
@@ -574,7 +573,9 @@ function getCountData(filterValue, customStartDate = null, customEndDate = null)
 
             var complaintStatus = result.complaintStatus;
 
-            console.log(complaintStatus);
+            var categoryWisComplaintseData = result.complaintCountByService;
+
+            //console.log(complaintStatus);
 
             am4core.ready(function() {
 
@@ -589,7 +590,7 @@ function getCountData(filterValue, customStartDate = null, customEndDate = null)
 
 
                 // ################################################### complaintsPieChart CODE STARTS FROM HERE ################################################### //
-                categoryWiseComplaintsChart(categoryWisComplaintseData);
+                generatecategoryWiseComplaintsChart(categoryWisComplaintseData);
                 // ################################################### complaintsPieChart CODE ENDS HERE ################################################### //
 
 
