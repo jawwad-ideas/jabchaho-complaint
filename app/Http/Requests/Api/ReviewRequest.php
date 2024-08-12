@@ -24,10 +24,10 @@ class ReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_id'              => 'nullable',
-            'name'                  => 'nullable',
+            'order_id'              => 'required|unique:complaints,order_id|integer|min:1',
+            'name'                  => 'required|string|max:100',
             'email'                 => 'nullable',
-            'mobile_number'         => 'nullable',
+            'mobile_number'         => 'required|string|min:10|max:15',
             'rating'                => 'required',
             'comments'              => 'required|string|max:300',
         ];
@@ -36,6 +36,21 @@ class ReviewRequest extends FormRequest
     public function messages()
     {
         return [
+
+            'order_id.required'             => 'The order ID is required.',
+            'order_id.integer'              => 'The order ID must be an integer.',
+            'order_id.min'                  => 'The order ID must be a positive integer.',
+            'order_id.unique'               => 'Review has already been submitted for this order.',
+
+            'name.required'                 => 'The Name is required.',
+            'name.string'                   => 'The Name must be a string.',
+            'name.max'                      => 'The Name may not be greater than :max characters.',
+
+            'mobile_number.required'        => 'The Mobile number is required.',
+            'mobile_number.string'          => 'The Mobile number must be a string.',
+            'mobile_number.min'             => 'The Mobile number must be at least 10 characters.',
+            'mobile_number.max'             => 'The Mobile number may not be greater than 15 characters.',
+
 
             'rating.required'               => 'Rating is required.',
             
