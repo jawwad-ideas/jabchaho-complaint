@@ -43,7 +43,7 @@ class ReportsByUser implements FromCollection, WithHeadings,WithStrictNullCompar
                     $sumComplaints+= Arr::get($row,'total_complaints',0);
                     
                     $dataStart = array(
-                        'user_name'             => Arr::get($row,'user_name'),
+                        'user_name'             => Arr::get($row,'user_name','Unassigned'),
                         'total_complaints'      => Arr::get($row,'total_complaints',0)
                     );
 
