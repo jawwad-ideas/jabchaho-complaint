@@ -98,5 +98,6 @@ return [
 		'delete'	=> 'DELETE',
 		'patch'		=> 'PATCH'
 	],
+	'review_statues' => [1=>'Pending', 2=>'Approved', 3=>'Not Approved']
 
 ];

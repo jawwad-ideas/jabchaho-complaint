@@ -16,9 +16,49 @@ class ReviewController extends Controller
      */
     public function index(Request $request)
     {
-        $reviews = array();
-        $reviews = Review::select('*')->orderBy('id', 'desc');
-        $reviews = $reviews->latest()->paginate(config('constants.per_page'));
-        return view('backend.reviews.index', compact('reviews'));
+        $reviews                = array();
+        $data                   = array();
+
+        $name                   = $request->input('name');
+        $mobile_number          = $request->input('mobile_number');
+        $order_id               = $request->input('order_id');
+        $email                  = $request->input('email');
+        $status                 = $request->input('status');
+
+
+        $query                  = Review::select('*')->orderBy('id', 'desc');
+
+        if (!empty($order_id))
+        {
+            $query->where('order_id','like', '%' .$order_id. '%');
+        }
+
+        if (!empty($mobile_number))
+        {
+            $query->where('mobile_number','like', '%' .$mobile_number. '%');
+        }
+
+        if (!empty($name))
+        {
+            $query->where('name','like', '%' .$name. '%');
+        }
+
+        if (!empty($email))
+        {
+            $query->where('email','like', '%' .$email. '%');
+        }
+
+        if (!empty($status))
+        {
+            $query->where('status','=', $status);
+        }
+
+        
+
+        $reviews                = $query->latest()->paginate(config('constants.per_page'));
+        $data['reviews']        = $reviews;
+        $data['reviewStatuses']  = config('constants.review_statues');
+
+        return view('backend.reviews.index')->with($data);
     }
 }

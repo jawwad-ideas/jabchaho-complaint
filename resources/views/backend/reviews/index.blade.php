@@ -24,6 +24,62 @@
     <div class="page-content bg-white p-lg-5 px-2">
         <div class="bg-light p-2 rounded">
 
+        <div class="" id="filterBox"  @if (request()->has('name')) 
+                            style="display:block;" 
+                    @else 
+                            style="display:none;" 
+                    @endif
+        >
+                <form class="form-inline" method="GET" action="{{ route('reviews') }}">
+                    <div class="row mb-3">
+                        
+
+                            <div class="col-md-4 mb-2">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="order_id"
+                                    value="{{request('order_id')}}" placeholder="Order No.">
+                            </div>
+
+                            <div class="col-md-4 mb-2">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="name"
+                                    value="{{ request('name') }}" placeholder="Name">
+                            </div>
+
+                            <div class="col-md-4 mb-2">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="email"
+                                    value="{{ request('email') }}" placeholder="Email">
+                            </div>
+                    
+                            <div class="col-md-4 mb-2">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="mobile_nnumber"
+                                    value="{{ request('mobile_nnumber') }}" placeholder="Mobile">
+                            </div>
+
+                            <div class="col-md-4 mb-2">
+                                <select class="form-control c-select" name="status">
+                                    <option value="">Select Status</option>
+                                    @foreach ($reviewStatuses as $id=>$status)
+                                        <option value="{{ $id }}" {{ request('status') == $id ? 'selected' : '' }}>{{ $status }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                
+                   
+                        <div class="col-lg-12 text-end mt-4">
+                            <button type="submit"
+                                class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
+                                id="consult">
+                                <span>Search</span>
+                                <i alt="Search" class="fa fa-search"></i>
+                            </button>
+                            <a href="{{ route('reviews') }}"
+                                class="btn bg-theme-dark-300 text-light p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
+                                <span>Clear</span>
+                                <i class="fa fa-solid fa-arrows-rotate"></i></a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
         <div class="d-flex my-2">
                 Showing results {{ ($reviews->currentPage() - 1) * config('constants.per_page') + 1 }} to
                 {{ min($reviews->currentPage() * config('constants.per_page'), $reviews->total()) }} of {{ $reviews->total() }}
@@ -89,5 +145,11 @@
         color: #808080;              /* Color for unchecked stars (light gray) */
     }
 </style>
+
+<script>
+        $("#showFilterBox").click(function() {
+            $("#filterBox").toggle();
+        });
+</script>
 
 @endsection
