@@ -126,6 +126,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         
     });
 
+    Route::get('/reviews','ReviewController@index')->name('reviews');
+
 
 
 

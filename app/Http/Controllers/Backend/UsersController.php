@@ -47,7 +47,7 @@ class UsersController extends Controller
             $users->where('model_has_roles.role_id', $roles);
         }
 
-        $users = $users->latest()->orderBy('id', 'DESC')->paginate(config('constants.per_page'));
+        $users = $users->latest()->paginate(config('constants.per_page'));
 
         $roles = Role::all();
 
