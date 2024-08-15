@@ -125,6 +125,15 @@
                                     @endif
 
 
+                                    @if(Auth::user()->can('reviews'))
+                                    <li class="py-2 "><a href="{{ route('reviews') }}"
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-folder-tree text-theme-yellow-light"></i>
+                                            Reviews</a>
+                                    </li>
+                                    @endif
+
+
 
                                 </ul>
                             </div>

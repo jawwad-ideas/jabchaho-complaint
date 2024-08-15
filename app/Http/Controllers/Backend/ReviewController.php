@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\Review;
+use App\Http\Requests\Backend\UpdateReviewRequest;
 
 class ReviewController extends Controller
 {
@@ -61,4 +62,57 @@ class ReviewController extends Controller
 
         return view('backend.reviews.index')->with($data);
     }
+
+    /**
+     * Edit review data
+     * 
+     * @param Review $review
+     * 
+     * @return \Illuminate\Http\Response
+     */
+
+    public function edit(Review $review)
+    {
+        return view('backend.reviews.edit', [
+            'review' => $review,
+            'reviewStatuses' => config('constants.review_statues')
+        ]);
+    }
+
+
+    /**
+     * Update review data
+     * 
+     * @param Review $review
+     * @param UpdateReviewRequest $request
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Review $review, UpdateReviewRequest $request)
+    {
+        $postReviewData = $request->validated();
+
+        $review->update($postReviewData);
+
+        return redirect()->route('reviews')
+        ->withSuccess(__('Review updated successfully.'));
+    }
+
+
+    /**
+     * Delete user data
+     * 
+     * @param Review $review
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Review $review) 
+    {
+        $review->delete();
+
+        return redirect()->route('reviews')
+            ->withSuccess(__('Review deleted successfully.'));
+    }
+
+
 }

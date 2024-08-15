@@ -95,6 +95,7 @@
                             <th scope="col" width="15%">Name</th>
                             <th scope="col" width="15%">Email</th>
                             <th scope="col" width="10%">Mobile</th>
+                            <th scope="col" width="1%" colspan="2">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -113,7 +114,21 @@
                                 <td width="15%">{{ $review->name }}</td>
                                 <td width="15%">{{ $review->email }}</td>
                                 <td width="15%">{{ $review->mobile_number }}</td>
-                                
+                                <td colspan="2">
+                                    <a href="{{ route('reviews.edit', $review->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
+                                    {!! Form::open([
+                                    'method' => 'DELETE',
+                                    'route' => ['reviews.destroy', $review->id],
+                                    'style' => 'display:inline',
+                                    'onsubmit' => 'return ConfirmDelete()',
+                                ]) !!}
+                                    {!! Form::button('<i class="fa fa-trash"></i>', [
+                                        'type' => 'submit',
+                                        'class' => 'btn btn-danger btn-sm',
+                                        'title' => 'Delete'
+                                    ]) !!}
+                                {!! Form::close() !!}
+                                </td>
                                 
                             </tr>
                         @endforeach
@@ -150,6 +165,17 @@
         $("#showFilterBox").click(function() {
             $("#filterBox").toggle();
         });
+
+        function ConfirmDelete() {
+            var x = confirm("Are you sure you want to delete?");
+            if (x) {
+                return true;
+            } else {
+
+                event.preventDefault();
+                return false;
+            }
+        }
 </script>
 
 @endsection
