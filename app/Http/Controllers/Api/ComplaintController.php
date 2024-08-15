@@ -195,19 +195,21 @@ class ComplaintController extends Controller
     {
         try
         {
-            $responsearray                      = array();
-            $responseStatus                     = false;
-            $responseMessage                    = array();
+            $responsearray                          = array();
+            $responseStatus                         = false;
+            $responseMessage                        = array();
 
-            $validateValues                     = $request->validated();
+            $validateValues                         = $request->validated();
             
-            $insertData['device_type']          = Helper::getdevice($request);  
-            $insertData['order_id']             = Arr::get($validateValues, 'order_id');
-            $insertData['name']                 = Arr::get($validateValues, 'name');
-            $insertData['email']                = Arr::get($validateValues, 'email');
-            $insertData['mobile_number']        = Arr::get($validateValues, 'mobile_number');
-            $insertData['rating']               = Arr::get($validateValues, 'rating');
-            $insertData['comments']             = Arr::get($validateValues, 'comments');
+            $insertData['device_type']              = Helper::getdevice($request);  
+            $insertData['order_id']                 = Arr::get($validateValues, 'order_id');
+            $insertData['name']                     = Arr::get($validateValues, 'name');
+            $insertData['email']                    = Arr::get($validateValues, 'email');
+            $insertData['mobile_number']            = Arr::get($validateValues, 'mobile_number');
+            $insertData['pricing_value']            = Arr::get($validateValues, 'pricing_value');
+            $insertData['service_quality']          = Arr::get($validateValues, 'service_quality');
+            $insertData['timelines_convenience']    = Arr::get($validateValues, 'timelines_convenience');
+            $insertData['comments']                 = Arr::get($validateValues, 'comments');
 
             $reviewInserted  = array();
             $reviewInserted  = Review::create($insertData);
@@ -229,7 +231,7 @@ class ComplaintController extends Controller
         }    
         catch(\Exception $e) 
         {
-            \Log::error("api/ComplaintController -> rating =>".$e->getMessage());
+            \Log::error("api/ComplaintController -> review =>".$e->getMessage());
             return Helper::customErrorMessage();
         }
     }    
