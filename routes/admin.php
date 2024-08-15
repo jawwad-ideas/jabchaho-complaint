@@ -123,11 +123,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::post('/configuration','ConfigurationController@save')->name('configurations.save');
 
 
+        #Reviews
+        Route::get('/reviews','ReviewController@index')->name('reviews');
+        Route::get('/{review}/edit', 'ReviewController@edit')->name('reviews.edit');
+        Route::patch('/{review}/update', 'ReviewController@update')->name('reviews.update');
+        Route::delete('/{review}/delete', 'ReviewController@destroy')->name('reviews.destroy');
+
         
+
     });
-
-
-
 
 });
 

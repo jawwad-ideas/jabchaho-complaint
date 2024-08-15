@@ -19,7 +19,9 @@ class Review extends Model
         'name',
         'mobile_number',
         'email',
-        'rating',
+        'pricing_value',
+        'service_quality',
+        'timelines_convenience',
         'comments',
     ];
 }
