@@ -22,11 +22,6 @@ class HomeController extends Controller
         {
             $userObject = new User();
             $data = $params = array();
-            if(Auth::user()->hasRole('admin'))
-            {
-                $data['mnaList'] = $userObject->getUsersWithRole(3);//role_id = 3 = mna
-                $data['mpaList'] = $userObject->getUsersWithRole(4);//role_id = 4 = mpa
-            }
             return view('backend.home.index')->with($data);
 
         }catch(\Exception $e)
@@ -36,47 +31,7 @@ class HomeController extends Controller
         }
     }
 
-    /**
-     * Handle Graph data Request request
-     *
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    function getComplaintsGraphData(Request $request)
-    {
-        try
-        {
-            $dataset                        = array();
-            $year                           = date('Y');
-
-            if(!empty($request->get('year')))
-            {
-                $year  = $request->get('year');
-            }
-
-            $complaintObject                = new Complaint();
-
-            #complaints
-            $params['year']                 = $year;
-            $complaints                     = $complaintObject->complaintsRespectToYearAndStatus($params);
-            $dataset = array(
-                [
-                    'label'             => 'Complaints',
-                    'backgroundColor'   => "#9966ff",
-                    'data'              => Helper::monthDataMergeWithDefaultMonthArray($complaints)
-                ],
-            );
-
-            return response()->json($dataset);
-        }catch(\Exception $e)
-        {
-            return $this->getCustomExceptionMessage($e);
-
-        }
-
-    }
-
+    
     /**
      * Count data Request
      *
@@ -121,9 +76,11 @@ class HomeController extends Controller
 
             $complaints                  = $complaintObject->complaintCount($params);
             $complaintStatusCount        = $complaintObject->complaintStatusCount($params);
+            $complaintCountByService     = $complaintObject->getComplaintCountByService($params);
 
-            $data['complaints']             = $complaints;
-            $data['complaintStatus']        = $complaintStatusCount;
+            $data['complaints']                 = $complaints;
+            $data['complaintStatus']            = $complaintStatusCount;
+            $data['complaintCountByService']    = $complaintCountByService;
            
            $data =  array_merge($data,$complaintStatusCount);
 
