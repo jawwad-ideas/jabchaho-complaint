@@ -25,9 +25,23 @@
                 <div class="container mt-4">
 
                     <div class="mb-3">
-                        <label for="name" class="form-label">Rating</label>
+                        <label for="name" class="form-label">Service Quality</label>
                         <div class="star-rating">
-                            @for ($i = 1; $i<= 5; $i++) <span class="fa fa-star @if($i <= Arr::get($review,'rating')) checked @endif"></span>
+                            @for ($i = 1; $i<= 5; $i++) <span class="fa fa-star @if($i <= Arr::get($review,'service_quality')) checked @endif"></span>
+                                @endfor
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Timeliness & Convenience</label>
+                        <div class="star-rating">
+                            @for ($i = 1; $i<= 5; $i++) <span class="fa fa-star @if($i <= Arr::get($review,'timelines_convenience')) checked @endif"></span>
+                                @endfor
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Pricing & Value</label>
+                        <div class="star-rating">
+                            @for ($i = 1; $i<= 5; $i++) <span class="fa fa-star @if($i <= Arr::get($review,'pricing_value')) checked @endif"></span>
                                 @endfor
                         </div>
                     </div>

@@ -91,11 +91,12 @@
                         <tr>
                             <th scope="col" width="1%">#</th>
                             <th scope="col" width="1%">Order Id</th>
-                            <th scope="col" width="10%">Rating</th>
                             <th scope="col" width="15%">Name</th>
                             <th scope="col" width="15%">Email</th>
                             <th scope="col" width="10%">Mobile</th>
+                            @if(Auth::user()->can('reviews.edit') || Auth::user()->can('reviews.destroy'))
                             <th scope="col" width="1%" colspan="2">Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -103,33 +104,32 @@
                             <tr>
                                 <td scope="row">{{ $review->id }}</td>
                                 <td width="15%">{{ $review->order_id }}</td>
-                                <td width="15%">
-                                    
-                                    <div class="star-rating">
-                                        @for ($i = 1; $i<= 5; $i++)
-                                            <span class="fa fa-star @if($i <= Arr::get($review,'rating')) checked @endif"></span>
-                                        @endfor
-                                    </div>
-                                </td>
                                 <td width="15%">{{ $review->name }}</td>
                                 <td width="15%">{{ $review->email }}</td>
                                 <td width="15%">{{ $review->mobile_number }}</td>
+                                @if(Auth::user()->can('reviews.edit') || Auth::user()->can('reviews.destroy'))
                                 <td colspan="2">
-                                    <a href="{{ route('reviews.edit', $review->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
-                                    {!! Form::open([
-                                    'method' => 'DELETE',
-                                    'route' => ['reviews.destroy', $review->id],
-                                    'style' => 'display:inline',
-                                    'onsubmit' => 'return ConfirmDelete()',
-                                ]) !!}
-                                    {!! Form::button('<i class="fa fa-trash"></i>', [
-                                        'type' => 'submit',
-                                        'class' => 'btn btn-danger btn-sm',
-                                        'title' => 'Delete'
+                                    @if(Auth::user()->can('reviews.edit'))    
+                                        <a href="{{ route('reviews.edit', $review->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
+                                    @endif
+
+                                    @if(Auth::user()->can('reviews.destroy'))
+                                    
+                                        {!! Form::open([
+                                        'method' => 'DELETE',
+                                        'route' => ['reviews.destroy', $review->id],
+                                        'style' => 'display:inline',
+                                        'onsubmit' => 'return ConfirmDelete()',
                                     ]) !!}
-                                {!! Form::close() !!}
+                                        {!! Form::button('<i class="fa fa-trash"></i>', [
+                                            'type' => 'submit',
+                                            'class' => 'btn btn-danger btn-sm',
+                                            'title' => 'Delete'
+                                        ]) !!}
+                                    {!! Form::close() !!}
+                                @endif
                                 </td>
-                                
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>
@@ -143,23 +143,6 @@
         </div>
     </div>
 
-<link href="{!! url('assets/css/rating/font-awesome.min.css') !!}" rel="stylesheet">
-<style>
-    .star-rating {
-        display: flex;               /* Ensures all stars are in a single line */
-        align-items: center;         /* Vertically centers the stars if needed */
-        font-size: 24px;             /* Adjusts the size of the stars */
-    }
-
-    .star-rating .fa-star {
-        color: #ffc107;              /* Color for checked stars (gold) */
-        margin-right: 2px;           /* Optional: Adjusts spacing between stars */
-    }
-
-    .star-rating .fa-star:not(.checked) {
-        color: #808080;              /* Color for unchecked stars (light gray) */
-    }
-</style>
 
 <script>
         $("#showFilterBox").click(function() {
