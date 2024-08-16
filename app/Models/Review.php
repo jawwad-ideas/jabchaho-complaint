@@ -15,10 +15,11 @@ class Review extends Model
      */
     protected $fillable = [
         'device_type',
-        'order_id',
+        'status',
         'name',
-        'mobile_number',
         'email',
+        'mobile_number',
+        'order_id',
         'pricing_value',
         'service_quality',
         'timelines_convenience',
