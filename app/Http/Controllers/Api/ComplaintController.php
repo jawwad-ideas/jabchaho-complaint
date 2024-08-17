@@ -234,5 +234,42 @@ class ComplaintController extends Controller
             \Log::error("api/ComplaintController -> review =>".$e->getMessage());
             return Helper::customErrorMessage();
         }
-    }    
+    }  
+    
+    public function getReviews()
+    {
+        try
+        {
+            $responsearray                          = array();
+            $responseStatus                         = false;
+            $responseMessage                        = array();
+
+            
+            $reviewObject = new Review();
+
+            $reviews = $reviewObject->getReviewsByStatus(config('constants.review_statues_code.approved'));
+
+            if(!empty($reviews))
+            { 
+                $responseStatus 	                = true;
+                $responsearray['message'] 	        = 'Successful';
+                $responsearray['reviews'] 	        = $reviews;
+            }
+            else
+            {
+                $responsearray['message'] 	        = 'No review Found!';
+                $responsearray['reviews'] 	        = array();
+
+            }
+
+            $responsearray['status'] 	        = $responseStatus;
+        
+            return response()->json($responsearray);
+        }    
+        catch(\Exception $e) 
+        {
+            \Log::error("api/ComplaintController -> getReviews =>".$e->getMessage());
+            return Helper::customErrorMessage();
+        }
+    }
 }
