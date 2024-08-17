@@ -91,6 +91,7 @@
                         <tr>
                             <th scope="col" width="1%">#</th>
                             <th scope="col" width="1%">Order Id</th>
+                            <th scope="col" width="15%">Status</th>
                             <th scope="col" width="15%">Name</th>
                             <th scope="col" width="15%">Email</th>
                             <th scope="col" width="10%">Mobile</th>
@@ -104,6 +105,7 @@
                             <tr>
                                 <td scope="row">{{ $review->id }}</td>
                                 <td width="15%">{{ $review->order_id }}</td>
+                                <td width="15%">{{ config('constants.review_statues.'.$review->status) }}</td>
                                 <td width="15%">{{ $review->name }}</td>
                                 <td width="15%">{{ $review->email }}</td>
                                 <td width="15%">{{ $review->mobile_number }}</td>
