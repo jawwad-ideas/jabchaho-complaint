@@ -16,6 +16,7 @@ class ReviewRequest extends FormRequest
         return true;
     }
 
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,11 +25,13 @@ class ReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_id'              => 'required|unique:complaints,order_id|integer|min:1',
+            'order_id'              => 'required|unique:reviews,order_id|integer|min:1',
             'name'                  => 'required|string|max:100',
             'email'                 => 'nullable',
             'mobile_number'         => 'required|string|min:10|max:15',
-            'rating'                => 'required',
+            'pricing_value'         => 'required',
+            'service_quality'       => 'required',
+            'timelines_convenience' => 'required',
             'comments'              => 'required|string|max:300',
         ];
     }
@@ -52,7 +55,9 @@ class ReviewRequest extends FormRequest
             'mobile_number.max'             => 'The Mobile number may not be greater than 15 characters.',
 
 
-            'rating.required'               => 'Rating is required.',
+            'pricing_value.required'        => 'Picing Value is required.',
+            'service_quality.required'      => 'Srvice Quality is required.',
+            'timelines_convenience.required'=> 'Timelines Convenience is required.',
             
             'comments.required'             => 'The Comments are required.',
             'comments.string'               => 'The Comments must be a string.',

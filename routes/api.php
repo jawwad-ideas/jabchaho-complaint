@@ -23,4 +23,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api','middleware' => ['custom
     Route::post('/create-complaint', 'ComplaintController@create')->name('create.complaint');
     Route::post('/track-complaint', 'ComplaintController@track')->name('track.complaint');
     Route::post('/review', 'ComplaintController@review')->name('review');
+    Route::get('/get-reviews', 'App\Http\Controllers\Api\ComplaintController@getReviews')->name('get.review');
 });
+
+

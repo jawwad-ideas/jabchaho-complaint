@@ -77,10 +77,12 @@ class HomeController extends Controller
             $complaints                  = $complaintObject->complaintCount($params);
             $complaintStatusCount        = $complaintObject->complaintStatusCount($params);
             $complaintCountByService     = $complaintObject->getComplaintCountByService($params);
+            $complaintCountByUser        = $complaintObject->getComplaintCountByUsers();
 
             $data['complaints']                 = $complaints;
             $data['complaintStatus']            = $complaintStatusCount;
             $data['complaintCountByService']    = $complaintCountByService;
+            $data['complaintCountByUser']       = $complaintCountByUser;
            
            $data =  array_merge($data,$complaintStatusCount);
 
@@ -92,5 +94,6 @@ class HomeController extends Controller
             
         }
     }
+
 
 }

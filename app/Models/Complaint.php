@@ -161,24 +161,20 @@ class Complaint extends Model
 
     public function getComplaintByUserReport($request=null,$complaintStatuses)
     {
-        // Get all status names
-        $statusNames = array();
-        foreach($complaintStatuses as $complaintStatus)
-        {
-            $statusNames[] = Arr::get($complaintStatus, 'name');
-        }
-            
-        // Build dynamic query with case statements
-        $query = Complaint::query()
-        ->join('complaint_statuses as cs', 'complaints.complaint_status_id', '=', 'cs.id')
-        ->leftJoin('users as u', 'complaints.user_id', '=', 'u.id')
-        ->select('u.name as user_name');
-
-        $query->addSelect(DB::raw('COUNT(*) as total_complaints'),);
         
-        foreach ($statusNames as $status) 
+        $statusNames = array();
+
+        $query = $this->getComplaintCountByUsersQuery();
+        
+        // Get all status names
+        if(!empty($complaintStatuses))
         {
-            $query->addSelect(DB::raw("COUNT(CASE WHEN cs.name = '$status' THEN 1 END) AS `{$status}_count` "));
+            foreach ($complaintStatuses as $complaintStatus) 
+            {
+                $status= Arr::get($complaintStatus, 'name');
+                $statusNames[] = $status;
+                $query->addSelect(DB::raw("COUNT(CASE WHEN cs.name = '$status' THEN 1 END) AS `{$status}_count` "));
+            }
         }
         
         ////////////////////Start Apply Filter \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -267,4 +263,29 @@ class Complaint extends Model
         return $complaintCountByService;
     } 
 
+<<<<<<< HEAD
 }
+=======
+    public function getComplaintCountByUsersQuery()
+    {
+         // Build dynamic query with case statements
+        $query = Complaint::query()
+         ->join('complaint_statuses as cs', 'complaints.complaint_status_id', '=', 'cs.id')
+         ->Join('users as u', 'complaints.user_id', '=', 'u.id')
+         ->select('u.name as user_name');
+ 
+        $query->addSelect(DB::raw('COUNT(*) as total_complaints'),);
+
+        return $query;
+    }
+
+
+    public function getComplaintCountByUsers()
+    {
+        $query = $this->getComplaintCountByUsersQuery();
+        return $query->groupBy('u.name')->get();
+    }
+
+
+}
+>>>>>>> 61112e1ca1c599f380dbdba561b33487c73a00fd
