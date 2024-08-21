@@ -263,9 +263,6 @@ class Complaint extends Model
         return $complaintCountByService;
     } 
 
-<<<<<<< HEAD
-}
-=======
     public function getComplaintCountByUsersQuery()
     {
          // Build dynamic query with case statements
@@ -288,4 +285,3 @@ class Complaint extends Model
 
 
 }
->>>>>>> 61112e1ca1c599f380dbdba561b33487c73a00fd
