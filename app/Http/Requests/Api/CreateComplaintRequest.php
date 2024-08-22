@@ -29,7 +29,7 @@ class CreateComplaintRequest extends FormRequest
             'order_id'              => 'required|unique:complaints,order_id|integer|min:1',
             'name'                  => 'required|string|max:100',
             'email'                 => 'required|email|max:150',
-            'mobile_number'         => 'required|string|min:10|max:15',
+            'mobile_number'         => 'required|string|min:11|max:15',
             'service_id'            => 'required|exists:services,id',
             'comments'              => 'required|string|max:300',
             'attachments'           => 'required',

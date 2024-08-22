@@ -400,7 +400,12 @@ class Helper
 		if (strpos($phoneNumber, '0') === 0) {
 			// Replace the starting '0' with '92'
 			$phoneNumber = '92' . substr($phoneNumber, 1);
-		} else {
+		} 
+		else if (strpos($phoneNumber, '92') === 0) {
+
+			$phoneNumber = $phoneNumber;
+		}
+		else {
 			// If it does not start with '0', just prepend '92'
 			$phoneNumber = '92' . $phoneNumber;
 		}
