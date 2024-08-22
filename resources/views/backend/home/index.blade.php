@@ -217,7 +217,7 @@
 
 
         <div
-            class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
+            class="col-xxl-4 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
             <div class="chart-section">
                 <div class=" chart-section-heading my-3 bg-theme-yellow text-theme-dark">
                     <h6 class="mb-0 fw-bold">Complaints Status Report</h6>
@@ -228,13 +228,14 @@
             </div>
         </div>
 
-        <div class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
+        <div
+            class="col-xxl-6 col-xl-8 col-lg-8 col-lg-8 col-md-12 order-xxl-3 order-xl-2 order-lg-2 order-2 status-chart mb-3">
             <div class="chart-section">
                 <div class=" chart-section-heading my-3 bg-theme-yellow text-theme-dark">
-                    <h6 class="mb-0 fw-bold">Category Wise Complaints Report</h6>
+                    <h6 class="mb-0 fw-bold">Service Wise Complaints Report</h6>
                 </div>
                 <div class="chart-box">
-                    <div class="categoryWiseComplaintsChart" id="categoryWiseComplaintsChart"></div>
+                    <div class="serviceWiseComplaintsChart" id="serviceWiseComplaintsChart"></div>
                 </div>
             </div>
         </div>
@@ -268,131 +269,118 @@
 <style>
 #complaintsPieChart {
     width: 100%;
-    height: 350px;
+    height: 500px;
 }
 </style>
 
 <style>
-#categoryWiseComplaintsChart {
+#serviceWiseComplaintsChart {
     width: 100%;
     height: 500px;
 }
 </style>
 
 <script>
-function generatecategoryWiseComplaintsChart(dataset) {
-    var categoryWiseComplaintsChart = am4core.create("categoryWiseComplaintsChart", am4charts.XYChart);
-    categoryWiseComplaintsChart.hiddenState.properties.opacity = 0;
-
-    // categoryWiseComplaintsChart.scrollbarY = new am4core.Scrollbar();
-    // categoryWiseComplaintsChart.scrollbarX = new am4core.Scrollbar();
-
+function generateServiceWiseComplaintsChart(dataset) {
+    console.log(dataset);
+    var serviceWiseComplaintsChart = am4core.create("serviceWiseComplaintsChart", am4charts.XYChart);
+    serviceWiseComplaintsChart.logo.disabled = true;
     if (dataset.length > 0) {
-        categoryWiseComplaintsChart.data = dataset;
+        serviceWiseComplaintsChart.data = dataset;
     } else {
-        categoryWiseComplaintsChart.hidden = true;
-        $("#categoryWiseComplaintsChart").html(
+        serviceWiseComplaintsChart.hidden = true;
+        $("#serviceWiseComplaintsChart").html(
             '<div class="no-data-found">No Complaints found!</div>');
     }
 
-    // categoryWiseComplaintsChart.paddingRight = 40;
+    serviceWiseComplaintsChart.scrollbarX = new am4core.Scrollbar();
 
-    var categoryAxis = categoryWiseComplaintsChart.xAxes.push(new am4charts.CategoryAxis());
-    categoryAxis.dataFields.category = "name";
-    categoryAxis.renderer.grid.template.strokeOpacity = 0;
-    categoryAxis.renderer.minGridDistance = 0;
-    categoryAxis.renderer.labels.template.dy = 35;
-    categoryAxis.renderer.tooltip.dy = 35;
+    // chart bg color
+    serviceWiseComplaintsChart.plotContainer.background.fill = am4core.color(
+        "#f5f5f5");
+    serviceWiseComplaintsChart.plotContainer.background.fillOpacity = 0.5;
 
-    var valueAxis = categoryWiseComplaintsChart.yAxes.push(new am4charts.ValueAxis());
-    valueAxis.renderer.inside = true;
-    valueAxis.renderer.labels.template.fillOpacity = 0.3;
-    valueAxis.renderer.grid.template.strokeOpacity = 0;
-    valueAxis.min = 0;
-    valueAxis.cursorTooltipEnabled = false;
-    valueAxis.renderer.baseGrid.strokeOpacity = 0;
 
-    var series = categoryWiseComplaintsChart.series.push(new am4charts.ColumnSeries);
-    series.dataFields.valueY = "steps";
-    series.dataFields.categoryX = "name";
-    series.tooltipText = "{valueY.value}";
-    series.tooltip.pointerOrientation = "vertical";
-    series.tooltip.dy = -6;
-    series.columnsContainer.zIndex = 100;
 
-    var columnTemplate = series.columns.template;
-    columnTemplate.width = am4core.percent(50);
-    columnTemplate.maxWidth = 66;
-    columnTemplate.column.cornerRadius(60, 60, 10, 10);
-    columnTemplate.strokeOpacity = 0;
 
-    series.heatRules.push({
-        target: columnTemplate,
-        property: "fill",
-        dataField: "valueY",
-        min: am4core.color("#e5dc36"),
-        max: am4core.color("#5faa46")
+
+
+    // Create axes
+    // category axis
+    var serviceWiseComplaintsChartCategoryAxis = serviceWiseComplaintsChart.xAxes.push(new am4charts.CategoryAxis());
+    serviceWiseComplaintsChartCategoryAxis.dataFields.category = "name";
+    serviceWiseComplaintsChartCategoryAxis.renderer.grid.template.location = 0;
+    serviceWiseComplaintsChartCategoryAxis.renderer.minGridDistance = 10;
+    serviceWiseComplaintsChartCategoryAxis.renderer.labels.template.horizontalCenter = "right";
+    serviceWiseComplaintsChartCategoryAxis.renderer.labels.template.verticalCenter = "middle";
+    serviceWiseComplaintsChartCategoryAxis.renderer.labels.template.rotation = 270;
+    serviceWiseComplaintsChartCategoryAxis.tooltip.disabled = true;
+    serviceWiseComplaintsChartCategoryAxis.renderer.minHeight = 110;
+    // serviceWiseComplaintsChartCategoryAxis.renderer.grid.template.disabled = true; // Disable background grid
+
+    // value axis
+    var serviceWiseComplaintsChartValueAxis = serviceWiseComplaintsChart.yAxes.push(new am4charts.ValueAxis());
+    serviceWiseComplaintsChartValueAxis.renderer.minWidth = 50;
+    // serviceWiseComplaintsChartValueAxis.renderer.grid.template.disabled = true; // Disable background grid
+    serviceWiseComplaintsChartValueAxis.renderer.labels.template.disabled = true;
+    serviceWiseComplaintsChartValueAxis.min = 0;
+
+
+    // Create series
+    var serviceWiseComplaintsChartSeries = serviceWiseComplaintsChart.series.push(new am4charts.ColumnSeries());
+    serviceWiseComplaintsChartSeries.sequencedInterpolation = true;
+    serviceWiseComplaintsChartSeries.dataFields.valueY = "count";
+    serviceWiseComplaintsChartSeries.dataFields.categoryX = "name";
+    serviceWiseComplaintsChartSeries.tooltipText = "{categoryX}: {valueY} Complaints";
+    serviceWiseComplaintsChartSeries.columns.template.strokeWidth = 0;
+
+    serviceWiseComplaintsChartSeries.tooltip.pointerOrientation = "vertical";
+
+    serviceWiseComplaintsChartSeries.columns.template.column.cornerRadiusTopLeft = 10;
+    serviceWiseComplaintsChartSeries.columns.template.column.cornerRadiusTopRight = 10;
+    serviceWiseComplaintsChartSeries.columns.template.column.fillOpacity = 1;
+
+    // on hover, make corner radiuses bigger
+    var serviceWiseComplaintsChartHoverState = serviceWiseComplaintsChartSeries.columns.template.column.states.create(
+        "hover");
+    // serviceWiseComplaintsChartHoverState.properties.cornerRadiusTopLeft = 0;
+    // serviceWiseComplaintsChartHoverState.properties.cornerRadiusTopRight = 0;
+    serviceWiseComplaintsChartHoverState.properties.fillOpacity = 0.8;
+
+    const colors = ["#4b49ac", "#fa9fab", "#fe4747", "#508ff4", "#ffbf43", "#ab47bc"];
+
+    serviceWiseComplaintsChartSeries.columns.template.propertyFields.fill = "color";
+
+    serviceWiseComplaintsChart.data.forEach((item, index) => {
+        item.color = colors[index % colors.length];
     });
-    series.mainContainer.mask = undefined;
 
-    var cursor = new am4charts.XYCursor();
-    categoryWiseComplaintsChart.cursor = cursor;
-    cursor.lineX.disabled = true;
-    cursor.lineY.disabled = true;
-    cursor.behavior = "none";
+    // Cursor
+    serviceWiseComplaintsChart.cursor = new am4charts.XYCursor();
+    // Disable the hover ruler (vertical line)
+    serviceWiseComplaintsChart.cursor.lineX.disabled = true;
 
-    var bullet = columnTemplate.createChild(am4charts.CircleBullet);
-    bullet.circle.radius = 30;
-    bullet.valign = "bottom";
-    bullet.align = "center";
-    bullet.isMeasured = true;
-    bullet.mouseEnabled = false;
-    bullet.verticalCenter = "bottom";
-    bullet.interactionsEnabled = false;
+    // Disable the hover ruler (horizontal line)
+    serviceWiseComplaintsChart.cursor.lineY.disabled = true;
 
-    var hoverState = bullet.states.create("hover");
-    var outlineCircle = bullet.createChild(am4core.Circle);
-    outlineCircle.adapter.add("radius", function(radius, target) {
-        var circleBullet = target.parent;
-        return circleBullet.circle.pixelRadius + 10;
-    })
+    // // Add bullets
+    var serviceWiseComplaintsChartBullet = serviceWiseComplaintsChartSeries.bullets.push(new am4charts.Bullet());
+    var serviceWiseComplaintsChartImage = serviceWiseComplaintsChartBullet.createChild(am4core.Image);
+    serviceWiseComplaintsChartImage.horizontalCenter = "middle";
+    serviceWiseComplaintsChartImage.verticalCenter = "bottom";
+    serviceWiseComplaintsChartImage.dy = 20;
+    serviceWiseComplaintsChartImage.y = am4core.percent(100);
+    serviceWiseComplaintsChartImage.propertyFields.href = "image";
+    serviceWiseComplaintsChartImage.tooltipText = serviceWiseComplaintsChartSeries.columns.template.tooltipText;
+    serviceWiseComplaintsChartImage.filters.push(new am4core.DropShadowFilter());
 
-    var image = bullet.createChild(am4core.Image);
-    image.width = 60;
-    image.height = 60;
-    image.horizontalCenter = "middle";
-    image.verticalCenter = "middle";
-    image.propertyFields.href = "href";
+    serviceWiseComplaintsChartImage.width = 50;
+    serviceWiseComplaintsChartImage.height = 50;
 
-    image.adapter.add("mask", function(mask, target) {
-        var circleBullet = target.parent;
-        return circleBullet.circle;
-    })
-
-    var previousBullet;
-    categoryWiseComplaintsChart.cursor.events.on("cursorpositionchanged", function(event) {
-        var dataItem = series.tooltipDataItem;
-
-        if (dataItem.column) {
-            var bullet = dataItem.column.children.getIndex(1);
-
-            if (previousBullet && previousBullet != bullet) {
-                previousBullet.isHover = false;
-            }
-
-            if (previousBullet != bullet) {
-
-                var hs = bullet.states.getKey("hover");
-                hs.properties.dy = -bullet.parent.pixelHeight + 30;
-                bullet.isHover = true;
-
-                previousBullet = bullet;
-            }
-        }
-    })
-
+    serviceWiseComplaintsChartValueAxis.tooltip.disabled = true;
 
 }
+
 
 function generatecomplaintsPieChart(dataset) {
 
@@ -403,7 +391,7 @@ function generatecomplaintsPieChart(dataset) {
 
 
     complaintsPieChart.legend = new am4charts.Legend();
-    complaintsPieChart.legend.position = "right";
+    complaintsPieChart.legend.position = "bottom";
     complaintsPieChart.legend.valign = "middle";
     complaintsPieChart.legend.maxHeight = 200;
     complaintsPieChart.legend.scrollable = true;
@@ -511,27 +499,6 @@ function generatecomplaintsPieChart(dataset) {
 }
 
 
-
-
-// dummy data for categorywise complaints
-// categoryWisComplaintseData = [{
-//     "name": "Dry Cleaing",
-//     "steps": 45688,
-//     "href": "https://www.amcharts.com/wp-content/uploads/2019/04/monica.jpg"
-// }, {
-//     "name": "Wash Only",
-//     "steps": 35781,
-//     "href": "https://www.amcharts.com/wp-content/uploads/2019/04/joey.jpg"
-// }, {
-//     "name": "Iron Only",
-//     "steps": 25464,
-//     "href": "https://www.amcharts.com/wp-content/uploads/2019/04/ross.jpg"
-// }, {
-//     "name": "Wash & Iron",
-//     "steps": 18788,
-//     "href": "https://www.amcharts.com/wp-content/uploads/2019/04/phoebe.jpg"
-// }];
-
 function getCountData(filterValue, customStartDate = null, customEndDate = null) {
     $.ajaxSetup({
         headers: {
@@ -565,7 +532,7 @@ function getCountData(filterValue, customStartDate = null, customEndDate = null)
             $('#voucher-issued').text(JSON.stringify(result.complaintStatus[6] ? result.complaintStatus[6]
                 .count : 0));
             $('#hold').text(JSON.stringify(result.complaintStatus[7] ? result.complaintStatus[7].count :
-            0));
+                0));
             $('#resolved').text(JSON.stringify(result.complaintStatus[8] ? result.complaintStatus[8].count :
                 0));
             $('#closed').text(JSON.stringify(result.complaintStatus[9] ? result.complaintStatus[9].count :
@@ -573,7 +540,7 @@ function getCountData(filterValue, customStartDate = null, customEndDate = null)
 
             var complaintStatus = result.complaintStatus;
 
-            var categoryWisComplaintseData = result.complaintCountByService;
+            var serviceWisComplaintsData = result.complaintCountByService;
 
             //console.log(complaintStatus);
 
@@ -587,13 +554,9 @@ function getCountData(filterValue, customStartDate = null, customEndDate = null)
                 generatecomplaintsPieChart(complaintStatus);
                 // ################################################### complaintsPieChart CODE ENDS HERE ################################################### //
 
-
-
-                // ################################################### complaintsPieChart CODE STARTS FROM HERE ################################################### //
-                generatecategoryWiseComplaintsChart(categoryWisComplaintseData);
-                // ################################################### complaintsPieChart CODE ENDS HERE ################################################### //
-
-
+                // ################################################### Service Wise Complaints Chart CODE STARTS FROM HERE ################################################### //
+                generateServiceWiseComplaintsChart(serviceWisComplaintsData);
+                // ################################################### Service Wise Complaints Chart CODE STARTS FROM HERE ################################################### //
                 $(".loader").hide();
 
             });

@@ -253,8 +253,8 @@ class Complaint extends Model
                 }
                 
                 $row['name']        = Arr::get($result,'name');
-                $row['steps']       = Arr::get($result,'count');
-                $row['href']        = $icon;
+                $row['count']       = Arr::get($result,'count');
+                $row['image']        = $icon;
 
                 $complaintCountByService[] = $row;
             }
