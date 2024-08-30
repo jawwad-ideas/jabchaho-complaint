@@ -24,6 +24,9 @@ class ReviewRequest extends FormRequest
      */
     public function rules(): array
     {
+
+        \Log::info('Review API Payloads');
+        \Log::info(print_r($_POST,true));
         return [
             'order_id'              => 'required|unique:reviews,order_id|integer|min:1',
             'name'                  => 'required|string|max:100',
