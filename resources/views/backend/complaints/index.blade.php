@@ -120,10 +120,7 @@
                         <td>{{Arr::get($complaint, 'name')}}</td>
                         <td>{{Arr::get($complaint, 'email')}}</td>
                         <td>{{Arr::get($complaint->complaintStatus,'name')}}</td>
-                        <td>{{ date("d,M,Y", strtotime(Arr::get($complaint, 'created_at'))) }}
-                            <br />
-                            {{ date("h:i A", strtotime(Arr::get($complaint, 'created_at'))) }}
-                        </td>
+                        <td>{{ date("d,M,Y h:i A", strtotime(Arr::get($complaint, 'created_at'))) }}</td>
                         @if(Auth::user()->can('complaints.show'))
                         <td>
                             <a class="btn bg-theme-yellow btn-sm" href="{{ route('complaints.show', $complaint->id) }}"><i class="fa fa-eye"></i></a>

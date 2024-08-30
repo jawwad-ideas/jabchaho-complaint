@@ -45,6 +45,14 @@
                                 @endfor
                         </div>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Created</label>
+                        <div class="">
+                        {{  date("d,M,Y h:i A", strtotime(Arr::get($review, 'created_at')))  }}
+                        </div>
+                    </div>
+                    
                     <div class="mb-3">
                         <label for="name" class="form-label">Status</label>
                         <select class="form-control c-select" name="status">

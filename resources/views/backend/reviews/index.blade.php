@@ -95,6 +95,7 @@
                             <th scope="col" width="15%">Name</th>
                             <th scope="col" width="15%">Email</th>
                             <th scope="col" width="10%">Mobile</th>
+                            <th>Created</th>
                             @if(Auth::user()->can('reviews.edit') || Auth::user()->can('reviews.destroy'))
                             <th scope="col" width="1%" colspan="2">Action</th>
                             @endif
@@ -109,6 +110,7 @@
                                 <td width="15%">{{ $review->name }}</td>
                                 <td width="15%">{{ $review->email }}</td>
                                 <td width="15%">{{ $review->mobile_number }}</td>
+                                <td width="15%">{{  date("d,M,Y h:i A", strtotime(Arr::get($review, 'created_at')))  }}</td>
                                 @if(Auth::user()->can('reviews.edit') || Auth::user()->can('reviews.destroy'))
                                 <td colspan="2">
                                     @if(Auth::user()->can('reviews.edit'))    

@@ -174,6 +174,15 @@
                     </div>
                 </div>
 
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Created:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{ date("d,M,Y h:i A", strtotime(Arr::get($complaintData, 'created_at'))) }}</p>
+                    </div>
+                </div>
+
             </div>
 
             <!--Row 1-->
