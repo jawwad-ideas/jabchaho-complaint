@@ -26,7 +26,24 @@ class LoginRequest extends FormRequest
     {
         return [
             'username' => 'required',
-            'password' => 'required'
+            'password' => 'required',
+            'g-recaptcha-response'          => 'required|captcha'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            
+            #username
+            'username.required'                      => 'The Username is required!',
+
+            #password
+            'password.required'                         => 'The Password field is required',
+
+            #g-recaptcha-response
+            'g-recaptcha-response.required'          => 'The Captcha field is required!',// 
+            'g-recaptcha-response.captcha'           => 'Failed to validate the Captcha.',// 
         ];
     }
 

@@ -44,6 +44,13 @@
                                     <span class="text-danger text-left">{{ $errors->first('password') }}</span>
                                     @endif
                                 </div>
+
+                                <div class="form-group  mt-4">
+                                    <div class="col-sm-12">
+                                            <span class="recaptcha-wrapper">{!! app('captcha')->display() !!}</span>
+                                           
+                                    </div>
+                                </div>
                                 <div class="form-group mt-2">
                                     <div class="row">
                                         <div class="col-lg-6">
