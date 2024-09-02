@@ -23,6 +23,9 @@ class TrackComplaintRequest extends FormRequest
      */
     public function rules(): array
     {
+        \Log::channel('request')->info('Track Complaint API Payloads');
+        \Log::channel('request')->info(print_r($this->all(),true));
+        
         return [
             'complaint_number'                          => 'required|string',
         ];

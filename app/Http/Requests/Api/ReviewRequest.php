@@ -24,9 +24,9 @@ class ReviewRequest extends FormRequest
      */
     public function rules(): array
     {
+        \Log::channel('request')->info('Review API Payloads');
+        \Log::channel('request')->info(print_r($this->all(),true));
 
-        \Log::info('Review API Payloads');
-        \Log::info(print_r($_POST,true));
         return [
             'order_id'              => 'required|unique:reviews,order_id|integer|min:1',
             'name'                  => 'required|string|max:100',

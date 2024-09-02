@@ -23,6 +23,9 @@ class CreateComplaintRequest extends FormRequest
      */
     public function rules(): array
     {
+        \Log::channel('request')->info('Complaint API Payloads');
+        \Log::channel('request')->info(print_r($this->all(),true));
+        
         return 
         [
             'complaint_type'        => 'required|in:' . implode(',', array_keys(config('constants.complaint_type'))),
