@@ -141,6 +141,32 @@
                         </li>
                         @endif
 
+                        {{-- Order Profiling --}}
+                        @if(Auth::user()->can('orders.create'))
+                            <li class="list-item px-3 py-3">
+                                <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
+                                     data-bs-toggle="collapse" data-bs-target="#orders">
+                            <span class="d-flex align-items-center gap-3 text-light">
+                                <i class="fa fa-solid fa-boxes-packing fa-2x text-theme-yellow-light"></i>
+                                Orders </span>
+                                    <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
+                                </div>
+
+                                <div class="collapse mt-3 ms-5" id="orders" style="">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        @if(Auth::user()->can('orders.index'))
+                                            <li class="py-2 "><a href="{{ route('orders.index') }}"
+                                                                 class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                    <i class="fa fa-solid fa-folder-tree text-theme-yellow-light"></i>
+                                                    Orders</a>
+                                            </li>
+                                        @endif;
+                                    </ul>
+                                </div>
+                            </li>
+                        @endif
+                        {{-- Order Profiling --}}
+
                         @if(Auth::user()->can('configurations.form') || Auth::user()->can('complaints.status.index') )
                         <li class="list-item px-3 py-3">
                             <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
