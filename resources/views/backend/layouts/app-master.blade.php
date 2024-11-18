@@ -147,7 +147,7 @@
                                 <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
                                      data-bs-toggle="collapse" data-bs-target="#orders">
                             <span class="d-flex align-items-center gap-3 text-light">
-                                <i class="fa fa-solid fa-boxes-packing fa-2x text-theme-yellow-light"></i>
+                                <i class="fa fa-solid fa-clipboard-list fa-2x text-theme-yellow-light"></i>
                                 Orders </span>
                                     <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
                                 </div>
@@ -157,7 +157,7 @@
                                         @if(Auth::user()->can('orders.index'))
                                             <li class="py-2 "><a href="{{ route('orders.index') }}"
                                                                  class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
-                                                    <i class="fa fa-solid fa-folder-tree text-theme-yellow-light"></i>
+                                                    <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
                                                     Orders</a>
                                             </li>
                                         @endif;

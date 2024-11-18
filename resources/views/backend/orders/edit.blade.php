@@ -1,6 +1,17 @@
 @extends('backend.layouts.app-master')
-
+<style>
+    @media only screen and (max-width: 767px) {
+        .page-content{
+            /*margin-top: 0 !important;*/
+        }
+        .order-img {
+            width:80px !important;
+            height: 100px !important;
+        }
+    }
+</style>
 @section('content')
+
     <div
         class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
@@ -54,10 +65,6 @@
                 </div>
             </div>
         </form>
-    </div>
-
-
-    <div class="page-content bg-white p-lg-5 px-2">
 
         <div class="bg-light p-2 rounded">
             <div id="modalDiv"></div>
@@ -70,7 +77,7 @@
                         <th scope="col" width="15%">Image Name</th>
                         <th scope="col" width="15%">Uploaded At</th>
                         <th scope="col" width="15%">Image Type</th>
-                        <th scope="col" width="1%" colspan="3">Action</th>
+                        <th scope="col" width="1%" colspan="2">Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -78,14 +85,16 @@
                         <tr>
                             <th scope="row">{{ $image->id }}</th>
                             <td width="15%">
-                                <img src="{{asset(config('constants.files.orders'))}}/{{$order->order_number}}/{{$image->filename}}"
-                                                 class=" img-thumbnail image-fluid w-50" style="height:150px;" >
+                                <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_number}}/{{$image->filename}}"  target="_blank"><img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_number}}/{{$image->filename}}"
+                                                                                                                                                          class=" img-thumbnail image-fluid w-50" style="height:150px;" ></a>
                             </td>
 
-                            <?php $truncateLength = 20; ?>
+                                <?php $truncateLength = 20; ?>
                             <th scope="row">{{ Str::limit($image->filename, $truncateLength) }}</th>
                             <th scope="row">{{ $image->created_at }}</th>
                             <td width="15%">{{ $image->image_type }}</td>
+                            <td><a href="{{asset(config('constants.files.orders'))}}/{{$order->order_number}}/{{$image->filename}}" class="btn bg-theme-yellow btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
+                            </td>
                             <td>
                                 {!! Form::open([
                                         'method' => 'DELETE',
