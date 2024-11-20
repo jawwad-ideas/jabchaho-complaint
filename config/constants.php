@@ -18,7 +18,6 @@ return [
 		'filetypes' 				=> 'assets/images/icons/filetypes',
 		'complaint_documents' 		=> 'assets/uploads/complaint_documents/',
 		'profile'					=> 'assets/uploads/profile/',
-        'orders'					=> 'assets/uploads/orders/',
     ],
 	'file_extension_for_icon' =>['psd','doc','docx','xls','xlsx','zip','rar','ppt','pptx','pdf','mp3','mp4', 'webp', 'avif','jpg','jpeg','png'],
 	'admin_user_default_action'=>[
