@@ -27,3 +27,4 @@ Route::group(['namespace' => 'App\Http\Controllers\Api','middleware' => ['custom
     Route::post('/create-order', 'App\Http\Controllers\Api\OrderController@create')->name('create.order');
 });
 
+Route::post('/create-order', 'App\Http\Controllers\Api\OrderController@create')->name('create.order');
