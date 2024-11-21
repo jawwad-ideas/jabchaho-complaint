@@ -21,6 +21,8 @@ class OrdersController extends Controller
 
     public function index(Request $request)
     {
+        $orderNumber = $request->input('order_number');
+
         //$orders = Orders::with('images')->select('*')->orderBy('id', 'desc');
         $orders = Orders::withCount([ 'images as before' => function ($query) {
             $query->where('image_type', 'Before Wash')->where('status', 1);
@@ -28,9 +30,18 @@ class OrdersController extends Controller
                 $query->where('image_type', 'After Wash')->where('status', 1);
                 }, ]);
 
+        if (!empty($orderNumber)) {
+            $orders->where('orders.order_number', '=',  $orderNumber );
+        }
+
         $orders = $orders->latest()->paginate(config('constants.per_page'));
 
-        return view('backend.orders.index', compact('orders'));
+
+        $filterData = [
+            'order_number' => $orderNumber
+        ];
+
+        return view('backend.orders.index', compact('orders'))->with($filterData);
     }
 
     public function create()
