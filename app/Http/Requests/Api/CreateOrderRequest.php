@@ -9,8 +9,19 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class CreateOrderRequest extends FormRequest
 {
 
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     public function rules(): array
     {
+        \Log::channel('request')->info('Order API Payloads');
+        \Log::channel('request')->info(print_r($this->all(),true));
+
         return [
             'orders' => 'required|array|min:1',
             'orders.*.order_id' => 'required|integer|min:1',

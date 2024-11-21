@@ -27,6 +27,7 @@ class OrderController extends Controller
 
     public function create(CreateOrderRequest $request)
     {
+        $validateValues                     = $request->validated();
         $responseStatus                     = true;
         try
         {
@@ -39,7 +40,7 @@ class OrderController extends Controller
             $responsearray['status'] 	        = false;
         }
 
-        $responsearray['request']           = json_decode($request->getContent(),true);
+        //$responsearray['request']           = $validateValues;//json_decode($request->getContent(),true);
         return response()->json($responsearray);
     }
 }
