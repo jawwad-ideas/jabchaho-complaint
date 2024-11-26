@@ -22,15 +22,15 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $orderNumber = $request->input('order_number');
-    
+
         $orders = Order::select('*')->orderBy('id', 'desc');
 
         if (!empty($orderNumber)) {
             $orders->where('orders.order_number', '=',  $orderNumber );
         }
 
-        $orders = $orders->latest()->paginate(config('constants.per_page'));
-
+        $orders = $orders->latest()->paginate( config('constants.per_page') );
+        //dd($orders);
         $filterData = [
             'order_number' => $orderNumber
         ];
@@ -45,11 +45,13 @@ class OrderController extends Controller
 
     public function edit($orderId)
     {
-        $order =  Orders::with(['images' => function ($query) {
+        /*$order =  Orders::with(['images' => function ($query) {
             $query->where('status', 1);
-        }])
-            ->where('id', $orderId)
-            ->first();
+        }])*/
+
+        $order = Order::select('*')->orderBy('id', 'desc')
+        ->where('id', $orderId)
+        ->first();
 
         return view('backend.orders.edit', [
             'order' => $order

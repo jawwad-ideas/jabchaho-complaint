@@ -106,7 +106,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         // Route::get('/report-complains', 'ComplaintController@report_index')->name('report-complains');
         // Route::get('/report-by-complains', 'ComplaintController@reportByComplaints')->name('report-by-complaints');
 
-        
+
         //Complaint Status
         Route::group(['prefix' => 'complaint-status'], function() {
             Route::get('/','ComplaintStatusController@index')->name('complaints.status.index');
@@ -129,7 +129,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::patch('/{review}/update', 'ReviewController@update')->name('reviews.update');
         Route::delete('/{review}/delete', 'ReviewController@destroy')->name('reviews.destroy');
 
-        
+
+        Route::group(['prefix' => 'orders'], function() {
+            /*Route::get('/create', 'OrdersController@create')->name('orders.create');*/
+            Route::post('/save', 'OrdersController@save')->name('orders.save');
+            Route::get('/index', 'OrderController@index')->name('orders.index');
+            Route::get('/{order_id}/edit', 'OrderController@edit')->name('orders.edit');
+            /*Route::delete('/{order_id}/{image_id}/delete', 'OrdersController@delete')->name('orders.delete');*/
+        });
+
 
     });
 
