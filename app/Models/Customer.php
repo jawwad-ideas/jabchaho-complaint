@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 #use  App\Models\OrdersImages;
-class Orders extends Model
+class Customer extends Model
 {
     use HasFactory;
 
@@ -15,7 +15,7 @@ class Orders extends Model
      *
      * @var string
      */
-    protected $table = 'orders';
+    protected $table = 'customers';
 
     /**
      * The attributes that are mass assignable.
@@ -23,21 +23,18 @@ class Orders extends Model
      * @var array
      */
     protected $fillable = [
-        'customer_id',
-        'order_id',
+        'customer_email',
+        'customer_name',
+        'telephone',
         'status',
-        'updated_at',
-        'is_email_sent',
-        'order_type_id',
-        'remarks',
-        'attachments'
+        'updated_at'
     ];
 
 
 
-    public function createOrder($data = array())
+    public function createCustomer($data = array())
     {
-        $inserted = Orders::insertGetId($data);
+        $inserted = Customer::insertGetId($data);
         if($inserted)
         {
             return $inserted;

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 #use  App\Models\OrdersImages;
-class OrderItems extends Model
+class OrderItem extends Model
 {
     use HasFactory;
 
@@ -36,7 +36,7 @@ class OrderItems extends Model
 
     public function createOrderItem($data = array())
     {
-        $inserted = OrderItems::insertGetId($data);
+        $inserted = OrderItem::insertGetId($data);
         if($inserted)
         {
             return $inserted;
