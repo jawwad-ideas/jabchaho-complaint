@@ -45,17 +45,22 @@ class OrderController extends Controller
 
     public function edit($orderId)
     {
-        /*$order =  Orders::with(['images' => function ($query) {
-            $query->where('status', 1);
-        }])*/
+        // $order =  Order::with(['images' => function ($query) {
+        //     $query->where('status', 1);
+        // }]);
+        // $order = Order::select('*')->orderBy('id', 'desc')
+        // ->where('id', $orderId)
+        // ->first();
 
-        $order = Order::select('*')->orderBy('id', 'desc')
-        ->where('id', $orderId)
-        ->first();
+        $order = Order::with(['orderItems.images'])->find($orderId);
+
+        dd($order);
 
         return view('backend.orders.edit', [
             'order' => $order
         ]);
+
+        
     }
 
     public function delete( $order_id ,  $image_id )
