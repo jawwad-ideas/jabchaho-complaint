@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 
+use App\Models\OrderItemImage;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -26,7 +27,7 @@ class OrderController extends Controller
         $orders = Order::select('*')->orderBy('id', 'desc');
 
         if (!empty($orderNumber)) {
-            $orders->where('orders.order_number', '=',  $orderNumber );
+            $orders->where('orders.order_id', '=',  $orderNumber );
         }
 
         $orders = $orders->latest()->paginate( config('constants.per_page') );
@@ -45,22 +46,13 @@ class OrderController extends Controller
 
     public function edit($orderId)
     {
-        // $order =  Order::with(['images' => function ($query) {
-        //     $query->where('status', 1);
-        // }]);
-        // $order = Order::select('*')->orderBy('id', 'desc')
-        // ->where('id', $orderId)
-        // ->first();
-
         $order = Order::with(['orderItems.images'])->find($orderId);
 
-        dd($order);
+        //dd($order);
 
         return view('backend.orders.edit', [
             'order' => $order
         ]);
-
-        
     }
 
     public function delete( $order_id ,  $image_id )
@@ -75,80 +67,47 @@ class OrderController extends Controller
 
     public function save( Request $request )
     {
-        if( $request->has('order_number') )
-        {
-            $orderDate = $orderImages = [];
-            $orderNumber    = $request->get('order_number');
+        if ( $request->has('order_id') && $request->has('image')) {
+            $orderImages = [];
             $adminUser      = $request->user()->id;
-            $orderModel     = new Orders;
-            $order          = $orderModel::select('order_number','id')->where('order_number', '=' , $orderNumber )->latest()->first();
+            $orderId        = $request->get('order_id');
+            $orderNumber    = $request->get('order_number');
+            foreach ($request->file('image') as $itemId => $imageTypes) {
+                foreach ($imageTypes as $type => $files) {
+                    if( $type == "pickup_images")
+                        $imageType = $type;
+                    else if( $type == "delivery_images" )
+                        $imageType = $type;
 
-            if( !$order ){
-                $orderDate = [
-                    'order_number' => $orderNumber,
-                    'adminuser'   => $adminUser,
-                ];
-                $orderId = $orderModel->createOrder( $orderDate );
-            }else{
-                $orderId = $order->id;
-                $order->update(['updated_at'=>now()]);
-            }
+                    foreach ($files as $file) {
+                        // Save file and process it
+                        $uploadFolderPath = config('constants.files.orders').'/'.$orderNumber;
+                        $filePath = public_path($uploadFolderPath);
+                        $image      =   $file;
+                        $newName    =   $orderNumber.'-'.now()->format('Y-m-d-h:i:s A').'-'.uniqid(rand(), true).'.' . $image->getClientOriginalExtension();
+                        $image->move( $filePath, $newName );
 
-            if( $orderId ){
-                $ordersImagesModel = new OrdersImages;
-                $uploadFolderPath = config('constants.files.orders').'/'.$orderNumber;
-                $filePath = public_path($uploadFolderPath);
-
-                $data = [
-                    'order_id'      => $orderId,
-                    'adminuser'     => $adminUser,
-                    'file_path'     => $filePath,
-                    'type'          => '',
-                    'order_number'  => $orderNumber,
-                ];
-
-                if($request->hasfile('pickup_images')) {
-                    $data['type'] = 'Before Wash';
-                    $files = $request->file('pickup_images');
-                    $orderImages = $this->uploadImage( $files , $data , $orderImages );
-                }
-
-                if($request->hasfile('delivery_images')) {
-                    $data['type'] = 'After Wash';
-                    $files = $request->file('delivery_images');
-                    $orderImages = $this->uploadImage( $files , $data , $orderImages );
-                }
-
-                if( !empty( $orderImages ) ){
-                    $ordersImagesModel->createOrderImage($orderImages);
+                        $orderImages[] = [
+                            'item_id' => $itemId,
+                            'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
+                            'imagename' => $newName,
+                            'admin_user' => $adminUser,
+                            'status' => 1,
+                        ];
+                    }
                 }
             }
 
-            return redirect()->route('orders.edit', ['order_id' => $orderId])
-                ->with('success', 'Order created successfully.');
-        }
+            if( !empty($orderImages) ){
+                $ordersImagesModel = new OrderItemImage;
+                $ordersImagesModel->createOrderItemImage($orderImages);
 
-        return view('backend.orders.create');
+                return redirect()->route('orders.edit', ['order_id' => $orderId ])
+                    ->with('success', 'Order created successfully.');
+
+            }
+        }
+        return view('backend.orders.index');
     }
 
-    public function uploadImage( $images , $data  , $orderImages = [] ){
-        $orderNumber    =   $data['order_number'];
-        $filePath       =   $data['file_path'];
-        $adminUser      =   $data['adminuser'];
-        $orderId        =   $data['order_id'];
-        $type           =   $data['type'];
-        foreach ( $images as $file ) {
-            $image      =   $file;
-            $newName    =   $orderNumber.'-'.now()->format('Y-m-d-h:i:s A').'-'.uniqid(rand(), true).'.' . $image->getClientOriginalExtension();
-            $image->move($filePath, $newName);
-            $orderImages[] = [
-                'order_id'      => $orderId,
-                'image_type'    => $type,
-                'adminuser'     => $adminUser,
-                'filename'      => $newName,
-                'image_path'    => $newName,
-            ];
-        }
-        return $orderImages;
-    }
 }

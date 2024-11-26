@@ -38,7 +38,7 @@ class OrderItemImage extends Model
 
     public function createOrderItemImage($data = array())
     {
-        $inserted = OrderItemImage::insertGetId($data);
+        $inserted = OrderItemImage::insert($data);
         if($inserted)
         {
             return $inserted;

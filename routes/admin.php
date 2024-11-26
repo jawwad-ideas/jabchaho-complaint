@@ -132,7 +132,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
         Route::group(['prefix' => 'orders'], function() {
             /*Route::get('/create', 'OrdersController@create')->name('orders.create');*/
-            Route::post('/save', 'OrdersController@save')->name('orders.save');
+            Route::post('/save', 'OrderController@save')->name('orders.save');
             Route::get('/index', 'OrderController@index')->name('orders.index');
             Route::get('/{order_id}/edit', 'OrderController@edit')->name('orders.edit');
             /*Route::delete('/{order_id}/{image_id}/delete', 'OrdersController@delete')->name('orders.delete');*/

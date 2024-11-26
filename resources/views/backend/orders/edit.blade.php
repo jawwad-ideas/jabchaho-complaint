@@ -38,22 +38,89 @@
                     <div class="container mt-4">
                         <div class="mb-3">
                             <label for="order" class="form-label">Order#</label>
-                            <input value="{{ $order->order_number }}" type="text" class="form-control" name="order_number"
+                            <input value="{{ $order->order_id }}" type="text" class="form-control" name="order_number"
                                    placeholder="Order Number" readonly>
-
+                            <input value="{{ $order->id }}" type="hidden" class="form-control" name="order_id"
+                                   placeholder="Order Number" readonly>
                         </div>
                         <div class="mb-3">
-                            <label for="pickup_images" class="form-label">Before Wash Images</label>
-                            <input value="" type="file" class="form-control" name="pickup_images[]"
-                                   placeholder="Before Wash Images" multiple>
-
+                            <label for="remarks" class="form-label">Remarks#</label>
+                            <textarea name="remarks" class="form-control" value="{{ $order->remarks }}" placeholder="Order Remarks" ></textarea>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="delivery_images" class="form-label">After Wash Images</label>
-                            <input value="" type="file" class="form-control" name="delivery_images[]"
-                                   placeholder="After Wash Images" multiple>
+                        @foreach ($order->orderItems as $item)
+                        <div class="itemForm">
+                            <div class="item-form-row p-3 bg-light rounded border-light mb-4 ">
+                                <div class="itemLabel"><label class="fw-bold">{{$item->barcode}} - {{$item->item_name}}</label></div>
+                                    <div class="inner-row d-flex justify-content-between pb-4 gap-4">
+                                        <div class="mb-3 col-lg-6 bg-white py-3 px-2 border-light">
+                                            <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
+                                            <input value="" type="file" class="form-control" name="image[{{$item->id}}][pickup_images][]"
+                                                   placeholder="Before Wash Images" multiple>
+                                            <div class="table-scroll-hr mt-4">
+                                                <table class="table table-bordered table-striped table-compact ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Image</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach ($item->images as $image)
+                                                        <tr>
+                                                            <td>
+                                                                <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}"  target="_blank">
+                                                                    <img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
+                                                                </a>
+                                                            </td>
+                                                            <td><a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}" class="btn bg-theme-yellow btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
+                                                            </td>
+{{--                                                                <?php $truncateLength = 20; ?>--}}
+{{--                                                            <th>{{ Str::limit($image->imagename, $truncateLength) }}</th>--}}
+{{--                                                            <th>{{ $image->created_at }}</th>--}}
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="mb-3 col-lg-6 bg-white py-3 px-2 border-light">
+                                            <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
+                                            <input value="" type="file" class="form-control" name="image[{{$item->id}}][delivery_images][]"
+                                                   placeholder="After Wash Images" multiple>
+                                            <div class="table-scroll-hr mt-4">
+                                                <table class="table table-bordered table-striped table-compact ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Image</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach ($item->images as $image)
+                                                        <tr>
+                                                            <td>
+                                                                <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}"  target="_blank">
+                                                                    <img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
+                                                                </a>
+                                                            </td>
+                                                            <td><a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}" class="btn bg-theme-yellow btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                
+                            </div>
                         </div>
+                        @endforeach
 
                         <div>&nbsp;</div>
                         <div class="mb-3">
@@ -66,56 +133,5 @@
             </div>
         </form>
 
-        <div class="bg-light p-2 rounded">
-            <div id="modalDiv"></div>
-            <div class="table-scroll-hr">
-                <table class="table table-bordered table-striped table-compact ">
-                    <thead>
-                    <tr>
-                        <th scope="col" width="1%">#</th>
-                        <th scope="col" width="15%">Image</th>
-                        <th scope="col" width="15%">Image Name</th>
-                        <th scope="col" width="15%">Uploaded At</th>
-                        <th scope="col" width="15%">Image Type</th>
-                        <th scope="col" width="1%" colspan="2">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php $order->images = [];  ?>
-                    @foreach ($order->images as $image)
-                        <tr>
-                            <th scope="row">{{ $image->id }}</th>
-                            <td width="15%">
-                                <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_number}}/{{$image->filename}}"  target="_blank"><img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_number}}/{{$image->filename}}"
-                                                                                                                                                          class=" img-thumbnail image-fluid w-50" style="height:150px;" ></a>
-                            </td>
-
-                                <?php $truncateLength = 20; ?>
-                            <th scope="row">{{ Str::limit($image->filename, $truncateLength) }}</th>
-                            <th scope="row">{{ $image->created_at }}</th>
-                            <td width="15%">{{ $image->image_type }}</td>
-                            <td><a href="{{asset(config('constants.files.orders'))}}/{{$order->order_number}}/{{$image->filename}}" class="btn bg-theme-yellow btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
-                            </td>
-                            <td>
-                                {!! Form::open([
-                                        'method' => 'DELETE',
-                                        'route' =>  ['orders.delete', $order->id, $image->id],
-                                        'style' => 'display:inline',
-                                        'onsubmit' => 'return ConfirmDelete()',
-                                    ]) !!}
-                                {!! Form::button('<i class="fa fa-trash"></i>', [
-                                    'type' => 'submit',
-                                    'class' => 'btn btn-danger btn-sm',
-                                    'title' => 'Delete'
-                                ]) !!}
-                                {!! Form::close() !!}
-                            </td>
-
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 @endsection
