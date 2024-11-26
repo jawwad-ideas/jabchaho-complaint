@@ -22,22 +22,14 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $orderNumber = $request->input('order_number');
-        //$orders = Orders::with('images')->select('*')->orderBy('id', 'desc');
-        $orders = new Order;
-        //$orders = Orders::->select('*')->orderBy('id', 'desc');
-        /*$orders = Orders::withCount([ 'images as before' => function ($query) {
-            $query->where('image_type', 'Before Wash')->where('status', 1);
-        }, 'images as after' => function ($query) {
-            $query->where('image_type', 'After Wash')->where('status', 1);
-        }, ]);*/
+    
+        $orders = Order::select('*')->orderBy('id', 'desc');
 
-        dd( $orders );
         if (!empty($orderNumber)) {
             $orders->where('orders.order_number', '=',  $orderNumber );
         }
 
         $orders = $orders->latest()->paginate(config('constants.per_page'));
-
 
         $filterData = [
             'order_number' => $orderNumber
