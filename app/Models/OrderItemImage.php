@@ -31,7 +31,10 @@ class OrderItemImage extends Model
         'image_type'
     ];
 
-
+    public function orderItem()
+    {
+        return $this->belongsTo(OrderItem::class, 'item_id');
+    }
 
     public function createOrderItemImage($data = array())
     {

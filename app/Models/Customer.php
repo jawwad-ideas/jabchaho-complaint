@@ -31,6 +31,12 @@ class Customer extends Model
     ];
 
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_id');
+    }
+
+
 
     public function createCustomer($data = array())
     {
@@ -45,8 +51,4 @@ class Customer extends Model
         }
     }
 
-
-    /*public function images() {
-        return $this->hasMany(OrdersImages::class, 'order_id', 'id');
-    }*/
 }

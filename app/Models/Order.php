@@ -33,6 +33,16 @@ class Order extends Model
         'attachments'
     ];
 
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'order_id');
+    }
+
 
 
     public function createOrder($data = array())
