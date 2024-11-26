@@ -16,7 +16,7 @@ use App\Jobs\UserCreated as UserCreated;
 use App\Http\Requests\Backend\OrderSaveRequest;
 use App\Models\Order;
 #use App\Models\OrdersImages;
-class OrdersController extends Controller
+class OrderController extends Controller
 {
 
     public function index(Request $request)
