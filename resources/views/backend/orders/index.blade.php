@@ -96,8 +96,9 @@
                         <th scope="col" width="15%">Customer Name</th>
                         <th scope="col" width="15%">Customer Email</th>
                         <th scope="col" width="15%">Customer Telephone</th>
-                        <th scope="col" width="15%">Remarks</th>
-                        <th scope="col" width="15%">Attachment</th>
+                        <th scope="col" width="15%">Before Wash Image Count</th>
+                        <th scope="col" width="15%">After Wash Image Count</th>
+                        <th scope="col" width="15%">Email Sent</th>
                         <th scope="col" width="10%">Created At</th>
                         <th scope="col" width="1%" colspan="3">Action</th>
                     </tr>
@@ -122,6 +123,7 @@
                                 </a>
 
                             </td>
+                            <td width="15%">@if( $order->is_email_sent  ) Yes @else No @endif</td>
                             <td width="15%">{{ $order->created_at }}</td>
                             <td><a href="{{ route('orders.edit', $order->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
                             </td>

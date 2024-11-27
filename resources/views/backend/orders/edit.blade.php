@@ -11,7 +11,22 @@
     }
 </style>
 @section('content')
-    <?php $ismarkComleteButtonEnable = false; ?>
+    <?php $ismarkComleteButtonEnable = false;  ?>
+    @foreach ($order->orderItems as $item)
+        @foreach ($item->images as $image)
+            @if( $ismarkComleteButtonEnable == true )
+                <?php $ismarkComleteButtonEnable = true;
+                    break;
+                ?>
+            @endif
+            @if( $image->image_type == "After Wash" )
+                <?php $ismarkComleteButtonEnable = true;
+                    break;
+                ?>
+            @endif
+        @endforeach
+    @endforeach
+
     <div
         class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
@@ -36,7 +51,7 @@
                     </div>
 
                     <div class="mb-3 complete-button-div"
-                         @if ( $order->status == 2 )
+                         @if ( $order->status == 2 || $ismarkComleteButtonEnable )
                              style="display:block;"
                          @else
                              style="display:none;"
