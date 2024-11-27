@@ -16,6 +16,7 @@ use App\Jobs\UserCreated as UserCreated;
 
 use App\Http\Requests\Backend\OrderSaveRequest;
 use App\Models\Order;
+//use App\Jobs\SendEmailOnOrderCompletion as SendEmailOnOrderCompletion;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
@@ -69,6 +70,11 @@ class OrderController extends Controller
         try {
             $order     = new Order();
             $order->where('id',$orderId )->first()->update(['updated_at'=>now(),'status' => 2  ]);
+
+            // Dispatch job to send emails
+            //dispatch(new SendEmailOnOrderCompletion($orderId));
+            //$this->queueWorker();
+
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
