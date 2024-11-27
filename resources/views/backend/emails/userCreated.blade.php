@@ -16,9 +16,20 @@
                         <tr>
                             <td class="main-content" style="vertical-align:top;background-color:#efef;padding:30px;">
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear {{$name}},</p>
-                                <p style="margin-top:0;margin:20px 0">The details of your Order No. {{$orderNo}} are provided below.</p>
+                                <p style="margin-top:0;margin:20px 0">Welcome to Jabchaho Complaint Portal! Your account has been successfully created. Below are your credentials:</p>
 
-                              
+                                <div style="margin-top: 20px;">
+                                    <div style="width:100%;display:flex;padding:10px 5px;">
+                                        <b style="width:25%;">URL# </b><span>{{$app_url}}</span>
+                                    </div>
+                                    <div style="width:100%;display:flex;padding:10px 5px;">
+                                        <b style="width:25%;">Username: </b><span>{{$username}}</span>
+                                    </div>
+                                    <div style="width:100%;display:flex;padding:10px 5px;">
+                                        <b style="width:25%;">Password: </b><span>{{$password}}</span>
+                                    </div>
+
+                                </div>
                                 <p>Thank you,</p>
                             </td>
                         </tr>

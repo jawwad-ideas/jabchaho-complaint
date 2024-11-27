@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
+use App\Models\Order;
 
 class SendEmailOnOrderCompletion implements ShouldQueue
 {
@@ -30,8 +31,13 @@ class SendEmailOnOrderCompletion implements ShouldQueue
      */
     public function handle(): void
     {
+        \Log::info('handle function called');
         $orderData=array();
         $orderitemData=array();
+
+        $orderData = Order::where(['id' =>$this->orderId])->first();
+
+        \Log::info(print_r($orderData,true));
 
         $this->sendEmail($orderData,$orderitemData);
     }
@@ -39,18 +45,23 @@ class SendEmailOnOrderCompletion implements ShouldQueue
 
     public function sendEmail($orderData=array(), $orderitemData=array())
     {
+        \Log::info('sendEmail function called');
+
+        \Log::info(print_r(Arr::get($orderData, 'customer_email'),true));
+        
         try 
         {
             Mail::send(
                 'backend.emails.orderCompleted',
                 [
                     'orderNo'               => Arr::get($orderData, 'order_id'),
-                    'name'                  => Arr::get($orderData, 'name'),
+                    'name'                  => Arr::get($orderData, 'customer_name'),
                     'app_url'               => URL::to('/'),
                 ],
                 function ($message) use ($orderData) {
-                    $message->to(trim(Arr::get($orderData, 'email')));
+                    $message->to(trim(Arr::get($orderData, 'customer_email')));
                     $message->subject('Your Order Is Ready for Dispatch');
+                    $message->from(env('MAIL_FROM_ADDRESS'), 'JabChacho');
                 }
             );
 
