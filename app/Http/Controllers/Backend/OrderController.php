@@ -133,16 +133,21 @@ class OrderController extends Controller
             if( $request->has('image') ) {
                 foreach ($request->file('image') as $itemId => $imageTypes) {
                     foreach ($imageTypes as $type => $files) {
-                        if ($type == "pickup_images")
+                        if ($type == "pickup_images") {
                             $imageType = "Before Wash";
-                        else if ($type == "delivery_images")
+                            $tempfilePath           = $uploadFolderPath."/before";
+                            $tempfilePath           = public_path($tempfilePath);
+                        }else if ($type == "delivery_images") {
                             $imageType = "After Wash";
+                            $tempfilePath           = $uploadFolderPath."/after";
+                            $tempfilePath           = public_path($tempfilePath);
+                        }
 
                         foreach ($files as $file) {
                             // Save file and process it
                             $image = $file;
                             $newName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $image->getClientOriginalExtension();
-                            $image->move($filePath, $newName);
+                            $image->move( $tempfilePath , $newName);
 
                             $orderImages[] = [
                                 'item_id' => $itemId,

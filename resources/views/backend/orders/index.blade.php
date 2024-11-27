@@ -96,8 +96,9 @@
                         <th scope="col" width="15%">Customer Name</th>
                         <th scope="col" width="15%">Customer Email</th>
                         <th scope="col" width="15%">Customer Telephone</th>
-                        <th scope="col" width="15%">Remarks</th>
-                        <th scope="col" width="15%">Attachment</th>
+                        <th scope="col" width="15%">Before Wash Image Count</th>
+                        <th scope="col" width="15%">After Wash Image Count</th>
+                        <th scope="col" width="15%">Email Sent</th>
                         <th scope="col" width="10%">Created At</th>
                         <th scope="col" width="1%" colspan="3">Action</th>
                     </tr>
@@ -114,14 +115,19 @@
                             <td width="15%">{{ $order->customer_name }}</td>
                             <td width="15%">{{ $order->customer_email }}</td>
                             <td width="15%">{{ $order->telephone }}</td>
-                            <td width="15%">{{ $order->remarks }}</td>
+
+                            <td width="15%">{{ $order->before_wash_images_count ?? 0 }}</td>
+                            <td width="15%">{{ $order->after_wash_images_count ?? 0 }}</td>
+
+                            {{--<td width="15%">{{ $order->remarks }}</td>
                             <td width="15%">
 
                                 <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$order->attachments}}"  target="_blank">
                                     <img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$order->attachments}}" alt="{{$order->attachments}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
                                 </a>
 
-                            </td>
+                            </td>--}}
+                            <td width="15%">@if( $order->is_email_sent  ) Yes @else No @endif</td>
                             <td width="15%">{{ $order->created_at }}</td>
                             <td><a href="{{ route('orders.edit', $order->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
                             </td>

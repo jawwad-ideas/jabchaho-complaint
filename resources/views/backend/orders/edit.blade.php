@@ -11,7 +11,22 @@
     }
 </style>
 @section('content')
-    <?php $ismarkComleteButtonEnable = false; ?>
+    <?php $ismarkComleteButtonEnable = false;  ?>
+    @foreach ($order->orderItems as $item)
+        @foreach ($item->images as $image)
+            @if( $ismarkComleteButtonEnable == true )
+                <?php $ismarkComleteButtonEnable = true;
+                    break;
+                ?>
+            @endif
+            @if( $image->image_type == "After Wash" )
+                <?php $ismarkComleteButtonEnable = true;
+                    break;
+                ?>
+            @endif
+        @endforeach
+    @endforeach
+
     <div
         class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
@@ -36,7 +51,7 @@
                     </div>
 
                     <div class="mb-3 complete-button-div"
-                         @if ( $order->status == 2 )
+                         @if ( $order->status == 2 || $ismarkComleteButtonEnable )
                              style="display:block;"
                          @else
                              style="display:none;"
@@ -62,7 +77,7 @@
                         @foreach ($order->orderItems as $item)
                         <div class="itemForm">
                             <div class="item-form-row p-3 bg-light rounded border-light mb-4 ">
-                                <div class="itemLabel"><label class="fw-bold">{{$item->barcode}} - {{$item->item_name}}</label></div>
+                                <div class="itemLabel"><label class="fw-bold">Barcode: {{$item->barcode}}  - Product: {{$item->item_name}}</label></div>
                                     <div class="inner-row d-flex justify-content-between pb-4 gap-4">
                                         <div class="mb-3 col-lg-6 bg-white py-3 px-2 border-light">
                                             <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
