@@ -84,7 +84,7 @@ class OrderController extends Controller
                         $uploadFolderPath = config('constants.files.orders').'/'.$orderNumber;
                         $filePath = public_path($uploadFolderPath);
                         $image      =   $file;
-                        $newName    =   $orderNumber.'-'.now()->format('Y-m-d-h:i:s A').'-'.uniqid(rand(), true).'.' . $image->getClientOriginalExtension();
+                        $newName    =   $orderNumber.'-'.$itemId.'-'.time().'-'.uniqid(rand(), true).'.' . $image->getClientOriginalExtension();
                         $image->move( $filePath, $newName );
 
                         $orderImages[] = [
