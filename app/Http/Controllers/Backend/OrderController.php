@@ -22,26 +22,57 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-        $orderNumber = $request->input('order_number');
+        $order_number       = $request->input('order_number');
+        $customer_email     = $request->input('customer_email');
+        $customer_name      = $request->input('customer_name');
+        $telephone          = $request->input('telephone');
+        $status             = $request->segment(3);
 
         $orders = Order::select('*')->orderBy('id', 'desc');
 
-        if (!empty($orderNumber)) {
-            $orders->where('orders.order_id', '=',  $orderNumber );
+        if (!empty($order_number)) {
+            $orders->where('orders.order_id', '=',  $order_number );
+        }
+
+        if (!empty($customer_email)) {
+            $orders->where('orders.customer_email', 'like',  '%'.$customer_email.'%' );
+        }
+
+        if (!empty($customer_name)) {
+            $orders->where('orders.customer_name', 'like',  '%'.$customer_name.'%' );
+        }
+
+        if (!empty($telephone)) {
+            $orders->where('orders.telephone', '=',  '%'.$telephone.'%' );
+        }
+
+        if (!empty($status)) {
+            $orders->where('orders.status', '=',  $status );
         }
 
         $orders = $orders->latest()->paginate( config('constants.per_page') );
         //dd($orders);
         $filterData = [
-            'order_number' => $orderNumber
+            'order_number' => $order_number,
+            'order_status' => $status,
+            'customer_email' => $customer_email,
+            'customer_name' => $customer_name,
+            'telephone' => $telephone
         ];
 
         return view('backend.orders.index', compact('orders'))->with($filterData);
     }
 
-    public function create()
+    public function completeOrder( Request $request )
     {
-        return view('backend.orders.create');
+        $orderId = $request->input('orderId');
+        try {
+            $order     = new Order();
+            $order->where('id',$orderId )->first()->update(['updated_at'=>now(),'status' => 2  ]);
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function edit($orderId)

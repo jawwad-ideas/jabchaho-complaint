@@ -155,10 +155,21 @@
                                     <div class="collapse mt-3 ms-5" id="orders" style="">
                                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                             @if(Auth::user()->can('orders.index'))
-                                                <li class="py-2 "><a href="{{ route('orders.index') }}"
+                                                <li class="py-2 "><a href="{{ route('orders.index') }}/1"
                                                                      class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
                                                         <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
-                                                        Orders</a>
+                                                        Pending Orders</a>
+                                                </li>
+                                            @endif;
+                                        </ul>
+                                    </div>
+                                    <div class="collapse mt-3 ms-5" id="orders" style="">
+                                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                            @if(Auth::user()->can('orders.index'))
+                                                <li class="py-2 "><a href="{{ route('orders.index') }}/2"
+                                                                     class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                        <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
+                                                        Complete Orders</a>
                                                 </li>
                                             @endif;
                                         </ul>
