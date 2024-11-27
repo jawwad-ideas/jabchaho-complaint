@@ -46,68 +46,88 @@ class OrderController extends Controller
 
     public function edit($orderId)
     {
-        $order = Order::with(['orderItems.images'])->find($orderId);
-
-        //dd($order);
-
+        $order = Order::with(['orderItems.images' => function ($query) {
+            $query->where('status', 1);
+        }])->find($orderId);
         return view('backend.orders.edit', [
             'order' => $order
         ]);
     }
 
-    public function delete( $order_id ,  $image_id )
+    public function delete( Request $request )
     {
-        $orderImagesModel     = new OrdersImages();
-        $orderImagesModel->where('id',$image_id)->first()->update(['updated_at'=>now(),'status'=>0]);
-
-        return redirect()->route('orders.edit', ['order_id' => $order_id])
-            ->with('success', 'Image deleted successfully.');
-
+        $imageId = $request->input('imageId');
+        try {
+            $orderImagesModel     = new OrderItemImage();
+            $orderImagesModel->where('id',$imageId)->first()->update(['updated_at'=>now(),'status'=>0]);
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function save( Request $request )
     {
-        if ( $request->has('order_id') && $request->has('image')) {
-            $orderImages = [];
-            $adminUser      = $request->user()->id;
-            $orderId        = $request->get('order_id');
-            $orderNumber    = $request->get('order_number');
-            foreach ($request->file('image') as $itemId => $imageTypes) {
-                foreach ($imageTypes as $type => $files) {
-                    if( $type == "pickup_images")
-                        $imageType = $type;
-                    else if( $type == "delivery_images" )
-                        $imageType = $type;
+        if ( $request->has('order_id') ) {
+            $orderImages        =  [];
+            $adminUser          = $request->user()->id;
+            $orderId            = $request->get('order_id');
+            $remarks            = $request->get('remarks');
+            $orderNumber        = $request->get('order_number');
+            $uploadFolderPath   = config('constants.files.orders').'/'.$orderNumber;
+            $filePath           = public_path($uploadFolderPath);
 
-                    foreach ($files as $file) {
-                        // Save file and process it
-                        $uploadFolderPath = config('constants.files.orders').'/'.$orderNumber;
-                        $filePath = public_path($uploadFolderPath);
-                        $image      =   $file;
-                        $newName    =   $orderNumber.'-'.$itemId.'-'.time().'-'.uniqid(rand(), true).'.' . $image->getClientOriginalExtension();
-                        $image->move( $filePath, $newName );
+            $orderUpdateArray =  [ 'updated_at'=>now(), 'remarks' => $remarks ];
+            $attachmentName = null;
 
-                        $orderImages[] = [
-                            'item_id' => $itemId,
-                            'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
-                            'imagename' => $newName,
-                            'admin_user' => $adminUser,
-                            'status' => 1,
-                        ];
+            if( $request->has('remarks_attachment') ){
+                $attachment = $request->file('remarks_attachment');
+                $attachmentName    =   $orderNumber.'-'.time().'-'.uniqid(rand(), true).'.' . $attachment->getClientOriginalExtension();
+                $attachment->move( $filePath, $attachmentName );
+                $orderUpdateArray  = [ "attachments"=>$attachmentName ];
+            }
+
+            $order     = new Order();
+            $order->where('id',$orderId)->first()->update(
+                $orderUpdateArray
+            );
+
+
+            if( $request->has('image') ) {
+                foreach ($request->file('image') as $itemId => $imageTypes) {
+                    foreach ($imageTypes as $type => $files) {
+                        if ($type == "pickup_images")
+                            $imageType = "Before Wash";
+                        else if ($type == "delivery_images")
+                            $imageType = "After Wash";
+
+                        foreach ($files as $file) {
+                            // Save file and process it
+                            $image = $file;
+                            $newName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $image->getClientOriginalExtension();
+                            $image->move($filePath, $newName);
+
+                            $orderImages[] = [
+                                'item_id' => $itemId,
+                                'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
+                                'imagename' => $newName,
+                                'admin_user' => $adminUser,
+                                'status' => 1,
+                            ];
+                        }
                     }
                 }
+
+                if (!empty($orderImages)) {
+                    $ordersImagesModel = new OrderItemImage;
+                    $ordersImagesModel->createOrderItemImage($orderImages);
+
+                }
             }
-
-            if( !empty($orderImages) ){
-                $ordersImagesModel = new OrderItemImage;
-                $ordersImagesModel->createOrderItemImage($orderImages);
-
-                return redirect()->route('orders.edit', ['order_id' => $orderId ])
-                    ->with('success', 'Order created successfully.');
-
-            }
+            return redirect()->route('orders.edit', ['order_id' => $orderId])
+                ->with('success', 'Order created successfully.');
         }
+
         return view('backend.orders.index');
     }
-
 }

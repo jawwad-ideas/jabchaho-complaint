@@ -43,10 +43,6 @@
                             <input value="{{ $order->id }}" type="hidden" class="form-control" name="order_id"
                                    placeholder="Order Number" readonly>
                         </div>
-                        <div class="mb-3">
-                            <label for="remarks" class="form-label">Remarks#</label>
-                            <textarea name="remarks" class="form-control" value="{{ $order->remarks }}" placeholder="Order Remarks" ></textarea>
-                        </div>
 
                         @foreach ($order->orderItems as $item)
                         <div class="itemForm">
@@ -57,72 +53,108 @@
                                             <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
                                             <input value="" type="file" class="form-control" name="image[{{$item->id}}][pickup_images][]"
                                                    placeholder="Before Wash Images" multiple>
+                                            @if( !empty($item->images) )
                                             <div class="table-scroll-hr mt-4">
                                                 <table class="table table-bordered table-striped table-compact ">
                                                     <thead>
                                                     <tr>
                                                         <th>Image</th>
-                                                        <th>Action</th>
+                                                        <th colspan="2">Action</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                     @foreach ($item->images as $image)
+                                                        @if( $image->image_type == "Before Wash" )
                                                         <tr>
                                                             <td>
                                                                 <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}"  target="_blank">
-                                                                    <img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
+                                                                    <img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}" alt="{{$image->imagename}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
                                                                 </a>
                                                             </td>
                                                             <td><a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}" class="btn bg-theme-yellow btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
                                                             </td>
-{{--                                                                <?php $truncateLength = 20; ?>--}}
-{{--                                                            <th>{{ Str::limit($image->imagename, $truncateLength) }}</th>--}}
-{{--                                                            <th>{{ $image->created_at }}</th>--}}
+                                                            <td>
+                                                                <button
+                                                                    class="btn btn-danger btn-sm delete-image"
+                                                                    data-image-id="{{ $image->id }}"
+                                                                    title="Delete">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
                                                         </tr>
+                                                        @endif
                                                     @endforeach
                                                     </tbody>
                                                 </table>
                                             </div>
-
-
+                                            @endif
                                         </div>
 
                                         <div class="mb-3 col-lg-6 bg-white py-3 px-2 border-light">
                                             <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
                                             <input value="" type="file" class="form-control" name="image[{{$item->id}}][delivery_images][]"
                                                    placeholder="After Wash Images" multiple>
+
+                                            @if( !empty($item->images) )
                                             <div class="table-scroll-hr mt-4">
                                                 <table class="table table-bordered table-striped table-compact ">
                                                     <thead>
                                                     <tr>
                                                         <th>Image</th>
-                                                        <th>Action</th>
+                                                        <th colspan="2">Action</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                     @foreach ($item->images as $image)
+                                                        @if( $image->image_type == "After Wash" )
                                                         <tr>
                                                             <td>
                                                                 <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}"  target="_blank">
-                                                                    <img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
+                                                                    <img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}" alt="{{$image->imagename}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
                                                                 </a>
                                                             </td>
                                                             <td><a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}" class="btn bg-theme-yellow btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
                                                             </td>
+                                                            <td>
+                                                                <button
+                                                                    class="btn btn-danger btn-sm delete-image"
+                                                                    data-image-id="{{ $image->id }}"
+                                                                    title="Delete">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+
                                                         </tr>
+                                                        @endif
                                                     @endforeach
                                                     </tbody>
                                                 </table>
                                             </div>
-
+                                            @endif
                                         </div>
                                     </div>
-                                
                             </div>
                         </div>
                         @endforeach
 
                         <div>&nbsp;</div>
+
+                        <div class="mb-3">
+                            <label for="remarks" class="form-label">Order Remarks</label>
+                            <textarea name="remarks" class="form-control" placeholder="Order Remarks" >{{ $order->remarks }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="remarks_attachment" class="form-label">Attachment</label>
+                            <input value="" type="file" class="form-control" name="remarks_attachment"
+                                   placeholder="Before Wash Images" >
+                            @if( $order->attachments )
+                                <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$order->attachments}}"  target="_blank">
+                                    <img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$order->attachments}}" alt="{{$order->attachments}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
+                                </a>
+                            @endif
+                        </div>
+
                         <div class="mb-3">
                             <button type="submit"
                                     class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Update order</button>
@@ -132,6 +164,43 @@
                 </div>
             </div>
         </form>
-
     </div>
+
+    <script>
+        $(document).ready(function () {
+            // Handle delete button click
+            $(document).on('click', '.delete-image', function (event) {
+                event.preventDefault(); // Prevent any default action (just in case)
+                event.stopPropagation(); // Stop event bubbling (in case it's nested in other clickable elements)
+                const button = $(this); // Get the button that was clicked
+                const imageId = button.data('image-id');
+                // Confirmation dialog
+                if (!confirm('Are you sure you want to delete this image?')) {
+                    return false;
+                }
+
+                var url = '{{ route('orders.delete') }}'
+
+                $.ajax({
+                    type: 'POST',
+                    url: url, // Get the form action URL
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: { imageId:imageId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Image deleted successfully!');
+                            location.reload(); // Refresh the page to reflect changes
+                        } else {
+                            alert('Failed to delete the image. Please try again.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('Something went wrong. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+
 @endsection
