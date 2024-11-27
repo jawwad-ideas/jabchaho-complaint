@@ -11,7 +11,7 @@
     }
 </style>
 @section('content')
-
+    <?php $ismarkComleteButtonEnable = false; ?>
     <div
         class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
@@ -34,6 +34,21 @@
                             <h4 class="fw-bold mt-0">Edit Order And Upload Images.</h4>
                         </div>
                     </div>
+
+                    <div class="mb-3 complete-button-div"
+                         @if ( $order->status == 2 )
+                             style="display:block;"
+                         @else
+                             style="display:none;"
+                        @endif
+                    >
+                        <button
+                            class="btn btn-success btn-sm complete-order"
+                            data-order-id="{{ $order->id }}"
+                            title="Complete Order"> Complete Order
+                        </button>
+                    </div>
+
 
                     <div class="container mt-4">
                         <div class="mb-3">
@@ -107,6 +122,7 @@
                                                     <tbody>
                                                     @foreach ($item->images as $image)
                                                         @if( $image->image_type == "After Wash" )
+                                                            <?php $ismarkComleteButtonEnable = true; ?>
                                                         <tr>
                                                             <td>
                                                                 <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$image->imagename}}"  target="_blank">
@@ -200,7 +216,40 @@
                     }
                 });
             });
+
+
+
+            $(document).on('click', '.complete-order', function (event) {
+                event.preventDefault(); // Prevent any default action (just in case)
+                event.stopPropagation(); // Stop event bubbling (in case it's nested in other clickable elements)
+                const button = $(this); // Get the button that was clicked
+                const orderId = button.data('order-id');
+                // Confirmation dialog
+                if (!confirm('Are you sure you want to complete this order?')) {
+                    return false;
+                }
+
+                var url = '{{ route('orders.complete') }}'
+
+                $.ajax({
+                    type: 'POST',
+                    url: url, // Get the form action URL
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: { orderId:orderId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Order Complete successfully!');
+                            location.reload(); // Refresh the page to reflect changes
+                        } else {
+                            alert('Failed to mark order complete. Please try again.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('Something went wrong. Please try again.');
+                    }
+                });
+            });
         });
     </script>
-
 @endsection

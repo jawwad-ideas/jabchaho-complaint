@@ -130,11 +130,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::delete('/{review}/delete', 'ReviewController@destroy')->name('reviews.destroy');
 
         Route::group(['prefix' => 'orders'], function() {
-            /*Route::get('/create', 'OrdersController@create')->name('orders.create');*/
             Route::post('/save', 'OrderController@save')->name('orders.save');
-            Route::get('/index', 'OrderController@index')->name('orders.index');
+            Route::get('/index/{status?}', 'OrderController@index')->name('orders.index');
             Route::get('/{order_id}/edit', 'OrderController@edit')->name('orders.edit');
             Route::post('/delete', 'OrderController@delete')->name('orders.delete');
+            Route::post('/complete-order', 'OrderController@completeOrder')->name('orders.complete');
         });
     });
 
