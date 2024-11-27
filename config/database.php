@@ -62,6 +62,19 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+        'laundry_mysql' => [
+            'driver' => 'mysql',
+            'host' => env('LAUNDRY_DB_HOST'),
+            'port' => env('LAUNDRY_DB_PORT'),
+            'database' => env('LAUNDRY_DB_DATABASE'),
+            'username' => env('LAUNDRY_DB_USERNAME'),
+            'password' => env('LAUNDRY_DB_PASSWORD'),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+		    'engine' => null,
+        ],
 
         'pgsql' => [
             'driver' => 'pgsql',
