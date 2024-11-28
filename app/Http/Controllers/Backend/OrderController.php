@@ -31,7 +31,13 @@ class OrderController extends Controller
         $telephone          = $request->input('telephone');
         $status             = $request->segment(3);
 
-        $orders = Order::select('*')->orderBy('id', 'desc');
+        //$orders = Order::select('*')->orderBy('id', 'desc');
+        $orders = Order::withCount([
+            'images', // Total images
+            'before', // Count with image_type = 1
+            'after', // Count with image_type = 2
+        ])
+        ->orderBy('id', 'desc');
 
         if (!empty($order_number)) {
             $orders->where('orders.order_id', '=',  $order_number );
