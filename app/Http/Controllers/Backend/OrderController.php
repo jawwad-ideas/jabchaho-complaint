@@ -18,6 +18,9 @@ use App\Http\Requests\Backend\OrderSaveRequest;
 use App\Models\Order;
 use App\Jobs\SendEmailOnOrderCompletion as SendEmailOnOrderCompletion;
 use App\Console\commands\SyncLaundryData;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
@@ -189,5 +192,41 @@ class OrderController extends Controller
         }
 
         return view('backend.orders.index');
+    }
+
+
+    public function downloadImages($orderId=0,$folderName='')
+    {
+        //public\assets\uploads\orders\101621
+        $directoryPath = public_path("assets/uploads/orders/{$orderId}/{$folderName}");
+        
+        // Check if the directory exists
+        if (!File::exists($directoryPath)) {
+            return response()->json(['error' => 'Directory does not exist.'], 404);
+        }
+
+        // Get all files in the directory
+        $files = File::files($directoryPath);
+
+        if (empty($files)) {
+            return response()->json(['error' => 'No files found in the directory.'], 404);
+        }
+
+        // Create a ZIP file
+        $zipFileName = "{$folderName}_images.zip";
+        $zipFilePath = storage_path("app/{$zipFileName}");
+
+        $zip = new ZipArchive;
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+            foreach ($files as $file) {
+                $zip->addFile($file->getRealPath(), $file->getFilename());
+            }
+            $zip->close();
+        } else {
+            return response()->json(['error' => 'Failed to create ZIP file.'], 500);
+        }
+
+        // Download the ZIP file
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);
     }
 }

@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\PermissionsController;
 |
 */
 
+Route::get('/download-images/{orderId}/{folderName}', 'App\Http\Controllers\Backend\OrderController@downloadImages')->name('download.images');
 
 Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('constants.admin_url_prefix')], function()
 {
@@ -30,6 +31,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::get('/', 'LoginController@show')->name('login.form');
         Route::get('/login', 'LoginController@show')->name('login.show');
         Route::post('/login', 'LoginController@login')->name('login.perform');
+        
 
     });
 
