@@ -98,8 +98,31 @@ class OrderController extends Controller
         $order = Order::with(['orderItems.images' => function ($query) {
             $query->where('status', 1);
         }])->find($orderId);
+
+
+        $ismarkComleteButtonEnable = false;
+        foreach($order->orderItems as $item):
+            foreach ($item->images as $image):
+                if( $ismarkComleteButtonEnable == true ):
+                    break;
+                endif;
+                if( $image->image_type == "After Wash" ):
+                    $ismarkComleteButtonEnable = true;
+                    break;
+                endif;
+            endforeach;
+            if( $ismarkComleteButtonEnable ):
+                break;
+            endif;
+        endforeach;
+
+
+
         return view('backend.orders.edit', [
-            'order' => $order
+            'order' => $order,
+            'complete_button' => $ismarkComleteButtonEnable,
+            'resend_email' => $ismarkComleteButtonEnable,
+            'before_send_email' => true
         ]);
     }
 
@@ -152,14 +175,19 @@ class OrderController extends Controller
                 $attachment = $request->file('remarks_attachment');
                 $attachmentName    =   $orderNumber.'-'.time().'-'.uniqid(rand(), true).'.' . $attachment->getClientOriginalExtension();
                 $attachment->move( $filePath, $attachmentName );
-                $orderUpdateArray  = [ "attachments"=>$attachmentName ];
+                $orderUpdateArray["attachments"]  = $attachmentName;
             }
 
-            $order     = new Order();
-            $order->where('id',$orderId)->first()->update(
+            $order = Order::where(['id' =>$orderId ])->first();
+            $isToken = Arr::get($order, 'token');
+            if( is_null($isToken) ){
+                $token = sha1(uniqid(mt_rand(), true));
+                $orderUpdateArray["token"]  = $token;
+            }
+
+            $order->update(
                 $orderUpdateArray
             );
-
 
             if( $request->has('image') ) {
                 foreach ($request->file('image') as $itemId => $imageTypes) {
