@@ -57,12 +57,12 @@ class Order extends Model
 
     public function before()
     {
-        return $this->images()->where('image_type', 'Before Wash');
+        return $this->images()->where(['image_type'=> 'Before Wash', 'order_item_images.status' =>1]);
     }
 
     public function after()
     {
-        return $this->images()->where('image_type', 'After Wash');
+        return $this->images()->where(['image_type'=> 'After Wash', 'order_item_images.status' => 1] );
     }
 
 

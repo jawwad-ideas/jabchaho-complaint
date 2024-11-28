@@ -104,8 +104,8 @@
                         <th scope="col" width="15%">Customer Name</th>
                         <th scope="col" width="15%">Customer Email</th>
                         <th scope="col" width="15%">Telephone</th>
-                        {{--<th scope="col" width="15%">Before Wash Image Count</th>
-                        <th scope="col" width="15%">After Wash Image Count</th>--}}
+                        <th scope="col" width="15%">Before Wash Image Count</th>
+                        <th scope="col" width="15%">After Wash Image Count</th>
                         <th scope="col" width="15%">Email Sent</th>
                         <th scope="col" width="10%">Created At</th>
                         <th scope="col" width="1%" colspan="3">Action</th>
