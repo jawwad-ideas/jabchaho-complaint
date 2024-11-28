@@ -5,7 +5,7 @@
                 <table class="main" align="center" style="border-collapse:collapse;margin:0 auto;text-align:left;width:660px;">
                     <tbody>
                         <tr>
-                            <td class="header" style="vertical-align:top;background-color:#ec23262b;padding:40px 25px 25px;">
+                            <td class="header" style="vertical-align:top;background-color:#000;padding:40px 25px 25px;">
                                 <div>
                                     <a class="logo" href="#" style="color:#000;text-decoration:none" target="_other" rel="nofollow">
                                         <img width="190" height="39" src="{{ $app_url }}/assets/images/jc-logo.png" alt="Jabchaho" style="border:0;height:auto;line-height:100%;outline:none;text-decoration:none;max-width:150px">
