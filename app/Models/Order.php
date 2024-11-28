@@ -27,10 +27,14 @@ class Order extends Model
         'order_id',
         'status',
         'updated_at',
-        'is_email_sent',
+        'final_email',
         'order_type_id',
         'remarks',
-        'attachments'
+        'attachments',
+        'before_email',
+        'before_email_remarks',
+        'final_email_remarks',
+        'token'
     ];
 
     public function customer()

@@ -35,12 +35,6 @@
     <div class="page-content bg-white p-lg-5 px-2">
 
         <div class="bg-light p-2 rounded">
-
-            {{--<form class="form-inline" method="GET">
-               <input type="text" id="order_number" placeholder="order number" name="order_number"
-                   maxlength="50" value="{{ $order_number}}">
-           </form>--}}
-            <!--Assign To Modal -->
             <div id="modalDiv"></div>
 
             <div class="" id="filterBox"
@@ -106,7 +100,8 @@
                         <th scope="col" width="15%">Telephone#</th>
                         <th scope="col" width="15%">Before Wash</th>
                         <th scope="col" width="15%">After Wash</th>
-                        <th scope="col" width="15%">Email</th>
+                        <th scope="col" width="15%">Before Email</th>
+                        <th scope="col" width="15%">Final Email</th>
                         <th scope="col" width="10%">Created At</th>
                         <th scope="col" width="1%" colspan="3">Action</th>
                     </tr>
@@ -126,16 +121,8 @@
 
                             <td width="15%">{{ $order->before_count ?? 0 }}</td>
                             <td width="15%">{{ $order->after_count ?? 0 }}</td>
-
-                            {{--<td width="15%">{{ $order->remarks }}</td>
-                            <td width="15%">
-
-                                <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$order->attachments}}"  target="_blank">
-                                    <img class="order-img" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$order->attachments}}" alt="{{$order->attachments}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
-                                </a>
-
-                            </td>--}}
-                            <td width="15%">@if( $order->is_email_sent  ) Yes @else No @endif</td>
+                            <td width="15%">@if( $order->before_email  ) Yes @else No @endif</td>
+                            <td width="15%">@if( $order->final_email  ) Yes @else No @endif</td>
                             <td width="15%">{{ $order->created_at }}</td>
                             <td><a href="{{ route('orders.edit', $order->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
                             </td>

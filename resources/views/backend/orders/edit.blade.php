@@ -95,7 +95,7 @@
         <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
             <div class="btn-group" role="group">
                 <div class="mb-3 complete-button-div" @if ( $order->status == 2 || $ismarkComleteButtonEnable )
-                           <?php  if( $order->is_email_sent == 1 ){
+                           <?php  if( $order->final_email == 1 ){
                                 $title = "Resend Email";
                             } else{
                                 $title = "Complete Order";
