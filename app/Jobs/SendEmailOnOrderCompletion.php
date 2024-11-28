@@ -41,7 +41,6 @@ class SendEmailOnOrderCompletion implements ShouldQueue
 
         $emailStatus = $this->sendEmail($orderData,$orderitemData);
         if( $emailStatus ){
-            $order     = new Order();
             $orderData->update([ 'is_email_sent' => 1 , 'updated_at'=>now() ]);
         }
     }
