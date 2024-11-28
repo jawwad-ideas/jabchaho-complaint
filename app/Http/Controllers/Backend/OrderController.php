@@ -107,8 +107,31 @@ class OrderController extends Controller
         $order = Order::with(['orderItems.images' => function ($query) {
             $query->where('status', 1);
         }])->find($orderId);
+
+
+        $ismarkComleteButtonEnable = false;
+        foreach($order->orderItems as $item):
+            foreach ($item->images as $image):
+                if( $ismarkComleteButtonEnable == true ):
+                    break;
+                endif;
+                if( $image->image_type == "After Wash" ):
+                    $ismarkComleteButtonEnable = true;
+                    break;
+                endif;
+            endforeach;
+            if( $ismarkComleteButtonEnable ):
+                break;
+            endif;
+        endforeach;
+
+
+
         return view('backend.orders.edit', [
-            'order' => $order
+            'order' => $order,
+            'complete_button' => $ismarkComleteButtonEnable,
+            'resend_email' => $ismarkComleteButtonEnable,
+            'before_send_email' => true
         ]);
     }
 
