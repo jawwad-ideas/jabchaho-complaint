@@ -150,11 +150,11 @@
                                                                 <button
                                                                     class="btn btn-danger btn-sm delete-image"
                                                                     data-image-id="{{ $image->id }}"
+                                                                    data-order-number="{{ $order->order_id }}"
                                                                     title="Delete">
                                                                     <i class="fa fa-trash"></i>
                                                                 </button>
                                                             </td>
-
                                                         </tr>
                                                         @endif
                                                     @endforeach
@@ -205,6 +205,7 @@
                 event.stopPropagation(); // Stop event bubbling (in case it's nested in other clickable elements)
                 const button = $(this); // Get the button that was clicked
                 const imageId = button.data('image-id');
+                const orderNumber = button.data('order-number');
                 // Confirmation dialog
                 if (!confirm('Are you sure you want to delete this image?')) {
                     return false;
@@ -216,7 +217,7 @@
                     type: 'POST',
                     url: url, // Get the form action URL
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    data: { imageId:imageId },
+                    data: { imageId:imageId, orderNumber:orderNumber },
                     success: function (response) {
                         if (response.success) {
                             alert('Image deleted successfully!');

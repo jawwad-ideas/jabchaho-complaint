@@ -18,6 +18,7 @@ use App\Http\Requests\Backend\OrderSaveRequest;
 use App\Models\Order;
 use App\Jobs\SendEmailOnOrderCompletion as SendEmailOnOrderCompletion;
 use App\Console\commands\SyncLaundryData;
+use Illuminate\Support\Facades\File;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
@@ -106,9 +107,28 @@ class OrderController extends Controller
     public function delete( Request $request )
     {
         $imageId = $request->input('imageId');
+        $orderNumber = $request->input('orderNumber');
         try {
-            $orderImagesModel     = new OrderItemImage();
-            $orderImagesModel->where('id',$imageId)->first()->update(['updated_at'=>now(),'status'=>0]);
+            //$orderImagesModel     = new OrderItemImage();
+            $orderImagesModel= OrderItemImage::where('id',$imageId)->first();
+
+            /*$uploadFolderPath   = config('constants.files.orders').'/'.$orderNumber;
+            $newPath           = $uploadFolderPath."delete";
+            $newPath           = public_path($newPath."/".$orderImagesModel->imagename );
+
+            if ($orderImagesModel->image_type == "Before Wash") {
+                $currentPath           = $uploadFolderPath."before";
+                $currentPath           = public_path($currentPath.$orderImagesModel->imagename);
+            }else if ( $orderImagesModel->image_type == "After Wash") {
+                $currentPath           = $uploadFolderPath."after";
+                $currentPath           = public_path($currentPath."/".$orderImagesModel->imagename);
+            }
+            // Move the file
+            if (File::move( $currentPath, $newPath)) {
+                $orderImagesModel->update(['updated_at'=>now(),'status'=>0]);
+                return response()->json(['success' => true]);
+            }*/
+            $orderImagesModel->update(['updated_at'=>now(),'status'=>0]);
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
