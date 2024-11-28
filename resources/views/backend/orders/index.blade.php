@@ -99,14 +99,14 @@
                 <table class="table table-bordered table-striped table-compact ">
                     <thead>
                     <tr>
-                        <th scope="col" width="1%">#</th>
-                        <th scope="col" width="15%">Order Number</th>
+                        <th scope="col" width="1%">Sr no.</th>
+                        <th scope="col" width="15%">Order#</th>
                         <th scope="col" width="15%">Customer Name</th>
                         <th scope="col" width="15%">Customer Email</th>
-                        <th scope="col" width="15%">Telephone</th>
+                        <th scope="col" width="15%">Telephone#</th>
                         <th scope="col" width="15%">Before Wash</th>
                         <th scope="col" width="15%">After Wash</th>
-                        <th scope="col" width="15%">Email Sent</th>
+                        <th scope="col" width="15%">Email</th>
                         <th scope="col" width="10%">Created At</th>
                         <th scope="col" width="1%" colspan="3">Action</th>
                     </tr>
