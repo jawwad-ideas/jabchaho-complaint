@@ -39,7 +39,10 @@ class SendEmailOnOrderCompletion implements ShouldQueue
 
         \Log::info(print_r($orderData,true));
 
-        $this->sendEmail($orderData,$orderitemData);
+        $emailStatus = $this->sendEmail($orderData,$orderitemData);
+        if( $emailStatus ){
+            $orderData->update([ 'is_email_sent' => 1 , 'updated_at'=>now() ]);
+        }
     }
 
 
@@ -48,8 +51,8 @@ class SendEmailOnOrderCompletion implements ShouldQueue
         \Log::info('sendEmail function called');
 
         \Log::info(print_r(Arr::get($orderData, 'customer_email'),true));
-        
-        try 
+
+        try
         {
             Mail::send(
                 'backend.emails.orderCompleted',
@@ -67,8 +70,8 @@ class SendEmailOnOrderCompletion implements ShouldQueue
 
             //\Log::info('Email sent successfully to ' . Arr::get($complaintData, 'email'));
             return true;
-            
-        } catch (\Exception $e) 
+
+        } catch (\Exception $e)
         {
             \Log::error('Failed to send email: ' . $e->getMessage());
             return false;

@@ -135,6 +135,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::get('/{order_id}/edit', 'OrderController@edit')->name('orders.edit');
             Route::post('/delete', 'OrderController@delete')->name('orders.delete');
             Route::post('/complete-order', 'OrderController@completeOrder')->name('orders.complete');
+            Route::post('/sync-order', 'OrderController@syncOrder')->name('orders.sync');
         });
     });
 
