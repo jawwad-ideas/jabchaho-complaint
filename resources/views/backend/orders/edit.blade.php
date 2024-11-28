@@ -27,6 +27,47 @@
         background: #dfdfdf;
         border: none;
     }
+    .inner-content table tr td {vertical-align: middle;padding: 10px;}
+
+    img.order-img.img-thumbnail {
+        width: 60px !IMPORTANT;
+        max-width: 60px;
+    }
+
+    /*new css*/
+    .items-images-sec {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        width: 50%;
+    }
+
+    .items-images-sec .img-item {
+        position: relative;
+    }
+
+    .items-images-sec .img-item img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .item-img-action-btn {
+        position: absolute;
+        top: -5px;
+        right: -8px;
+    }
+
+    .item-img-action-btn .delete-image {
+        padding: 0;
+        width: 25px;
+        height: 26px;
+        border-radius: 100%;
+    }
+
+    .item-img-action-btn .delete-image i.fa.fa-trash {
+        font-size: 11px;
+    }
 </style>
 @section('content')
     <?php $ismarkComleteButtonEnable = false;  ?>
@@ -51,6 +92,23 @@
             <h3 class="fw-bold text-dark m-0">Edit Order</h3>
         </div>
 
+        <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
+            <div class="btn-group" role="group">
+                <div class="mb-3 complete-button-div" @if ( $order->status == 2 || $ismarkComleteButtonEnable )
+                    style="display:block;"
+                     @else
+                         style="display:none;"
+                    @endif
+                >
+                    <button
+                        class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2 complete-order"
+                        data-order-id="{{ $order->id }}" title="Complete Order"> Complete Order
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
     </div>
     <div class="page-content bg-white p-lg-5 px-2">
 
@@ -67,22 +125,7 @@
                             <h4 class="fw-bold mt-0">Edit Order And Upload Images.</h4>
                         </div>
                     </div>
-
-                    <div class="mb-3 complete-button-div"
-                         @if ( $order->status == 2 || $ismarkComleteButtonEnable )
-                             style="display:block;"
-                         @else
-                             style="display:none;"
-                        @endif
-                    >
-                        <button
-                            class="btn btn-success btn-sm complete-order"
-                            data-order-id="{{ $order->id }}"
-                            title="Complete Order"> Complete Order
-                        </button>
-                    </div>
-
-
+                    
                     <div class="container mt-4">
                         <div class="mb-3 d-flex order-no-bar p-3 align-items-center gap-2">
                             <h4 for="order" class="fw-bold ">Order#</h4>
@@ -132,97 +175,45 @@
                                             <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
                                             <input value="" type="file" class="form-control w-50" name="image[{{$item->id}}][pickup_images][]"
                                                    placeholder="" multiple>
+
                                             @if( $item->images->isNotEmpty() )
-                                            <div class="table-scroll-hr mt-4 w-50">
-                                                <table class="table table-bordered table-striped table-compact table-sm">
-                                                    {{--<thead>
-                                                    <tr>
-                                                        <th>Image</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                    </thead>--}}
-                                                    <tbody>
-                                                        <?php
-                                                            $count = 0 ;
-                                                            $totalCount =  count( $item->images );
-                                                        ?>
-                                                    @foreach ($item->images as $key => $image)
+                                                <div class="items-images-sec mt-3">
+                                                    @foreach ($item->images as $image)
                                                         @if( $image->image_type == "Before Wash" )
-                                                            @if( $count == 0 )
-                                                                <tr>
-                                                            @endif
-                                                                        <?php  $count++; ?>
-
-                                                            <td>
+                                                            <div class="img-item">
                                                                 <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/before/{{$image->imagename}}"  target="_blank">
-                                                                    <img class="order-img img-thumbnail" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/before/{{$image->imagename}}" alt="{{$image->imagename}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
+                                                                    <img class="img-thumbnail" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/before/{{$image->imagename}}" alt="{{$image->imagename}}">
                                                                 </a>
-                                                            </td>
-                                                            <td><a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/before/{{$image->imagename}}" class="btn bg-theme-yellow btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
-                                                                <button
-                                                                    class="btn btn-danger btn-sm delete-image ms-2"
-                                                                    data-image-id="{{ $image->id }}"
-                                                                    title="Delete">
-                                                                    <i class="fa fa-trash"></i>
-                                                                </button>
-                                                            </td>
-
-                                                                @if( $count == 2 )
-                                                                    </tr>
-                                                                        <?php
-                                                                        $count = 0;
-                                                                        ?>
-                                                                        @endif
-
-
+                                                                <div class="item-img-action-btn">
+                                                                    <button
+                                                                        class="btn btn-danger btn-sm delete-image ms-2"
+                                                                        data-image-id="{{ $image->id }}"
+                                                                        data-order-number="{{ $order->order_id }}"
+                                                                        title="Delete">
+                                                                        <i class="fa fa-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                         @endif
                                                     @endforeach
-                                                        @if( $count = 0 )
-
-
-                                                        @endif
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                </div>
                                             @endif
+
                                         </div>
 
                                         <div class="col-lg-6 pb-1 pt-3  border-light">
                                             <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
                                             <input value="" type="file" class="form-control w-50" name="image[{{$item->id}}][delivery_images][]"
                                                    placeholder="" multiple>
-
                                             @if( $item->images->isNotEmpty() )
-                                            <div class="table-scroll-hr mt-4 w-50">
-                                                <table class="table table-bordered table-striped table-compact table-sm">
-                                                    {{--<thead>
-                                                    <tr>
-                                                        <th>Image</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                    </thead>--}}
-                                                    <tbody>
-
-                                                        <?php
-                                                        $count = 0 ;
-                                                        $totalCount =  count( $item->images );
-                                                        ?>
-
-                                                    @foreach ($item->images as $image)
-                                                        @if( $image->image_type == "After Wash" )
-                                                            <?php $ismarkComleteButtonEnable = true; ?>
-
-                                                            @if( $count == 0 )
-                                                                <tr>
-                                                            @endif
-                                                                <?php  $count++; ?>
-
-                                                            <td>
-                                                                <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/after/{{$image->imagename}}"  target="_blank">
-                                                                    <img class="order-img img-thumbnail" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/after/{{$image->imagename}}" alt="{{$image->imagename}}" class=" img-thumbnail image-fluid w-50" style="height:60px;">
-                                                                </a>
-                                                            </td>
-                                                            <td><a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/after/{{$image->imagename}}" class="btn bg-theme-yellow btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
+                                            <div class="items-images-sec mt-3">
+                                                @foreach ($item->images as $image)
+                                                    @if( $image->image_type == "After Wash" )
+                                                        <div class="img-item">
+                                                            <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/after/{{$image->imagename}}"  target="_blank">
+                                                                <img class="img-thumbnail" src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/after/{{$image->imagename}}" alt="{{$image->imagename}}">
+                                                            </a>
+                                                            <div class="item-img-action-btn">
                                                                 <button
                                                                     class="btn btn-danger btn-sm delete-image ms-2"
                                                                     data-image-id="{{ $image->id }}"
@@ -230,20 +221,10 @@
                                                                     title="Delete">
                                                                     <i class="fa fa-trash"></i>
                                                                 </button>
-                                                            </td>
-
-                                                                    @if( $count == 2 )
-                                                                </tr>
-                                                                    <?php
-                                                                    $count = 0;
-                                                                    ?>
-                                                            @endif
-
-
-                                                        @endif
-                                                    @endforeach
-                                                    </tbody>
-                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
                                             </div>
                                             @endif
                                         </div>
