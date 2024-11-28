@@ -157,7 +157,7 @@
 
                         @foreach ($order->orderItems as $item)
                             <div class="itemForm border-bottom border-2">
-                                <div class="item-form-row p-3 bg-light rounded border-light mb-4 ">
+                                <div class="item-form-row p-3 bg-light rounded border-light">
                                     <div class="itemLabel">
                                         <label class="d-flex">
                                             <h6 class="d-inline-block fw-bold">
