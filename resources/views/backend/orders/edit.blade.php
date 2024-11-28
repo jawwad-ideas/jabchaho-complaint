@@ -95,6 +95,12 @@
         <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
             <div class="btn-group" role="group">
                 <div class="mb-3 complete-button-div" @if ( $order->status == 2 || $ismarkComleteButtonEnable )
+                           <?php  if( $order->is_email_sent == 1 ){
+                                $title = "Resend Email";
+                            } else{
+                                $title = "Complete Order";
+                            }
+                    ?>
                     style="display:block;"
                      @else
                          style="display:none;"
@@ -102,7 +108,7 @@
                 >
                     <button
                         class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2 complete-order"
-                        data-order-id="{{ $order->id }}" title="Complete Order"> Complete Order
+                        data-order-id="{{ $order->id }}" title="{{$title}}"> {{$title}}
                     </button>
                 </div>
 
@@ -127,11 +133,38 @@
                     </div>
 
                     <div class="container mt-4">
-                        <div class="mb-3 d-flex order-no-bar p-3 align-items-center gap-2">
-                            <h4 for="order" class="fw-bold ">Order#</h4>
-                            <h2 class="order-no fw-bold">
-                                {{ $order->order_id }}
-                            </h2>
+                        <div class="order-basic-info mb-3">
+
+                            <div class="d-flex order-no-bar px-3 align-items-center gap-2 mb-3">
+                                <h4 for="order" class="fw-bold ">Order#</h4>
+                                <h2 class="order-no fw-bold">
+                                    {{ $order->order_id }}
+                                </h2>
+                            </div>
+                            <div class="d-flex order-no-bar px-3 align-items-center gap-2">
+                                <h6 for="order" class="fw-bold ">Customer Name:</h6>
+                                <h6 class="order-no">
+                                    {{ $order->customer_name }}
+                                </h6>
+                            </div>
+                            <div class="d-flex order-no-bar px-3 align-items-center gap-2">
+                                <h6 for="order" class="fw-bold ">Customer Email:</h6>
+                                <h6 class="order-no">
+                                    {{ $order->customer_email }}
+                                </h6>
+                            </div>
+                            <div class="d-flex order-no-bar px-3 align-items-center gap-2">
+                                <h6 for="order" class="fw-bold ">Telephone:</h6>
+                                <h6 class="order-no">
+                                    {{ $order->telephone }}
+                                </h6>
+                            </div>
+
+
+                            {{--                            <h4 for="order" class="fw-bold ">Order#</h4>--}}
+{{--                            <h2 class="order-no fw-bold">--}}
+{{--                                {{ $order->order_id }}--}}
+{{--                            </h2>--}}
 {{--                            <div class="">--}}
 {{--                               --}}
 {{--                            </div>--}}
