@@ -115,9 +115,7 @@ class OrderController extends Controller
                 break;
             endif;
         endforeach;
-
-
-
+        
         return view('backend.orders.edit', [
             'order' => $order,
             'complete_button' => $ismarkComleteButtonEnable,
@@ -245,14 +243,14 @@ class OrderController extends Controller
                 $directoryPath = public_path("assets/uploads/orders/{$orderId}/{$folderName}");
 
                 // Check if the directory exists
-                if (!File::exists($directoryPath)) 
+                if (!File::exists($directoryPath))
                 {
                     echo "<p>The directory does not exist for order id:{$orderId}</p>".$message; exit;
                 }
 
                 // Get all files in the directory
                 $files = File::files($directoryPath);
-                if (empty($files)) 
+                if (empty($files))
                 {
                     echo "<p>Unable to download. File not found for order id:{$orderId}</p>".$message; exit;
                 }
@@ -262,14 +260,14 @@ class OrderController extends Controller
                 $zipFilePath = storage_path("app/{$zipFileName}");
 
                 $zip = new \ZipArchive;
-                if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) 
+                if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE)
                 {
                     foreach ($files as $file) {
                         $zip->addFile($file->getRealPath(), $file->getFilename());
                     }
                     $zip->close();
 
-                } else 
+                } else
                 {
                     echo "<p>Failed to create the ZIP file for order id:{$orderId}. Please try again!</p>".$message; exit;
                 }
@@ -284,10 +282,10 @@ class OrderController extends Controller
        }
        else
        {
-            echo "<p>The order is invalid.!</p>".$message; exit;    
+            echo "<p>The order is invalid.!</p>".$message; exit;
        }
 
-        
-        
+
+
     }
 }
