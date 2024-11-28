@@ -43,6 +43,28 @@ class Order extends Model
         return $this->hasMany(OrderItem::class, 'order_id');
     }
 
+    public function images()
+    {
+        return $this->hasManyThrough(
+            OrderItemImage::class, // Final table
+            OrderItem::class,      // Intermediate table
+            'order_id',            // Foreign key on OrderItem table
+            'item_id',             // Foreign key on OrderItemImage table
+            'id',                  // Local key on Orders table
+            'id'                   // Local key on OrderItem table
+        );
+    }
+
+    public function before()
+    {
+        return $this->images()->where('image_type', 'Before Wash');
+    }
+
+    public function after()
+    {
+        return $this->images()->where('image_type', 'After Wash');
+    }
+
 
 
     public function createOrder($data = array())

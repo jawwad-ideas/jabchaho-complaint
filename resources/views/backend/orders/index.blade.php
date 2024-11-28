@@ -116,8 +116,8 @@
                             <td width="15%">{{ $order->customer_email }}</td>
                             <td width="15%">{{ $order->telephone }}</td>
 
-                            <td width="15%">{{ $order->before_wash_images_count ?? 0 }}</td>
-                            <td width="15%">{{ $order->after_wash_images_count ?? 0 }}</td>
+                            <td width="15%">{{ $order->before_count ?? 0 }}</td>
+                            <td width="15%">{{ $order->after_count ?? 0 }}</td>
 
                             {{--<td width="15%">{{ $order->remarks }}</td>
                             <td width="15%">
