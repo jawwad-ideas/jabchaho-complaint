@@ -52,23 +52,23 @@
             >
                 <form class="form-inline" method="GET" action="{{ route('orders.index') }}/{{$order_status}}">
                     <div class="row mb-3">
-                        <div class="col-lg-8 d-flex flex-wrap">
-                            <div class="col-sm-6 px-2">
+                        <div class="col-lg-12 d-flex flex-wrap">
+                            <div class="col-sm-3 px-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="order_number"
                                        value="{{ $order_number ?? '' }}" placeholder="Order Number">
                             </div>
 
-                            <div class="col-sm-6 px-2">
+                            <div class="col-sm-3 px-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="customer_email"
                                        value="{{ $customer_email ?? '' }}" placeholder="Customer Email">
                             </div>
 
-                            <div class="col-sm-6 px-2">
+                            <div class="col-sm-3 px-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="customer_name"
                                        value="{{ $customer_name ?? '' }}" placeholder="Customer Name">
                             </div>
 
-                            <div class="col-sm-6 px-2">
+                            <div class="col-sm-3 px-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="telephone"
                                        value="{{ $telephone ?? '' }}" placeholder="Telephone">
                             </div>
@@ -104,8 +104,8 @@
                         <th scope="col" width="15%">Customer Name</th>
                         <th scope="col" width="15%">Customer Email</th>
                         <th scope="col" width="15%">Telephone</th>
-                        <th scope="col" width="15%">Before Wash Image Count</th>
-                        <th scope="col" width="15%">After Wash Image Count</th>
+                        <th scope="col" width="15%">Before Wash</th>
+                        <th scope="col" width="15%">After Wash</th>
                         <th scope="col" width="15%">Email Sent</th>
                         <th scope="col" width="10%">Created At</th>
                         <th scope="col" width="1%" colspan="3">Action</th>
