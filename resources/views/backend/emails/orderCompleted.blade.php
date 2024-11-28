@@ -18,10 +18,10 @@
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear {{$name}},</p>
                                 <p style="margin-top:0;margin:20px 0">The details of your Order No. {{$orderNo}} are provided below.</p>
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">
-                                Before wash:<a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'before']) }}">Download Images</a></p>
+                                Before wash:<a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'before', 'token' => $orderToken]) }}">Download Images</a></p>
 
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">
-                                After wash:<a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'after']) }}">Download Images</a></p>
+                                After wash:<a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'after', 'token' => $orderToken]) }}">Download Images</a></p>
                               
                                 <p>Thank you,</p>
                             </td>

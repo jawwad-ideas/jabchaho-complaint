@@ -5,21 +5,12 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 
 use App\Models\OrderItemImage;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use App\Http\Requests\Backend\StoreUserRequest;
-use App\Http\Requests\Backend\UpdateUserRequest;
-use App\Helpers\Helper;
-use Illuminate\Support\Arr;
-use App\Jobs\UserCreated as UserCreated;
-
-use App\Http\Requests\Backend\OrderSaveRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Jobs\SendEmailOnOrderCompletion as SendEmailOnOrderCompletion;
 use App\Console\commands\SyncLaundryData;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
@@ -214,38 +205,61 @@ class OrderController extends Controller
     }
 
 
-    public function downloadImages($orderId=0,$folderName='')
+    public function downloadImages($orderId=0,$folderName='',$orderToken='')
     {
-        //public\assets\uploads\orders\101621
-        $directoryPath = public_path("assets/uploads/orders/{$orderId}/{$folderName}");
+        $message = '<p>Please feel free to contact us at 021-111-524-246 for any queries or concerns.</p>';
+        //Check order token exist
+        $order = Order::where(['order_id' =>$orderId])->first();
+       if(!empty($order))
+       {
+            if($order->token === $orderToken)
+            {
+                $directoryPath = public_path("assets/uploads/orders/{$orderId}/{$folderName}");
 
-        // Check if the directory exists
-        if (!File::exists($directoryPath)) {
-            return response()->json(['error' => 'Directory does not exist.'], 404);
-        }
+                // Check if the directory exists
+                if (!File::exists($directoryPath)) 
+                {
+                    echo "<p>The directory does not exist for order id:{$orderId}</p>".$message; exit;
+                }
 
-        // Get all files in the directory
-        $files = File::files($directoryPath);
+                // Get all files in the directory
+                $files = File::files($directoryPath);
+                if (empty($files)) 
+                {
+                    echo "<p>Unable to download. File not found for order id:{$orderId}</p>".$message; exit;
+                }
 
-        if (empty($files)) {
-            return response()->json(['error' => 'No files found in the directory.'], 404);
-        }
+                // Create a ZIP file
+                $zipFileName = "{$folderName}_images.zip";
+                $zipFilePath = storage_path("app/{$zipFileName}");
 
-        // Create a ZIP file
-        $zipFileName = "{$folderName}_images.zip";
-        $zipFilePath = storage_path("app/{$zipFileName}");
+                $zip = new \ZipArchive;
+                if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) 
+                {
+                    foreach ($files as $file) {
+                        $zip->addFile($file->getRealPath(), $file->getFilename());
+                    }
+                    $zip->close();
 
-        $zip = new \ZipArchive;
-        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
-            foreach ($files as $file) {
-                $zip->addFile($file->getRealPath(), $file->getFilename());
+                } else 
+                {
+                    echo "<p>Failed to create the ZIP file for order id:{$orderId}. Please try again!</p>".$message; exit;
+                }
+
+                // Download the ZIP file
+                return response()->download($zipFilePath)->deleteFileAfterSend(true);
             }
-            $zip->close();
-        } else {
-            return response()->json(['error' => 'Failed to create ZIP file.'], 500);
-        }
+            else
+            {
+                echo "<p>Invalid url for order id:{$orderId}</p>".$message; exit;
+            }
+       }
+       else
+       {
+            echo "<p>The order is invalid.!</p>".$message; exit;    
+       }
 
-        // Download the ZIP file
-        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+        
+        
     }
 }

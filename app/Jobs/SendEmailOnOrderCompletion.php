@@ -31,13 +31,10 @@ class SendEmailOnOrderCompletion implements ShouldQueue
      */
     public function handle(): void
     {
-        \Log::info('handle function called');
         $orderData=array();
         $orderitemData=array();
 
         $orderData = Order::where(['id' =>$this->orderId])->first();
-
-        \Log::info(print_r($orderData,true));
 
         $emailStatus = $this->sendEmail($orderData,$orderitemData);
         if( $emailStatus ){
@@ -48,23 +45,19 @@ class SendEmailOnOrderCompletion implements ShouldQueue
 
     public function sendEmail($orderData=array(), $orderitemData=array())
     {
-        \Log::info('sendEmail function called');
-
-        \Log::info(print_r(Arr::get($orderData, 'customer_email'),true));
-
         try
         {
             Mail::send(
                 'backend.emails.orderCompleted',
                 [
                     'orderNo'               => Arr::get($orderData, 'order_id'),
+                    'orderToken'            => Arr::get($orderData, 'token'),
                     'name'                  => Arr::get($orderData, 'customer_name'),
                     'app_url'               => URL::to('/'),
                 ],
                 function ($message) use ($orderData) {
                     $message->to(trim(Arr::get($orderData, 'customer_email')));
                     $message->subject('Your Order Is Ready for Dispatch');
-                    $message->from(env('MAIL_FROM_ADDRESS'), 'JabChacho');
                 }
             );
 
