@@ -12,6 +12,7 @@ use App\Jobs\SendEmailOnOrderCompletion as SendEmailOnOrderCompletion;
 use App\Console\commands\SyncLaundryData;
 use Illuminate\Support\Facades\File;
 use ZipArchive;
+use Illuminate\Support\Arr;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
@@ -115,7 +116,7 @@ class OrderController extends Controller
                 break;
             endif;
         endforeach;
-        
+
         return view('backend.orders.edit', [
             'order' => $order,
             'complete_button' => $ismarkComleteButtonEnable,
