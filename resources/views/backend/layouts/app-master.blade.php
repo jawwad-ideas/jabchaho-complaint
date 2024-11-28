@@ -160,7 +160,7 @@
                                                         <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
                                                         Pending Orders</a>
                                                 </li>
-                                            @endif;
+                                            @endif
                                         </ul>
                                     </div>
                                     <div class="collapse mt-3 ms-5" id="orders" style="">
@@ -171,7 +171,7 @@
                                                         <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
                                                         Complete Orders</a>
                                                 </li>
-                                            @endif;
+                                            @endif
                                         </ul>
                                     </div>
                                 </li>

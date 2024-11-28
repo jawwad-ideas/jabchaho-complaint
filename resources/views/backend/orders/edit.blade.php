@@ -132,6 +132,28 @@
                             <h2 class="order-no fw-bold">
                                 {{ $order->order_id }}
                             </h2>
+{{--                            <div class="">--}}
+{{--                               --}}
+{{--                            </div>--}}
+
+{{--                            <div class="">--}}
+{{--                                <h4 for="order" class="fw-bold ">Customer Name</h4>--}}
+{{--                                <h2 class="order-no fw-bold">--}}
+{{--                                    {{ $order->customer_name }}--}}
+{{--                                </h2>--}}
+{{--                            </div>--}}
+
+
+{{--                          <div>--}}
+{{--                              <h4 for="order" class="fw-bold ">Customer Email</h4>--}}
+{{--                              <h2 class="order-no fw-bold">--}}
+{{--                                  {{ $order->customer_email }}--}}
+{{--                              </h2>--}}
+{{--                          </div>--}}
+
+
+
+
                             <input value="{{ $order->order_id }}" type="hidden" class="form-control" name="order_number"
                                    placeholder="Order Number" readonly>
                             <input value="{{ $order->id }}" type="hidden" class="form-control" name="order_id"
