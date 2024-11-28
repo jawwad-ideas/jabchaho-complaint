@@ -22,6 +22,14 @@
                         class="fa fa-solid fa-filter"></i> <span>Filter</span>
                 </small>
             </div>
+
+            <div class="btn-group" role="group">
+                <small id="syncorder" type="button"
+                       class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
+                    <i class="fa fa-solid fa-sync"></i> <span>Sync Order</span>
+                </small>
+            </div>
+
         </div>
     </div>
     <div class="page-content bg-white p-lg-5 px-2">
@@ -95,9 +103,9 @@
                         <th scope="col" width="15%">Order Number</th>
                         <th scope="col" width="15%">Customer Name</th>
                         <th scope="col" width="15%">Customer Email</th>
-                        <th scope="col" width="15%">Customer Telephone</th>
-                        <th scope="col" width="15%">Before Wash Image Count</th>
-                        <th scope="col" width="15%">After Wash Image Count</th>
+                        <th scope="col" width="15%">Telephone</th>
+                        {{--<th scope="col" width="15%">Before Wash Image Count</th>
+                        <th scope="col" width="15%">After Wash Image Count</th>--}}
                         <th scope="col" width="15%">Email Sent</th>
                         <th scope="col" width="10%">Created At</th>
                         <th scope="col" width="1%" colspan="3">Action</th>
@@ -116,8 +124,8 @@
                             <td width="15%">{{ $order->customer_email }}</td>
                             <td width="15%">{{ $order->telephone }}</td>
 
-                            <td width="15%">{{ $order->before_wash_images_count ?? 0 }}</td>
-                            <td width="15%">{{ $order->after_wash_images_count ?? 0 }}</td>
+                            {{--<td width="15%">{{ $order->before_wash_images_count ?? 0 }}</td>
+                            <td width="15%">{{ $order->after_wash_images_count ?? 0 }}</td>--}}
 
                             {{--<td width="15%">{{ $order->remarks }}</td>
                             <td width="15%">
@@ -147,8 +155,48 @@
     <div id="modalDiv"></div>
 
     <script>
-        $("#showFilterBox").click(function() {
-            $("#filterBox").toggle();
+        $(document).ready(function () {
+            $("#showFilterBox").click(function() {
+                $("#filterBox").toggle();
+            });
+
+            $(document).on('click', '#syncorder', function (event) {
+                event.preventDefault(); // Prevent any default action (just in case)
+                event.stopPropagation(); // Stop event bubbling (in case it's nested in other clickable elements)
+                // Confirmation dialog
+                if (!confirm('Are you sure you want to sync orders?')) {
+                    return false;
+                }
+
+                var url = '{{ route('orders.sync') }}'
+
+                $.ajax({
+                    type: 'POST',
+                    url: url, // Get the form action URL
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {},
+                    beforeSend: function () {
+                        // Show the loader
+                        $(".loader").addClass("show");
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Order Complete successfully!');
+                            location.reload(); // Refresh the page to reflect changes
+                        } else {
+                            alert('Failed to mark order complete. Please try again.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('Something went wrong. Please try again.');
+                    },
+                    complete: function () {
+                        // Hide the loader
+                        $(".loader").removeClass("show");
+                    }
+                });
+            });
         });
     </script>
 
