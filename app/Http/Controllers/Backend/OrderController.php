@@ -130,26 +130,31 @@ class OrderController extends Controller
         $imageId = $request->input('imageId');
         $orderNumber = $request->input('orderNumber');
         try {
-            //$orderImagesModel     = new OrderItemImage();
             $orderImagesModel= OrderItemImage::where('id',$imageId)->first();
 
-            /*$uploadFolderPath   = config('constants.files.orders').'/'.$orderNumber;
-            $newPath           = $uploadFolderPath."delete";
-            $newPath           = public_path($newPath."/".$orderImagesModel->imagename );
+            if( $orderImagesModel->image_type == "After Wash" ):
+                $folderName = 'after';
+            elseif ($orderImagesModel->image_type == "Before Wash" ):
+                $folderName = 'before';
+            endif;
 
-            if ($orderImagesModel->image_type == "Before Wash") {
-                $currentPath           = $uploadFolderPath."before";
-                $currentPath           = public_path($currentPath.$orderImagesModel->imagename);
-            }else if ( $orderImagesModel->image_type == "After Wash") {
-                $currentPath           = $uploadFolderPath."after";
-                $currentPath           = public_path($currentPath."/".$orderImagesModel->imagename);
+            $directoryPath = public_path(config('constants.files.orders')."/{$orderNumber}/{$folderName}");
+            $realImage = $directoryPath . '/' . $orderImagesModel->imagename ;
+            $deleteDirectoryPath = public_path(config('constants.files.orders')."/{$orderNumber}/delete");
+
+            if( !File::exists($deleteDirectoryPath) ){
+                File::makeDirectory($deleteDirectoryPath,0777, true, true);
             }
-            // Move the file
-            if (File::move( $currentPath, $newPath)) {
-                $orderImagesModel->update(['updated_at'=>now(),'status'=>0]);
-                return response()->json(['success' => true]);
-            }*/
-            $orderImagesModel->update(['updated_at'=>now(),'status'=>0]);
+
+            $deleteImage = $deleteDirectoryPath. '/' . $orderImagesModel->imagename;
+
+            if ( File::move( $realImage, $deleteImage ) ) {
+                if( File::exists($deleteImage) ){
+                    $orderImagesModel->update(['updated_at'=>now(),'status'=>0]);
+                    return response()->json(['success' => true]);
+                }
+            }
+
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
