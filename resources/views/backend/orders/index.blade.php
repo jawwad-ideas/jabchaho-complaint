@@ -168,10 +168,10 @@
                     },
                     success: function (response) {
                         if (response.success) {
-                            alert('Order Complete successfully!');
+                            alert('Order Synced successfully!');
                             location.reload(); // Refresh the page to reflect changes
                         } else {
-                            alert('Failed to mark order complete. Please try again.');
+                            alert('Failed to Synced. Please try again.');
                         }
                     },
                     error: function (xhr, status, error) {

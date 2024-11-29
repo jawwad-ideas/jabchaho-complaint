@@ -113,10 +113,20 @@ class OrderController extends Controller
 
     public function syncOrder( Request $request )
     {
-        try {
-            $syncObject = new SyncLaundryData();
-            $syncObject->manualSync();
-            return response()->json(['success' => true]);
+        try 
+        {
+                // Call the command
+                \Artisan::call('sync:laundry-orders');
+
+                // Optionally, capture the command's output
+                $output = \Artisan::output();
+
+                // Return a response
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Command executed successfully!',
+                    'output' => $output,
+                ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
