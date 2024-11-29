@@ -225,59 +225,6 @@
                             </div>
                             <div class="inner-row d-xl-flex d-lg-flex d-md-block justify-content-between pb-2 gap-4">
                                 <div class="col-lg-6 pb-1 pt-3 border-light">
-
-
-
-                                    <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
-                                    <input
-                                        value=""
-                                        type="file"
-                                        class="form-control img-upload-input"
-                                        id="pickup_images"
-                                        name="image[{{$item->id}}][pickup_images][]"
-                                        placeholder=""
-                                        multiple
-                                        accept="image/*"
-                                        capture="environment">
-                                    <!-- Preview Section -->
-                                    <div id="imagePreview" class="row mt-3"></div>
-
-                                    <script>
-                                        document.getElementById('pickup_images').addEventListener('change', function(event) {
-                                            const files = event.target.files; // Get selected files
-                                            const previewContainer = document.getElementById('imagePreview');
-                                            previewContainer.innerHTML = ""; // Clear any existing previews
-
-                                            if (files.length > 0) {
-                                                Array.from(files).forEach(file => {
-                                                    // Ensure the file is an image
-                                                    if (file.type.startsWith('image/')) {
-                                                        const reader = new FileReader();
-
-                                                        // Create a preview when the file is read
-                                                        reader.onload = function(e) {
-                                                            const col = document.createElement('div');
-                                                            col.classList.add('col-md-3', 'mb-3');
-
-                                                            const img = document.createElement('img');
-                                                            img.src = e.target.result; // Set image source to the file data
-                                                            img.alt = "Captured Image";
-                                                            img.classList.add('img-thumbnail'); // Bootstrap styling
-
-                                                            col.appendChild(img);
-                                                            previewContainer.appendChild(col);
-                                                        };
-
-                                                        reader.readAsDataURL(file); // Read file as Data URL
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    </script>
-
-
-
-
                                     <label for="pickup_images" class="form-label fw-bold">Before Wash
                                         Images</label>
                                     <input value="" type="file" class="form-control img-upload-input"
