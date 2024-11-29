@@ -33,7 +33,7 @@ class Order extends Model
         'attachments',
         'before_email',
         'before_email_remarks',
-        'final_email_remarks',
+        'before_email_options',
         'token'
     ];
 
