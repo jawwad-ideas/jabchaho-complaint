@@ -73,8 +73,36 @@ class OrderController extends Controller
             $order     = new Order();
             $order->where('id',$orderId )->first()->update( [ 'updated_at'=>now() , 'status' => 2 ]);
 
-            // Dispatch job to send emails
-            dispatch(new SendEmailOnOrderCompletion($orderId));
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function sendEmail( Request $request ){
+        try {
+            $orderId = $request->input('orderId');
+            $emailType = $request->input('emailType');
+
+            if ($emailType == "before_email") {
+                $remarks = $request->input('remarks');
+                $itemsIssuesl = $request->input('itemsIssues');
+                $orderUpdateArray["before_email"] = 1;
+                $orderUpdateArray["before_email_remarks"] = $remarks;
+                $orderUpdateArray["before_email_options"] = $itemsIssuesl;
+            } else {
+                $orderUpdateArray["final_email"] = 1;
+            }
+
+            $orderUpdateArray["final_email"] = now();
+            //Order Update
+            $order = Order::where(['id' => $orderId])->first();
+            $order->update(
+                $orderUpdateArray
+            );
+
+            //email Queue Called.
+            dispatch(new SendEmailOnOrderCompletion( $orderId, $emailType ));
             $this->queueWorker();
 
             return response()->json(['success' => true]);
