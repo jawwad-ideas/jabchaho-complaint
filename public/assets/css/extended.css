@@ -1483,6 +1483,27 @@ ul.btn-toggle-nav li {
     width: 100%;
 } */
 
+
+.alert.alert-success {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.orderItemSec.itemForm .inner-row .form-control.img-upload-input{
+    width: 50%;
+}
+.checkListBeforeWashModal .form-check-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.checkListBeforeWashModal .form-check-list .form-check {
+    width: 50%;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 @media only screen and (max-width: 600px) {
 
     .navbar.profile-nav button.navbar-toggler:focus {
@@ -1551,5 +1572,68 @@ ul.btn-toggle-nav li {
         padding: 10px 12px;
         z-index: 1;
         border-radius: 100%;
+    }
+
+
+    .cust-inr-detail-bar {
+        margin: 0 0 15px 0;
+    }
+    .customer-basic-detail .cust-inr-detail-bar .inr-lbl {
+        font-size: 15px;
+    }
+    
+    .customer-basic-detail .cust-inr-detail-bar .inr-vl {
+        font-size: 13px;
+        margin-left: 10px;
+    }
+    .orderItemSec label.d-flex {
+        width: 100% !important;
+        gap: inherit;
+        margin: 5px 0;
+    }
+    
+    .orderItemSec h6.d-inline-block.fw-bold {
+        width: 50%;
+        margin: 0;
+        font-size: 14px;
+    }
+    
+    .orderItemSec label.d-flex span {
+        display: block;
+        font-size: 12px;
+    }
+    .orderItemSec.itemForm .inner-row .form-control.img-upload-input{
+        width: 100%;
+    }
+
+    .orderItemSec.itemForm .items-images-sec {
+        width: 100%;
+        overflow: auto;
+        min-height: auto;
+        align-items: start;
+        max-height: 150px;
+    }
+    
+    .orderItemSec.itemForm .item-img-action-btn {
+        top: 0;
+        right: -5px;
+    }
+    .orderItemSec.itemForm  .items-images-sec .img-item img {
+        width: 60px;
+        height: 60px;
+    }
+    .checkListBeforeWashModal .form-check-list .form-check {
+        width: 50%;
+        margin: 0px 0;
+        gap: 5px;
+    }
+    .checkListBeforeWashModal .form-check-list .form-check label {
+        font-size: 11px;
+    }
+    .checkListBeforeWashModal .modal-title {
+        font-size: 16px !important;
+    }
+    .order-action-btns button {
+        font-size: 11px;
     }
 }
