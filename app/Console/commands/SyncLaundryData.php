@@ -45,7 +45,7 @@ class SyncLaundryData extends Command
                 )
                 ->join('users as u', 'u.id', '=', 'o.user_id')
                 ->where('o.order_status', 'processing')
-                ->where('o.processing', '>=', DB::raw('NOW() - INTERVAL 1 HOUR'))
+                //->where('o.processing', '>=', DB::raw('NOW() - INTERVAL 1 HOUR'))
                 ->orderBy('o.created_at', 'asc')
                 ->get();
 
