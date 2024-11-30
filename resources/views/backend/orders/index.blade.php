@@ -66,6 +66,41 @@
                                 <input type="text" class="form-control p-2" autocomplete="off" name="telephone"
                                        value="{{ $telephone ?? '' }}" placeholder="Telephone">
                             </div>
+
+
+                            <div class="col-sm-3 px-2 mt-2">
+                                <select class="form-select p-2" id="before_email" name="before_email">
+                                    <option value=''>Before Email</option>
+                                    @if(!empty($email_status_options) )
+                                        @foreach($email_status_options as $key => $option )
+                                            @if( $key == $before_email )
+                                                <option value="{{$key}}" selected>
+                                                    {{$option}}</option>
+                                            @else
+                                                <option value="{{$key}}">
+                                                    {{$option}}</option>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+
+                            <div class="col-sm-3 px-2 mt-2">
+                                <select class="form-select p-2" id="after_email" name="after_email">
+                                    <option value=''>After Email</option>
+                                    @if(!empty($email_status_options) )
+                                        @foreach($email_status_options as $key => $option )
+                                            @if( $key == $after_email )
+                                                <option value="{{$key}}" selected>
+                                                    {{$option}}</option>
+                                            @else
+                                                <option value="{{$key}}">
+                                                    {{$option}}</option>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
                         </div>
 
                         <div class="col-lg-12 text-end mt-4">
@@ -121,8 +156,8 @@
 
                             <td width="15%">{{ $order->before_count ?? 0 }}</td>
                             <td width="15%">{{ $order->after_count ?? 0 }}</td>
-                            <td width="15%">@if( $order->before_email  ) Yes @else No @endif</td>
-                            <td width="15%">@if( $order->final_email  ) Yes @else No @endif</td>
+                            <td width="15%">@if( $order->before_email == 2  ) Yes @else No @endif</td>
+                            <td width="15%">@if( $order->final_email  == 2 ) Yes @else No @endif</td>
                             <td width="15%">{{ $order->created_at }}</td>
                             <td><a href="{{ route('orders.edit', $order->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
                             </td>

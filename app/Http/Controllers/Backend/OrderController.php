@@ -23,6 +23,8 @@ class OrderController extends Controller
         $customer_email     = $request->input('customer_email');
         $customer_name      = $request->input('customer_name');
         $telephone          = $request->input('telephone');
+        $before_email          = $request->input('before_email');
+        $after_email          = $request->input('after_email');
         $status             = $request->segment(3);
 
         //$orders = Order::select('*')->orderBy('id', 'desc');
@@ -45,6 +47,15 @@ class OrderController extends Controller
             $orders->where('orders.customer_name', 'like',  '%'.$customer_name.'%' );
         }
 
+        if (!empty($after_email)) {
+            $orders->where('orders.final_email', '=',  $after_email );
+        }
+
+        if (!empty($before_email)) {
+            $orders->where('orders.before_email', '=',  $before_email );
+        }
+
+
         if (!empty($telephone)) {
             $orders->where('orders.telephone', '=',  '%'.$telephone.'%' );
         }
@@ -60,7 +71,10 @@ class OrderController extends Controller
             'order_status' => $status,
             'customer_email' => $customer_email,
             'customer_name' => $customer_name,
-            'telephone' => $telephone
+            'telephone' => $telephone,
+            'email_status_options' => [ 1 => "No", 2 => "Yes"],
+            'before_email' => $before_email ,
+            'after_email' => $after_email,
         ];
 
         return view('backend.orders.index', compact('orders'))->with($filterData);
@@ -87,11 +101,11 @@ class OrderController extends Controller
             if ($emailType == "before_email") {
                 $remarks = $request->input('remarks');
                 $itemsIssuesl = $request->input('itemsIssues');
-                $orderUpdateArray["before_email"] = 1;
+                $orderUpdateArray["before_email"] = 2;
                 $orderUpdateArray["before_email_remarks"] = $remarks;
                 $orderUpdateArray["before_email_options"] = $itemsIssuesl;
             } else {
-                $orderUpdateArray["final_email"] = 1;
+                $orderUpdateArray["final_email"] = 2;
             }
 
             $orderUpdateArray["updated_at"] = now();
@@ -161,9 +175,9 @@ class OrderController extends Controller
             'order' => $order,
             'showCompleteButton'   => $afterEmailShow && $order->status != 2,
             'sendFinalEmail'       => $afterEmailShow,
-            'sendFinalEmailTitle'       =>  (  $order->final_email == 1 ) ? 'Resend Email After Wash' : 'Send Email After Wash',
+            'sendFinalEmailTitle'       =>  (  $order->final_email == 2 ) ? 'Resend Email After Wash' : 'Send Email After Wash',
             'sendBeforeEmail' => $beforeEmailShow,
-            'sendBeforeEmailTitle' => (  $order->before_email == 1 ) ? 'Resend Email Before Wash' : 'Send Email Before Wash'
+            'sendBeforeEmailTitle' => (  $order->before_email == 2 ) ? 'Resend Email Before Wash' : 'Send Email Before Wash'
         ]);
 
     }

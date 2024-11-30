@@ -38,7 +38,7 @@ class SendEmailOnOrderCompletion implements ShouldQueue
 
         $emailType = $this->emailType ;
 
-        $orderData = Order::where(['id' =>$this->orderId])->first();
+        $orderData = Order::where(['id' =>$this->orderId ])->first();
 
         $emailStatus = $this->sendEmail($orderData,$orderitemData , $emailType);
         if( $emailStatus ){
