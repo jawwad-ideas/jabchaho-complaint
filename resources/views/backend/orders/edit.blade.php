@@ -103,38 +103,40 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="sendEmailBeforeWashBtn" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold">Send Email</button>
+                <button data-order-id="{{ $order->id }}" data-email-type="before_email" type="button" id="sendEmailBeforeWashBtn" class="sendEmailBeforeWashBtn btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold">Send Email</button>
             </div>
             </div>
         </div>
         </div>
-
-    <?php
-            $title = $order->final_email == 1 ? "Resend Email" : "Complete Order";
-        ?>
 
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
         <div class="btn-group order-action-btns" role="group">
 
-            <div class="mb-3 complete-button-div">
+            <div class="mb-3 complete-button-div" @if ( $showCompleteButton ) style="display:block;" @else style="display:none;" @endif >
+                <button data-order-id="{{ $order->id }}" type="button" class="complete-order btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
+                    Complete Order
+                </button>
+            </div>
+
+            <div class="mb-3 complete-button-div" @if ( $sendBeforeEmail ) style="display:block;" @else style="display:none;" @endif >
+                <button data-order-id="{{ $order->id }}" data-email-type="before_email" type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2" data-bs-toggle="modal" data-bs-target="#checkListBeforeWash">
+                    {{$sendBeforeEmailTitle}}
+                </button>
+            </div>
+
+
+            <div class="mb-3 complete-button-div" @if ( $sendFinalEmail ) style="display:block;" @else style="display:none;" @endif>
+                <button data-order-id="{{ $order->id }}" data-email-type="final_email" type="button" class="sendEmailBeforeWashBtn btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
+                    {{$sendFinalEmailTitle}}
+                </button>
+            </div>
+
+
+        {{--<div class="mb-3 complete-button-div">
                 <button type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2" data-bs-toggle="modal" data-bs-target="#checkListBeforeWash">
                         Send Email Before Wash
                 </button>
-            </div>
-
-            <div class="mb-3 complete-button-div" @if ( $order->status == 2 || $resend_email )
-                style="display:block;"
-                @else
-                style="display:none;"
-                @endif
-                >
-
-                <button
-                    class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2 complete-order"
-                    data-order-id="{{ $order->id }}" title="{{$title}}"> {{$title}}
-                </button>
-            </div>
-
+            </div>--}}
 
         </div>
     </div>
@@ -317,7 +319,7 @@
                             class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Update
                             order
                         </button>
-                        <a href="{{ route('orders.index') }}" class="btn bg-theme-dark-300 text-light">Back</a>
+                        <a href="{{ route('orders.index') }}/{{$order->status}}" class="btn bg-theme-dark-300 text-light">Back</a>
                     </div>
                 </div>
             </div>
@@ -367,49 +369,72 @@ $(document).ready(function() {
             }
         });
     });
-    $('#sendEmailBeforeWashBtn').on('click', function () {
-        let beforeWashCheckListItemList = [];
-        $('.form-check-input:checked').each(function () {
-            beforeWashCheckListItemList.push($(this).val());
+
+    function sendEmail( data ){
+        var url = '{{route('send.email')}}';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: data ,
+            success: function (response) {
+                if (response.success) {
+                    alert('Email sent successfully!');
+                    location.reload(); // Refresh the page to reflect changes
+                } else {
+                    alert('Error sending email.');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('An unexpected error occurred.');
+            }
         });
+    }
 
+    $('.sendEmailBeforeWashBtn').on('click', function () {
 
-        if (beforeWashCheckListItemList.length === 0) {
-            alert('Please select at least one checkbox.');
-            return;
+        const button = $(this); // Get the button that was clicked
+        const orderId = button.data('order-id');
+        const emailType = button.data('email-type');
+
+        let formattedList;
+        var remarks = "";
+        if( emailType === "before_email" ) {
+            let beforeWashCheckListItemList = [];
+            $('.form-check-input:checked').each(function () {
+                beforeWashCheckListItemList.push($(this).val());
+            });
+
+            if (beforeWashCheckListItemList.length === 1) {
+                // Only one item, no need for commas or "and"
+                formattedList = beforeWashCheckListItemList[0];
+            } else if (beforeWashCheckListItemList.length === 2) {
+                // Two items, join with "and"
+                formattedList = beforeWashCheckListItemList.join(' and ');
+            } else {
+                // More than two items, comma-separate them with "and" before the last item
+                formattedList = beforeWashCheckListItemList.slice(0, -1).join(', ') + ' and ' + beforeWashCheckListItemList.slice(-1);
+            }
+
+            if (beforeWashCheckListItemList.length === 0) {
+                alert('Please select at least one checkbox.');
+                return;
+            }
+
+            remarks = $("#floatingbeforewashremarks").val();
         }
-       var floatingbeforewashremarks =  $("#floatingbeforewashremarks").val();
-       console.log(beforeWashCheckListItemList);
-       const beforeWashEmailData =
-       [{
-           remarks :floatingbeforewashremarks,
-           beforeWashCheckListItemList :beforeWashCheckListItemList
+
+       let data = {
+           orderId : orderId,
+           emailType :emailType,
+           remarks : remarks ,
+           itemsIssues: formattedList
        }
-       ];
-       console.log(beforeWashEmailData);
 
-
-        // $.ajax({
-        //     url: '/submit-checklist',
-        //     type: 'POST',
-        //     headers: {
-        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //     },
-        //     data: {
-        //         selectedItems: selectedValues
-        //     },
-        //     success: function (response) {
-        //         if (response.success) {
-        //             alert('Email sent successfully!');
-        //         } else {
-        //             alert('Error sending email.');
-        //         }
-        //     },
-        //     error: function (xhr, status, error) {
-        //         console.error('Error:', error);
-        //         alert('An unexpected error occurred.');
-        //     }
-        // });
+        sendEmail( data );
     });
 
 

@@ -94,7 +94,7 @@ class OrderController extends Controller
                 $orderUpdateArray["final_email"] = 1;
             }
 
-            $orderUpdateArray["final_email"] = now();
+            $orderUpdateArray["updated_at"] = now();
             //Order Update
             $order = Order::where(['id' => $orderId])->first();
             $order->update(
@@ -113,7 +113,7 @@ class OrderController extends Controller
 
     public function syncOrder( Request $request )
     {
-        try 
+        try
         {
                 // Call the command
                 \Artisan::call('sync:laundry-orders');
@@ -139,28 +139,33 @@ class OrderController extends Controller
         }])->find($orderId);
 
 
-        $ismarkComleteButtonEnable = false;
+        $beforeEmailShow = $afterEmailShow = false;
         foreach($order->orderItems as $item):
             foreach ($item->images as $image):
-                if( $ismarkComleteButtonEnable == true ):
+                if( $afterEmailShow && $beforeEmailShow ):
                     break;
                 endif;
                 if( $image->image_type == "After Wash" ):
-                    $ismarkComleteButtonEnable = true;
+                    $afterEmailShow = true;
                     break;
+                elseif( $image->image_type == "Before Wash" ):
+                    $beforeEmailShow = true;
                 endif;
             endforeach;
-            if( $ismarkComleteButtonEnable ):
+            if( $afterEmailShow && $beforeEmailShow ):
                 break;
             endif;
         endforeach;
 
         return view('backend.orders.edit', [
             'order' => $order,
-            'complete_button' => $ismarkComleteButtonEnable,
-            'resend_email' => $ismarkComleteButtonEnable,
-            'before_send_email' => true
+            'showCompleteButton'   => $afterEmailShow && $order->status != 2,
+            'sendFinalEmail'       => $afterEmailShow,
+            'sendFinalEmailTitle'       =>  (  $order->final_email == 1 ) ? 'Resend Email After Wash' : 'Send Email After Wash',
+            'sendBeforeEmail' => $beforeEmailShow,
+            'sendBeforeEmailTitle' => (  $order->before_email == 1 ) ? 'Resend Email Before Wash' : 'Send Email Before Wash'
         ]);
+
     }
 
     public function delete( Request $request )

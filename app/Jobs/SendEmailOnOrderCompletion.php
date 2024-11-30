@@ -20,9 +20,11 @@ class SendEmailOnOrderCompletion implements ShouldQueue
      * Create a new job instance.
      */
     protected $orderId;
-    public function __construct($orderId)
+    protected $emailType;
+    public function __construct($orderId,$emailType)
     {
         $this->orderId = $orderId;
+        $this->emailType = $emailType;
     }
 
 
@@ -34,32 +36,54 @@ class SendEmailOnOrderCompletion implements ShouldQueue
         $orderData=array();
         $orderitemData=array();
 
+        $emailType = $this->emailType ;
+
         $orderData = Order::where(['id' =>$this->orderId])->first();
 
-        $emailStatus = $this->sendEmail($orderData,$orderitemData);
+        $emailStatus = $this->sendEmail($orderData,$orderitemData , $emailType);
         if( $emailStatus ){
-            $orderData->update([ 'final_email' => 1 , 'updated_at'=>now() ]);
+            $orderData->update([ 'updated_at'=>now() ]);
         }
     }
 
 
-    public function sendEmail($orderData=array(), $orderitemData=array())
+    public function sendEmail($orderData=array(), $orderitemData=array() , $emailType )
     {
         try
         {
-            Mail::send(
-                'backend.emails.orderCompleted',
-                [
-                    'orderNo'               => Arr::get($orderData, 'order_id'),
-                    'orderToken'            => Arr::get($orderData, 'token'),
-                    'name'                  => Arr::get($orderData, 'customer_name'),
-                    'app_url'               => URL::to('/'),
-                ],
-                function ($message) use ($orderData) {
-                    $message->to(trim(Arr::get($orderData, 'customer_email')));
-                    $message->subject('Your Order Is Ready for Dispatch');
-                }
-            );
+            if( $emailType == "final_email" ){
+                Mail::send(
+                    'backend.emails.orderCompleted',
+                    [
+                        'orderNo'               => Arr::get($orderData, 'order_id'),
+                        'orderToken'            => Arr::get($orderData, 'token'),
+                        'name'                  => Arr::get($orderData, 'customer_name'),
+                        'app_url'               => URL::to('/'),
+                    ],
+                    function ($message) use ($orderData) {
+                        $message->to(trim(Arr::get($orderData, 'customer_email')));
+                        $message->subject('Your Order Is Ready for Dispatch '. Arr::get($orderData, 'order_id') );
+                    }
+                );
+            }else{
+                Mail::send(
+                    'backend.emails.orderBeforeWash',
+                    [
+                        'orderNo'               => Arr::get($orderData, 'order_id'),
+                        'orderToken'            => Arr::get($orderData, 'token'),
+                        'name'                  => Arr::get($orderData, 'customer_name'),
+                        'app_url'               => URL::to('/'),
+                        'remarks'               => Arr::get($orderData, 'before_email_remarks'),
+                        'options'               => Arr::get($orderData, 'before_email_options'),
+                    ],
+                    function ($message) use ($orderData) {
+                        $message->to(trim(Arr::get($orderData, 'customer_email')));
+                        $message->subject('Order Information Before Wash '.Arr::get($orderData, 'order_id') );
+                    }
+                );
+            }
+
+
 
             //\Log::info('Email sent successfully to ' . Arr::get($complaintData, 'email'));
             return true;

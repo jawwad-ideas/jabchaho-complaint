@@ -31,7 +31,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::get('/', 'LoginController@show')->name('login.form');
         Route::get('/login', 'LoginController@show')->name('login.show');
         Route::post('/login', 'LoginController@login')->name('login.perform');
-        
+
 
     });
 
@@ -131,6 +131,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::patch('/{review}/update', 'ReviewController@update')->name('reviews.update');
         Route::delete('/{review}/delete', 'ReviewController@destroy')->name('reviews.destroy');
 
+        #Orders
         Route::group(['prefix' => 'orders'], function() {
             Route::post('/save', 'OrderController@save')->name('orders.save');
             Route::get('/index/{status?}', 'OrderController@index')->name('orders.index');
@@ -138,6 +139,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::post('/delete', 'OrderController@delete')->name('orders.delete');
             Route::post('/complete-order', 'OrderController@completeOrder')->name('orders.complete');
             Route::post('/sync-order', 'OrderController@syncOrder')->name('orders.sync');
+            Route::post('/send-email', 'OrderController@sendEmail')->name('send.email');
         });
     });
 
