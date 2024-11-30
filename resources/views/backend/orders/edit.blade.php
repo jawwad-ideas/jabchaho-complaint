@@ -396,6 +396,10 @@ $(document).ready(function() {
 
     $('.sendEmailBeforeWashBtn').on('click', function () {
 
+        if (!confirm('Are you sure you want to send email to customer?')) {
+            return false;
+        }
+
         const button = $(this); // Get the button that was clicked
         const orderId = button.data('order-id');
         const emailType = button.data('email-type');
