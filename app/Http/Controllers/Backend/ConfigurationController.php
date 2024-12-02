@@ -21,6 +21,7 @@ class ConfigurationController extends Controller
         $data['configurations']                 = $configurations;
         $data['complaintStatuses']              = $objectComplaintStatus->getComplaintStatuses();//
         $data['complaintStatusNotifyType']      = config('constants.complaint_status_notify_type');
+        $data['booleanOptions']                 = config('constants.boolean_options'); 
 
         return view('backend.configurations.form')->with($data);
     }

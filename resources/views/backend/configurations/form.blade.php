@@ -199,6 +199,32 @@
                             </select>
                         </div>
 
+                        <h4>Laundry orders Cron Configuration</h4>
+
+                        <div class="mb-3">
+                            <label for="inputName">Cron Enable:</label>
+                            <select id="laundry_order_cron_enable" class="form-control" name="laundry_order_cron_enable">
+                                @if(!empty($booleanOptions) )
+                                @foreach($booleanOptions as $key =>$value)
+                                @if(old('_token') && old('laundry_order_cron_enable') === $key)
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @elseif( old('_token') === null && Arr::get($configurations,
+                                'laundry_order_cron_enable')==$key && array_key_exists(Arr::get($configurations,
+                                'laundry_order_cron_enable'), config('constants.boolean_options')) )
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @else
+                                <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                @endif
+                                @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="inputName">Order Delete Days From Now:</label>
+                            <input type = 'text'  class="form-control" id="laundry_order_delete_days_from_now" name="laundry_order_delete_days_from_now" value="{{Arr::get($configurations, 'laundry_order_delete_days_from_now')}}">
+                        </div>
+
                         <button type="submit"
                             class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Save
                             Changes</button>

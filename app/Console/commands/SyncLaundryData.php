@@ -72,7 +72,7 @@ class SyncLaundryData extends Command
                             'customer_name' => $order->customer_name,
                             'telephone' => $order->telephone,
                             'customer_email' => $order->customer_email,
-                            'created_at' => $order->created_at,
+                            //'created_at' => $order->created_at,
                             'pick_date' => $order->pick_date,
                             'delivery_date' => $order->delivery_date,
                         ];
