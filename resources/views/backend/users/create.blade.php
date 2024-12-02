@@ -63,9 +63,14 @@
                         <select class="mySelect form-control form-control-sm" id="role" name="role">
                             <option value=''>--Select--</option>
                             @foreach ($roles as $role)
+                            @if (old('role') == Arr::get($role, 'id'))
+                                <option value="{{ trim(Arr::get($role, 'id')) }}" selected> {{ $role->name }}
+                                </option>
+                            @else
                             <option value="{{ $role->id }}">
                                 {{ $role->name }}
                             </option>
+                            @endif
                             @endforeach
                         </select>
                     </div>

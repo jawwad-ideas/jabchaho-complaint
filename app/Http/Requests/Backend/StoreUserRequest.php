@@ -23,29 +23,13 @@ class StoreUserRequest extends FormRequest
      */
     public function rules()
     {
-
-        $role = $this->request->get('role');
-        $roleArray = ['3','4'];
-        if(!in_array($role,$roleArray)){
-            //$area = 'nullable';
-            $na   = 'nullable';
-            $ps   = 'nullable';
-        }else{
-            //$area = 'required';
-            $na   = 'required';
-            $ps   = 'required';
-        }
-
         return [
             'name' => 'required',
             'email' => 'required|email:rfc,dns|unique:users,email',
             'username' => 'required|unique:users,username',
             'password' => 'required|min:6|max:20',
             'confirm_password'=>'required|same:password|min:6|max:20',
-            'role'=>'required',
-            //'new_area_id'=> $area,
-            'provincial_assembly_id'=> $na,
-            'national_assembly_id'=> $ps,
+            'role'=>'required'
         ];
     }
 }

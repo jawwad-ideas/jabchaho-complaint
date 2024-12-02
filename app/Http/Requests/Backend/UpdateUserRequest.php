@@ -34,28 +34,12 @@ class UpdateUserRequest extends FormRequest
             $confirmPasswordCondition   = 'nullable|same:password|min:6|max:20';
         }
 
-        $role = $this->request->get('role');
-        $roleArray = ['3','4'];
-        if(!in_array($role,$roleArray)){
-            //$area = 'nullable';
-            $na   = 'nullable';
-            $ps   = 'nullable';
-        }else{
-            //$area = 'required';
-            $na   = 'required';
-            $ps   = 'required';
-        }
-
-
         return [
             'name' => 'required',
             'email' => 'required|email:rfc,dns|unique:users,email,'.$user->id,
             'username' => 'required|unique:users,username,'.$user->id,
             'password' => $passwordCondition,
-            'confirm_password'=>$confirmPasswordCondition,
-            //'new_area_id'                     => 'nullable|int',
-            'national_assembly_id'            => $na,
-            'provincial_assembly_id'          => $ps
+            'confirm_password'=>$confirmPasswordCondition
         ];
     }
 }
