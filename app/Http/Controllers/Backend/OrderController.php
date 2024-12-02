@@ -13,6 +13,7 @@ use App\Console\commands\SyncLaundryData;
 use Illuminate\Support\Facades\File;
 use ZipArchive;
 use Illuminate\Support\Arr;
+use App\Http\Requests\Backend\OrderSaveRequest;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
@@ -218,7 +219,7 @@ class OrderController extends Controller
         }
     }
 
-    public function save( Request $request )
+    public function save( OrderSaveRequest $request )
     {
         if ( $request->has('order_id') ) {
             $orderImages        =  [];
