@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\File;
 use ZipArchive;
 use Illuminate\Support\Arr;
 use App\Http\Requests\Backend\OrderSaveRequest;
+use Intervention\Image\Facades\Image;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
@@ -236,7 +237,14 @@ class OrderController extends Controller
             if( $request->has('remarks_attachment') ){
                 $attachment = $request->file('remarks_attachment');
                 $attachmentName    =   $orderNumber.'-'.time().'-'.uniqid(rand(), true).'.' . $attachment->getClientOriginalExtension();
-                $attachment->move( $filePath, $attachmentName );
+                
+                // Compress and save the image
+                $image = Image::make($attachment->getPathname());
+
+                // Compress the image quality (e.g., 75%)
+                $image->save($filePath . '/' . $attachmentName, 75);
+                
+                //$attachment->move( $filePath, $attachmentName );
                 $orderUpdateArray["attachments"]  = $attachmentName;
             }
 

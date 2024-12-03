@@ -24,7 +24,7 @@ class OrderSaveRequest extends FormRequest
         return [
             'image.*.pickup_images.*' => 'image|mimes:jpeg,png,jpg|max:5120',
             'image.*.delivery_images.*' => 'image|mimes:jpeg,png,jpg|max:5120',
-            'remarks_attachment' => 'image|mimes:jpeg,png,jpg|max:5120'
+            'remarks_attachment' => 'image|mimes:jpeg,png,jpg|max:6144'
         ];
     }
 
