@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('sync:laundry-orders')->withoutOverlapping()->hourly();
+        $schedule->command('sync:laundry-orders')->withoutOverlapping()->everyFifteenMinutes();
         $schedule->command('remove:laundry-orders')->withoutOverlapping()->dailyAt('00:00'); // Runs at 12:00 AM;
     }
 
