@@ -237,13 +237,12 @@ class OrderController extends Controller
             if( $request->has('remarks_attachment') ){
                 $attachment = $request->file('remarks_attachment');
                 $attachmentName    =   $orderNumber.'-'.time().'-'.uniqid(rand(), true).'.' . $attachment->getClientOriginalExtension();
-                
-                // Compress and save the image
-                $image = Image::make($attachment->getPathname());
 
+                // Compress and save the image
+                $imageAttachment = Image::make($attachment->getPathname());
                 // Compress the image quality (e.g., 75%)
-                $image->save($filePath . '/' . $attachmentName, 75);
-                
+                $imageAttachment->save($filePath . '/' . $attachmentName, 60);
+
                 //$attachment->move( $filePath, $attachmentName );
                 $orderUpdateArray["attachments"]  = $attachmentName;
             }
@@ -266,17 +265,31 @@ class OrderController extends Controller
                             $imageType = "Before Wash";
                             $tempfilePath           = $uploadFolderPath."/before";
                             $tempfilePath           = public_path($tempfilePath);
+
+                            if( !File::exists($tempfilePath) ){
+                                File::makeDirectory($tempfilePath,0777, true, true);
+                            }
+
                         }else if ($type == "delivery_images") {
                             $imageType = "After Wash";
                             $tempfilePath           = $uploadFolderPath."/after";
                             $tempfilePath           = public_path($tempfilePath);
+
+                            if( !File::exists($tempfilePath) ){
+                                File::makeDirectory($tempfilePath,0777, true, true);
+                            }
                         }
 
                         foreach ($files as $file) {
                             // Save file and process it
-                            $image = $file;
-                            $newName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $image->getClientOriginalExtension();
-                            $image->move( $tempfilePath , $newName);
+                            $imageItem = $file;
+                            $newName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $imageItem->getClientOriginalExtension();
+                            //$image->move( $tempfilePath , $newName);
+
+                            $imageAttachmentItem = Image::make($imageItem->getPathname());
+                            // Compress the image quality (e.g., 75%)
+                            $imageAttachmentItem->save($tempfilePath . '/' . $newName, 60);
+
 
                             $orderImages[] = [
                                 'item_id' => $itemId,
