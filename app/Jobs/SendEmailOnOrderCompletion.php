@@ -62,6 +62,7 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                     ],
                     function ($message) use ($orderData) {
                         $message->to(trim(Arr::get($orderData, 'customer_email')));
+                        $message->from('support@jabchaho.com', 'Jab Chaho Support'); 
                         $message->subject('Your Order Is Ready for Dispatch '. Arr::get($orderData, 'order_id') );
                     }
                 );
@@ -78,7 +79,8 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                     ],
                     function ($message) use ($orderData) {
                         $message->to(trim(Arr::get($orderData, 'customer_email')));
-                        $message->subject('Order Information Before Wash '.Arr::get($orderData, 'order_id') );
+                        $message->from('support@jabchaho.com', 'Jab Chaho Support'); 
+                        $message->subject('Product Issues In Order '.Arr::get($orderData, 'order_id') );
                     }
                 );
             }
