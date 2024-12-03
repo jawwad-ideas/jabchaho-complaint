@@ -96,4 +96,10 @@ class HomeController extends Controller
     }
 
 
+    public function jabchahoDashboard()
+    {
+        echo "m here"; exit;
+    }
+
+
 }
