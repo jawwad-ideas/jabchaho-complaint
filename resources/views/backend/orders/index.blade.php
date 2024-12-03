@@ -1,6 +1,16 @@
 @extends('backend.layouts.app-master')
 
 @section('content')
+<style>
+tr[data-url] {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+tr[data-url]:hover {
+  background-color: #f0f0f0;
+}
+</style>
     <div
         class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
@@ -70,7 +80,7 @@
 
                             <div class="col-sm-3 px-2 mt-2">
                                 <select class="form-select p-2" id="before_email" name="before_email">
-                                    <option value=''>Before Email</option>
+                                    <option value=''>Before Wash Email</option>
                                     @if(!empty($email_status_options) )
                                         @foreach($email_status_options as $key => $option )
                                             @if( $key == $before_email )
@@ -87,7 +97,7 @@
 
                             <div class="col-sm-3 px-2 mt-2">
                                 <select class="form-select p-2" id="after_email" name="after_email">
-                                    <option value=''>After Email</option>
+                                    <option value=''>After Wash Email</option>
                                     @if(!empty($email_status_options) )
                                         @foreach($email_status_options as $key => $option )
                                             @if( $key == $after_email )
@@ -125,7 +135,7 @@
             </div>
 
             <div class="table-scroll-hr">
-                <table class="table table-bordered table-striped table-compact ">
+                <table class="table table-bordered table-striped table-compact " id="clickableTable">
                     <thead>
                     <tr>
                         <th scope="col" width="1%">Sr no.</th>
@@ -147,7 +157,7 @@
                             @php continue; @endphp
                         @endif
 
-                        <tr>
+                        <tr data-url="{{ route('orders.edit', $order->id) }}">
                             <th scope="row">{{ $order->id }}</th>
                             <td width="15%">{{ $order->order_id }}</td>
                             <td width="15%">{{ $order->customer_name }}</td>
@@ -220,6 +230,14 @@
                 });
             });
         });
+
+        document.getElementById('clickableTable').addEventListener('click', function(event) {
+        const row = event.target.closest('tr'); // Get the clicked <tr>
+        if (row && row.dataset.url) {
+            window.location.href = row.dataset.url;
+        }
+        });
+
     </script>
 
 @endsection

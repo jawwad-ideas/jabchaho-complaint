@@ -16,12 +16,12 @@
                         <tr>
                             <td class="main-content" style="vertical-align:top;background-color:#fff;padding:30px;">
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear {{$name}},</p>
-                                <p style="margin-top:0;margin:20px 0">The details of your Order No. {{$orderNo}} are provided below.</p>
+                                <p style="margin-top:0;margin:20px 0">The details of your Order No. <b>{{$orderNo}}</b> are provided below.</p>
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">
-                                Before wash:<a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'before', 'token' => $orderToken]) }}">Download Images</a></p>
+                                <b>Before wash:</b> <a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'before', 'token' => $orderToken]) }}">Download Images</a></p>
 
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">
-                                After wash:<a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'after', 'token' => $orderToken]) }}">Download Images</a></p>
+                                <b>After wash:</b> <a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'after', 'token' => $orderToken]) }}">Download Images</a></p>
                               
                                 <p>Thank you,</p>
                             </td>
