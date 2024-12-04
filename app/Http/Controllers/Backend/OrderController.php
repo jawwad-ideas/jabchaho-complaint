@@ -290,7 +290,7 @@ class OrderController extends Controller
                             $imageAttachmentItem = Image::make($imageItem->getPathname());
                             // Compress the image quality (e.g., 75%)
                             $imageAttachmentItem->save($tempfilePath . '/' . $newName, 60);
-                            
+
                             $orderImages[] = [
                                 'item_id' => $itemId,
                                 'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
@@ -301,7 +301,7 @@ class OrderController extends Controller
                         }
 
                         //Capture Images Only
-                        if( $type == "pickup_image" || $type == "delivery_image" ){
+                        /*if( $type == "pickup_image" || $type == "delivery_image" ){
                             $imageItem = $files;
                             $newName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $imageItem->getClientOriginalExtension();
                             //$image->move( $tempfilePath , $newName);
@@ -319,7 +319,7 @@ class OrderController extends Controller
                                 'status' => 1,
                             ];
 
-                        }
+                        }*/
                     }
                 }
 

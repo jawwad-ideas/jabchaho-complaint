@@ -234,7 +234,11 @@
 {{--                                    <input value="" type="file" class="form-control img-upload-input"--}}
 {{--                                        name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple >--}}
 
-                                    <div class="file-upload-fields">
+                                    <div class="upload-img-input-sec">
+                                        <input value="" type="file" class="form-control img-upload-input"
+                                               name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple>
+                                    </div>
+                                    {{--<div class="file-upload-fields">
                                         <div class="d-xl-none d-lg-none d-md-none d-block">
                                             <div class="camera-icon fa fa-camera fa-2x">
                                                 <input value="" type="file" class="form-control img-upload-input fa fa-camera"
@@ -246,7 +250,7 @@
                                             <input value="" type="file" class="form-control img-upload-input"
                                                    name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple>
                                         </div>
-                                    </div>
+                                    </div>--}}
 
                                     @if( $item->images->isNotEmpty() )
                                     <div class="items-images-sec mt-3">
@@ -277,7 +281,11 @@
                                 <div class="col-lg-6 pb-1 pt-3  border-light">
                                     <label for="delivery_images" class="form-label fw-bold">After Wash
                                         Images</label>
-                                    <div class="file-upload-fields">
+                                    <div class="upload-img-input-sec">
+                                        <input value="" type="file" class="form-control img-upload-input"
+                                               name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple>
+                                    </div>
+                                    {{--<div class="file-upload-fields">
                                         <div class="d-xl-none d-lg-none d-md-none d-block">
                                             <div class="camera-icon fa fa-camera fa-2x">
                                                 <input value="" type="file" class="form-control img-upload-input fa fa-camera"
@@ -290,7 +298,7 @@
                                             <input value="" type="file" class="form-control img-upload-input"
                                                    name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple>
                                         </div>
-                                    </div>
+                                    </div>--}}
 
 
                                     @if( $item->images->isNotEmpty() )
