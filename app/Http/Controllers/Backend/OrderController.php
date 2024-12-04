@@ -261,7 +261,7 @@ class OrderController extends Controller
             if( $request->has('image') ) {
                 foreach ($request->file('image') as $itemId => $imageTypes) {
                     foreach ($imageTypes as $type => $files) {
-                        if ($type == "pickup_images") {
+                        if ($type == "pickup_images" || $type == "pickup_image") {
                             $imageType = "Before Wash";
                             $tempfilePath           = $uploadFolderPath."/before";
                             $tempfilePath           = public_path($tempfilePath);
@@ -270,7 +270,7 @@ class OrderController extends Controller
                                 File::makeDirectory($tempfilePath,0777, true, true);
                             }
 
-                        }else if ($type == "delivery_images") {
+                        }else if ($type == "delivery_images" || $type == "delivery_image") {
                             $imageType = "After Wash";
                             $tempfilePath           = $uploadFolderPath."/after";
                             $tempfilePath           = public_path($tempfilePath);
@@ -280,9 +280,29 @@ class OrderController extends Controller
                             }
                         }
 
+
                         foreach ($files as $file) {
                             // Save file and process it
                             $imageItem = $file;
+                            $newName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $imageItem->getClientOriginalExtension();
+                            //$image->move( $tempfilePath , $newName);
+
+                            $imageAttachmentItem = Image::make($imageItem->getPathname());
+                            // Compress the image quality (e.g., 75%)
+                            $imageAttachmentItem->save($tempfilePath . '/' . $newName, 60);
+                            
+                            $orderImages[] = [
+                                'item_id' => $itemId,
+                                'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
+                                'imagename' => $newName,
+                                'admin_user' => $adminUser,
+                                'status' => 1,
+                            ];
+                        }
+
+                        //Capture Images Only
+                        if( $type == "pickup_image" || $type == "delivery_image" ){
+                            $imageItem = $files;
                             $newName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $imageItem->getClientOriginalExtension();
                             //$image->move( $tempfilePath , $newName);
 
@@ -298,6 +318,7 @@ class OrderController extends Controller
                                 'admin_user' => $adminUser,
                                 'status' => 1,
                             ];
+
                         }
                     }
                 }

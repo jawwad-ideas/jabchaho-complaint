@@ -229,8 +229,24 @@
                                 <div class="col-lg-6 pb-1 pt-3 border-light">
                                     <label for="pickup_images" class="form-label fw-bold">Before Wash
                                         Images</label>
-                                    <input value="" type="file" class="form-control img-upload-input"
-                                        name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple accept="image/*" capture="environment">
+{{--                                    <input value="" type="file" class="form-control img-upload-input fa-camera d-xl-none d-lg-none d-md-none d-block"--}}
+{{--                                           name="image[{{$item->id}}][pickup_image]" placeholder=""  accept="image/*" capture="environment">--}}
+{{--                                    <input value="" type="file" class="form-control img-upload-input"--}}
+{{--                                        name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple >--}}
+
+                                    <div class="file-upload-fields">
+                                        <div class="d-xl-none d-lg-none d-md-none d-block">
+                                            <div class="camera-icon fa fa-camera fa-2x">
+                                                <input value="" type="file" class="form-control img-upload-input fa fa-camera"
+                                                       name="image[{{$item->id}}][pickup_image]" placeholder="" multiple accept="image/*" capture="environment">
+                                            </div>
+                                        </div>
+
+                                        <div class="upload-img-input-sec">
+                                            <input value="" type="file" class="form-control img-upload-input"
+                                                   name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple>
+                                        </div>
+                                    </div>
 
                                     @if( $item->images->isNotEmpty() )
                                     <div class="items-images-sec mt-3">
@@ -261,8 +277,22 @@
                                 <div class="col-lg-6 pb-1 pt-3  border-light">
                                     <label for="delivery_images" class="form-label fw-bold">After Wash
                                         Images</label>
-                                    <input value="" type="file" class="form-control img-upload-input"
-                                        name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple accept="image/*" capture="environment">
+                                    <div class="file-upload-fields">
+                                        <div class="d-xl-none d-lg-none d-md-none d-block">
+                                            <div class="camera-icon fa fa-camera fa-2x">
+                                                <input value="" type="file" class="form-control img-upload-input fa fa-camera"
+                                                       name="image[{{$item->id}}][delivery_image]" placeholder="" multiple accept="image/*" capture="environment">
+                                            </div>
+                                        </div>
+
+
+                                        <div class="upload-img-input-sec">
+                                            <input value="" type="file" class="form-control img-upload-input"
+                                                   name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple>
+                                        </div>
+                                    </div>
+
+
                                     @if( $item->images->isNotEmpty() )
                                     <div class="items-images-sec mt-3">
                                         @foreach ($item->images as $image)
