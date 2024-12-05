@@ -92,7 +92,9 @@ class Order extends Model
         $query = Order::selectRaw('
             COUNT(*) as total,
             SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as process,
-            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) as completed
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) as completed,
+            SUM(CASE WHEN before_email = 2 THEN 1 ELSE 0 END) as before_email,
+            SUM(CASE WHEN final_email = 2 THEN 1 ELSE 0 END) as final_email
         ');
 
         if (!empty($params['startDate']) && !empty($params['endDate'])) {
@@ -106,8 +108,10 @@ class Order extends Model
             'total' => (int) $result->total,
             'process' => (int) $result->process,
             'completed' => (int) $result->completed,
+            'before_email' => (int) $result->before_email,
+            'after_email' => (int) $result->final_email,
         ];
-        
+
         return $data;
     }
 

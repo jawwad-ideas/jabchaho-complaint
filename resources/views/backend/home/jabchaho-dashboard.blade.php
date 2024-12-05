@@ -162,7 +162,7 @@ tr[data-url]:hover {
                         <div class="stats-count">
                             <h1 class="fw-bold text-dark" id="before-wash"></h1>
 
-                            <h6 class="mb-0 text-dark">Before Wash</h6>
+                            <h6 class="mb-0 text-dark">Before Wash Image</h6>
                         </div>
                     </div>
                 </div>
@@ -174,7 +174,35 @@ tr[data-url]:hover {
                         </div>
                         <div class="stats-count">
                             <h1 class="fw-bold text-dark" id="after-wash"></h1>
-                            <h6 class="mb-0 text-dark">After Wash</h6>
+                            <h6 class="mb-0 text-dark">After Wash Image</h6>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="stats-card border bg-theme-yellow px-2 m-r-10 w-180px m-b-10">
+                    <div
+                        class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
+                        <div class="stats-icon">
+                            <i class="fa fa-regular fa-envelope-open fa-2x text-dark mb-2"></i>
+                        </div>
+                        <div class="stats-count">
+                            <h1 class="fw-bold text-dark" id="before-email-count"></h1>
+                            <h6 class="mb-0 text-dark">Before Email Count</h6>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="stats-card border bg-theme-yellow px-2 m-r-10 w-180px m-b-10">
+                    <div
+                        class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
+                        <div class="stats-icon">
+                            <i class="fa fa-regular fa-envelope fa-2x text-dark mb-2"></i>
+                        </div>
+                        <div class="stats-count">
+                            <h1 class="fw-bold text-dark" id="after-email-count"></h1>
+                            <h6 class="mb-0 text-dark">After Email Count</h6>
                         </div>
                     </div>
                 </div>
@@ -403,6 +431,9 @@ function getCountData(objParams = null)
             $('#orders-in-process').text(JSON.stringify(result.orders.process?result.orders.process:0));
             
             $('#completed-orders').text(JSON.stringify(result.orders.completed?result.orders.completed:0));
+
+            $('#before-email-count').text(JSON.stringify(result.orders.before_email?result.orders.before_email:0));
+            $('#after-email-count').text(JSON.stringify(result.orders.after_email?result.orders.after_email:0));
            
             $('#before-wash').text(JSON.stringify(result.orderItemImage.before_wash?result.orderItemImage.before_wash:0));
             $('#after-wash').text(JSON.stringify(result.orderItemImage.after_wash?result.orderItemImage.after_wash:0));
