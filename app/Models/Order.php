@@ -199,7 +199,11 @@ class Order extends Model
                         
     
         }
-        
-        return Null;
+
+        return [
+            'totalRecords' => 0,
+            'orders' => []
+            ];
+    
     }
 }
