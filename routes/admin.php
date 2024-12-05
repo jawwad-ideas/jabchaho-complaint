@@ -44,6 +44,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::post('/get-jobs-graph-data', 'HomeController@getComplaintsGraphData')->name('complaints.graph.data');
         Route::post('/get-count-data', 'HomeController@getCountData')->name('get.count.data');
 
+        Route::get('dashboard/', 'HomeController@jabchahoDashboard')->name('jabchaho.dashboard');
+        Route::post('/get-jabchaho-dashboardcount-data', 'HomeController@getJabchahoDashboardCountData')->name('get.jabchaho.dashboard.count.data');
+
 
         /**
          * User Routes
