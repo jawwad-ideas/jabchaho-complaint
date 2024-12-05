@@ -38,7 +38,7 @@ class OrderItemImage extends Model
 
     public function createOrderItemImage($data = array())
     {
-        $inserted = OrderItemImage::insert($data);
+        $inserted = OrderItemImage::insertGetId($data);
         if($inserted)
         {
             return $inserted;
@@ -67,7 +67,7 @@ class OrderItemImage extends Model
             'before_wash' => (int) $result->before_wash,
             'after_wash' => (int) $result->after_wash,
         ];
-        
+
         return $data;
     }
 
