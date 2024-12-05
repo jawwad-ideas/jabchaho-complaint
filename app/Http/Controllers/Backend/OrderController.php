@@ -229,25 +229,18 @@ class OrderController extends Controller
             $remarks            = $request->get('remarks');
             $orderNumber        = $request->get('order_number');
             $uploadFolderPath   = config('constants.files.orders').'/'.$orderNumber;
-            $filePath           = public_path($uploadFolderPath);
-
-            $orderUpdateArray =  [ 'updated_at'=>now(), 'remarks' => $remarks ];
-            $attachmentName = null;
+            $thumbnailPath      = $uploadFolderPath.'/thumbnail';
+            $orderUpdateArray   =  [ 'updated_at'=>now(), 'remarks' => $remarks ];
 
             if( $request->has('remarks_attachment') ){
-                $attachment = $request->file('remarks_attachment');
-                $attachmentName    =   $orderNumber.'-'.time().'-'.uniqid(rand(), true).'.' . $attachment->getClientOriginalExtension();
-
-                // Compress and save the image
-                $imageAttachment = Image::make($attachment->getPathname());
-                // Compress the image quality (e.g., 75%)
-                $imageAttachment->save($filePath . '/' . $attachmentName, 60);
-
-                //$attachment->move( $filePath, $attachmentName );
-                $orderUpdateArray["attachments"]  = $attachmentName;
+                $attachment                      = $request->file('remarks_attachment');
+                $newFileName                     =   $orderNumber.'-'.time().'-'.uniqid(rand(), true).'.' . $attachment->getClientOriginalExtension();
+                $this->uploadMainImage( $attachment, $uploadFolderPath, $newFileName , $thumbnailPath );
+                $orderUpdateArray["attachments"] = $newFileName;
             }
 
             $order = Order::where(['id' =>$orderId ])->first();
+
             $isToken = Arr::get($order, 'token');
             if( is_null($isToken) ){
                 $token = sha1(uniqid(mt_rand(), true));
@@ -262,63 +255,41 @@ class OrderController extends Controller
                 foreach ($request->file('image') as $itemId => $imageTypes) {
                     foreach ($imageTypes as $type => $files) {
                         if ($type == "pickup_images" || $type == "pickup_image") {
-                            $imageType = "Before Wash";
-                            $tempfilePath           = $uploadFolderPath."/before";
-                            $tempfilePath           = public_path($tempfilePath);
-
-                            if( !File::exists($tempfilePath) ){
-                                File::makeDirectory($tempfilePath,0777, true, true);
-                            }
-
+                            $imageType          = "Before Wash";
+                            $mainImagePath      = $uploadFolderPath."/before";
+                            $thumbnailImagePath = $thumbnailPath."/before";
                         }else if ($type == "delivery_images" || $type == "delivery_image") {
-                            $imageType = "After Wash";
-                            $tempfilePath           = $uploadFolderPath."/after";
-                            $tempfilePath           = public_path($tempfilePath);
-
-                            if( !File::exists($tempfilePath) ){
-                                File::makeDirectory($tempfilePath,0777, true, true);
-                            }
+                            $imageType          = "After Wash";
+                            $mainImagePath      = $uploadFolderPath."/after";
+                            $thumbnailImagePath = $thumbnailPath."/after";
                         }
-
 
                         foreach ($files as $file) {
                             // Save file and process it
-                            $imageItem = $file;
-                            $newName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $imageItem->getClientOriginalExtension();
-                            //$image->move( $tempfilePath , $newName);
-
-                            $imageAttachmentItem = Image::make($imageItem->getPathname());
-                            // Compress the image quality (e.g., 75%)
-                            $imageAttachmentItem->save($tempfilePath . '/' . $newName, 60);
+                            $newFileName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $file->getClientOriginalExtension();
+                            $this->uploadMainImage( $file, $mainImagePath, $newFileName , $thumbnailImagePath );
 
                             $orderImages[] = [
-                                'item_id' => $itemId,
+                                'item_id'    => $itemId,
                                 'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
-                                'imagename' => $newName,
+                                'imagename'  => $newFileName,
                                 'admin_user' => $adminUser,
-                                'status' => 1,
+                                'status'     => 1,
                             ];
                         }
 
                         //Capture Images Only
                         /*if( $type == "pickup_image" || $type == "delivery_image" ){
-                            $imageItem = $files;
-                            $newName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $imageItem->getClientOriginalExtension();
-                            //$image->move( $tempfilePath , $newName);
-
-                            $imageAttachmentItem = Image::make($imageItem->getPathname());
-                            // Compress the image quality (e.g., 75%)
-                            $imageAttachmentItem->save($tempfilePath . '/' . $newName, 60);
-
+                            $newFileName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $files->getClientOriginalExtension();
+                            $this->uploadMainImage( $files, $mainImagePath, $newFileName , $thumbnailImagePath );
 
                             $orderImages[] = [
                                 'item_id' => $itemId,
                                 'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
-                                'imagename' => $newName,
+                                'imagename' => $newFileName,
                                 'admin_user' => $adminUser,
                                 'status' => 1,
                             ];
-
                         }*/
                     }
                 }
@@ -335,6 +306,33 @@ class OrderController extends Controller
 
         return view('backend.orders.index');
     }
+
+    public function uploadMainImage( $file , $filePath , $filename , $thumbnailPath  ){
+        $filePath               = public_path($filePath);
+        $thumbnailPath          = public_path($thumbnailPath);
+        if( !File::exists($filePath) ){
+            File::makeDirectory($filePath,0777, true, true);
+        }
+
+        if( !File::exists($thumbnailPath) ){
+            File::makeDirectory($thumbnailPath,0777, true, true);
+        }
+
+        //$image->move( $tempfilePath , $filename);
+        $imageAttachmentItem = Image::make($file->getPathname());
+        // Compress the image quality (e.g., 60%)
+        $imageAttachmentItem->save($filePath . '/' . $filename, 60);
+
+
+        $thumbnail = Image::make($file->getRealPath())
+            ->resize(150, 150, function ($constraint) {
+                $constraint->aspectRatio(); // Maintain aspect ratio
+                $constraint->upsize();     // Prevent upsizing
+            });
+
+        $thumbnail->save($thumbnailPath . '/' . $filename,60);
+    }
+
 
 
     public function downloadImages($orderId=0,$folderName='',$orderToken='')
