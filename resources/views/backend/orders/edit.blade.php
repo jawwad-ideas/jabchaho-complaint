@@ -256,11 +256,20 @@
                                     <div class="items-images-sec mt-3">
                                         @foreach ($item->images as $image)
                                         @if( $image->image_type == "Before Wash" )
+                                          <?php
+                                              $beforeMainImage = asset(config('constants.files.orders')).'/'.$order->order_id.'/before/'.$image->imagename;
+                                              $beforeThumbnail = asset(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/before/'.$image->imagename;
+                                              $isBeforeThumbnail = public_path(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/before/'.$image->imagename;
+                                              if(  !\Illuminate\Support\Facades\File::exists($isBeforeThumbnail)  ){
+                                                  $beforeThumbnail = $beforeMainImage;
+                                              }
+                                          ?>
+
                                         <div class="img-item">
-                                            <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/before/{{$image->imagename}}"
+                                            <a href="{{$beforeMainImage}}"
                                                 target="_blank">
                                                 <img class="img-thumbnail"
-                                                    src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/before/{{$image->imagename}}"
+                                                    src="{{$beforeThumbnail}}"
                                                     alt="{{$image->imagename}}">
                                             </a>
                                             <div class="item-img-action-btn">
@@ -305,11 +314,19 @@
                                     <div class="items-images-sec mt-3">
                                         @foreach ($item->images as $image)
                                         @if( $image->image_type == "After Wash" )
+                                            <?php
+                                            $afterMainImage = asset(config('constants.files.orders')).'/'.$order->order_id.'/after/'.$image->imagename;
+                                            $afterThumbnail = asset(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/after/'.$image->imagename;
+                                            $isAfterThumbnail = public_path(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/after/'.$image->imagename;
+                                            if( !\Illuminate\Support\Facades\File::exists($isAfterThumbnail)  ){
+                                                $afterThumbnail = $afterMainImage;
+                                            }
+                                            ?>
                                         <div class="img-item">
-                                            <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/after/{{$image->imagename}}"
+                                            <a href="{{$afterMainImage}}"
                                                 target="_blank">
                                                 <img class="img-thumbnail"
-                                                    src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/after/{{$image->imagename}}"
+                                                    src="{{$afterThumbnail}}"
                                                     alt="{{$image->imagename}}">
                                             </a>
                                             <div class="item-img-action-btn">
@@ -342,10 +359,21 @@
                         <label for="remarks_attachment" class="form-label">Attachment</label>
                         <input value="" type="file" class="form-control" name="remarks_attachment" placeholder="" accept="image/*" capture="environment">
                         @if( $order->attachments )
-                        <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$order->attachments}}"
+
+                        <?php
+                        $attachmentMainImage = asset(config('constants.files.orders')).'/'.$order->order_id.'/'.$order->attachments;
+                        $attachmentThumbnail = asset(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/'.$order->attachments;
+                        $isAttachmentThumbnail = public_path(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/'.$order->attachments;
+
+                        if(  !\Illuminate\Support\Facades\File::exists( $isAttachmentThumbnail )   ){
+                            $attachmentThumbnail = $attachmentMainImage;
+                        }
+                        ?>
+
+                        <a href="{{$attachmentMainImage}}"
                             target="_blank">
                             <img class="order-img order-attachment-img img-thumbnail mt-3"
-                                src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$order->attachments}}"
+                                src="{{$attachmentThumbnail}}"
                                 alt="{{$order->attachments}}" class=" img-thumbnail image-fluid w-50"
                                 style="height:150px;">
                         </a>
