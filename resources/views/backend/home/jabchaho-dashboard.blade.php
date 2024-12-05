@@ -47,6 +47,15 @@
     margin: 0 5px;
     padding: 5px 10px;
 }
+
+tr[data-url] {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+tr[data-url]:hover {
+  background-color: #f0f0f0;
+}
 </style>
 
 <div
@@ -120,7 +129,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="stats-card border bg-theme-yellow px-2 m-r-10 w-180px">
+                <div class="stats-card border bg-theme-yellow px-2 m-r-10 w-180px" onclick="handleClick('{{ route('orders.index') }}/2')" style="cursor: pointer;">
                     <div
                         class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
                         <div class="stats-icon">
@@ -134,7 +143,7 @@
                 </div>
                 <div class="stats-card border bg-theme-yellow px-2 m-r-10 w-180px">
                     <div
-                        class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
+                        class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0" onclick="handleClick('{{ route('orders.index') }}/1')" style="cursor: pointer;">
                         <div class="stats-icon">
                             <i class="fa fa-solid fa-spinner fa-2x text-dark mb-2"></i>
                         </div>
@@ -209,8 +218,12 @@
         <table class="table table-bordered table-striped table-compact " id="clickableTable">
             <thead>
                 <tr>
-                    <th scope="col">Order#</th>    
-                    <th scope="col">Total Items</th>
+                    <th scope="col">Order#</th> 
+                    <th scope="col">Name</th>   
+                    <th scope="col">Telephone</th>
+                    <th scope="col">Before Wash</th>
+                    <th scope="col">After Wash</th>      
+                    <th scope="col">Total Barcode</th>
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -400,8 +413,12 @@ function getCountData(objParams = null)
                 orderWithItemTotalCount = result.orderWithItemTotalCount;
                 
                 result.ordersWithItemsCount.forEach(function(item) {
-                var row = '<tr>' +
-                    "<td><a href='/orders/" + item.id + "/edit'>" + item.order_id + '</a></td>' +
+                var row = "<tr data-url='/orders/" + item.id + "/edit'>" +
+                    "<td><a target='_blank' href='/orders/" + item.id + "/edit'>" + item.order_id + '</a></td>' +
+                    '<td>' + item.customer_name + '</td>' +
+                    '<td>' + item.telephone + '</td>' +
+                    '<td>' + item.before_count + '</td>' +
+                    '<td>' + item.after_count + '</td>' +
                     '<td>' + item.item_count + '</td>' +
                     '</tr>';
                 
@@ -412,7 +429,7 @@ function getCountData(objParams = null)
             else
             {
                 // Append the row to tbody
-                $('#table-body').append('<tr><td colspan=2 class="text-center" >No Record Found</td></tr>');
+                $('#table-body').append('<tr><td colspan="6" class="text-center" >No Record Found</td></tr>');
             }
 
             // Render pagination controls
@@ -499,6 +516,19 @@ let objParams ={'filterValue' : filterValue,'customStartDate' : customStartDate,
 getCountData(objParams);
 
 });
+
+
+document.getElementById('clickableTable').addEventListener('click', function(event) {
+const row = event.target.closest('tr'); // Get the clicked <tr>
+if (row && row.dataset.url) {
+    //window.location.href = row.dataset.url;
+    window.open(row.dataset.url, '_blank');
+}
+});
+
+function handleClick(url) {
+    window.location.href = url;
+}
 
 
 getCountData(null);
