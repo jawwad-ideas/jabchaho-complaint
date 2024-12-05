@@ -92,7 +92,9 @@ class Order extends Model
         $query = Order::selectRaw('
             COUNT(*) as total,
             SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as process,
-            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) as completed
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) as completed,
+            SUM(CASE WHEN before_email = 2 THEN 1 ELSE 0 END) as before_email,
+            SUM(CASE WHEN final_email = 2 THEN 1 ELSE 0 END) as final_email
         ');
 
         if (!empty($params['startDate']) && !empty($params['endDate'])) {
@@ -106,8 +108,10 @@ class Order extends Model
             'total' => (int) $result->total,
             'process' => (int) $result->process,
             'completed' => (int) $result->completed,
+            'before_email' => (int) $result->before_email,
+            'after_email' => (int) $result->final_email,
         ];
-        
+
         return $data;
     }
 
@@ -164,9 +168,15 @@ class Order extends Model
             
             $query = Order::select(
                 'orders.id',
+                'orders.customer_name',
+                'orders.telephone',
                 'orders.order_id as order_id',
                 DB::raw('COUNT(order_items.id) as item_count')
             )
+            ->withCount([
+                'before', // Count with image_type = 1
+                'after', // Count with image_type = 2
+            ])
             ->leftjoin('order_items', 'orders.id', '=', 'order_items.order_id') // Join orders with order_items
             ->groupBy('orders.id')// Group by orders.id to calculate the item count
             ->orderBy('orders.created_at', 'desc');
