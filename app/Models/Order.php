@@ -164,9 +164,15 @@ class Order extends Model
             
             $query = Order::select(
                 'orders.id',
+                'orders.customer_name',
+                'orders.telephone',
                 'orders.order_id as order_id',
                 DB::raw('COUNT(order_items.id) as item_count')
             )
+            ->withCount([
+                'before', // Count with image_type = 1
+                'after', // Count with image_type = 2
+            ])
             ->leftjoin('order_items', 'orders.id', '=', 'order_items.order_id') // Join orders with order_items
             ->groupBy('orders.id')// Group by orders.id to calculate the item count
             ->orderBy('orders.created_at', 'desc');
