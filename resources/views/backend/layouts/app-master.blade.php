@@ -55,7 +55,7 @@
                 </div>
                 <div class="admin-side-menu-section ">
                     <ul class="list-group list-group-flush mt-4 list-unstyled">
-                        @if(Auth::user()->can('home.index'))
+                        @if(Auth::user()->can('home.index') || Auth::user()->can('jabchaho-dashboard.index'))
                        
 
                         <li class="list-item px-3 py-3">
@@ -78,8 +78,8 @@
                                     @endif
 
 
-                                    @if(Auth::user()->can('jabchaho.dashboard')|| 1==1)
-                                    <li class="py-2 "><a href="{{ route('jabchaho.dashboard') }}"
+                                    @if(Auth::user()->can('jabchaho-dashboard.index'))
+                                    <li class="py-2 "><a href="{{ route('jabchaho-dashboard.index') }}"
                                             class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
                                             <i class="fa fa-solid fa-folder-tree text-theme-yellow-light"></i>
                                             Jabchaho</a>
