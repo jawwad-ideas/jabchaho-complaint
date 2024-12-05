@@ -49,8 +49,26 @@ class OrderItemImage extends Model
         }
     }
 
+    function orderItemImagesCount($params = array())
+    {
+        $query = OrderItemImage::selectRaw('
+            SUM(CASE WHEN image_type = "Before Wash" THEN 1 ELSE 0 END) as before_wash,
+            SUM(CASE WHEN image_type = "After Wash" THEN 1 ELSE 0 END) as after_wash
+        ');
 
-    /*public function images() {
-        return $this->hasMany(OrdersImages::class, 'order_id', 'id');
-    }*/
+        if (!empty($params['startDate']) && !empty($params['endDate'])) {
+            $startDate = $params['startDate'];
+            $endDate = $params['endDate'];
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        $result = $query->first();
+        $data = [
+            'before_wash' => (int) $result->before_wash,
+            'after_wash' => (int) $result->after_wash,
+        ];
+        
+        return $data;
+    }
+
 }

@@ -237,7 +237,7 @@ class Complaint extends Model
         if (!empty($params['startDate']) && !empty($params['endDate'])) {
             $startDate = $params['startDate'];
             $endDate = $params['endDate'];
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('complaints.created_at', [$startDate, $endDate]);
         }
 
         $results = $query->get();

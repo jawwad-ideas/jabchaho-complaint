@@ -10,6 +10,8 @@ use App\Models\Complaint;
 use App\Models\ComplaintStatus;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Arr;
+use App\Models\Order;
+use App\Models\OrderItemImage;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -98,7 +100,100 @@ class HomeController extends Controller
 
     public function jabchahoDashboard()
     {
-        echo "m here"; exit;
+        try
+        {
+            $data = $params = array();
+            return view('backend.home.jabchaho-dashboard')->with($data);
+
+        }catch(\Exception $e)
+        {
+            return $this->getCustomExceptionMessage($e);
+
+        }
+    }
+
+    /**
+     * jabchaho Dashboard Counts Request
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function getJabchahoDashboardCountData(Request $request)
+    {
+        try
+        {
+            $data = $params = array();
+            $filterValue = '';
+
+            $orderObject                 = new Order;
+            $orderItemImageObject        = new OrderItemImage; //
+
+            
+            $page = $request->query('page'); // Default to page 1 if not provided
+            $limit = $request->query('limit'); // Default to 10 items per page if not provided
+
+            if(!empty($request->get('filterValue')))
+            {
+                $filterValue  = $request->get('filterValue');
+                
+                $datesArray = Helper::getDateByFilterValue($filterValue);
+ 
+                $startDate              = Arr::get($datesArray, 'startDate');
+                $endDate                = Arr::get($datesArray, 'endDate');
+
+                $params['startDate']    = $startDate;
+                $params['endDate']      = $endDate;
+
+                 
+            }
+            else if(!empty($request->get('customStartDate')) && !empty($request->get('customEndDate')))
+            {   
+                $customStartDate        = date("Y-m-d 00:00:00", strtotime($request->get('customStartDate')));
+                $customEndDate          = date("Y-m-d 23:59:59", strtotime($request->get('customEndDate')));
+
+                $params['startDate']    = $customStartDate;
+                $params['endDate']      = $customEndDate;
+            }
+
+
+            if(!empty($request->get('name')))
+            {
+                $params['name']    = $request->get('name');
+            }
+
+            if(!empty($request->get('telephone')))
+            {
+                $params['telephone']    = $request->get('telephone');
+            }
+
+            if(!empty($request->get('orderNumber')))
+            {
+                $params['orderNumber']    = $request->get('orderNumber');
+            }
+
+            $params['page']                     = $page;
+            $params['limit']                    = $limit;
+
+            $orders                             = $orderObject->orderCount($params);
+            $orderItemImage                     = $orderItemImageObject->orderItemImagesCount($params);
+
+            $ordersWithItemsCountData           = $orderObject->getOrdersWithItemCount($params);
+            $ordersWithItemsCount               = Arr::get($ordersWithItemsCountData, 'orders');
+            $orderWithItemTotalCount            = Arr::get($ordersWithItemsCountData, 'totalRecords');
+            
+            $data['orders']                     = $orders;
+            $data['orderItemImage']             = $orderItemImage;
+            $data['ordersWithItemsCount']       = $ordersWithItemsCount;
+            $data['orderWithItemTotalCount']    = $orderWithItemTotalCount;
+            
+            return response()->json($data);
+
+        }catch(\Exception $e)
+        {
+            return $this->getCustomExceptionMessage($e);
+            
+        }
     }
 
 
