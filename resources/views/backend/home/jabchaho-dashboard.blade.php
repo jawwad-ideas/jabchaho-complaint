@@ -91,7 +91,7 @@
                         data-value="custom-date-search">
                         <i class="fa fa-solid fa fa-search me-2"></i> Search
                     </button>
-                    <a href="{{ route('jabchaho.dashboard') }}"><small type="button"
+                    <a href="{{ route('jabchaho-dashboard.index') }}"><small type="button"
                             class="btn btn-sm rounded bg-theme-yellow mt-2 border-0 text-dark fw-bold d-inline-flex align-items-center "><i
                                 class="fa fa-solid fa-arrows-rotate me-2"></i> Clear</small></a>
                 </div>

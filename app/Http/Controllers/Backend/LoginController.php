@@ -79,6 +79,7 @@ class LoginController extends Controller
         //get list of .index permisson
         if(!empty($permissionIndexPagesArray))
         {
+            asort($permissionIndexPagesArray);
             //check if cms.index exist then url move to cms.index
             if(in_array('home.index',$permissionIndexPagesArray))
             {
