@@ -55,12 +55,47 @@
                 </div>
                 <div class="admin-side-menu-section ">
                     <ul class="list-group list-group-flush mt-4 list-unstyled">
-                        @if(Auth::user()->can('home.index'))
-                        <li class="list-item px-3 py-3"><a href="{{ route('home.index') }}"
-                                class="text-start text-decoration-none d-flex gap-3 align-items-center text-light">
-                                <i class="fa fa-solid fa-chart-pie text-theme-yellow-light fa-2x"></i>
-                                Dashboard</a>
+                        @if(Auth::user()->can('home.index') || Auth::user()->can('jabchaho-dashboard.index'))
+                       
+
+                        <li class="list-item px-3 py-3">
+                            <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
+                                data-bs-toggle="collapse" data-bs-target="#dashboard">
+                                <span class="d-flex align-items-center gap-3 text-light">
+                                    <i class="fa fa-solid fa-boxes-packing fa-2x text-theme-yellow-light"></i>
+                                    Dashboard </span>
+                                <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
+                            </div>
+
+                            <div class="collapse mt-3 ms-5" id="dashboard" style="">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    @if(Auth::user()->can('home.index'))
+                                    <li class="py-2 "><a href="{{ route('home.index') }}"
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-folder-tree text-theme-yellow-light"></i>
+                                            Complaints</a>
+                                    </li>
+                                    @endif
+
+
+                                    @if(Auth::user()->can('jabchaho-dashboard.index'))
+                                    <li class="py-2 "><a href="{{ route('jabchaho-dashboard.index') }}"
+                                            class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                            <i class="fa fa-solid fa-folder-tree text-theme-yellow-light"></i>
+                                            Jabchaho</a>
+                                    </li>
+                                    @endif
+
+
+
+                                </ul>
+                            </div>
+
                         </li>
+
+
+
+
                         @endif
 
                         @auth
