@@ -20,9 +20,7 @@ use Intervention\Image\Facades\Image;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
-    public function itemImage(
-        Request $request
-    ){
+    public function itemImage(  Request $request  ){
 
         $orderItemImage = OrderItemImage::with('orderItem.order')->orderBy('id', 'desc');
 
@@ -372,12 +370,14 @@ class OrderController extends Controller
 
     public function save( OrderSaveRequest $request )
     {
+        //dd( $request->all() );
         if ( $request->has('order_id') ) {
             $orderImages        = $historyData =  [];
             $adminUser          = $request->user()->id;
             $orderId            = $request->get('order_id');
             $remarks            = $request->get('remarks');
             $orderNumber        = $request->get('order_number');
+            $issues             = $request->get('is_issue_identify');
             $uploadFolderPath   = config('constants.files.orders').'/'.$orderNumber;
             $thumbnailPath      = $uploadFolderPath.'/thumbnail';
             $orderUpdateArray   =  [ 'updated_at'=>now(), 'remarks' => $remarks ];
@@ -397,9 +397,6 @@ class OrderController extends Controller
                 $orderUpdateArray["token"]  = $token;
             }
 
-            $order->update(
-                $orderUpdateArray
-            );
 
             if( $request->has('image') ) {
                 foreach ($request->file('image') as $itemId => $imageTypes) {
@@ -440,42 +437,40 @@ class OrderController extends Controller
                                 'data' => json_encode($data)
                             ];
                         }
+                    }
+                }
+            }
 
-                        //Capture Images Only
-                        /*if( $type == "pickup_image" || $type == "delivery_image" ){
-                            $newFileName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $files->getClientOriginalExtension();
-                            $this->uploadMainImage( $files, $mainImagePath, $newFileName , $thumbnailImagePath );
 
-                            $orderImages[] = [
-                                'item_id' => $itemId,
-                                'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
-                                'imagename' => $newFileName,
-                                'admin_user' => $adminUser,
-                                'status' => 1,
-                            ];
-                        }*/
+            try {
+                $order->update(
+                    $orderUpdateArray
+                );
+
+                if( !empty( $issues ) ){
+                    foreach ( $issues as $key =>  $issue ){
+                         OrderItem::where(['id' => $key ])->update(
+                            [ "is_issue_identify" => $issue , 'updated_at'=>now() ]
+                        );
                     }
                 }
 
-                //if (!empty($orderImages)) {
-                    try {
+                $data = [ 'image_type' => isset( $orderUpdateArray["attachments"] )? 'Main Image':null  ,'remarks' => $remarks , 'imagename' => ($orderUpdateArray["attachments"] ?? null) , 'is_issue_identify' => $issues ];
+                $historyData[] = [
+                    'order_id'      => $orderId,
+                    'item_id'       => null,
+                    'item_image_id' => null,
+                    'action'        => "order_update",
+                    'admin_user'    => $adminUser,
+                    'data' => json_encode($data)
+                ];
 
-                        $data = [ 'image_type' => isset( $orderUpdateArray["attachments"] )? 'Main Image':null  ,'remarks' => $remarks , 'imagename' => ($orderUpdateArray["attachments"] ?? null)  ];
-                        $historyData[] = [
-                            'order_id'      => $orderId,
-                            'item_id'       => null,
-                            'item_image_id' => null,
-                            'action'        => "order_update",
-                            'admin_user'    => $adminUser,
-                            'data' => json_encode($data)
-                        ];
+                $this->addHistory($historyData);
 
-                        $this->addHistory($historyData);
-                    }catch ( \Exception $exception ){
-                        die($exception->getMessage());
-                    }
-                //}
+            }catch ( \Exception $exception ){
+                die($exception->getMessage());
             }
+
             return redirect()->route('orders.edit', ['order_id' => $orderId])
                 ->with('success', 'Order created successfully.');
         }

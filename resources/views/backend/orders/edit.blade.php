@@ -159,38 +159,27 @@
 
                 <div class="container mt-4 p-0">
                     <div class="order-basic-info mb-3">
-
                         <div class="d-flex order-no-bar px-3 align-items-center gap-2 mb-3">
                             <h4 for="order" class="fw-bold ">Order#</h4>
-                            <h2 class="order-no fw-bold">
-                                {{ $order->order_id }}
-                            </h2>
+                            <h2 class="order-no fw-bold"> {{ $order->order_id }} </h2>
                         </div>
                         <div class="customer-basic-detail">
                             <div class="d-xl-flex d-lg-flex d-md-block cust-inr-detail-bar px-3 align-items-center gap-2">
                                 <h6 class="fw-bold inr-lbl">Customer Name:</h6>
-                                <h6 class="inr-vl">
-                                    {{ $order->customer_name }}
-                                </h6>
+                                <h6 class="inr-vl"> {{ $order->customer_name }} </h6>
                             </div>
                             <div class="d-xl-flex d-lg-flex d-md-block cust-inr-detail-bar px-3 align-items-center gap-2">
                                 <h6 class="fw-bold inr-lbl">Customer Email:</h6>
-                                <h6 class="inr-vl">
-                                    {{ $order->customer_email }}
-                                </h6>
+                                <h6 class="inr-vl">  {{ $order->customer_email }}  </h6>
                             </div>
                             <div class="d-xl-flex d-lg-flex d-md-block cust-inr-detail-bar px-3 align-items-center gap-2">
                                 <h6 class="fw-bold inr-lbl">Telephone:</h6>
-                                <h6 class="inr-vl">
-                                    {{ $order->telephone }}
-                                </h6>
+                                <h6 class="inr-vl"> {{ $order->telephone }} </h6>
                             </div>
                         </div>
 
-                        <input value="{{ $order->order_id }}" type="hidden" class="form-control" name="order_number"
-                            placeholder="Order Number" readonly>
-                        <input value="{{ $order->id }}" type="hidden" class="form-control" name="order_id"
-                            placeholder="Order Number" readonly>
+                        <input value="{{ $order->order_id }}" type="hidden" class="form-control" name="order_number" placeholder="Order Number" readonly>
+                        <input value="{{ $order->id }}" type="hidden" class="form-control" name="order_id" placeholder="Order Number" readonly>
                     </div>
 
                     @foreach ($order->orderItems as $item)
@@ -198,64 +187,45 @@
                         <div class="item-form-row p-3 bg-light rounded border-light">
                             <div class="itemLabel">
                                 <label class="d-flex">
-                                    <h6 class="d-inline-block fw-bold">
-                                        Service Type:
-                                    </h6>
-                                    <span>
-                                        {{$item->service_type}}
-                                    </span>
+                                    <h6 class="d-inline-block fw-bold"> Service Type: </h6>
+                                    <span> {{$item->service_type}} </span>
                                 </label>
                                 <label class="d-flex">
-                                    <h6 class="fw-bold d-inline-block">
-                                        Product:
-                                    </h6>
-
-                                    <span>
-                                        {{$item->item_name}}
-                                    </span>
+                                    <h6 class="fw-bold d-inline-block"> Product: </h6>
+                                    <span> {{$item->item_name}} </span>
                                 </label>
-
-
                                 <label class="d-flex ">
-                                    <h6 class="d-inline-block fw-bold">
-                                        Barcode:
-                                    </h6>
-                                    <span>
-                                        {{$item->barcode}}
-                                    </span>
+                                    <h6 class="d-inline-block fw-bold"> Barcode: </h6>
+                                    <span> {{$item->barcode}} </span>
                                 </label>
                             </div>
                             <div class="inner-row d-xl-flex d-lg-flex d-md-block justify-content-between pb-2 gap-4">
                                 <div class="col-lg-6 pb-1 pt-3 border-light">
-                                    <label for="pickup_images" class="form-label fw-bold">Before Wash
-                                        Images</label>
-{{--                                    <input value="" type="file" class="form-control img-upload-input fa-camera d-xl-none d-lg-none d-md-none d-block"--}}
-{{--                                           name="image[{{$item->id}}][pickup_image]" placeholder=""  accept="image/*" capture="environment">--}}
-{{--                                    <input value="" type="file" class="form-control img-upload-input"--}}
-{{--                                        name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple >--}}
+                                    <div class="d-flex align-items-center gap-3">
+                                        <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
+                                    </div>
 
                                     <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
                                         <input value="" type="file" class="form-control img-upload-input"
                                                name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple>
+                                        <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
+                                            <small>Item having Issue:</small>
+                                            <div class="d-flex gap-2">
+                                                <div class="form-check form-check-inline d-flex align-items-center gap-1">
+                                                    <input class="form-check-input" type="radio" name="is_issue_identify[{{$item->id}}]" id="yesfault" value="2" @if( $item->is_issue_identify == 2 ) checked @endif >
+                                                    <label class="form-check-label" for="yesfault">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline d-flex align-items-center gap-1">
+                                                    <input class="form-check-input" type="radio" name="is_issue_identify[{{$item->id}}]" id="nofault" value="1" @if( $item->is_issue_identify != 2 ) checked @endif>
+                                                    <label class="form-check-label" for="nofault">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
                                         <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"
                                                 onclick="addMoreImageUpload({{ $item->id }},'pickup_images')">Add More</button>
                                     </div>
-                                    {{--<div class="file-upload-fields">
-                                        <div class="d-xl-none d-lg-none d-md-none d-block">
-                                            <div class="camera-icon fa fa-camera fa-2x">
-                                                <input value="" type="file" class="form-control img-upload-input fa fa-camera"
-                                                       name="image[{{$item->id}}][pickup_image]" placeholder="" multiple accept="image/*" capture="environment">
-                                            </div>
-                                        </div>
-
-                                        <div class="upload-img-input-sec">
-                                            <input value="" type="file" class="form-control img-upload-input"
-                                                   name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple>
-                                        </div>
-                                    </div>--}}
-
                                     @if( $item->images->isNotEmpty() )
                                     <div class="items-images-sec mt-3">
                                         @foreach ($item->images as $image)
@@ -270,16 +240,9 @@
                                           ?>
 
                                         <div class="img-item">
-                                            <a href="{{$beforeMainImage}}"
-                                                target="_blank">
-                                                <img class="img-thumbnail"
-                                                    src="{{$beforeThumbnail}}"
-                                                    alt="{{$image->imagename}}">
-                                            </a>
+                                            <a href="{{$beforeMainImage}}" target="_blank"> <img class="img-thumbnail" src="{{$beforeThumbnail}}" alt="{{$image->imagename}}"> </a>
                                             <div class="item-img-action-btn">
-                                                <button class="btn btn-danger btn-sm delete-image ms-2"
-                                                    data-image-id="{{ $image->id }}"
-                                                    data-order-number="{{ $order->order_id }}" title="Delete">
+                                                <button class="btn btn-danger btn-sm delete-image ms-2" data-image-id="{{ $image->id }}" data-order-number="{{ $order->order_id }}" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </div>
@@ -292,31 +255,13 @@
                                 </div>
 
                                 <div class="col-lg-6 pb-1 pt-3  border-light">
-                                    <label for="delivery_images" class="form-label fw-bold">After Wash
-                                        Images</label>
+                                    <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
                                     <div class="upload-img-input-sec" id="image-upload-container-delivery_images-{{ $item->id }}">
-                                        <input value="" type="file" class="form-control img-upload-input"
-                                               name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple>
+                                        <input value="" type="file" class="form-control img-upload-input" name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple>
                                     </div>
                                     <div>
-                                        <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"
-                                                onclick="addMoreImageUpload({{ $item->id }},'delivery_images')">Add More</button>
+                                        <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"  onclick="addMoreImageUpload({{ $item->id }},'delivery_images')">Add More</button>
                                     </div>
-                                    {{--<div class="file-upload-fields">
-                                        <div class="d-xl-none d-lg-none d-md-none d-block">
-                                            <div class="camera-icon fa fa-camera fa-2x">
-                                                <input value="" type="file" class="form-control img-upload-input fa fa-camera"
-                                                       name="image[{{$item->id}}][delivery_image]" placeholder="" multiple accept="image/*" capture="environment">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="upload-img-input-sec">
-                                            <input value="" type="file" class="form-control img-upload-input"
-                                                   name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple>
-                                        </div>
-                                    </div>--}}
-
 
                                     @if( $item->images->isNotEmpty() )
                                     <div class="items-images-sec mt-3">
@@ -331,16 +276,9 @@
                                             }
                                             ?>
                                         <div class="img-item">
-                                            <a href="{{$afterMainImage}}"
-                                                target="_blank">
-                                                <img class="img-thumbnail"
-                                                    src="{{$afterThumbnail}}"
-                                                    alt="{{$image->imagename}}">
-                                            </a>
+                                            <a href="{{$afterMainImage}}" target="_blank"> <img class="img-thumbnail" src="{{$afterThumbnail}}" alt="{{$image->imagename}}"> </a>
                                             <div class="item-img-action-btn">
-                                                <button class="btn btn-danger btn-sm delete-image ms-2"
-                                                    data-image-id="{{ $image->id }}"
-                                                    data-order-number="{{ $order->order_id }}" title="Delete">
+                                                <button class="btn btn-danger btn-sm delete-image ms-2" data-image-id="{{ $image->id }}" data-order-number="{{ $order->order_id }}" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </div>
@@ -359,8 +297,7 @@
 
                     <div class="mb-3">
                         <label for="remarks" class="form-label">Order Remarks</label>
-                        <textarea name="remarks" class="form-control"
-                            placeholder="Order Remarks">{{ $order->remarks }}</textarea>
+                        <textarea name="remarks" class="form-control" placeholder="Order Remarks">{{ $order->remarks }}</textarea>
                     </div>
 
                     <div class="mb-3">
@@ -378,21 +315,14 @@
                         }
                         ?>
 
-                        <a href="{{$attachmentMainImage}}"
-                            target="_blank">
-                            <img class="order-img order-attachment-img img-thumbnail mt-3"
-                                src="{{$attachmentThumbnail}}"
-                                alt="{{$order->attachments}}" class=" img-thumbnail image-fluid w-50"
-                                style="height:150px;">
+                        <a href="{{$attachmentMainImage}}" target="_blank">
+                            <img class="order-img order-attachment-img img-thumbnail mt-3" src="{{$attachmentThumbnail}}"  alt="{{$order->attachments}}" class=" img-thumbnail image-fluid w-50"  style="height:150px;">
                         </a>
                         @endif
                     </div>
 
                     <div class="mb-3">
-                        <button type="submit"
-                            class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Update
-                            order
-                        </button>
+                        <button type="submit" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3"> Update order </button>
                         <a href="{{ route('orders.index') }}/{{$order->status}}" class="btn bg-theme-dark-300 text-light">Back</a>
                     </div>
                 </div>
@@ -407,7 +337,7 @@
         const container = document.getElementById(`image-upload-container-${fieldName}-${itemId}`);
 
         const wrapperDiv = document.createElement('div');
-        wrapperDiv.className = 'input-wrapper d-flex align-items-center mt-2';
+        wrapperDiv.className = 'input-wrapper d-flex align-items-center mt-2 addMoreinputWrapper';
 
         // Create a new input element
         const newInput = document.createElement('input');
