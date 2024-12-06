@@ -20,7 +20,76 @@ use Intervention\Image\Facades\Image;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
+    public function itemImage(  Request $request  ){
 
+        $orderItemImage = OrderItemImage::with('orderItem.order')->orderBy('id', 'desc');
+
+        $filterData = [
+            'barcode'               => $request->get('barcode', ''),
+            'service_type' => $request->get('service_type', ''),
+            'item_name' => $request->get('item_name', ''),
+            'order_number' => $request->get('order_number', ''),
+            'customer_email' => $request->get('customer_email', ''),
+            'is_issue_identify_options' => [1 => "No", 2 => "Yes"],
+            'customer_name' => $request->get('customer_name', ''),
+            'telephone' => $request->get('telephone', ''),
+            'issue' =>  $request->get('issue', ''),
+        ];
+
+        // Apply filters based on request
+        if ($filterData['barcode']) {
+            $orderItemImage->whereHas('orderItem', function ($query) use ($filterData) {
+                $query->where('barcode', 'like', '%' . $filterData['barcode'] . '%');
+            });
+        }
+
+        if ($filterData['issue']) {
+            $orderItemImage->whereHas('orderItem', function ($query) use ($filterData) {
+                $query->where('is_issue_identify', '=',  $filterData['issue'] );
+            });
+        }
+
+        if ($filterData['service_type']) {
+            $orderItemImage->whereHas('orderItem', function ($query) use ($filterData) {
+                $query->where('service_type', 'like', '%' . $filterData['service_type'] . '%');
+            });
+        }
+
+        if ($filterData['item_name']) {
+            $orderItemImage->whereHas('orderItem', function ($query) use ($filterData) {
+                $query->where('item_name', 'like', '%' . $filterData['item_name'] . '%');
+            });
+        }
+
+        if ($filterData['order_number']) {
+            $orderItemImage->whereHas('orderItem.order', function ($query) use ($filterData) {
+                $query->where('order_id', 'like', '%' . $filterData['order_number'] . '%');
+            });
+        }
+
+        if ($filterData['customer_email']) {
+            $orderItemImage->whereHas('orderItem.order', function ($query) use ($filterData) {
+                $query->where('customer_email', 'like', '%' . $filterData['customer_email'] . '%');
+            });
+        }
+
+        if ($filterData['customer_name']) {
+            $orderItemImage->whereHas('orderItem.order', function ($query) use ($filterData) {
+                $query->where('customer_name', 'like', '%' . $filterData['customer_name'] . '%');
+            });
+        }
+
+        if ($filterData['telephone']) {
+            $orderItemImage->whereHas('orderItem.order', function ($query) use ($filterData) {
+                $query->where('telephone', 'like', '%' . $filterData['telephone'] . '%');
+            });
+        }
+
+        $orderItemImage = $orderItemImage->latest()->paginate( config('constants.per_page') );
+
+        return view('backend.orders.item', compact('orderItemImage'))->with($filterData);
+
+    }
     public function index(Request $request)
     {
         $order_number       = $request->input('order_number');
@@ -301,12 +370,14 @@ class OrderController extends Controller
 
     public function save( OrderSaveRequest $request )
     {
+        //dd( $request->all() );
         if ( $request->has('order_id') ) {
             $orderImages        = $historyData =  [];
             $adminUser          = $request->user()->id;
             $orderId            = $request->get('order_id');
             $remarks            = $request->get('remarks');
             $orderNumber        = $request->get('order_number');
+            $issues             = $request->get('is_issue_identify');
             $uploadFolderPath   = config('constants.files.orders').'/'.$orderNumber;
             $thumbnailPath      = $uploadFolderPath.'/thumbnail';
             $orderUpdateArray   =  [ 'updated_at'=>now(), 'remarks' => $remarks ];
@@ -326,9 +397,6 @@ class OrderController extends Controller
                 $orderUpdateArray["token"]  = $token;
             }
 
-            $order->update(
-                $orderUpdateArray
-            );
 
             if( $request->has('image') ) {
                 foreach ($request->file('image') as $itemId => $imageTypes) {
@@ -369,42 +437,40 @@ class OrderController extends Controller
                                 'data' => json_encode($data)
                             ];
                         }
+                    }
+                }
+            }
 
-                        //Capture Images Only
-                        /*if( $type == "pickup_image" || $type == "delivery_image" ){
-                            $newFileName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $files->getClientOriginalExtension();
-                            $this->uploadMainImage( $files, $mainImagePath, $newFileName , $thumbnailImagePath );
 
-                            $orderImages[] = [
-                                'item_id' => $itemId,
-                                'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
-                                'imagename' => $newFileName,
-                                'admin_user' => $adminUser,
-                                'status' => 1,
-                            ];
-                        }*/
+            try {
+                $order->update(
+                    $orderUpdateArray
+                );
+
+                if( !empty( $issues ) ){
+                    foreach ( $issues as $key =>  $issue ){
+                         OrderItem::where(['id' => $key ])->update(
+                            [ "is_issue_identify" => $issue , 'updated_at'=>now() ]
+                        );
                     }
                 }
 
-                //if (!empty($orderImages)) {
-                    try {
+                $data = [ 'image_type' => isset( $orderUpdateArray["attachments"] )? 'Main Image':null  ,'remarks' => $remarks , 'imagename' => ($orderUpdateArray["attachments"] ?? null) , 'is_issue_identify' => $issues ];
+                $historyData[] = [
+                    'order_id'      => $orderId,
+                    'item_id'       => null,
+                    'item_image_id' => null,
+                    'action'        => "order_update",
+                    'admin_user'    => $adminUser,
+                    'data' => json_encode($data)
+                ];
 
-                        $data = [ 'image_type' => isset( $orderUpdateArray["attachments"] )? 'Main Image':null  ,'remarks' => $remarks , 'imagename' => ($orderUpdateArray["attachments"] ?? null)  ];
-                        $historyData[] = [
-                            'order_id'      => $orderId,
-                            'item_id'       => null,
-                            'item_image_id' => null,
-                            'action'        => "order_update",
-                            'admin_user'    => $adminUser,
-                            'data' => json_encode($data)
-                        ];
+                $this->addHistory($historyData);
 
-                        $this->addHistory($historyData);
-                    }catch ( \Exception $exception ){
-                        die($exception->getMessage());
-                    }
-                //}
+            }catch ( \Exception $exception ){
+                die($exception->getMessage());
             }
+
             return redirect()->route('orders.edit', ['order_id' => $orderId])
                 ->with('success', 'Order created successfully.');
         }
@@ -437,8 +503,6 @@ class OrderController extends Controller
 
         $thumbnail->save($thumbnailPath . '/' . $filename,60);
     }
-
-
 
     public function downloadImages($orderId=0,$folderName='',$orderToken='')
     {

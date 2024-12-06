@@ -56,7 +56,7 @@
                 <div class="admin-side-menu-section ">
                     <ul class="list-group list-group-flush mt-4 list-unstyled">
                         @if(Auth::user()->can('home.index') || Auth::user()->can('jabchaho-dashboard.index'))
-                       
+
 
                         <li class="list-item px-3 py-3">
                             <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
@@ -209,6 +209,20 @@
                                             @endif
                                         </ul>
                                     </div>
+
+
+                                    <div class="collapse mt-3 ms-5" id="orders" style="">
+                                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                            @if(Auth::user()->can('orders.barcode.images'))
+                                                <li class="py-2 "><a href="{{ route('orders.barcode.images') }}"
+                                                                     class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                        <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
+                                                        Barcodes</a>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </div>
+
                                 </li>
                             @endif
                             {{-- Order Profiling --}}
