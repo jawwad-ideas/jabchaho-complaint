@@ -444,7 +444,7 @@ $(document).ready(function() {
         var remarks = "";
         if( emailType === "before_email" ) {
             let beforeWashCheckListItemList = [];
-            $('.form-check-input:checked').each(function () {
+            $('.modal-body .form-check-input:checked').each(function () {
                 beforeWashCheckListItemList.push($(this).val());
             });
 
