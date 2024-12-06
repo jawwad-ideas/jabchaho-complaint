@@ -434,6 +434,53 @@ class Helper
 		return $deviceType;
 
 	}
+
+	/**
+     * Handle response after user authenticated
+     * 
+     * @param Auth $user
+     * 
+     * @return \Illuminate\Http\Response
+     */
+
+	public static function authenticated($user=null) 
+    {
+        $redirectUrl = 'home.index';
+        $permissionIndexPagesArray = array();
+        
+        //get all users permission
+        if(!empty($user))
+		{
+			if(!empty($user->getAllPermissions()))
+			{
+				//check .index and list of .index
+				foreach($user->getAllPermissions() as $row)
+				{
+					if(str_contains($row->name, '.index'))
+					{
+						$permissionIndexPagesArray[] = $row->name;
+					}
+				}
+			}
+		}
+
+        //get list of .index permisson
+        if(!empty($permissionIndexPagesArray))
+        {
+            asort($permissionIndexPagesArray);
+            //check if cms.index exist then url move to cms.index
+            if(in_array('home.index',$permissionIndexPagesArray))
+            {
+                $redirectUrl = 'home.index';
+            }
+            elseif(reset($permissionIndexPagesArray)) //first .index url
+            {
+                $redirectUrl = reset($permissionIndexPagesArray);
+            }
+        }
+
+        return redirect(route($redirectUrl));
+    }
 	
 	
 }

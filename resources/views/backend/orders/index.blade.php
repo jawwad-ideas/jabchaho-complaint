@@ -140,6 +140,7 @@ tr[data-url]:hover {
                     <tr>
                         <th scope="col" width="1%">Sr no.</th>
                         <th scope="col" width="15%">Order#</th>
+                        <th scope="col" width="15%">Total Barcode</th>
                         <th scope="col" width="15%">Customer Name</th>
                         <th scope="col" width="15%">Customer Email</th>
                         <th scope="col" width="15%">Telephone#</th>
@@ -160,6 +161,7 @@ tr[data-url]:hover {
                         <tr data-url="{{ route('orders.edit', $order->id) }}">
                             <th scope="row">{{ $order->id }}</th>
                             <td width="15%">{{ $order->order_id }}</td>
+                            <td width="15%">{{ $order->items_count }}</td>
                             <td width="15%">{{ $order->customer_name }}</td>
                             <td width="15%">{{ $order->customer_email }}</td>
                             <td width="15%">{{ $order->telephone }}</td>

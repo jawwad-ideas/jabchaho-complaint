@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Backend\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\RememberMeExpiration;
+use App\Helpers\Helper;
 
 class LoginController extends Controller
 {
@@ -47,51 +48,9 @@ class LoginController extends Controller
             $this->setRememberMeExpiration($user);
         endif;
 
-        return $this->authenticated($request, $user);
+        //return $this->authenticated($request, $user);
+        return Helper::authenticated($user);
     }
 
-    /**
-     * Handle response after user authenticated
-     * 
-     * @param Request $request
-     * @param Auth $user
-     * 
-     * @return \Illuminate\Http\Response
-     */
-    protected function authenticated(Request $request, $user) 
-    {
-        $redirectUrl = 'home.index';
-        $permissionIndexPagesArray = array();
-        
-        //get all users permission
-        if(!empty($user->getAllPermissions()))
-        {
-            //check .index and list of .index
-            foreach($user->getAllPermissions() as $row)
-            {
-                if(str_contains($row->name, '.index'))
-                {
-                    $permissionIndexPagesArray[] = $row->name;
-                }
-            }
-        }
-
-        //get list of .index permisson
-        if(!empty($permissionIndexPagesArray))
-        {
-            asort($permissionIndexPagesArray);
-            //check if cms.index exist then url move to cms.index
-            if(in_array('home.index',$permissionIndexPagesArray))
-            {
-                $redirectUrl = 'home.index';
-            }
-            elseif(reset($permissionIndexPagesArray)) //first .index url
-            {
-                $redirectUrl = reset($permissionIndexPagesArray);
-            }
-        }
-        
-    
-        return redirect(route($redirectUrl));
-    }
+   
 }

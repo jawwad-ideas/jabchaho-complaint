@@ -98,8 +98,8 @@ class OrderController extends Controller
         $customer_email     = $request->input('customer_email');
         $customer_name      = $request->input('customer_name');
         $telephone          = $request->input('telephone');
-        $before_email          = $request->input('before_email');
-        $after_email          = $request->input('after_email');
+        $before_email       = $request->input('before_email');
+        $after_email        = $request->input('after_email');
         $status             = $request->segment(3);
 
         //$orders = Order::select('*')->orderBy('id', 'desc');
@@ -107,6 +107,7 @@ class OrderController extends Controller
             'images', // Total images
             'before', // Count with image_type = 1
             'after', // Count with image_type = 2
+            'orderItems as items_count', // Count of order items
         ])
         ->orderBy('id', 'desc');
 
