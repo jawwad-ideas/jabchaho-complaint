@@ -38,16 +38,22 @@ class SendEmailOnOrderCompletion implements ShouldQueue
 
         $emailType = $this->emailType ;
 
-        $orderData = Order::where(['id' =>$this->orderId ])->first();
+        //$orderData = Order::where(['id' =>$this->orderId ])->first();
+        $orderData = Order::with(['orderItems' => function ($query) {
+            $query->where('is_issue_identify', 2)
+                  ->with('images');
+        }])
+        ->where(['id' =>$this->orderId ])
+        ->first();
 
-        $emailStatus = $this->sendEmail($orderData,$orderitemData , $emailType);
+        $emailStatus = $this->sendEmail($orderData, $emailType);
         if( $emailStatus ){
             $orderData->update([ 'updated_at'=>now() ]);
         }
     }
 
 
-    public function sendEmail($orderData=array(), $orderitemData=array() , $emailType )
+    public function sendEmail($orderData=array(), $emailType )
     {
         try
         {
@@ -59,6 +65,7 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                         'orderToken'            => Arr::get($orderData, 'token'),
                         'name'                  => Arr::get($orderData, 'customer_name'),
                         'app_url'               => URL::to('/'),
+                        'orderItems'            => Arr::get($orderData, 'orderItems'),
                     ],
                     function ($message) use ($orderData) {
                         $message->to(trim(Arr::get($orderData, 'customer_email')));
@@ -66,7 +73,8 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                         $message->subject('Your Order Is Ready for Dispatch '. Arr::get($orderData, 'order_id') );
                     }
                 );
-            }else{
+            }else
+            {
                 Mail::send(
                     'backend.emails.orderBeforeWash',
                     [
@@ -76,6 +84,7 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                         'app_url'               => URL::to('/'),
                         'remarks'               => Arr::get($orderData, 'before_email_remarks'),
                         'options'               => Arr::get($orderData, 'before_email_options'),
+                        'orderItems'            => Arr::get($orderData, 'orderItems'),
                     ],
                     function ($message) use ($orderData) {
                         $message->to(trim(Arr::get($orderData, 'customer_email')));
