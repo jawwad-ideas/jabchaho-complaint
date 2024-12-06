@@ -33,31 +33,26 @@ class SendEmailOnOrderCompletion implements ShouldQueue
      */
     public function handle(): void
     {
-        $orderData=array();
-        $orderitemData=array();
-
         $emailType = $this->emailType ;
-
-        //$orderData = Order::where(['id' =>$this->orderId ])->first();
-        $orderData = Order::with(['orderItems' => function ($query) {
-            $query->where('is_issue_identify', 2)
-                  ->with('images');
-        }])
-        ->where(['id' =>$this->orderId ])
-        ->first();
-
-        $emailStatus = $this->sendEmail($orderData, $emailType);
-        if( $emailStatus ){
-            $orderData->update([ 'updated_at'=>now() ]);
-        }
+        $emailStatus = $this->sendEmail($this->orderId, $emailType);
+   
     }
 
 
-    public function sendEmail($orderData=array(), $emailType )
+    public function sendEmail($orderId=0, $emailType )
     {
         try
         {
-            if( $emailType == "final_email" ){
+            $orderData=array();
+            if( $emailType == "final_email" )
+            {
+                $orderData = Order::with([
+                    'orderItems' => function ($query) {
+                        $query->whereHas('images'); // Only include items with images
+                    },
+                    'orderItems.images' // Eager load the images for those items
+                ])->where('id', $orderId)->first();
+        
                 Mail::send(
                     'backend.emails.orderCompleted',
                     [
@@ -75,6 +70,17 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                 );
             }else
             {
+                $orderData = Order::with(['orderItems' => function ($query) {
+                    $query->where('is_issue_identify', 2)
+                    ->with(['images' => function ($imageQuery) {
+                        $imageQuery->where('image_type', 'Before Wash');
+                    }]);
+                }])
+                ->where(['id' =>$orderId ])
+                ->first();
+                
+                
+                
                 Mail::send(
                     'backend.emails.orderBeforeWash',
                     [
@@ -92,6 +98,12 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                         $message->subject('Product Issues In Order '.Arr::get($orderData, 'order_id') );
                     }
                 );
+            }
+
+            
+            if(!empty($orderData) )
+            {
+                $orderData->update([ 'updated_at'=>now() ]);
             }
 
 
