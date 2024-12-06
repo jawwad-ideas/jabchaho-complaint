@@ -234,9 +234,13 @@
 {{--                                    <input value="" type="file" class="form-control img-upload-input"--}}
 {{--                                        name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple >--}}
 
-                                    <div class="upload-img-input-sec">
+                                    <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
                                         <input value="" type="file" class="form-control img-upload-input"
                                                name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple>
+                                    </div>
+                                    <div>
+                                        <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"
+                                                onclick="addMoreImageUpload({{ $item->id }},'pickup_images')">Add More</button>
                                     </div>
                                     {{--<div class="file-upload-fields">
                                         <div class="d-xl-none d-lg-none d-md-none d-block">
@@ -290,9 +294,13 @@
                                 <div class="col-lg-6 pb-1 pt-3  border-light">
                                     <label for="delivery_images" class="form-label fw-bold">After Wash
                                         Images</label>
-                                    <div class="upload-img-input-sec">
+                                    <div class="upload-img-input-sec" id="image-upload-container-delivery_images-{{ $item->id }}">
                                         <input value="" type="file" class="form-control img-upload-input"
                                                name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple>
+                                    </div>
+                                    <div>
+                                        <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"
+                                                onclick="addMoreImageUpload({{ $item->id }},'delivery_images')">Add More</button>
                                     </div>
                                     {{--<div class="file-upload-fields">
                                         <div class="d-xl-none d-lg-none d-md-none d-block">
@@ -394,6 +402,38 @@
 </div>
 
 <script>
+    function addMoreImageUpload(itemId,fieldName) {
+        event.preventDefault();
+        const container = document.getElementById(`image-upload-container-${fieldName}-${itemId}`);
+
+        const wrapperDiv = document.createElement('div');
+        wrapperDiv.className = 'input-wrapper d-flex align-items-center mt-2';
+
+        // Create a new input element
+        const newInput = document.createElement('input');
+        newInput.type = 'file';
+        newInput.className = 'form-control img-upload-input mt-2';
+        newInput.name = `image[${itemId}][${fieldName}][]`;
+        newInput.multiple = true;
+
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn btn-danger btn-sm align-items-center gap-3 btn-primary mt-2';
+        removeButton.innerText = 'Remove';
+
+        // Add click event to remove button
+        removeButton.onclick = function () {
+            wrapperDiv.remove();
+        };
+
+        // Append input and button to the wrapper
+        wrapperDiv.appendChild(newInput);
+        wrapperDiv.appendChild(removeButton);
+
+        // Append the wrapper to the container
+        container.appendChild(wrapperDiv);
+    }
 
 $(document).ready(function() {
     // Handle delete button click
