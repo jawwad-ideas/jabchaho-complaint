@@ -143,8 +143,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::post('/complete-order', 'OrderController@completeOrder')->name('orders.complete');
             Route::post('/sync-order', 'OrderController@syncOrder')->name('orders.sync');
             Route::post('/send-email', 'OrderController@sendEmail')->name('send.email');
+            Route::get('/barcode-image', 'OrderController@itemImage')->name('orders.barcode.images');
         });
     });
-
 });
 

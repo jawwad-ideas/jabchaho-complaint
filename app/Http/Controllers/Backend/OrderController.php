@@ -20,7 +20,78 @@ use Intervention\Image\Facades\Image;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
+    public function itemImage(
+        Request $request
+    ){
 
+        $orderItemImage = OrderItemImage::with('orderItem.order')->orderBy('id', 'desc');
+
+        $filterData = [
+            'barcode'               => $request->get('barcode', ''),
+            'service_type' => $request->get('service_type', ''),
+            'item_name' => $request->get('item_name', ''),
+            'order_number' => $request->get('order_number', ''),
+            'customer_email' => $request->get('customer_email', ''),
+            'is_issue_identify_options' => [1 => "No", 2 => "Yes"],
+            'customer_name' => $request->get('customer_name', ''),
+            'telephone' => $request->get('telephone', ''),
+            'issue' =>  $request->get('issue', ''),
+        ];
+
+        // Apply filters based on request
+        if ($filterData['barcode']) {
+            $orderItemImage->whereHas('orderItem', function ($query) use ($filterData) {
+                $query->where('barcode', 'like', '%' . $filterData['barcode'] . '%');
+            });
+        }
+
+        if ($filterData['issue']) {
+            $orderItemImage->whereHas('orderItem', function ($query) use ($filterData) {
+                $query->where('is_issue_identify', '=',  $filterData['issue'] );
+            });
+        }
+
+        if ($filterData['service_type']) {
+            $orderItemImage->whereHas('orderItem', function ($query) use ($filterData) {
+                $query->where('service_type', 'like', '%' . $filterData['service_type'] . '%');
+            });
+        }
+
+        if ($filterData['item_name']) {
+            $orderItemImage->whereHas('orderItem', function ($query) use ($filterData) {
+                $query->where('item_name', 'like', '%' . $filterData['item_name'] . '%');
+            });
+        }
+
+        if ($filterData['order_number']) {
+            $orderItemImage->whereHas('orderItem.order', function ($query) use ($filterData) {
+                $query->where('order_id', 'like', '%' . $filterData['order_number'] . '%');
+            });
+        }
+
+        if ($filterData['customer_email']) {
+            $orderItemImage->whereHas('orderItem.order', function ($query) use ($filterData) {
+                $query->where('customer_email', 'like', '%' . $filterData['customer_email'] . '%');
+            });
+        }
+
+        if ($filterData['customer_name']) {
+            $orderItemImage->whereHas('orderItem.order', function ($query) use ($filterData) {
+                $query->where('customer_name', 'like', '%' . $filterData['customer_name'] . '%');
+            });
+        }
+
+        if ($filterData['telephone']) {
+            $orderItemImage->whereHas('orderItem.order', function ($query) use ($filterData) {
+                $query->where('telephone', 'like', '%' . $filterData['telephone'] . '%');
+            });
+        }
+
+        $orderItemImage = $orderItemImage->latest()->paginate( config('constants.per_page') );
+
+        return view('backend.orders.item', compact('orderItemImage'))->with($filterData);
+
+    }
     public function index(Request $request)
     {
         $order_number       = $request->input('order_number');
@@ -436,8 +507,6 @@ class OrderController extends Controller
 
         $thumbnail->save($thumbnailPath . '/' . $filename,60);
     }
-
-
 
     public function downloadImages($orderId=0,$folderName='',$orderToken='')
     {

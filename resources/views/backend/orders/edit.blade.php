@@ -412,15 +412,15 @@
         // Create a new input element
         const newInput = document.createElement('input');
         newInput.type = 'file';
-        newInput.className = 'form-control img-upload-input mt-2';
+        newInput.className = 'form-control img-upload-input ';
         newInput.name = `image[${itemId}][${fieldName}][]`;
         newInput.multiple = true;
 
 
-        const removeButton = document.createElement('button');
-        removeButton.type = 'button';
-        removeButton.className = 'btn btn-danger btn-sm align-items-center gap-3 btn-primary mt-2';
-        removeButton.innerText = 'Remove';
+        const removeButton = document.createElement('span');
+        removeButton.type = 'span';
+        removeButton.className = 'bg-danger p-2 text-sm text-white rounded-circle fa fa-trash 2 ms-1';
+        //removeButton.innerText = 'Remove';
 
         // Add click event to remove button
         removeButton.onclick = function () {
