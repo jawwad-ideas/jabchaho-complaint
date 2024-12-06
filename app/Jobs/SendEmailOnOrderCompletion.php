@@ -46,13 +46,11 @@ class SendEmailOnOrderCompletion implements ShouldQueue
             $orderData=array();
             if( $emailType == "final_email" )
             {
-                $orderData = Order::with([
-                    'orderItems' => function ($query) {
-                        $query->whereHas('images'); // Only include items with images
-                    },
-                    'orderItems.images' // Eager load the images for those items
-                ])->where('id', $orderId)->first();
-        
+                
+                $orderData = Order::with(['orderItems' => function ($query) {
+                    $query->whereHas('images');
+                }])->where('id', $orderId)->first();
+                
                 Mail::send(
                     'backend.emails.orderCompleted',
                     [
