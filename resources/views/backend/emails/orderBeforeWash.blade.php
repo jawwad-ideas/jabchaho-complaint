@@ -32,8 +32,39 @@
                                     <p class="greeting" style="margin-top:0;margin:20px 0">Additional Remarks: {{$remarks}}</p>
                                 @endif
 
-                                <p class="greeting" style="margin-top:0;margin-bottom:10px">
-                                Before wash:<a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'before', 'token' => $orderToken]) }}">Download Images</a></p>
+                                @if(!empty($orderItems))
+                                    <table border="1" style="width:100%; border-collapse:collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Before Wash Images</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($orderItems as $orderItem)
+                                                <tr>
+                                                    <td>{{ Arr::get($orderItem, 'item_name') }}</td>
+                                                    <td>
+                                                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+                                                            
+                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
+                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
+                                                                    <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                </a>
+                                                            @else
+                                                                @continue
+                                                            @endif
+
+                                                        @endforeach
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endif
+
+                               
+
 
                                 <p>Best regards,</p>
                                 <p><b>JabChaho</b></p>

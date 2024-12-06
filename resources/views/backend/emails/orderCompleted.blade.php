@@ -18,10 +18,67 @@
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear {{$name}},</p>
                                 <p style="margin-top:0;margin:20px 0">The details of your Order No. <b>{{$orderNo}}</b> are provided below.</p>
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">
-                                <b>Before wash:</b> <a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'before', 'token' => $orderToken]) }}">Download Images</a></p>
+                                
 
-                                <p class="greeting" style="margin-top:0;margin-bottom:10px">
-                                <b>After wash:</b> <a href="{{ route('download.images', ['orderId' => $orderNo, 'folderName' => 'after', 'token' => $orderToken]) }}">Download Images</a></p>
+                                @if(!empty($orderItems))
+                                    <table border="1" style="width:100%; border-collapse:collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Before Wash Images</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($orderItems as $orderItem)
+                                                <tr>
+                                                    <td>{{ Arr::get($orderItem, 'item_name') }}</td>
+                                                    <td>
+                                                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+                                                            
+                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
+                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
+                                                                    <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                </a>
+                                                            @else
+                                                                @continue
+                                                            @endif
+
+                                                        @endforeach
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <br/>
+                                    <table border="1" style="width:100%; border-collapse:collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>After Wash Images</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($orderItems as $orderItem)
+                                                <tr>
+                                                    <td>{{ Arr::get($orderItem, 'item_name') }}</td>
+                                                    <td>
+                                                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+                                                            
+                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
+                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
+                                                                    <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                </a>
+                                                            @else
+                                                                @continue
+                                                            @endif
+
+                                                        @endforeach
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endif
                               
                                 <p>Thank you,</p>
                             </td>
