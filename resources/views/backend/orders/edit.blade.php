@@ -229,18 +229,51 @@
                                 <div class="col-lg-6 pb-1 pt-3 border-light">
                                     <label for="pickup_images" class="form-label fw-bold">Before Wash
                                         Images</label>
-                                    <input value="" type="file" class="form-control img-upload-input"
-                                        name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple accept="image/*" capture="environment">
+{{--                                    <input value="" type="file" class="form-control img-upload-input fa-camera d-xl-none d-lg-none d-md-none d-block"--}}
+{{--                                           name="image[{{$item->id}}][pickup_image]" placeholder=""  accept="image/*" capture="environment">--}}
+{{--                                    <input value="" type="file" class="form-control img-upload-input"--}}
+{{--                                        name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple >--}}
+
+                                    <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
+                                        <input value="" type="file" class="form-control img-upload-input"
+                                               name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple>
+                                    </div>
+                                    <div>
+                                        <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"
+                                                onclick="addMoreImageUpload({{ $item->id }},'pickup_images')">Add More</button>
+                                    </div>
+                                    {{--<div class="file-upload-fields">
+                                        <div class="d-xl-none d-lg-none d-md-none d-block">
+                                            <div class="camera-icon fa fa-camera fa-2x">
+                                                <input value="" type="file" class="form-control img-upload-input fa fa-camera"
+                                                       name="image[{{$item->id}}][pickup_image]" placeholder="" multiple accept="image/*" capture="environment">
+                                            </div>
+                                        </div>
+
+                                        <div class="upload-img-input-sec">
+                                            <input value="" type="file" class="form-control img-upload-input"
+                                                   name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple>
+                                        </div>
+                                    </div>--}}
 
                                     @if( $item->images->isNotEmpty() )
                                     <div class="items-images-sec mt-3">
                                         @foreach ($item->images as $image)
                                         @if( $image->image_type == "Before Wash" )
+                                          <?php
+                                              $beforeMainImage = asset(config('constants.files.orders')).'/'.$order->order_id.'/before/'.$image->imagename;
+                                              $beforeThumbnail = asset(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/before/'.$image->imagename;
+                                              $isBeforeThumbnail = public_path(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/before/'.$image->imagename;
+                                              if(  !\Illuminate\Support\Facades\File::exists($isBeforeThumbnail)  ){
+                                                  $beforeThumbnail = $beforeMainImage;
+                                              }
+                                          ?>
+
                                         <div class="img-item">
-                                            <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/before/{{$image->imagename}}"
+                                            <a href="{{$beforeMainImage}}"
                                                 target="_blank">
                                                 <img class="img-thumbnail"
-                                                    src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/before/{{$image->imagename}}"
+                                                    src="{{$beforeThumbnail}}"
                                                     alt="{{$image->imagename}}">
                                             </a>
                                             <div class="item-img-action-btn">
@@ -261,17 +294,47 @@
                                 <div class="col-lg-6 pb-1 pt-3  border-light">
                                     <label for="delivery_images" class="form-label fw-bold">After Wash
                                         Images</label>
-                                    <input value="" type="file" class="form-control img-upload-input"
-                                        name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple accept="image/*" capture="environment">
+                                    <div class="upload-img-input-sec" id="image-upload-container-delivery_images-{{ $item->id }}">
+                                        <input value="" type="file" class="form-control img-upload-input"
+                                               name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple>
+                                    </div>
+                                    <div>
+                                        <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"
+                                                onclick="addMoreImageUpload({{ $item->id }},'delivery_images')">Add More</button>
+                                    </div>
+                                    {{--<div class="file-upload-fields">
+                                        <div class="d-xl-none d-lg-none d-md-none d-block">
+                                            <div class="camera-icon fa fa-camera fa-2x">
+                                                <input value="" type="file" class="form-control img-upload-input fa fa-camera"
+                                                       name="image[{{$item->id}}][delivery_image]" placeholder="" multiple accept="image/*" capture="environment">
+                                            </div>
+                                        </div>
+
+
+                                        <div class="upload-img-input-sec">
+                                            <input value="" type="file" class="form-control img-upload-input"
+                                                   name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple>
+                                        </div>
+                                    </div>--}}
+
+
                                     @if( $item->images->isNotEmpty() )
                                     <div class="items-images-sec mt-3">
                                         @foreach ($item->images as $image)
                                         @if( $image->image_type == "After Wash" )
+                                            <?php
+                                            $afterMainImage = asset(config('constants.files.orders')).'/'.$order->order_id.'/after/'.$image->imagename;
+                                            $afterThumbnail = asset(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/after/'.$image->imagename;
+                                            $isAfterThumbnail = public_path(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/after/'.$image->imagename;
+                                            if( !\Illuminate\Support\Facades\File::exists($isAfterThumbnail)  ){
+                                                $afterThumbnail = $afterMainImage;
+                                            }
+                                            ?>
                                         <div class="img-item">
-                                            <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/after/{{$image->imagename}}"
+                                            <a href="{{$afterMainImage}}"
                                                 target="_blank">
                                                 <img class="img-thumbnail"
-                                                    src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/after/{{$image->imagename}}"
+                                                    src="{{$afterThumbnail}}"
                                                     alt="{{$image->imagename}}">
                                             </a>
                                             <div class="item-img-action-btn">
@@ -304,10 +367,21 @@
                         <label for="remarks_attachment" class="form-label">Attachment</label>
                         <input value="" type="file" class="form-control" name="remarks_attachment" placeholder="" accept="image/*" capture="environment">
                         @if( $order->attachments )
-                        <a href="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$order->attachments}}"
+
+                        <?php
+                        $attachmentMainImage = asset(config('constants.files.orders')).'/'.$order->order_id.'/'.$order->attachments;
+                        $attachmentThumbnail = asset(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/'.$order->attachments;
+                        $isAttachmentThumbnail = public_path(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/'.$order->attachments;
+
+                        if(  !\Illuminate\Support\Facades\File::exists( $isAttachmentThumbnail )   ){
+                            $attachmentThumbnail = $attachmentMainImage;
+                        }
+                        ?>
+
+                        <a href="{{$attachmentMainImage}}"
                             target="_blank">
                             <img class="order-img order-attachment-img img-thumbnail mt-3"
-                                src="{{asset(config('constants.files.orders'))}}/{{$order->order_id}}/{{$order->attachments}}"
+                                src="{{$attachmentThumbnail}}"
                                 alt="{{$order->attachments}}" class=" img-thumbnail image-fluid w-50"
                                 style="height:150px;">
                         </a>
@@ -328,6 +402,38 @@
 </div>
 
 <script>
+    function addMoreImageUpload(itemId,fieldName) {
+        event.preventDefault();
+        const container = document.getElementById(`image-upload-container-${fieldName}-${itemId}`);
+
+        const wrapperDiv = document.createElement('div');
+        wrapperDiv.className = 'input-wrapper d-flex align-items-center mt-2';
+
+        // Create a new input element
+        const newInput = document.createElement('input');
+        newInput.type = 'file';
+        newInput.className = 'form-control img-upload-input mt-2';
+        newInput.name = `image[${itemId}][${fieldName}][]`;
+        newInput.multiple = true;
+
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn btn-danger btn-sm align-items-center gap-3 btn-primary mt-2';
+        removeButton.innerText = 'Remove';
+
+        // Add click event to remove button
+        removeButton.onclick = function () {
+            wrapperDiv.remove();
+        };
+
+        // Append input and button to the wrapper
+        wrapperDiv.appendChild(newInput);
+        wrapperDiv.appendChild(removeButton);
+
+        // Append the wrapper to the container
+        container.appendChild(wrapperDiv);
+    }
 
 $(document).ready(function() {
     // Handle delete button click

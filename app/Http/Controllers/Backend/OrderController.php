@@ -8,12 +8,15 @@ use App\Models\OrderItemImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
+use App\Models\OrderHistory;
+use App\Models\OrderItem;
 use App\Jobs\SendEmailOnOrderCompletion as SendEmailOnOrderCompletion;
 use App\Console\commands\SyncLaundryData;
 use Illuminate\Support\Facades\File;
 use ZipArchive;
 use Illuminate\Support\Arr;
 use App\Http\Requests\Backend\OrderSaveRequest;
+use Intervention\Image\Facades\Image;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
@@ -89,6 +92,22 @@ class OrderController extends Controller
             $order     = new Order();
             $order->where('id',$orderId )->first()->update( [ 'updated_at'=>now() , 'status' => 2 ]);
 
+            try {
+                $adminUser      = $request->user()->id;
+                $historyData = [
+                    'order_id'      => $orderId,
+                    'item_id'       => null,
+                    'item_image_id' => null,
+                    'action'        => 'order_complete' ,
+                    'admin_user'    => $adminUser,
+                    'data'          => null
+                ];
+
+                $this->addHistory($historyData);
+            }catch ( \Exception $exception ){
+                die($exception->getMessage());
+            }
+
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
@@ -99,13 +118,15 @@ class OrderController extends Controller
         try {
             $orderId = $request->input('orderId');
             $emailType = $request->input('emailType');
-
+            $data = null;
             if ($emailType == "before_email") {
+
                 $remarks = $request->input('remarks');
                 $itemsIssuesl = $request->input('itemsIssues');
                 $orderUpdateArray["before_email"] = 2;
                 $orderUpdateArray["before_email_remarks"] = $remarks;
                 $orderUpdateArray["before_email_options"] = $itemsIssuesl;
+                $data = json_encode ( [ 'before_email_remarks' => $remarks , 'before_email_options' => $itemsIssuesl ] );
             } else {
                 $orderUpdateArray["final_email"] = 2;
             }
@@ -120,6 +141,23 @@ class OrderController extends Controller
             //email Queue Called.
             dispatch(new SendEmailOnOrderCompletion( $orderId, $emailType ));
             $this->queueWorker();
+
+            try {
+                $adminUser      = $request->user()->id;
+                $historyData = [
+                    'order_id'      => $orderId,
+                    'item_id'       => null,
+                    'item_image_id' => null,
+                    'action'        => $emailType ,
+                    'admin_user'    => $adminUser,
+                    'data'          => $data
+                ];
+
+                $this->addHistory($historyData);
+            }catch ( \Exception $exception ){
+                die($exception->getMessage());
+            }
+
 
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
@@ -136,6 +174,23 @@ class OrderController extends Controller
 
                 // Optionally, capture the command's output
                 $output = \Artisan::output();
+
+            try {
+                $adminUser      = $request->user()->id;
+                $historyData = [
+                    'order_id'      => null,
+                    'item_id'       => null,
+                    'item_image_id' => null,
+                    'action'        => 'sync_orders',
+                    'admin_user'    => $adminUser,
+                    'data'          => null
+                ];
+
+                $this->addHistory($historyData);
+            }catch ( \Exception $exception ){
+                die($exception->getMessage());
+            }
+
 
                 // Return a response
                 return response()->json([
@@ -209,6 +264,25 @@ class OrderController extends Controller
 
             if ( File::move( $realImage, $deleteImage ) ) {
                 if( File::exists($deleteImage) ){
+
+                    try {
+                        $adminUser      = $request->user()->id;
+                        $itemId         = $orderImagesModel->item_id;
+                        $orderItemModel = OrderItem::where('id', $itemId)->first();
+                        $historyData = [
+                            'order_id'      => $orderItemModel->order_id,
+                            'item_id'       => $itemId,
+                            'item_image_id' => $imageId,
+                            'action'        => "delete_image",
+                            'admin_user'    => $adminUser,
+                            'data' => null
+                        ];
+
+                        $this->addHistory($historyData);
+                    }catch ( \Exception $exception ){
+                        die($exception->getMessage());
+                    }
+
                     $orderImagesModel->update(['updated_at'=>now(),'status'=>0]);
                     return response()->json(['success' => true]);
                 }
@@ -220,28 +294,32 @@ class OrderController extends Controller
         }
     }
 
+    public function addHistory( $historyData = [] ){
+        $ordersImagesModel = new OrderHistory();
+        $ordersImagesModel->createOrderHistory($historyData);
+    }
+
     public function save( OrderSaveRequest $request )
     {
         if ( $request->has('order_id') ) {
-            $orderImages        =  [];
+            $orderImages        = $historyData =  [];
             $adminUser          = $request->user()->id;
             $orderId            = $request->get('order_id');
             $remarks            = $request->get('remarks');
             $orderNumber        = $request->get('order_number');
             $uploadFolderPath   = config('constants.files.orders').'/'.$orderNumber;
-            $filePath           = public_path($uploadFolderPath);
-
-            $orderUpdateArray =  [ 'updated_at'=>now(), 'remarks' => $remarks ];
-            $attachmentName = null;
+            $thumbnailPath      = $uploadFolderPath.'/thumbnail';
+            $orderUpdateArray   =  [ 'updated_at'=>now(), 'remarks' => $remarks ];
 
             if( $request->has('remarks_attachment') ){
-                $attachment = $request->file('remarks_attachment');
-                $attachmentName    =   $orderNumber.'-'.time().'-'.uniqid(rand(), true).'.' . $attachment->getClientOriginalExtension();
-                $attachment->move( $filePath, $attachmentName );
-                $orderUpdateArray["attachments"]  = $attachmentName;
+                $attachment                      = $request->file('remarks_attachment');
+                $newFileName                     =   $orderNumber.'-'.time().'-'.uniqid(rand(), true).'.' . $attachment->getClientOriginalExtension();
+                $this->uploadMainImage( $attachment, $uploadFolderPath, $newFileName , $thumbnailPath );
+                $orderUpdateArray["attachments"] = $newFileName;
             }
 
             $order = Order::where(['id' =>$orderId ])->first();
+
             $isToken = Arr::get($order, 'token');
             if( is_null($isToken) ){
                 $token = sha1(uniqid(mt_rand(), true));
@@ -255,38 +333,77 @@ class OrderController extends Controller
             if( $request->has('image') ) {
                 foreach ($request->file('image') as $itemId => $imageTypes) {
                     foreach ($imageTypes as $type => $files) {
-                        if ($type == "pickup_images") {
-                            $imageType = "Before Wash";
-                            $tempfilePath           = $uploadFolderPath."/before";
-                            $tempfilePath           = public_path($tempfilePath);
-                        }else if ($type == "delivery_images") {
-                            $imageType = "After Wash";
-                            $tempfilePath           = $uploadFolderPath."/after";
-                            $tempfilePath           = public_path($tempfilePath);
+                        if ($type == "pickup_images" || $type == "pickup_image") {
+                            $imageType          = "Before Wash";
+                            $mainImagePath      = $uploadFolderPath."/before";
+                            $thumbnailImagePath = $thumbnailPath."/before";
+                        }else if ($type == "delivery_images" || $type == "delivery_image") {
+                            $imageType          = "After Wash";
+                            $mainImagePath      = $uploadFolderPath."/after";
+                            $thumbnailImagePath = $thumbnailPath."/after";
                         }
 
                         foreach ($files as $file) {
                             // Save file and process it
-                            $image = $file;
-                            $newName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $image->getClientOriginalExtension();
-                            $image->move( $tempfilePath , $newName);
+                            $newFileName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $file->getClientOriginalExtension();
+                            $this->uploadMainImage( $file, $mainImagePath, $newFileName , $thumbnailImagePath );
+
+                            $orderImages = [
+                                'item_id'    => $itemId,
+                                'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
+                                'imagename'  => $newFileName,
+                                'admin_user' => $adminUser,
+                                'status'     => 1,
+                            ];
+
+                            $ordersImagesModel = new OrderItemImage;
+                            $imageItemId = $ordersImagesModel->createOrderItemImage($orderImages);
+
+                            $data = [ 'image_type' => $imageType , 'imagename' => $newFileName  ];
+                            $historyData[] = [
+                                'order_id'      => $orderId,
+                                'item_id'       => $itemId,
+                                'item_image_id' => $imageItemId,
+                                'action'        => "image_upload",
+                                'admin_user'    => $adminUser,
+                                'data' => json_encode($data)
+                            ];
+                        }
+
+                        //Capture Images Only
+                        /*if( $type == "pickup_image" || $type == "delivery_image" ){
+                            $newFileName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $files->getClientOriginalExtension();
+                            $this->uploadMainImage( $files, $mainImagePath, $newFileName , $thumbnailImagePath );
 
                             $orderImages[] = [
                                 'item_id' => $itemId,
                                 'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
-                                'imagename' => $newName,
+                                'imagename' => $newFileName,
                                 'admin_user' => $adminUser,
                                 'status' => 1,
                             ];
-                        }
+                        }*/
                     }
                 }
 
-                if (!empty($orderImages)) {
-                    $ordersImagesModel = new OrderItemImage;
-                    $ordersImagesModel->createOrderItemImage($orderImages);
+                //if (!empty($orderImages)) {
+                    try {
 
-                }
+                        $data = [ 'image_type' => isset( $orderUpdateArray["attachments"] )? 'Main Image':null  ,'remarks' => $remarks , 'imagename' => ($orderUpdateArray["attachments"] ?? null)  ];
+                        $historyData[] = [
+                            'order_id'      => $orderId,
+                            'item_id'       => null,
+                            'item_image_id' => null,
+                            'action'        => "order_update",
+                            'admin_user'    => $adminUser,
+                            'data' => json_encode($data)
+                        ];
+
+                        $this->addHistory($historyData);
+                    }catch ( \Exception $exception ){
+                        die($exception->getMessage());
+                    }
+                //}
             }
             return redirect()->route('orders.edit', ['order_id' => $orderId])
                 ->with('success', 'Order created successfully.');
@@ -294,6 +411,33 @@ class OrderController extends Controller
 
         return view('backend.orders.index');
     }
+
+    public function uploadMainImage( $file , $filePath , $filename , $thumbnailPath  ){
+        $filePath               = public_path($filePath);
+        $thumbnailPath          = public_path($thumbnailPath);
+        if( !File::exists($filePath) ){
+            File::makeDirectory($filePath,0777, true, true);
+        }
+
+        if( !File::exists($thumbnailPath) ){
+            File::makeDirectory($thumbnailPath,0777, true, true);
+        }
+
+        //$image->move( $tempfilePath , $filename);
+        $imageAttachmentItem = Image::make($file->getPathname());
+        // Compress the image quality (e.g., 60%)
+        $imageAttachmentItem->save($filePath . '/' . $filename, 60);
+
+
+        $thumbnail = Image::make($file->getRealPath())
+            ->resize(150, 150, function ($constraint) {
+                $constraint->aspectRatio(); // Maintain aspect ratio
+                $constraint->upsize();     // Prevent upsizing
+            });
+
+        $thumbnail->save($thumbnailPath . '/' . $filename,60);
+    }
+
 
 
     public function downloadImages($orderId=0,$folderName='',$orderToken='')

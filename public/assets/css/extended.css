@@ -1581,7 +1581,7 @@ ul.btn-toggle-nav li {
     .customer-basic-detail .cust-inr-detail-bar .inr-lbl {
         font-size: 15px;
     }
-    
+
     .customer-basic-detail .cust-inr-detail-bar .inr-vl {
         font-size: 13px;
         margin-left: 10px;
@@ -1591,13 +1591,13 @@ ul.btn-toggle-nav li {
         gap: inherit;
         margin: 5px 0;
     }
-    
+
     .orderItemSec h6.d-inline-block.fw-bold {
         width: 50%;
         margin: 0;
         font-size: 14px;
     }
-    
+
     .orderItemSec label.d-flex span {
         display: block;
         font-size: 12px;
@@ -1613,7 +1613,7 @@ ul.btn-toggle-nav li {
         align-items: start;
         max-height: 150px;
     }
-    
+
     .orderItemSec.itemForm .item-img-action-btn {
         top: 0;
         right: -5px;
@@ -1636,4 +1636,22 @@ ul.btn-toggle-nav li {
     .order-action-btns button {
         font-size: 11px;
     }
+
+
+}
+.orderItemSec .file-upload-fields {
+    display: flex;
+    gap: 12px;
+}
+.orderItemSec .camera-icon {
+    position: relative;
+    width: max-content;
+    text-align: center;
+}
+
+.orderItemSec .camera-icon input {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    width: 100% !important;
 }

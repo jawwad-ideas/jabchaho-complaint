@@ -47,12 +47,12 @@ tr[data-url]:hover {
         <div class="bg-light p-2 rounded">
             <div id="modalDiv"></div>
 
-            <div class="" id="filterBox"
-                 @if (request()->has('order_number') || request()->has('customer_email') || request()->has('customer_name') || request()->has('telephone')  )
+            <div class="" id="filterBox" style="display:block;"
+                 {{--@if (request()->has('order_number') || request()->has('customer_email') || request()->has('customer_name') || request()->has('telephone')  )
                      style="display:block;"
                  @else
                      style="display:none;"
-                @endif
+                @endif--}}
             >
                 <form class="form-inline" method="GET" action="{{ route('orders.index') }}/{{$order_status}}">
                     <div class="row mb-3">
