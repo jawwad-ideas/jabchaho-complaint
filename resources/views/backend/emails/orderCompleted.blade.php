@@ -30,26 +30,31 @@
                                         </thead>
                                         <tbody>
                                             @foreach($orderItems as $orderItem)
-                                                <tr>
-                                                    <td>{{ Arr::get($orderItem, 'item_name') }}</td>
-                                                    <td>
-                                                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
-                                                            
-                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
-                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
-                                                                    @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename'))))    
-                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                @if(count(Arr::get($orderItem, 'images', [])) > 0) <!-- Corrected the condition -->
+        
+                                                    @if(collect(Arr::get($orderItem, 'images'))->where('image_type', 'Before Wash')->count() > 0)
+                                                        <tr>
+                                                            <td>{{ Arr::get($orderItem, 'item_name') }}</td>
+                                                            <td>
+                                                                @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+                                                                    
+                                                                    @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
+                                                                        <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
+                                                                            @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename'))))    
+                                                                                <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                            @else
+                                                                                <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                            @endif    
+                                                                        </a>
                                                                     @else
-                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
-                                                                    @endif    
-                                                                </a>
-                                                            @else
-                                                                @continue
-                                                            @endif
+                                                                        @continue
+                                                                    @endif
 
-                                                        @endforeach
-                                                    </td>
-                                                </tr>
+                                                                @endforeach
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                @endif
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -63,27 +68,32 @@
                                         </thead>
                                         <tbody>
                                             @foreach($orderItems as $orderItem)
-                                                <tr>
-                                                    <td>{{ Arr::get($orderItem, 'item_name') }}</td>
-                                                    <td>
-                                                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
-                                                            
-                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
-                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
-                                                                    
-                                                                    @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename'))))    
-                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
-                                                                    @else
-                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
-                                                                    @endif
-                                                                </a>
-                                                            @else
-                                                                @continue
-                                                            @endif
+                                                @if(count(Arr::get($orderItem, 'images', [])) > 0) <!-- Corrected the condition -->
 
-                                                        @endforeach
-                                                    </td>
-                                                </tr>
+                                                    @if(collect(Arr::get($orderItem, 'images'))->where('image_type', 'After Wash')->count() > 0)
+                                                        <tr>
+                                                            <td>{{ Arr::get($orderItem, 'item_name') }}</td>
+                                                            <td>
+                                                                @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+                                                                    
+                                                                    @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
+                                                                        <a href="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
+                                                                            
+                                                                            @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename'))))    
+                                                                                <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                            @else
+                                                                                <img src="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                            @endif
+                                                                        </a>
+                                                                    @else
+                                                                        @continue
+                                                                    @endif
+
+                                                                @endforeach
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                @endif
                                             @endforeach
                                         </tbody>
                                     </table>
