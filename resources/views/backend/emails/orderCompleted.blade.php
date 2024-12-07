@@ -77,7 +77,7 @@
                                                             @if(collect(Arr::get($orderItem, 'images'))->where('image_type', 'After Wash')->count() > 0)
                                                                 <tr>
                                                                     <td>{{ $loop->iteration }}</td>
-                                                                    <td>{{ Arr::get($orderItem, 'item_name') }}<br/><b>Barcode:</b><br/><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
+                                                                    <td>{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/><b>Barcode:</b><br/><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
                                                                     <td>
                                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
                                                                             @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
