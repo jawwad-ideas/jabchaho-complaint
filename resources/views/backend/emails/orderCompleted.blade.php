@@ -16,90 +16,94 @@
                         <tr>
                             <td class="main-content" style="vertical-align:top;background-color:#fff;padding:30px;">
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear {{$name}},</p>
+                                <p class="greeting" style="margin-top:0;margin-bottom:10px">Thank you for your order!</p>
                                 <p style="margin-top:0;margin:20px 0">The details of your Order No. <b>{{$orderNo}}</b> are provided below.</p>
-                                <p class="greeting" style="margin-top:0;margin-bottom:10px">
-                                
+                                <p class="greeting" style="margin-top:0;margin-bottom:10px">Total Items: <b>{{ $orderItemCount }}</b></p>
 
                                 @if(!empty($orderItems))
-                                    <table border="1" style="width:100%; border-collapse:collapse;">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Before Wash Images</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($orderItems as $orderItem)
-                                                @if(count(Arr::get($orderItem, 'images', [])) > 0) <!-- Corrected the condition -->
-        
-                                                    @if(collect(Arr::get($orderItem, 'images'))->where('image_type', 'Before Wash')->count() > 0)
-                                                        <tr>
-                                                            <td>{{ Arr::get($orderItem, 'item_name') }}</td>
-                                                            <td>
-                                                                @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
-                                                                    
-                                                                    @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
-                                                                        <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
-                                                                            @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename'))))    
-                                                                                <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
-                                                                            @else
-                                                                                <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
-                                                                            @endif    
-                                                                        </a>
-                                                                    @else
-                                                                        @continue
-                                                                    @endif
-
-                                                                @endforeach
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                @endif
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                    <br/>
-                                    <table border="1" style="width:100%; border-collapse:collapse;">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>After Wash Images</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($orderItems as $orderItem)
-                                                @if(count(Arr::get($orderItem, 'images', [])) > 0) <!-- Corrected the condition -->
-
-                                                    @if(collect(Arr::get($orderItem, 'images'))->where('image_type', 'After Wash')->count() > 0)
-                                                        <tr>
-                                                            <td>{{ Arr::get($orderItem, 'item_name') }}</td>
-                                                            <td>
-                                                                @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
-                                                                    
-                                                                    @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
-                                                                        <a href="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
-                                                                            
-                                                                            @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename'))))    
-                                                                                <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
-                                                                            @else
-                                                                                <img src="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                <table style="width:100%; border-collapse:collapse;">
+                                    <tr>
+                                        <!-- Table 1 -->
+                                        <td style="width:50%; vertical-align:top; padding-right:10px;">
+                                            <table border="1" style="width:100%; border-collapse:collapse;">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Name</th>
+                                                        <th>Before Wash</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($orderItems as $orderItem)
+                                                        @if(count(Arr::get($orderItem, 'images', [])) > 0)
+                                                            @if(collect(Arr::get($orderItem, 'images'))->where('image_type', 'Before Wash')->count() > 0)
+                                                                <tr>
+                                                                    <td>{{ $loop->iteration }}</td>
+                                                                    <td>{{ Arr::get($orderItem, 'item_name') }}<br/><b>Barcode:</b><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
+                                                                    <td>
+                                                                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+                                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
+                                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
+                                                                                    @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename'))))
+                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                                    @else
+                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                                    @endif
+                                                                                </a>
                                                                             @endif
-                                                                        </a>
-                                                                    @else
-                                                                        @continue
-                                                                    @endif
+                                                                        @endforeach
+                                                                    </td>
+                                                                </tr>
+                                                            @endif
+                                                        @endif
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </td>
 
-                                                                @endforeach
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                @endif
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                        <!-- Table 2 -->
+                                        <td style="width:50%; vertical-align:top; padding-left:10px;">
+                                            <table border="1" style="width:100%; border-collapse:collapse;">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Name</th>
+                                                        <th>After Wash</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($orderItems as $orderItem)
+                                                        @if(count(Arr::get($orderItem, 'images', [])) > 0)
+                                                            @if(collect(Arr::get($orderItem, 'images'))->where('image_type', 'After Wash')->count() > 0)
+                                                                <tr>
+                                                                    <td>{{ $loop->iteration }}</td>
+                                                                    <td>{{ Arr::get($orderItem, 'item_name') }}<br/><b>Barcode:</b><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
+                                                                    <td>
+                                                                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+                                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
+                                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" download>
+                                                                                    @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename'))))
+                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                                    @else
+                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                                    @endif
+                                                                                </a>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </td>
+                                                                </tr>
+                                                            @endif
+                                                        @endif
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
                                 @endif
-                              
-                                <p>Thank you,</p>
+
+                                <p>Best regards,</p>
+                                <p><b>JabChaho</b></p>
                             </td>
                         </tr>
                     </tbody>

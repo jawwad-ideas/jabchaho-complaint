@@ -49,7 +49,8 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                 
                 $orderData = Order::with(['orderItems' => function ($query) {
                     $query->whereHas('images');
-                }])->where('id', $orderId)->first();
+                }])->withCount(['orderItems as items_count'])
+                ->where('id', $orderId)->first();
                 
                 Mail::send(
                     'backend.emails.orderCompleted',
@@ -59,6 +60,7 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                         'name'                  => Arr::get($orderData, 'customer_name'),
                         'app_url'               => URL::to('/'),
                         'orderItems'            => Arr::get($orderData, 'orderItems'),
+                        'orderItemCount'        => Arr::get($orderData, 'items_count'),
                     ],
                     function ($message) use ($orderData) {
                         $message->to(trim(Arr::get($orderData, 'customer_email')));
