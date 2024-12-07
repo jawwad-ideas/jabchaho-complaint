@@ -46,11 +46,26 @@ class SendEmailOnOrderCompletion implements ShouldQueue
             $orderData=array();
             if( $emailType == "final_email" )
             {
-                
-                $orderData = Order::with(['orderItems' => function ($query) {
-                    $query->whereHas('images');
-                }])->withCount(['orderItems as items_count'])
-                ->where('id', $orderId)->first();
+                $orderData = Order::with([
+                    'orderItems' => function ($query) {
+                        $query->whereHas('images', function ($query) {
+                            $query->where('status', 1);
+                        })->withCount([
+                            'images as before_wash_count' => function ($query) {
+                                $query->where('image_type', 'Before Wash')->where('status', 1);;
+                            },
+                            'images as after_wash_count' => function ($query) {
+                                $query->where('image_type', 'After Wash')->where('status', 1);;
+                            }
+                        ]);
+                    },
+                    'orderItems.images' => function ($query) {
+                        $query->where('status', 1);
+                    }
+                ])
+                ->withCount(['orderItems as items_count'])
+                ->where('id', $orderId)
+                ->first();
                 
                 Mail::send(
                     'backend.emails.orderCompleted',
@@ -74,6 +89,7 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                     $query->where('is_issue_identify', 2)
                     ->with(['images' => function ($imageQuery) {
                         $imageQuery->where('image_type', 'Before Wash');
+                        $imageQuery->where('status', 1);
                     }]);
                 }])
                 ->where(['id' =>$orderId ])

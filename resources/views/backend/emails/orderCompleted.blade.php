@@ -34,11 +34,12 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @php $beforeCounter = 1; @endphp
                                                     @foreach($orderItems as $orderItem)
-                                                        @if(count(Arr::get($orderItem, 'images', [])) > 0)
-                                                            @if(collect(Arr::get($orderItem, 'images'))->where('image_type', 'Before Wash')->count() > 0)
+                                                        @if(!empty(Arr::get($orderItem, 'before_wash_count')))
+                                                            
                                                                 <tr>
-                                                                    <td>{{ $loop->iteration }}</td>
+                                                                    <td>{{ $beforeCounter }}</td>
                                                                     <td>{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/><b>Barcode:</b><br/><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
                                                                     <td>
                                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
@@ -54,7 +55,8 @@
                                                                         @endforeach
                                                                     </td>
                                                                 </tr>
-                                                            @endif
+                                                                @php $beforeCounter++; @endphp
+                                                            
                                                         @endif
                                                     @endforeach
                                                 </tbody>
@@ -72,11 +74,12 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @php $afterCounter = 1; @endphp
                                                     @foreach($orderItems as $orderItem)
-                                                        @if(count(Arr::get($orderItem, 'images', [])) > 0)
-                                                            @if(collect(Arr::get($orderItem, 'images'))->where('image_type', 'After Wash')->count() > 0)
+                                                        @if(!empty(Arr::get($orderItem, 'after_wash_count')))
+                                                           
                                                                 <tr>
-                                                                    <td>{{ $loop->iteration }}</td>
+                                                                    <td>{{ $afterCounter }}</td>
                                                                     <td>{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/><b>Barcode:</b><br/><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
                                                                     <td>
                                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
@@ -92,7 +95,8 @@
                                                                         @endforeach
                                                                     </td>
                                                                 </tr>
-                                                            @endif
+                                                                @php $afterCounter++; @endphp
+                                                           
                                                         @endif
                                                     @endforeach
                                                 </tbody>
