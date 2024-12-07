@@ -20,6 +20,15 @@ use Intervention\Image\Facades\Image;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
+
+    public function uploadSave( Request $request ){
+        dd($request->all());
+    }
+
+    public function uploadView( Request $request ){
+        return view('backend.orders.temp');
+    }
+
     public function itemImage(  Request $request  ){
 
         $orderItemImage = OrderItemImage::with('orderItem.order')->orderBy('id', 'desc');
