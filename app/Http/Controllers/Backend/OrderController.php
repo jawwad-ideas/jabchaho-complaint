@@ -487,6 +487,47 @@ class OrderController extends Controller
         return view('backend.orders.index');
     }
 
+    public function createMissingThumbnail() {
+        $orderItemImages = OrderItemImage::with('orderItem.order')
+            ->where( 'status' ,'=' ,1 )->orderBy('id', 'asc')->get();
+
+        foreach ($orderItemImages as $itemImage) {
+            $type = ($itemImage->image_type == "Before Wash") ? "before" : "after";
+
+            // Define paths for main image and thumbnail
+            $mainImagePath = public_path(config('constants.files.orders')) . '/' .
+                $itemImage->orderItem->order->order_id . '/' . $type . '/' . $itemImage->imagename;
+
+            $thumbnailPath = public_path(config('constants.files.orders')) . '/' .
+                $itemImage->orderItem->order->order_id . '/thumbnail/' . $type;
+
+            $thumbnailImagePath = $thumbnailPath . '/' . $itemImage->imagename;
+
+            // Check if the thumbnail exists
+            if (!File::exists($thumbnailImagePath)) {
+                // Create the thumbnail directory if it does not exist
+                if (!File::exists($thumbnailPath)) {
+                    File::makeDirectory($thumbnailPath, 0777, true, true);
+                }
+
+                // Ensure the main image exists before creating a thumbnail
+                if (File::exists($mainImagePath)) {
+                    $thumbnail = Image::make($mainImagePath)
+                        ->resize(150, 150, function ($constraint) {
+                            $constraint->aspectRatio(); // Maintain aspect ratio
+                            $constraint->upsize();     // Prevent upsizing
+                        });
+                    // Save the thumbnail with 60% quality
+                    $thumbnail->save($thumbnailImagePath, 60);
+                } else {
+                    // Log an error or handle missing main image
+                    \Log::error("Main image not found: " . $mainImagePath);
+                }
+            }
+        }
+    }
+
+
     public function uploadMainImage( $file , $filePath , $filename , $thumbnailPath  ){
         $filePath               = public_path($filePath);
         $thumbnailPath          = public_path($thumbnailPath);
