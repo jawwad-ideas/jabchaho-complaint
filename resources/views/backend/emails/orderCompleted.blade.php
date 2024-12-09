@@ -40,7 +40,7 @@
                                                             
                                                                 <tr  @if($beforeCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
                                                                     <td style="border:none;padding:10px;">{{ $beforeCounter }}</td>
-                                                                    <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 15, '...') }}<br/><small>Barcode:</small><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
+                                                                    <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 15, '...') }}<br/><small style="display:block;">Barcode:</small><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
                                                                     <td style="border:none;padding:10px;">
                                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
                                                                             @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
@@ -82,7 +82,7 @@
                                                            
                                                                 <tr  @if($afterCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
                                                                     <td style="border:none;padding:10px;">{{ $afterCounter }}</td>
-                                                                    <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 15, '...') }}<br/><small>Barcode:</small><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
+                                                                    <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 15, '...') }}<br/><small style="display:block;">Barcode:</small><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
                                                                     <td style="border:none;padding:10px;">
                                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
                                                                             @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
