@@ -14,7 +14,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="main-content" style="vertical-align:top;background-color:#fff;padding:30px;">
+                            <td class="main-content" style="vertical-align:top;padding:30px;">
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear <span style="font-size: 20px;font-weight: 600;display: block;">{{$name}},</span></p>
 
                                 <p class="greeting" style="font-style: italic;margin-top:0;margin-bottom:10px;">We hope this email finds you well.</p>
@@ -36,6 +36,7 @@
                                     <table border="1" style="width:100%; border-collapse:collapse;border:none;">
                                         <thead style="background: #fce100;">
                                             <tr>
+                                                <th style="border: none;padding: 10px 10px;">#</th>
                                                 <th style="border: none;padding: 10px 10px;">Name</th>
                                                 <th style="border: none;padding: 10px 10px;">Before Wash Images</th>
                                             </tr>
@@ -44,6 +45,7 @@
                                         @php $beforeCounter = 1; @endphp
                                             @foreach($orderItems as $orderItem)
                                                 <tr  @if($beforeCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
+                                                    <td style="border:none;padding:10px;">{{ $beforeCounter }}</td>
                                                     <td  style="border:none;padding:10px;">{{ Arr::get($orderItem, 'item_name') }}</td>
                                                     <td  style="border:none;padding:10px;">
                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
