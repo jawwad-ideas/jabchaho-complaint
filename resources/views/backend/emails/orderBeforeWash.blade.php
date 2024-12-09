@@ -2,7 +2,7 @@
     <tbody>
         <tr>
             <td class="wrapper-inner" align="center" style="vertical-align:top;padding-bottom:30px;width:100%;font-family:'Poppins','Helvetica Neue','Helvetica','Arial',sans-serif;">
-                <table class="main" align="center" style="border-collapse:collapse;margin:0 auto;text-align:left;width:660px;border-radius:30px;overflow:hidder;">
+                <table class="main" align="center" style="border-collapse:collapse;margin:0 auto;text-align:left;width:660px;border-radius:30px;overflow:hidden;">
                     <tbody style="background: #fce1004f;">
                         <tr>
                             <td class="header" style="vertical-align:top;background-color:#000;padding:40px 25px 25px;">
@@ -47,13 +47,13 @@
                                                     <td  style="border:none;padding:10px;">{{ Arr::get($orderItem, 'item_name') }}</td>
                                                     <td  style="border:none;padding:10px;">
                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
-                                                            
+
                                                                 <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none;" download>
-                                                                    @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename'))))    
+                                                                    @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename'))))
                                                                         <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
                                                                     @else
                                                                         <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
-                                                                    @endif    
+                                                                    @endif
                                                                 </a>
 
                                                         @endforeach
@@ -65,7 +65,7 @@
                                     </table>
                                 @endif
 
-                               
+
 
 
                                 <p>Best regards,</p>
