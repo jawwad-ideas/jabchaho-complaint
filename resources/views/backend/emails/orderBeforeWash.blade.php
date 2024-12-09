@@ -24,10 +24,6 @@
 
                                 <p class="greeting" style="margin-top:0;margin:20px 0">However, we will do our best to remove the stains, as long as it does not damage the fabric and we will be proceeding with the laundry services as requested.</p>
 
-
-                                <p class="greeting" style="margin-top:0;margin:20px 0">Please feel free to contact us at 021-111-524-246 for any queries or concerns.</p>
-
-
                                 @if(!empty($remarks))
                                     <p class="greeting" style="margin-top:0;margin:20px 0">Additional Remarks: {{$remarks}}</p>
                                 @endif
@@ -46,15 +42,15 @@
                                             @foreach($orderItems as $orderItem)
                                                 <tr  @if($beforeCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
                                                     <td style="border:none;padding:10px;">{{ $beforeCounter }}</td>
-                                                    <td  style="border:none;padding:10px;">{{ Arr::get($orderItem, 'item_name') }}</td>
+                                                    <td  style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/> <small style="display:inline-block;font-weight:700;">Barcode:</small><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
                                                     <td  style="border:none;padding:10px;">
                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
 
                                                                 <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none;" download>
                                                                     @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename'))))
-                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px;  height:115px; margin:5px;" />
                                                                     @else
-                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px; margin:5px;" />
+                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:100px;  height:115px; margin:5px;" />
                                                                     @endif
                                                                 </a>
 
@@ -69,7 +65,7 @@
 
 
 
-
+                                <p>Please feel free to contact us at 021-111-524-246 for any queries or concerns.</p>
                                 <p>Best regards,</p>
                                 <p><b>JabChaho</b></p>
                             </td>
