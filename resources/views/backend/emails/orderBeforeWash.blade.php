@@ -2,8 +2,8 @@
     <tbody>
         <tr>
             <td class="wrapper-inner" align="center" style="vertical-align:top;padding-bottom:30px;width:100%;font-family:'Poppins','Helvetica Neue','Helvetica','Arial',sans-serif;">
-                <table class="main" align="center" style="border-collapse:collapse;margin:0 auto;text-align:left;width:660px;">
-                    <tbody>
+                <table class="main" align="center" style="border-collapse:collapse;margin:0 auto;text-align:left;width:660px;border-radius:30px;overflow:hidder;">
+                    <tbody style="background: #fce1004f;">
                         <tr>
                             <td class="header" style="vertical-align:top;background-color:#000;padding:40px 25px 25px;">
                                 <div>
@@ -15,9 +15,9 @@
                         </tr>
                         <tr>
                             <td class="main-content" style="vertical-align:top;background-color:#fff;padding:30px;">
-                                <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear {{$name}},</p>
+                                <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear <span style="font-size: 20px;font-weight: 600;display: block;">{{$name}},</span></p>
 
-                                <p class="greeting" style="margin-top:0;margin:20px 0">We hope this email finds you well.</p>
+                                <p class="greeting" style="font-style: italic;margin-top:0;margin-bottom:10px;">We hope this email finds you well.</p>
 
                                 <p class="greeting" style="margin-top:0;margin:20px 0">Please allow us to inform you that during the inspection at our in-house facility, we discovered that there are defects in a few items which include <b>{{$options}}</b> (pictures are attached). </p>
 
@@ -33,18 +33,19 @@
                                 @endif
 
                                 @if(!empty($orderItems))
-                                    <table border="1" style="width:100%; border-collapse:collapse;">
-                                        <thead>
+                                    <table border="1" style="width:100%; border-collapse:collapse;border:none;">
+                                        <thead style="background: #fce100;">
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Before Wash Images</th>
+                                                <th style="border: none;padding: 10px 10px;">Name</th>
+                                                <th style="border: none;padding: 10px 10px;">Before Wash Images</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody style="border:1px solid #fefad4;">
+                                        @php $beforeCounter = 1; @endphp
                                             @foreach($orderItems as $orderItem)
-                                                <tr>
-                                                    <td>{{ Arr::get($orderItem, 'item_name') }}</td>
-                                                    <td>
+                                                <tr  @if($beforeCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
+                                                    <td  style="border:none;padding:10px;">{{ Arr::get($orderItem, 'item_name') }}</td>
+                                                    <td  style="border:none;padding:10px;">
                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
                                                             
                                                                 <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none;" download>
@@ -58,6 +59,7 @@
                                                         @endforeach
                                                     </td>
                                                 </tr>
+                                                @php $beforeCounter++; @endphp
                                             @endforeach
                                         </tbody>
                                     </table>

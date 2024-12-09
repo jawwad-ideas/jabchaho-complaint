@@ -2,8 +2,8 @@
     <tbody>
         <tr>
             <td class="wrapper-inner" align="center" style="vertical-align:top;padding-bottom:30px;width:100%;font-family:'Poppins','Helvetica Neue','Helvetica','Arial',sans-serif;">
-                <table class="main" align="center" style="border-collapse:collapse;margin:0 auto;text-align:left;width:660px;">
-                    <tbody>
+                <table class="main" align="center" style="border-collapse:collapse;margin:0 auto;text-align:left;width:660px;border-radius:30px;overflow:hidden;">
+                    <tbody style="background: #fce1004f;">
                         <tr>
                             <td class="header" style="vertical-align:top;background-color:#000;padding:40px 25px 25px;">
                                 <div>
@@ -14,9 +14,9 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="main-content" style="vertical-align:top;background-color:#fff;padding:30px;">
-                                <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear {{$name}},</p>
-                                <p class="greeting" style="margin-top:0;margin-bottom:10px">Thank you for your order!</p>
+                            <td class="main-content" style="vertical-align:top;padding:30px;">
+                                <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear <span style="font-size: 20px;font-weight: 600;display: block;">{{$name}},</span></p>
+                                <p class="greeting" style="font-style: italic;margin-top:0;margin-bottom:10px;">Thank you for your order!</p>
                                 <p style="margin-top:0;margin:20px 0">The details of your Order No. <b>{{$orderNo}}</b> are provided below.</p>
                                 <p class="greeting" style="margin-top:0;margin-bottom:10px">Total Items: <b>{{ $orderItemCount }}</b></p>
 
@@ -25,32 +25,34 @@
                                     <tr>
                                         <!-- Table 1 -->
                                         <td style="width:50%; vertical-align:top; padding-right:10px;">
-                                            <table border="1" style="width:100%; border-collapse:collapse;">
-                                                <thead>
+                                            <table border="1" style="width:100%;border-collapse:collapse;border: none;">
+                                                <thead style="background: #fce100;">
                                                     <tr>
-                                                        <th>#</th>
-                                                        <th>Name</th>
-                                                        <th>Before Wash</th>
+                                                        <th style="border: none;padding: 10px 10px;">#</th>
+                                                        <th style="border: none;padding: 10px 10px;">Name</th>
+                                                        <th style="border: none;padding: 10px 10px;">Before Wash</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="border:1px solid #fefad4;">
                                                     @php $beforeCounter = 1; @endphp
                                                     @foreach($orderItems as $orderItem)
                                                         @if(!empty(Arr::get($orderItem, 'before_wash_count')))
                                                             
-                                                                <tr>
-                                                                    <td>{{ $beforeCounter }}</td>
-                                                                    <td>{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/><b>Barcode:</b><br/><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
-                                                                    <td>
+                                                                <tr  @if($beforeCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
+                                                                    <td style="border:none;padding:10px;">{{ $beforeCounter }}</td>
+                                                                    <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 15, '...') }}<br/><small>Barcode:</small><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
+                                                                    <td style="border:none;padding:10px;">
                                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
                                                                             @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
-                                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none;" download>
+                                                                            <span style="width:50%;float:left;">
+                                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none; display:block;" download>
                                                                                     @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename'))))
-                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px; margin:5px;" />
+                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;" />
                                                                                     @else
-                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px; margin:5px;" />
+                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;" />
                                                                                     @endif
                                                                                 </a>
+                                                                            </span>
                                                                             @endif
                                                                         @endforeach
                                                                     </td>
@@ -65,32 +67,34 @@
 
                                         <!-- Table 2 -->
                                         <td style="width:50%; vertical-align:top; padding-left:10px;">
-                                            <table border="1" style="width:100%; border-collapse:collapse;">
-                                                <thead>
+                                            <table border="1" style="width:100%;border-collapse:collapse;border: none;">
+                                                <thead style="background: #fce100;">
                                                     <tr>
-                                                        <th>#</th>
-                                                        <th>Name</th>
-                                                        <th>After Wash</th>
+                                                        <th style="border: none;padding: 10px 10px;">#</th>
+                                                        <th style="border: none;padding: 10px 10px;">Name</th>
+                                                        <th style="border: none;padding: 10px 10px;">After Wash</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="border:1px solid #fefad4;">
                                                     @php $afterCounter = 1; @endphp
                                                     @foreach($orderItems as $orderItem)
                                                         @if(!empty(Arr::get($orderItem, 'after_wash_count')))
                                                            
-                                                                <tr>
-                                                                    <td>{{ $afterCounter }}</td>
-                                                                    <td>{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/><b>Barcode:</b><br/><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
-                                                                    <td>
+                                                                <tr  @if($afterCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
+                                                                    <td style="border:none;padding:10px;">{{ $afterCounter }}</td>
+                                                                    <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 15, '...') }}<br/><small>Barcode:</small><span style="font-size: 10px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
+                                                                    <td style="border:none;padding:10px;">
                                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
                                                                             @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
-                                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none;" download>
+                                                                            <span style="width:50%;float:left;">
+                                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none;display:block;" download>
                                                                                     @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename'))))
-                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px; margin:5px;" />
+                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;" />
                                                                                     @else
-                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px; margin:5px;" />
+                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;" />
                                                                                     @endif
                                                                                 </a>
+                                                                            </span>
                                                                             @endif
                                                                         @endforeach
                                                                     </td>
