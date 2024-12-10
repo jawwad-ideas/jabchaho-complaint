@@ -38,7 +38,7 @@
                                                     @foreach($orderItems as $orderItem)
                                                         @if(!empty(Arr::get($orderItem, 'before_wash_count')))
                                                             
-                                                                <tr  @if($beforeCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
+                                                                <tr  @if($beforeCounter % 2 == 0) style="background-color: #ffffff75;" @else style="border:1px solid #36342145;" @endif>
                                                                     <td style="border:none;padding:10px;">{{ $beforeCounter }}</td>
                                                                     <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/><small style="display:inline-block;font-weight:700;">Barcode:</small><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
                                                                     <td style="border:none;padding:10px;">
