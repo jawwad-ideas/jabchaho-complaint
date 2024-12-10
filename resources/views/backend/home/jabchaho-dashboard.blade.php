@@ -227,6 +227,16 @@ tr[data-url]:hover {
             <div class="col-sm-3 px-2">
                 <input type="text" class="form-control p-2" autocomplete="off" name="order_number" id="order_number"  value="" placeholder="Order Number">
             </div>
+            <div class="col-sm-3 px-2 ">
+                <select class="form-select p-2" id="location_type" name="location_type">
+                    <option value=''>Location</option>
+                    @if(!empty(config('constants.laundry_location_type')) )
+                        @foreach(config('constants.laundry_location_type') as $key => $option )
+                                <option value="{{$key}}">{{$option}}</option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
             <div class="col-sm-3 px-2">
                 <button type="submit"
                         class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1 custom-order-search"
@@ -247,7 +257,8 @@ tr[data-url]:hover {
             <thead>
                 <tr>
                     <th scope="col">Order#</th> 
-                    <th scope="col">Name</th>   
+                    <th scope="col">Location</th> 
+                    <th scope="col">Name</th>    
                     <th scope="col">Telephone</th>
                     <th scope="col">Before Wash</th>
                     <th scope="col">After Wash</th>      
@@ -287,6 +298,8 @@ function renderPagination(totalRecords, currentPage) {
     let telephone = $("#telephone").val();
     let orderNumber = $("#order_number").val();
     let filterValue = $('#filtersValue').val();
+    let locationType = $("#location_type").val();
+    
 
     // Clear the pagination container
     $('#pagination').empty();
@@ -353,8 +366,10 @@ function renderPagination(totalRecords, currentPage) {
             'customEndDate': customEndDate,
             'name': name,
             'telephone': telephone,
-            'orderNumber': orderNumber
+            'orderNumber': orderNumber,
+            'locationType':locationType
         };
+
         getCountData(objParams);
     });
 }
@@ -362,7 +377,7 @@ function renderPagination(totalRecords, currentPage) {
 
 function getCountData(objParams = null) 
 {
-    var filterValue = customStartDate=customEndDate = name = telephone = orderNumber = '';
+    var filterValue = customStartDate=customEndDate = name = telephone = orderNumber = locationType ='';
     var page =1;
 
     if(objParams)
@@ -401,6 +416,11 @@ function getCountData(objParams = null)
         {
             page = objParams.page;
         } 
+
+        if (objParams.locationType != undefined || objParams.locationType != null) 
+        {
+            locationType = objParams.locationType;
+        }
     }
 
     $.ajaxSetup({
@@ -420,7 +440,8 @@ function getCountData(objParams = null)
             customEndDate: customEndDate,
             name:name,
             telephone:telephone,
-            orderNumber:orderNumber
+            orderNumber:orderNumber,
+            locationType:locationType
         },
         success: function(result) 
         {
@@ -444,8 +465,21 @@ function getCountData(objParams = null)
                 orderWithItemTotalCount = result.orderWithItemTotalCount;
                 
                 result.ordersWithItemsCount.forEach(function(item) {
-                var row = "<tr data-url='/orders/" + item.id + "/edit'>" +
+                
+                    var locationtype = '';
+
+                    if(item.location_type)
+                    { 
+                        locationtype = "{{config('constants.laundry_location_type.store')}}";
+                    }
+                    else
+                    {
+                        locationtype = "{{config('constants.laundry_location_type.facility')}}";
+                    }
+                
+                    var row = "<tr data-url='/orders/" + item.id + "/edit'>" +
                     "<td><a target='_blank' href='/orders/" + item.id + "/edit'>" + item.order_id + '</a></td>' +
+                    '<td>' + locationtype + '</td>' +
                     '<td>' + item.customer_name + '</td>' +
                     '<td>' + item.telephone + '</td>' +
                     '<td>' + item.before_count + '</td>' +
@@ -460,7 +494,7 @@ function getCountData(objParams = null)
             else
             {
                 // Append the row to tbody
-                $('#table-body').append('<tr><td colspan="6" class="text-center" >No Record Found</td></tr>');
+                $('#table-body').append('<tr><td colspan="7" class="text-center" >No Record Found</td></tr>');
             }
 
             // Render pagination controls
@@ -503,9 +537,10 @@ $(document).on('click', '.filters', function() {
     let name            = $("#name").val();
     let telephone       = $("#telephone").val();
     let orderNumber     = $("#order_number").val();
+    let locationType = $("#location_type").val();
     let filterValue     = $(this).attr("data-value");
 
-    let objParams ={'filterValue' : filterValue,'name':name, 'telephone':telephone, 'orderNumber':orderNumber  };
+    let objParams ={'filterValue' : filterValue,'name':name, 'telephone':telephone, 'orderNumber':orderNumber,'locationType':locationType  };
 
     getCountData(objParams);
 
@@ -521,10 +556,11 @@ $(document).on('click', '.custom-date-search', function() {
     let name = $("#name").val();
     let telephone = $("#telephone").val();
     let orderNumber = $("#order_number").val();
+    let locationType = $("#location_type").val();
     
     $(".custom-date-search").prop("selectedIndex", 0);
     
-    let objParams ={'customStartDate' : customStartDate, 'customEndDate': customEndDate,'name':name, 'telephone':telephone, 'orderNumber':orderNumber };
+    let objParams ={'customStartDate' : customStartDate, 'customEndDate': customEndDate,'name':name, 'telephone':telephone, 'orderNumber':orderNumber,'locationType':locationType };
     
     getCountData(objParams);
 
@@ -538,11 +574,12 @@ let customEndDate = $(".end-date").val();
 let name = $("#name").val();
 let telephone = $("#telephone").val();
 let orderNumber = $("#order_number").val();
+let locationType = $("#location_type").val();
 let filterValue = $('#filtersValue').val();
 
 $(".custom-date-search").prop("selectedIndex", 0);
 
-let objParams ={'filterValue' : filterValue,'customStartDate' : customStartDate, 'customEndDate': customEndDate,'name':name, 'telephone':telephone, 'orderNumber':orderNumber };
+let objParams ={'filterValue' : filterValue,'customStartDate' : customStartDate, 'customEndDate': customEndDate,'name':name, 'telephone':telephone, 'orderNumber':orderNumber,'locationType':locationType };
 
 getCountData(objParams);
 

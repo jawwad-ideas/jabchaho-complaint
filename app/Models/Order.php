@@ -27,6 +27,7 @@ class Order extends Model
     protected $fillable = [
         'customer_id',
         'order_id',
+        'location_type',
         'status',
         'updated_at',
         'final_email',
@@ -120,6 +121,7 @@ class Order extends Model
         $customerName   = Arr::get($params, 'name');
         $telephone      = Arr::get($params, 'telephone');
         $orderNumber    = Arr::get($params, 'orderNumber');
+        $locationType   = Arr::get($params, 'locationType');
         $startDate      = Arr::get($params, 'startDate');
         $endDate        = Arr::get($params, 'endDate');
         $page           = Arr::get($params, 'page');
@@ -147,6 +149,18 @@ class Order extends Model
             $query->where('orders.order_id', $orderNumber);
         }
 
+        if (!empty($locationType)) {
+            
+            if($locationType == strtolower(config('constants.laundry_location_type.store')))
+            {
+                $query->whereNotNull('orders.location_type');
+            } 
+            else
+            {
+                $query->whereNull('orders.location_type');
+            }
+        }
+
         return $query;
     }
 
@@ -157,19 +171,21 @@ class Order extends Model
         $customerName   = Arr::get($params, 'name');
         $telephone      = Arr::get($params, 'telephone');
         $orderNumber    = Arr::get($params, 'orderNumber');
+        $locationType    = Arr::get($params, 'locationType');
         $startDate      = Arr::get($params, 'startDate');
         $endDate        = Arr::get($params, 'endDate');
         $page           = Arr::get($params, 'page');
         $limit          = Arr::get($params, 'limit');
         
         $orders = Null;
-        if($customerName || $telephone || $orderNumber)
+        if($customerName || $telephone || $orderNumber ||$locationType)
         {
             
             $query = Order::select(
                 'orders.id',
                 'orders.customer_name',
                 'orders.telephone',
+                'orders.location_type',
                 'orders.order_id as order_id',
                 DB::raw('COUNT(order_items.id) as item_count')
             )

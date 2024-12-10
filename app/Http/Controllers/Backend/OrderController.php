@@ -43,6 +43,7 @@ class OrderController extends Controller
             'customer_name' => $request->get('customer_name', ''),
             'telephone' => $request->get('telephone', ''),
             'issue' =>  $request->get('issue', ''),
+            'location_type' =>  $request->get('location_type', ''),
         ];
 
         // Apply filters based on request
@@ -94,6 +95,22 @@ class OrderController extends Controller
             });
         }
 
+        if (!empty($filterData['location_type'])) {
+            
+            if($filterData['location_type'] == strtolower(config('constants.laundry_location_type.store')))
+            {
+                $orderItemImage->whereHas('orderItem.order', function ($query) use ($filterData) {
+                    $query->whereNotNull('orders.location_type');
+                });
+            } 
+            else
+            {
+                $orderItemImage->whereHas('orderItem.order', function ($query) use ($filterData) {
+                    $query->whereNull('orders.location_type');
+                });
+            }
+        }
+
         $orderItemImage = $orderItemImage->latest()->paginate( config('constants.per_page') );
 
         return view('backend.orders.item', compact('orderItemImage'))->with($filterData);
@@ -108,6 +125,7 @@ class OrderController extends Controller
         $before_email       = $request->input('before_email');
         $after_email        = $request->input('after_email');
         $status             = $request->segment(3);
+        $location_type      = $request->input('location_type');
 
         //$orders = Order::select('*')->orderBy('id', 'desc');
         $orders = Order::withCount([
@@ -147,6 +165,18 @@ class OrderController extends Controller
             $orders->where('orders.status', '=',  $status );
         }
 
+        if (!empty($location_type)) {
+            
+            if($location_type == strtolower(config('constants.laundry_location_type.store')))
+            {
+                $orders->whereNotNull('orders.location_type');
+            } 
+            else
+            {
+                $orders->whereNull('orders.location_type');
+            }
+        }
+
         $orders = $orders->latest()->paginate( config('constants.per_page') );
         //dd($orders);
         $filterData = [
@@ -158,6 +188,7 @@ class OrderController extends Controller
             'email_status_options' => [ 1 => "No", 2 => "Yes"],
             'before_email' => $before_email ,
             'after_email' => $after_email,
+            'location_type' =>$location_type
         ];
 
         return view('backend.orders.index', compact('orders'))->with($filterData);

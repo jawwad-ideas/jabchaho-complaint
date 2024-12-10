@@ -176,6 +176,10 @@
                                 <h6 class="fw-bold inr-lbl">Telephone:</h6>
                                 <h6 class="inr-vl"> {{ $order->telephone }} </h6>
                             </div>
+                            <div class="d-xl-flex d-lg-flex d-md-block cust-inr-detail-bar px-3 align-items-center gap-2">
+                                <h6 class="fw-bold inr-lbl">Location:</h6>
+                                <h6 class="inr-vl">@if(!empty($order->location_type)) {{config('constants.laundry_location_type.store')}} @else {{config('constants.laundry_location_type.facility')}} @endif</h6>
+                            </div>
                         </div>
 
                         <input value="{{ $order->order_id }}" type="hidden" class="form-control" name="order_number" placeholder="Order Number" readonly>
