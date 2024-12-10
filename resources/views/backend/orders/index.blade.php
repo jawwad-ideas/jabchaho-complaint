@@ -111,6 +111,23 @@ tr[data-url]:hover {
                                     @endif
                                 </select>
                             </div>
+
+                            <div class="col-sm-3 px-2 mt-2">
+                                <select class="form-select p-2" id="location_type" name="location_type">
+                                    <option value=''>Location</option>
+                                    @if(!empty(config('constants.laundry_location_type')) )
+                                        @foreach(config('constants.laundry_location_type') as $key => $option )
+                                            @if( $key == $location_type )
+                                                <option value="{{$key}}" selected>
+                                                    {{$option}}</option>
+                                            @else
+                                                <option value="{{$key}}">
+                                                    {{$option}}</option>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
                         </div>
 
                         <div class="col-lg-12 text-end mt-4">
@@ -140,6 +157,7 @@ tr[data-url]:hover {
                     <tr>
                         <th scope="col" width="1%">Sr no.</th>
                         <th scope="col" width="15%">Order#</th>
+                        <th scope="col" width="15%">Location</th>
                         <th scope="col" width="15%">Total Barcode</th>
                         <th scope="col" width="15%">Customer Name</th>
                         <th scope="col" width="15%">Customer Email</th>
@@ -153,14 +171,16 @@ tr[data-url]:hover {
                     </tr>
                     </thead>
                     <tbody>
+                    
                     @foreach ($orders as $order)
                         @if ($order->email == 'admin@gmail.com')
                             @php continue; @endphp
                         @endif
 
                         <tr data-url="{{ route('orders.edit', $order->id) }}">
-                            <th scope="row">{{ $order->id }}</th>
+                            <td scope="row">{{ $order->id }}</td>
                             <td width="15%">{{ $order->order_id }}</td>
+                            <td scope="row">@if(!empty($order->location_type)) {{config('constants.laundry_location_type.store')}} @else {{config('constants.laundry_location_type.facility')}} @endif</td>
                             <td width="15%">{{ $order->items_count }}</td>
                             <td width="15%">{{ $order->customer_name }}</td>
                             <td width="15%">{{ $order->customer_email }}</td>

@@ -171,6 +171,11 @@ class HomeController extends Controller
             {
                 $params['orderNumber']    = $request->get('orderNumber');
             }
+            //locationType
+            if(!empty($request->get('locationType')))
+            {
+                $params['locationType']    = $request->get('locationType');
+            }
 
             $params['page']                     = $page;
             $params['limit']                    = $limit;

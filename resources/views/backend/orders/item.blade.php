@@ -94,6 +94,23 @@ tr[data-url]:hover {
                                     @endif
                                 </select>
                             </div>
+
+                            <div class="col-sm-3 px-2 mt-2">
+                                <select class="form-select p-2" id="location_type" name="location_type">
+                                    <option value=''>Location</option>
+                                    @if(!empty(config('constants.laundry_location_type')) )
+                                        @foreach(config('constants.laundry_location_type') as $key => $option )
+                                            @if( $key == $location_type )
+                                                <option value="{{$key}}" selected>
+                                                    {{$option}}</option>
+                                            @else
+                                                <option value="{{$key}}">
+                                                    {{$option}}</option>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
                         </div>
 
                         <div class="col-lg-12 text-end mt-4">
@@ -124,6 +141,7 @@ tr[data-url]:hover {
                     <tr>
                         <th scope="col" width="1%">Sr no.</th>
                         <th scope="col" width="15%">Order#</th>
+                        <th scope="col" width="15%">Location</th>
                         <th scope="col" width="15%">Image</th>
                         <th scope="col" width="15%">Barcode</th>
                         <th scope="col" width="15%">Item Name</th>
@@ -146,6 +164,7 @@ tr[data-url]:hover {
                             <td width="15%">
                                 <a href="{{ route('orders.edit', $order->orderItem->order->id ) }}" class="btn bg-theme-yellow btn-sm">{{ $order->orderItem->order->order_id }}</a>
                             </td>
+                            <td scope="row">@if(!empty($order->location_type)) {{config('constants.laundry_location_type.store')}} @else {{config('constants.laundry_location_type.facility')}} @endif</td>
                             <td>
                                 <?php
                                 $type = ( $order->image_type == "Before Wash" )?"before":"after";

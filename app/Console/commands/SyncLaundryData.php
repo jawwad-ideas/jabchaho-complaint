@@ -41,7 +41,8 @@ class SyncLaundryData extends Command
                     'u.email as customer_email',
                     'o.created_at',
                     'o.picked_up as pick_date',
-                    'o.delivery_date'
+                    'o.delivery_date',
+                    'o.store_id'
                 )
                 ->join('users as u', 'u.id', '=', 'o.user_id')
                 ->where('o.order_status', 'processing')
@@ -62,6 +63,8 @@ class SyncLaundryData extends Command
                              ])
                      ->count();
 
+
+
                     //If order not exist then add in database
                     if($orderExistQuery==0)
                     {
@@ -75,6 +78,7 @@ class SyncLaundryData extends Command
                             //'created_at' => $order->created_at,
                             'pick_date' => $order->pick_date,
                             'delivery_date' => $order->delivery_date,
+                            'location_type' => $order->store_id
                         ];
 
                         try
