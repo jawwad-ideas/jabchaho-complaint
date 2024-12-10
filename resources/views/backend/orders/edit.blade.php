@@ -130,6 +130,10 @@
                     {{$sendFinalEmailTitle}}
                 </button>
             </div>
+            <div class="mb-3 update-order-button-div">
+                
+                <button type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"> Update order </button>
+            </div>
 
 
         {{--<div class="mb-3 complete-button-div">
@@ -186,6 +190,117 @@
                         <input value="{{ $order->id }}" type="hidden" class="form-control" name="order_id" placeholder="Order Number" readonly>
                     </div>
 
+                    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="imageModalLabel">Edit Image</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <canvas id="imageCanvas" width="800" height="600" style="border: 1px solid #ccc;"></canvas>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" id="saveImage">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script src="{{asset('assets/js/uploadOrderImage.js')}}"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+                    <!-- <script>
+                        $(document).ready(function () {
+                            let activeItemId = null; // Tracks the current item's ID
+                            let canvas = null; // Fabric.js canvas instance
+                            let imagesArray = {}; // Stores images for each item ID
+
+                            // Handle file input change
+                            $('.img-upload-input').on('change', function (e) {
+                                const itemId = $(this).data('item-id'); // Get item ID
+                                const file = this.files[0];
+
+                                if (file) {
+                                    activeItemId = itemId; // Set active item ID
+                                    const reader = new FileReader();
+
+                                    reader.onload = function (e) {
+                                        // Initialize or clear the Fabric.js canvas
+                                        if (canvas) {
+                                            canvas.clear();
+                                        } else {
+                                            canvas = new fabric.Canvas('imageCanvas');
+                                        }
+
+                                        // Load the selected image onto the canvas
+                                        fabric.Image.fromURL(e.target.result, function (img) {
+                                            img.scaleToWidth(canvas.getWidth());
+                                            img.scaleToHeight(canvas.getHeight());
+                                            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+                                        });
+
+                                        // Enable drawing mode
+                                        canvas.isDrawingMode = true;
+                                        canvas.freeDrawingBrush.color = 'red';
+                                        canvas.freeDrawingBrush.width = 5;
+                                    };
+
+                                    reader.readAsDataURL(file);
+
+                                    // Show the modal
+                                    $('#imageModal').modal('show');
+                                }
+                            });
+
+                            // Save button handler
+                            $('#saveImage').on('click', function () {
+                                if (canvas && activeItemId) {
+                                    const dataURL = canvas.toDataURL({
+                                        format: 'png',
+                                        quality: 1
+                                    });
+
+                                    // Add to images array
+                                    if (!imagesArray[activeItemId]) {
+                                        imagesArray[activeItemId] = [];
+                                    }
+                                    imagesArray[activeItemId].push(dataURL);
+
+                                    // Append the new image to the relevant item's section
+                                    const imageHtml = `
+                                        <div class="img-item">
+                                            <a href="${dataURL}" target="_blank">
+                                                <img class="img-thumbnail" src="${dataURL}" alt="Edited Image">
+                                            </a>
+                                            <div class="item-img-action-btn">
+                                                <button class="btn btn-danger btn-sm delete-image ms-2" title="Delete">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    `;
+                                    $(`#items-images-sec-${activeItemId}`).append(imageHtml);
+
+                                    // Clear the file input field
+                                    $(`#uploadImage-${activeItemId}`).val('');
+
+                                    // Hide the modal
+                                    $('#imageModal').modal('hide');
+
+                                    // Clear the canvas
+                                    canvas.clear();
+                                }
+                            });
+
+                            // Delete image handler
+                            $(document).on('click', '.delete-image', function () {
+                                $(this).closest('.img-item').remove();
+                            });
+                        });
+                    </script> -->
+
+
                     @foreach ($order->orderItems as $item)
                     <div class="itemForm orderItemSec border-bottom border-2">
                         <div class="item-form-row p-3 bg-light rounded border-light">
@@ -211,7 +326,8 @@
 
                                     <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
                                         <input value="" type="file" class="form-control img-upload-input"
-                                               name="image[{{$item->id}}][pickup_images][]" placeholder="" multiple>
+                                               name="image[{{$item->id}}][pickup_images][]" placeholder="" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
+                                               saad
                                         <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
                                             <small>Item having Issue:</small>
                                             <div class="d-flex gap-2">
@@ -226,10 +342,15 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div>
+                                    <!-- <div>
                                         <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"
                                                 onclick="addMoreImageUpload({{ $item->id }},'pickup_images')">Add More</button>
+                                    </div> -->
+
+                                    <div class="items-images-sec mt-3" id="items-images-sec-{{ $item->id }}">
                                     </div>
+
+                                    
                                     @if( $item->images->isNotEmpty() )
                                     <div class="items-images-sec mt-3">
                                         @foreach ($item->images as $image)
@@ -261,10 +382,13 @@
                                 <div class="col-lg-6 pb-1 pt-3  border-light">
                                     <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
                                     <div class="upload-img-input-sec" id="image-upload-container-delivery_images-{{ $item->id }}">
-                                        <input value="" type="file" class="form-control img-upload-input" name="image[{{$item->id}}][delivery_images][]" placeholder="" multiple>
+                                        <input value="" type="file" class="form-control img-upload-input" name="image[{{$item->id}}][delivery_images][]" placeholder=""  data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="delivery_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
                                     </div>
-                                    <div>
+                                    <!-- <div>
                                         <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"  onclick="addMoreImageUpload({{ $item->id }},'delivery_images')">Add More</button>
+                                    </div> -->
+                                    
+                                    <div class="items-images-sec mt-3" id="items-images-sec-{{ $item->id }}">
                                     </div>
 
                                     @if( $item->images->isNotEmpty() )
@@ -336,38 +460,38 @@
 </div>
 
 <script>
-    function addMoreImageUpload(itemId,fieldName) {
-        event.preventDefault();
-        const container = document.getElementById(`image-upload-container-${fieldName}-${itemId}`);
+    // function addMoreImageUpload(itemId,fieldName) {
+    //     event.preventDefault();
+    //     const container = document.getElementById(`image-upload-container-${fieldName}-${itemId}`);
 
-        const wrapperDiv = document.createElement('div');
-        wrapperDiv.className = 'input-wrapper d-flex align-items-center mt-2 addMoreinputWrapper';
+    //     const wrapperDiv = document.createElement('div');
+    //     wrapperDiv.className = 'input-wrapper d-flex align-items-center mt-2 addMoreinputWrapper';
 
-        // Create a new input element
-        const newInput = document.createElement('input');
-        newInput.type = 'file';
-        newInput.className = 'form-control img-upload-input ';
-        newInput.name = `image[${itemId}][${fieldName}][]`;
-        newInput.multiple = true;
+    //     // Create a new input element
+    //     const newInput = document.createElement('input');
+    //     newInput.type = 'file';
+    //     newInput.className = 'form-control img-upload-input ';
+    //     newInput.name = `image[${itemId}][${fieldName}][]`;
+    //     newInput.multiple = true;
 
 
-        const removeButton = document.createElement('span');
-        removeButton.type = 'span';
-        removeButton.className = 'bg-danger p-2 text-sm text-white rounded-circle fa fa-trash 2 ms-1';
-        //removeButton.innerText = 'Remove';
+    //     const removeButton = document.createElement('span');
+    //     removeButton.type = 'span';
+    //     removeButton.className = 'bg-danger p-2 text-sm text-white rounded-circle fa fa-trash 2 ms-1';
+    //     //removeButton.innerText = 'Remove';
 
-        // Add click event to remove button
-        removeButton.onclick = function () {
-            wrapperDiv.remove();
-        };
+    //     // Add click event to remove button
+    //     removeButton.onclick = function () {
+    //         wrapperDiv.remove();
+    //     };
 
-        // Append input and button to the wrapper
-        wrapperDiv.appendChild(newInput);
-        wrapperDiv.appendChild(removeButton);
+    //     // Append input and button to the wrapper
+    //     wrapperDiv.appendChild(newInput);
+    //     wrapperDiv.appendChild(removeButton);
 
-        // Append the wrapper to the container
-        container.appendChild(wrapperDiv);
-    }
+    //     // Append the wrapper to the container
+    //     container.appendChild(wrapperDiv);
+    // }
 
 $(document).ready(function() {
     // Handle delete button click

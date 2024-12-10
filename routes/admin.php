@@ -144,10 +144,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::post('/sync-order', 'OrderController@syncOrder')->name('orders.sync');
             Route::post('/send-email', 'OrderController@sendEmail')->name('send.email');
             Route::get('/barcode-image', 'OrderController@itemImage')->name('orders.barcode.images');
-            Route::post('/upload-save', 'OrderController@uploadSave')->name('orders.upload.save');
-            Route::get('/upload-view', 'OrderController@uploadView')->name('orders.upload.view');
-            Route::get('/create-thumbnail', 'OrderController@createMissingThumbnail')->name('orders.create.thumbnail');
         });
     });
+
+    Route::post('/upload-order-image', 'OrderController@uploadOrderImage')->name('upload.order.image');
 });
 

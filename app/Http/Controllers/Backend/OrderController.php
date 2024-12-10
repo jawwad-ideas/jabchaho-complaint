@@ -17,6 +17,7 @@ use ZipArchive;
 use Illuminate\Support\Arr;
 use App\Http\Requests\Backend\OrderSaveRequest;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\URL;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
@@ -642,4 +643,156 @@ class OrderController extends Controller
 
 
     }
+
+
+    public function uploadOrderImage(Request $request)
+    {
+        $image = $thumbnail = $imageType = $imageTypeDirectory='';
+        //dd($request);
+        $type           = $request->imageType;
+        $itemId         = $request->item_id;
+        $orderNumber    = $request->order_num;
+        $orderId        = $request->order_id;
+        // Get the base64 string from the request
+        $base64Image    = $request->image_data;
+        $adminUser      = $request->user()->id;
+        
+        $uploadFolderPath   = config('constants.files.orders').$orderNumber;
+        $thumbnailPath      = $uploadFolderPath.'/thumbnail';
+        
+        
+        if ($type == "pickup_images" || $type == "pickup_image") 
+        {
+            $imageType          = "Before Wash";
+            $imageTypeDirectory = "before";
+            $mainImagePath      = $uploadFolderPath."/".$imageTypeDirectory;
+            $thumbnailImagePath = $thumbnailPath."/".$imageTypeDirectory;
+        }else if ($type == "delivery_images" || $type == "delivery_image") 
+        {
+            $imageTypeDirectory = "after";
+            $imageType          = "After Wash";
+            $mainImagePath      = $uploadFolderPath."/".$imageTypeDirectory;
+            $thumbnailImagePath = $thumbnailPath."/".$imageTypeDirectory;
+        }
+
+        
+
+        // Remove the base64 encoding prefix (data:image/png;base64, etc.)
+        $imageData = base64_decode(preg_replace('/^data:image\/\w+;base64,/', '', $base64Image));
+        // Detect the image type (MIME type)
+        $imageInfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_buffer($imageInfo, $imageData);
+        finfo_close($imageInfo);
+
+        // Extract the image extension based on MIME type
+        $imageExtension = null;
+        switch ($mimeType) {
+            case 'image/jpeg':
+            case 'image/jpg': 
+                $imageExtension = 'jpg';
+                break;
+            case 'image/png':
+                $imageExtension = 'png';
+                break;
+            case 'image/gif':
+                $imageExtension = 'gif';
+                break;
+            default:
+                return response()->json(['error' => 'Unsupported image type'], 400);
+        }
+
+        // Generate a unique name for the image
+        $newFileName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $imageExtension;
+       
+        $result = $this->processBase64Image($base64Image, $mainImagePath, $thumbnailImagePath, $newFileName);
+
+        
+        if(!empty($result))
+        {
+            $image      = Arr::get($result, 'image');
+            $thumbnail  = Arr::get($result, 'thumbnail');
+
+
+            $orderImages = [
+                'item_id'    => $itemId,
+                'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
+                'imagename'  => $newFileName,
+                'admin_user' => $adminUser,
+                'status'     => 1,
+            ];
+    
+            $ordersImagesModel = new OrderItemImage;
+            $imageItemId = $ordersImagesModel->createOrderItemImage($orderImages);
+
+            $data = [ 'image_type' => $imageType , 'imagename' => $newFileName  ];
+            
+            $historyData= [
+                'order_id'      => $orderId,
+                'item_id'       => $itemId,
+                'item_image_id' => $imageItemId,
+                'action'        => "image_upload",
+                'admin_user'    => $adminUser,
+                'data' => json_encode($data)
+            ];
+
+            $this->addHistory($historyData);
+    
+        }
+
+       
+
+        return response()->json([
+            'success'                   => true,
+            'image_url'                 => $image,  
+            'thumbnail'                 => $thumbnail, 
+            'item_id'                   => $itemId,
+            'imageType'                 => $type,
+            'item_image_id'             => $imageItemId,
+            'message'                   => 'Image uploaded successfully'
+        ]);
+    }
+
+
+
+    // Function to process Base64 image
+function processBase64Image($base64Image, $filePath, $thumbnailPath, $filename)
+{
+    try 
+    {
+        $baseUrl = URL::to('/');
+        // Decode Base64 string
+        $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
+
+        // Ensure directories exist
+        if (!File::exists($filePath)) {
+            File::makeDirectory($filePath, 0777, true, true);
+        }
+
+        if (!File::exists($thumbnailPath)) {
+            File::makeDirectory($thumbnailPath, 0777, true, true);
+        }
+
+        // Save the compressed image
+        $imageAttachmentItem = Image::make($imageData);
+        $imageAttachmentItem->save($filePath . '/' . $filename, 60); // Compress to 60% quality
+
+        // Create a thumbnail
+        $thumbnail = Image::make($imageData)
+            ->resize(150, 150, function ($constraint) {
+                $constraint->aspectRatio(); // Maintain aspect ratio
+                $constraint->upsize();     // Prevent upsizing
+            });
+        $thumbnail->save($thumbnailPath . '/' . $filename, 60); // Save thumbnail with compression
+
+        return [
+            'image' => $baseUrl. '/' . $filePath . '/' . $filename,
+            'thumbnail' => $baseUrl. '/' . $thumbnailPath . '/' . $filename,
+        ];
+    }
+    catch (\Exception $e) 
+    {
+        \Log::error("OrderController->processBase64Image->" .$e->getMessage());
+        return false;
+    }
+}
 }
