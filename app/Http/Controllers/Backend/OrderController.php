@@ -348,7 +348,7 @@ class OrderController extends Controller
     {
         $imageId = $request->input('imageId');
         $orderNumber = $request->input('orderNumber');
-        
+
         try {
             $orderImagesModel = OrderItemImage::where('id', $imageId)->first();
 
@@ -434,51 +434,6 @@ class OrderController extends Controller
                 $token = sha1(uniqid(mt_rand(), true));
                 $orderUpdateArray["token"]  = $token;
             }
-
-
-            if ($request->has('image')) {
-                foreach ($request->file('image') as $itemId => $imageTypes) {
-                    foreach ($imageTypes as $type => $files) {
-                        if ($type == "pickup_images" || $type == "pickup_image") {
-                            $imageType          = "Before Wash";
-                            $mainImagePath      = $uploadFolderPath . "/before";
-                            $thumbnailImagePath = $thumbnailPath . "/before";
-                        } else if ($type == "delivery_images" || $type == "delivery_image") {
-                            $imageType          = "After Wash";
-                            $mainImagePath      = $uploadFolderPath . "/after";
-                            $thumbnailImagePath = $thumbnailPath . "/after";
-                        }
-
-                        foreach ($files as $file) {
-                            // Save file and process it
-                            $newFileName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $file->getClientOriginalExtension();
-                            $this->uploadMainImage($file, $mainImagePath, $newFileName, $thumbnailImagePath);
-
-                            $orderImages = [
-                                'item_id'    => $itemId,
-                                'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
-                                'imagename'  => $newFileName,
-                                'admin_user' => $adminUser,
-                                'status'     => 1,
-                            ];
-
-                            $ordersImagesModel = new OrderItemImage;
-                            $imageItemId = $ordersImagesModel->createOrderItemImage($orderImages);
-
-                            $data = ['image_type' => $imageType, 'imagename' => $newFileName];
-                            $historyData[] = [
-                                'order_id'      => $orderId,
-                                'item_id'       => $itemId,
-                                'item_image_id' => $imageItemId,
-                                'action'        => "image_upload",
-                                'admin_user'    => $adminUser,
-                                'data' => json_encode($data)
-                            ];
-                        }
-                    }
-                }
-            }
-
 
             try {
                 $order->update(
