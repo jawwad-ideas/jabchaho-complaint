@@ -34,41 +34,38 @@ $(document).ready(function () {
             canvas = new fabric.Canvas('imageCanvas');
         }
 
-
         canvas.setWidth(modalWidth);
         canvas.setHeight(modalHeight);
-
 
         if (!imageLoaded) {
             imageLoaded = true;
             console.log(imageData)
             console.log(fabric.Image);
             fabric.Image.fromURL(imageData, function (img) {
-
                 const scaleWidth = modalWidth / img.width;
                 const scaleHeight = modalHeight / img.height;
                 const scale = Math.min(scaleWidth, scaleHeight);
-
                 img.scale(scale);
                 img.set({
                     left: (modalWidth - img.getScaledWidth()) / 2,
-                    top: (modalHeight - img.getScaledHeight()) / 2,
+                    top: (modalHeight - img.getScaledHeight()) / 5,
+                    selectable: false
                 });
                 canvas.add(img);
+                canvas.sendToBack(img);
                 canvas.renderAll();
             });
         }
 
-
-        canvas.isDrawingMode = true;
-        canvas.freeDrawingBrush.color = 'red';
-        canvas.freeDrawingBrush.width = 5;
-
+        // canvas.isDrawingMode = true;
+        // canvas.freeDrawingBrush.color = 'red';
+        // canvas.freeDrawingBrush.width = 5;
 
         $('#pencilTool').on('click', function () {
             canvas.isDrawingMode = true;
+            canvas.freeDrawingBrush.color = 'red';
+            canvas.freeDrawingBrush.width = 5;
         });
-
         $('#circleTool').on('click', function () {
             canvas.isDrawingMode = false;
             const circle = new fabric.Circle({
@@ -82,7 +79,6 @@ $(document).ready(function () {
             });
             canvas.add(circle);
         });
-
         $('#squareTool').on('click', function () {
             canvas.isDrawingMode = false;
             const square = new fabric.Rect({
