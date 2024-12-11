@@ -17,9 +17,16 @@ use ZipArchive;
 use Illuminate\Support\Arr;
 use App\Http\Requests\Backend\OrderSaveRequest;
 use Intervention\Image\Facades\Image;
+use App\Services\MailchimpService;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
+    protected $mailchimpService;
+
+    public function __construct(MailchimpService $mailchimpService)
+    {
+        $this->mailchimpService = $mailchimpService;
+    }
 
     public function uploadSave( Request $request ){
         dd($request->all());
@@ -225,6 +232,9 @@ class OrderController extends Controller
 
     public function sendEmail( Request $request ){
         try {
+
+            $response = $this->mailchimpService->sendEmail('jawwad.shamim@ideas.com', 'jawwad.shamim@ideas.com', 'test mailchimp subject', '<p>This is a test email sent via Mailchimp API in Laravel.</p>');
+          dd($response);
             $orderId = $request->input('orderId');
             $emailType = $request->input('emailType');
             $data = null;
@@ -248,8 +258,8 @@ class OrderController extends Controller
             );
 
             //email Queue Called.
-            dispatch(new SendEmailOnOrderCompletion( $orderId, $emailType ));
-            $this->queueWorker();
+            //dispatch(new SendEmailOnOrderCompletion( $orderId, $emailType ));
+            //$this->queueWorker();
 
             try {
                 $adminUser      = $request->user()->id;
