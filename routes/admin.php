@@ -145,8 +145,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::post('/send-email', 'OrderController@sendEmail')->name('send.email');
             Route::get('/barcode-image', 'OrderController@itemImage')->name('orders.barcode.images');
         });
+
+        Route::post('/upload-order-image', 'OrderController@uploadOrderImage')->name('upload.order.image');
     });
 
-    Route::post('/upload-order-image', 'OrderController@uploadOrderImage')->name('upload.order.image');
+   
 });
 
