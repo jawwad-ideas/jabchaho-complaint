@@ -174,6 +174,12 @@ tr[data-url]:hover {
                                 if( !\Illuminate\Support\Facades\File::exists($isAfterThumbnail)  ){
                                     $afterThumbnail = $afterMainImage;
                                 }
+
+                                $isAfterMainImage = public_path(config('constants.files.orders')).'/'.$order->orderItem->order->order_id.'/'.$type.'/'.$order->imagename;
+                                if( !\Illuminate\Support\Facades\File::exists($isAfterMainImage)  ){
+                                    $afterMainImage = $afterThumbnail;
+                                }
+
                                 ?>
                                 <a href="{{$afterMainImage}}" target="_blank"> <img class="img-thumbnail" src="{{$afterThumbnail}}" alt="{{$order->imagename}}"> </a>
                             </td>
