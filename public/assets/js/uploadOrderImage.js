@@ -13,6 +13,7 @@
             const orderId = $(this).data('order-id');
             const file = this.files[0];
 
+            console.log(orderId);
 
             if (file) {
                 activeItemId = itemId; 
@@ -97,19 +98,21 @@
                                         <img class="img-thumbnail" src="${response.image_url}" alt="Edited Image">
                                     </a>
                                     <div class="item-img-action-btn">
-                                        <button class="btn btn-danger btn-sm delete-image ms-2" title="Delete" data-image-id="${response.item_image_id}" data-order-number="">
+                                        <button class="btn btn-danger btn-sm delete-image ms-2" title="Delete" data-image-id="${response.item_image_id}" data-order-number="${activeOrderNum}">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </div>
                                 </div>
                             `;
-                            $(`#items-images-sec-${activeItemId}`).append(imageHtml);
+                            $(`#items-images-sec-${activeItemType}-${activeItemId}`).append(imageHtml);
         
                             // Clear the file input field
                             $(`#uploadImage-${activeItemId}`).val('');
         
                             // Hide the modal
                             $('#imageModal').modal('hide');
+
+                            $('.img-upload-input').val('');
         
                             // Clear the canvas for the next image
                             canvas.clear();

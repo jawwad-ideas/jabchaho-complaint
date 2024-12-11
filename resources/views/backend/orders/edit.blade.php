@@ -327,7 +327,7 @@
                                     <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
                                         <input value="" type="file" class="form-control img-upload-input"
                                                name="image[{{$item->id}}][pickup_images][]" placeholder="" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
-                                               saad
+                                               
                                         <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
                                             <small>Item having Issue:</small>
                                             <div class="d-flex gap-2">
@@ -346,13 +346,9 @@
                                         <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"
                                                 onclick="addMoreImageUpload({{ $item->id }},'pickup_images')">Add More</button>
                                     </div> -->
-
-                                    <div class="items-images-sec mt-3" id="items-images-sec-{{ $item->id }}">
-                                    </div>
-
-                                    
+                                    <div class="items-images-sec mt-3" id="items-images-sec-pickup_images-{{ $item->id }}">
                                     @if( $item->images->isNotEmpty() )
-                                    <div class="items-images-sec mt-3">
+                                    
                                         @foreach ($item->images as $image)
                                         @if( $image->image_type == "Before Wash" )
                                           <?php
@@ -374,8 +370,11 @@
                                         </div>
                                         @endif
                                         @endforeach
-                                    </div>
+                                   
                                     @endif
+
+                                    
+                                    </div>
 
                                 </div>
 
@@ -388,11 +387,11 @@
                                         <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"  onclick="addMoreImageUpload({{ $item->id }},'delivery_images')">Add More</button>
                                     </div> -->
                                     
-                                    <div class="items-images-sec mt-3" id="items-images-sec-{{ $item->id }}">
-                                    </div>
+                                    <div class="items-images-sec mt-3" id="items-images-sec-delivery_images-{{ $item->id }}">
+                                   
 
                                     @if( $item->images->isNotEmpty() )
-                                    <div class="items-images-sec mt-3">
+                                   
                                         @foreach ($item->images as $image)
                                         @if( $image->image_type == "After Wash" )
                                             <?php
@@ -413,8 +412,9 @@
                                         </div>
                                         @endif
                                         @endforeach
-                                    </div>
+                                   
                                     @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
