@@ -225,7 +225,7 @@
                     </div>
 
                     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="imageModalLabel">Mark The Affected Areas!</h5>
@@ -233,16 +233,16 @@
                                 </div>
                                 <div class="modal-body">
                                 <div class="toolbar mb-3 d-flex align-items-center justify-content-end gap-2">
-                                    <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="pencilTool"><i class="fa fa-pencil"></i>Draw</button>
-                                    <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="circleTool"><i class="fa fa-circle"></i>Circle</button>
-                                    <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="squareTool"><i class="fa fa-square"></i>Square</button>
-                                </div>
-                                    <canvas id="imageCanvas" width="500" height="500" style="border: 1px solid #ccc;"></canvas>
-                                </div>
-                                <div class="modal-footer">
                                     <button type="button" id="clearCanvasBtn" class="btn btn-sm btn-danger rounded border-0 fw-bold d-flex align-items-center p-2 gap-2"><i class="fa fa-solid fa-eraser"></i> Remove Marking</button>
                                     <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="saveImage"><i class="fa fa-solid fa-upload"></i> Upload Image</button>
+                                    <!-- <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="pencilTool"><i class="fa fa-pencil"></i>Draw</button> -->
+                                    <!-- <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="circleTool"><i class="fa fa-circle"></i>Circle</button>
+                                    <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="squareTool"><i class="fa fa-square"></i>Square</button> -->
                                 </div>
+                                    <canvas id="imageCanvas" style="border: 1px solid #ccc;"></canvas>
+                                </div>
+                                <!-- <div class="modal-footer">
+                                </div> -->
                             </div>
                         </div>
                     </div>
