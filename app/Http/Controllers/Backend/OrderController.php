@@ -18,6 +18,7 @@ use Illuminate\Support\Arr;
 use App\Http\Requests\Backend\OrderSaveRequest;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\URL;
+use DrewM\MailChimp\MailChimp;
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
@@ -220,9 +221,53 @@ class OrderController extends Controller
         }
     }
 
+    function sendDirectEmail($recipientEmail, $subject, $htmlContent)
+    {
+        // Initialize the Mailchimp API client with your Mandrill API key
+        $mailchimp = new MailChimp(env('MAILCHIMP_API_KEY'));
+
+        // Prepare the email data
+        $message = [
+            'from_email' => 'support@jabchaho.com', // Your from email
+            'from_name' => 'Jab Chaho Support', // Your name or business name
+            'subject' => $subject,
+            'html' => $htmlContent, // Custom HTML content for the email
+            'to' => [
+                [
+                    'email' => $recipientEmail, // Recipient's email
+                    'type' => 'to'
+                ]
+            ],
+        ];
+
+        // Send the email via Mandrill
+        $response = $mailchimp->post('messages/send', [
+            'message' => $message
+        ]);
+
+        dd($response);
+
+        // Check for success or failure
+        if (isset($response['status']) && $response['status'] === 'error') {
+            return 'Error sending email: ' . ($response['detail'] ?? 'Unknown error');
+        }
+
+        return 'Email sent successfully!';
+    }
+
     public function sendEmail(Request $request)
     {
         try {
+            
+            // Example usage
+$recipientEmail = 'recipient@example.com';
+$subject = 'Your Custom Subject';
+$htmlContent = '<html><body><h1>Hello, Recipient!</h1><p>This is a custom email body.</p></body></html>';
+
+$this->sendDirectEmail($recipientEmail, $subject, $htmlContent);
+
+
+            
             $orderId = $request->input('orderId');
             $emailType = $request->input('emailType');
             $data = null;
