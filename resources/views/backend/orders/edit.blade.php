@@ -82,9 +82,9 @@
 <script>
     document.addEventListener('scroll', () => {
         const pageTitleSection = document.querySelector('.page-title-section');
-        
+
         if (pageTitleSection) {
-            
+
             console.log("window scroll value:"+ window.scrollY);
             console.log("page title top value:"+ pageTitleSection.offsetTop);
 
@@ -165,7 +165,7 @@
                 </button>
             </div>
             <div class="mb-3 update-order-button-div">
-                
+
                 <button type="button" id="updateOrderTopButton" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"> Update Order </button>
             </div>
 
@@ -366,7 +366,7 @@
                                     <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
                                         <input value="" type="file" class="form-control img-upload-input"
                                                name="image[{{$item->id}}][pickup_images][]" placeholder="" accept="image/png, image/jpeg, image/jpg" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
-                                               
+
                                         <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
                                             <small>Item having Issue:</small>
                                             <div class="d-flex gap-2">
@@ -387,7 +387,7 @@
                                     </div> -->
                                     <div class="items-images-sec mt-3" id="items-images-sec-pickup_images-{{ $item->id }}">
                                     @if( $item->images->isNotEmpty() )
-                                    
+
                                         @foreach ($item->images as $image)
                                         @if( $image->image_type == "Before Wash" )
                                           <?php
@@ -396,6 +396,11 @@
                                               $isBeforeThumbnail = public_path(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/before/'.$image->imagename;
                                               if(  !\Illuminate\Support\Facades\File::exists($isBeforeThumbnail)  ){
                                                   $beforeThumbnail = $beforeMainImage;
+                                              }
+
+                                              $isBeforeMainImage = public_path(config('constants.files.orders')).'/'.$order->order_id.'/before/'.$image->imagename;
+                                              if( !\Illuminate\Support\Facades\File::exists($isBeforeMainImage)  ){
+                                                  $beforeMainImage = $beforeThumbnail;
                                               }
                                           ?>
 
@@ -409,10 +414,10 @@
                                         </div>
                                         @endif
                                         @endforeach
-                                   
+
                                     @endif
 
-                                    
+
                                     </div>
 
                                 </div>
@@ -425,12 +430,12 @@
                                     <!-- <div>
                                         <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"  onclick="addMoreImageUpload({{ $item->id }},'delivery_images')">Add More</button>
                                     </div> -->
-                                    
+
                                     <div class="items-images-sec mt-3" id="items-images-sec-delivery_images-{{ $item->id }}">
-                                   
+
 
                                     @if( $item->images->isNotEmpty() )
-                                   
+
                                         @foreach ($item->images as $image)
                                         @if( $image->image_type == "After Wash" )
                                             <?php
@@ -439,6 +444,11 @@
                                             $isAfterThumbnail = public_path(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/after/'.$image->imagename;
                                             if( !\Illuminate\Support\Facades\File::exists($isAfterThumbnail)  ){
                                                 $afterThumbnail = $afterMainImage;
+                                            }
+
+                                            $isAfterMainImage = public_path(config('constants.files.orders')).'/'.$order->order_id.'/after/'.$image->imagename;
+                                            if( !\Illuminate\Support\Facades\File::exists($isAfterMainImage)  ){
+                                                $afterMainImage = $afterThumbnail;
                                             }
                                             ?>
                                         <div class="img-item">
@@ -451,7 +461,7 @@
                                         </div>
                                         @endif
                                         @endforeach
-                                   
+
                                     @endif
                                     </div>
                                 </div>
