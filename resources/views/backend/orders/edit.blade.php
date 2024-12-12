@@ -65,7 +65,41 @@
 .item-img-action-btn .delete-image i.fa.fa-trash {
     font-size: 11px;
 }
+.page-title-section.sticky {
+    position: sticky;
+    top: 0;
+    background: #fbee7e !important;
+    padding: 30px 60px 30px 80px;
+    z-index: 1;
+}
+@media only screen and (max-width: 600px) {
+    .page-title-section.sticky {
+        padding: 10px 0 15px !IMPORTANT;
+    }
+}
 </style>
+
+<script>
+    document.addEventListener('scroll', () => {
+        const pageTitleSection = document.querySelector('.page-title-section');
+        
+        if (pageTitleSection) {
+            
+            console.log("window scroll value:"+ window.scrollY);
+            console.log("page title top value:"+ pageTitleSection.offsetTop);
+
+
+            const pageTitleSectionTop = pageTitleSection.offsetTop;
+
+            if (window.scrollY >= pageTitleSectionTop) {
+                pageTitleSection.classList.add('sticky');
+                // pageTitleSection.style.top =
+            } else {
+                pageTitleSection.classList.remove('sticky');
+            }
+        }
+    });
+</script>
 @section('content')
 <div
     class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
@@ -110,7 +144,7 @@
         </div>
 
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
-        <div class="btn-group order-action-btns" role="group">
+        <div class="btn-group order-action-btns flex-wrap justify-content-center" role="group">
 
             <div class="mb-3 complete-button-div" @if ( $showCompleteButton ) style="display:block;" @else style="display:none;" @endif >
                 <button data-order-id="{{ $order->id }}" type="button" class="complete-order btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
@@ -130,10 +164,10 @@
                     {{$sendFinalEmailTitle}}
                 </button>
             </div>
-            <!-- <div class="mb-3 update-order-button-div">
+            <div class="mb-3 update-order-button-div">
                 
-                <button type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"> Update order </button>
-            </div> -->
+                <button type="button" id="updateOrderTopButton" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"> Update Order </button>
+            </div>
 
 
         {{--<div class="mb-3 complete-button-div">
@@ -308,8 +342,8 @@
 
                     @foreach ($order->orderItems as $item)
                     <div class="itemForm orderItemSec border-bottom border-2">
-                        <div class="item-form-row p-3 bg-light rounded border-light">
-                            <div class="itemLabel">
+                        <div class="item-form-row p-xl-3 p-lg-3 p-md-3 p-sm-0 bg-light rounded border-light">
+                            <div class="itemLabel p-3">
                                 <label class="d-flex">
                                     <h6 class="d-inline-block fw-bold"> Service Type: </h6>
                                     <span> {{$item->service_type}} </span>
@@ -323,8 +357,8 @@
                                     <span> {{$item->barcode}} </span>
                                 </label>
                             </div>
-                            <div class="inner-row d-xl-flex d-lg-flex d-md-block justify-content-between pb-2 gap-4">
-                                <div class="col-lg-6 pb-1 pt-3 border-light">
+                            <div class="inner-row d-xl-flex d-lg-flex d-md-block justify-content-between pb-2 gap-0">
+                                <div class="col-lg-6 pb-1 pt-3 border-light px-3" style="border-bottom: 4px double;border-color: #f7e441 ! IMPORTANT;background: #eee;">
                                     <div class="d-flex align-items-center gap-3">
                                         <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
                                     </div>
@@ -383,7 +417,7 @@
 
                                 </div>
 
-                                <div class="col-lg-6 pb-1 pt-3  border-light">
+                                <div class="col-lg-6 pb-1 pt-3 border-light px-3" style="background: #fbee7e4f;">
                                     <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
                                     <div class="upload-img-input-sec" id="image-upload-container-delivery_images-{{ $item->id }}">
                                         <input value="" type="file" class="form-control img-upload-input" name="image[{{$item->id}}][delivery_images][]" placeholder=""  accept="image/png, image/jpeg, image/jpg" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="delivery_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
@@ -455,7 +489,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <button type="submit" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3"> Update order </button>
+                        <button type="submit" id="UpdateOrderBtn" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3"> Update Order </button>
                         <a href="{{ route('orders.index') }}/{{$order->status}}" class="btn bg-theme-dark-300 text-light">Back</a>
                     </div>
                 </div>
@@ -499,6 +533,11 @@
     // }
 
 $(document).ready(function() {
+
+    $(document).on('click', '#updateOrderTopButton', function(event) {
+        console.log("click btn");
+        $("#UpdateOrderBtn").click();
+    })
     // Handle delete button click
     $(document).on('click', '.delete-image', function(event) {
         event.preventDefault(); // Prevent any default action (just in case)
