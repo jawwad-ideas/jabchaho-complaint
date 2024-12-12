@@ -89,7 +89,7 @@
             console.log("page title top value:"+ pageTitleSection.offsetTop);
 
 
-            const pageTitleSectionTop = pageTitleSection.offsetTop;
+            const pageTitleSectionTop = pageTitleSection.offsetTop-10;
 
             if (window.scrollY >= pageTitleSectionTop) {
                 pageTitleSection.classList.add('sticky');
