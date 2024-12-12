@@ -22,7 +22,11 @@ $(document).ready(function () {
         if(itemType =='delivery_images'){
             $(".modal-body .toolbar").attr("style", "display: none !important;");
             $("#clearCanvasBtn").attr("style", "display: none !important;");
+            $('#imageModalLabel').text("After Wash Image");
+            
         }else{
+            $('#imageModalLabel').text("Mark The Affected Areas!");
+
             $(".modal-body .toolbar").attr("style", "display: flex !important;");
             $("#clearCanvasBtn").attr("style", "display: flex !important;");
         }
