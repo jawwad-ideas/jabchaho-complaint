@@ -9,12 +9,23 @@ $(document).ready(function () {
     let imageData;
     let reader = new FileReader();
 
+    
+
     $('.img-upload-input').on('change', function (e) {
         const itemId = $(this).data('item-id');
         const itemType = $(this).data('item-type');
         const orderNum = $(this).data('order-num');
         const orderId = $(this).data('order-id');
         const file = this.files[0];
+
+        console.log(itemType);
+        if(itemType =='delivery_images'){
+            $(".modal-body .toolbar").attr("style", "display: none !important;");
+            $("#clearCanvasBtn").attr("style", "display: none !important;");
+        }else{
+            $(".modal-body .toolbar").attr("style", "display: flex !important;");
+            $("#clearCanvasBtn").attr("style", "display: flex !important;");
+        }
 
         if (file) {
             activeItemId = itemId;
@@ -25,6 +36,9 @@ $(document).ready(function () {
             reader.readAsDataURL(file);
         }
     });
+
+    
+
 
     $('#imageModal').on('shown.bs.modal', function () {
         const modalBody = $('#imageModal .modal-body');
@@ -39,8 +53,8 @@ $(document).ready(function () {
 
         if (!imageLoaded) {
             imageLoaded = true;
-            console.log(imageData)
-            console.log(fabric.Image);
+            // console.log(imageData)
+            // console.log(fabric.Image);
             fabric.Image.fromURL(imageData, function (img) {
                 const scaleWidth = modalWidth / img.width;
                 const scaleHeight = modalHeight / img.height;
