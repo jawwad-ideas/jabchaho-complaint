@@ -42,6 +42,12 @@ class OrderItem extends Model
         return $this->hasMany(OrderItemImage::class, 'item_id');
     }
 
+    // Define the one-to-many relationship
+    public function issues()
+    {
+        return $this->hasMany(OrderItemIssue::class, 'item_id');
+    }
+
 
 
     public function createOrderItem($data = array())

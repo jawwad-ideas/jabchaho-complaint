@@ -18,6 +18,8 @@ use Illuminate\Support\Arr;
 use App\Http\Requests\Backend\OrderSaveRequest;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\URL;
+use App\Models\OrderItemIssue;
+
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
@@ -226,14 +228,9 @@ class OrderController extends Controller
             $orderId = $request->input('orderId');
             $emailType = $request->input('emailType');
             $data = null;
-            if ($emailType == "before_email") {
-
-                $remarks = $request->input('remarks');
-                $itemsIssuesl = $request->input('itemsIssues');
+            if ($emailType == "before_email") 
+            {
                 $orderUpdateArray["before_email"] = 2;
-                $orderUpdateArray["before_email_remarks"] = $remarks;
-                $orderUpdateArray["before_email_options"] = $itemsIssuesl;
-                $data = json_encode(['before_email_remarks' => $remarks, 'before_email_options' => $itemsIssuesl]);
             } else {
                 $orderUpdateArray["final_email"] = 2;
             }
@@ -313,8 +310,7 @@ class OrderController extends Controller
     {
         $order = Order::with(['orderItems.images' => function ($query) {
             $query->where('status', 1);
-        }])->find($orderId);
-
+        },'orderItems.issues'])->find($orderId);
 
         $beforeEmailShow = $afterEmailShow = false;
         foreach ($order->orderItems as $item):
@@ -415,7 +411,7 @@ class OrderController extends Controller
             $orderId            = $request->get('order_id');
             $remarks            = $request->get('remarks');
             $orderNumber        = $request->get('order_number');
-            $issues             = $request->get('is_issue_identify');
+            //$issues             = $request->get('is_issue_identify');
             $uploadFolderPath   = config('constants.files.orders') . '/' . $orderNumber;
             $thumbnailPath      = $uploadFolderPath . '/thumbnail';
             $orderUpdateArray   =  ['updated_at' => now(), 'remarks' => $remarks];
@@ -440,15 +436,15 @@ class OrderController extends Controller
                     $orderUpdateArray
                 );
 
-                if (!empty($issues)) {
-                    foreach ($issues as $key =>  $issue) {
-                        OrderItem::where(['id' => $key])->update(
-                            ["is_issue_identify" => $issue, 'updated_at' => now()]
-                        );
-                    }
-                }
+                // if (!empty($issues)) {
+                //     foreach ($issues as $key =>  $issue) {
+                //         OrderItem::where(['id' => $key])->update(
+                //             ["is_issue_identify" => $issue, 'updated_at' => now()]
+                //         );
+                //     }
+                // }
 
-                $data = ['image_type' => isset($orderUpdateArray["attachments"]) ? 'Main Image' : null, 'remarks' => $remarks, 'imagename' => ($orderUpdateArray["attachments"] ?? null), 'is_issue_identify' => $issues];
+                $data = ['image_type' => isset($orderUpdateArray["attachments"]) ? 'Main Image' : null, 'remarks' => $remarks, 'imagename' => ($orderUpdateArray["attachments"] ?? null)];
                 $historyData[] = [
                     'order_id'      => $orderId,
                     'item_id'       => null,
@@ -741,6 +737,79 @@ class OrderController extends Controller
             ];
         } catch (\Exception $e) {
             \Log::error("OrderController->processBase64Image->" . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    public function saveItemIssue(Request $request)
+    {
+        try 
+        {
+
+            $itemId             = $request->itemId;
+            $itemIssueList      = $request->itemIssueList;
+
+            //delete all record w.r.t to item
+            OrderItemIssue::where(['item_id'=> $itemId])->delete();
+
+            //then insert record
+            $orderItemIssue = array();
+            if(!empty($itemIssueList))
+            {
+                foreach($itemIssueList as $itemissue)
+                {
+                    $orderItemIssue[] = array('item_id'=>$itemId, 'issue' =>$itemissue);
+                }
+            }
+
+            $isInserted = OrderItemIssue::insert($orderItemIssue);
+
+            if ($isInserted) 
+            {
+                //update order item field is_issue_identify
+                OrderItem::where('id', $itemId)->update(['is_issue_identify' => 2]);
+                
+                return response()->json([
+                    'status'                   => true,
+                    'message'                  => "Issues Saved successfully!!"
+                ]);
+            } else 
+            {
+                return response()->json([
+                    'status'                   => false,
+                    'message'                  => "Issues were not saved successfully. Please try again!"
+                ]);
+            }
+
+            
+            
+        } catch (\Exception $e) {
+            \Log::error("OrderController->saveItemIssue->" . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    public function removeItemIssue(Request $request)
+    {
+        try 
+        {
+            $itemId             = $request->itemId;
+
+            //delete all record w.r.t to item
+            OrderItemIssue::where(['item_id'=> $itemId])->delete();
+
+            //update order item field is_issue_identify
+            OrderItem::where('id', $itemId)->update(['is_issue_identify' => 1]);
+
+            return response()->json([
+                'status'                   => false,
+            ]);
+
+
+        } catch (\Exception $e) {
+            \Log::error("OrderController->removeItemIssue->" . $e->getMessage());
             return false;
         }
     }

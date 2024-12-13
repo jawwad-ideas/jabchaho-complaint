@@ -85,18 +85,44 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                 );
             }else
             {
+                $options = array();
+                $optionsString = '';
                 $orderData = Order::with(['orderItems' => function ($query) {
                     $query->where('is_issue_identify', 2)
                     ->with(['images' => function ($imageQuery) {
                         $imageQuery->where('image_type', 'Before Wash');
                         $imageQuery->where('status', 1);
                     }]);
-                }])
+                },'orderItems.issues'])
                 ->where(['id' =>$orderId ])
                 ->first();
-                
-                
-                
+
+                if(!empty(Arr::get($orderData, 'orderItems')))
+                {
+                    $orderItems = Arr::get($orderData, 'orderItems');
+
+                    foreach($orderItems as $orderItem)
+                    {
+                        if(!empty(Arr::get($orderItem, 'issues')))
+                        {
+                            $orderItemIssues = Arr::get($orderItem, 'issues');
+                            foreach($orderItemIssues as $orderItemIssue)
+                            {
+                                if(!empty(Arr::get($orderItemIssue, 'issue')))
+                                {
+                                    $options[] = config('constants.issues.'.Arr::get($orderItemIssue, 'issue'));//Arr::get($orderItemIssue, 'issue');
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if(!empty($options))
+                {
+                    $options = array_unique($options);
+                    $optionsString = implode(', ', $options);
+                }
+
                 Mail::send(
                     'backend.emails.orderBeforeWash',
                     [
@@ -104,8 +130,7 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                         'orderToken'            => Arr::get($orderData, 'token'),
                         'name'                  => Arr::get($orderData, 'customer_name'),
                         'app_url'               => URL::to('/'),
-                        'remarks'               => Arr::get($orderData, 'before_email_remarks'),
-                        'options'               => Arr::get($orderData, 'before_email_options'),
+                        'options'               => $optionsString,
                         'orderItems'            => Arr::get($orderData, 'orderItems'),
                     ],
                     function ($message) use ($orderData) {

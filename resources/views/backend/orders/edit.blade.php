@@ -103,11 +103,48 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button data-order-id="{{ $order->id }}" data-email-type="before_email" type="button" id="sendEmailBeforeWashBtn" class="sendEmailBeforeWashBtn btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold">Send Email</button>
+                <button data-order-id="{{ $order->id }}" data-email-type="before_email" type="button"  class="sendEmailBeforeWashBtn btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold">Send Email</button>
             </div>
             </div>
         </div>
         </div>
+
+        <!--item issue modal start-->
+    <div class="modal fade itemIssuesModal" id="itemIssues" tabindex="-1" aria-labelledby="itemIssuesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="itemIssuesLabel">The item contains issues</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                <div class="alert alert-danger"  id="errorIssuesMessage"   style="display:none"></div>
+                <div class="alert alert-success" id="successIssuesMessage" style="display:none"></div>
+                    <div><strong>Barcode:</strong><span id="itemIssuesBarcode"></span></div>
+                    <input value="" type="hidden" class="form-control" id="modal_item_id" name="item_id" readonly>
+                    <div class="form-check-list">
+                        @if(!empty(config('constants.issues')))
+                            @foreach (config('constants.issues') as $key=>$listItem)
+                            <div class="form-check">
+                                <input class="form-check-input itemIssueList" type="checkbox" value="{{$key}}" id="{{$listItem}}">
+                                <label class="form-check-label text-capitalize" for="{{$listItem}}">{{$listItem}}</label>
+                            </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button data-order-id="{{ $order->id }}" data-email-type="before_email" type="button" id="saveItemIssue" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--item issue modal end-->
+
+
+
 
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
         <div class="btn-group order-action-btns" role="group">
@@ -119,7 +156,7 @@
             </div>
 
             <div class="mb-3 complete-button-div" @if ( $sendBeforeEmail ) style="display:block;" @else style="display:none;" @endif >
-                <button data-order-id="{{ $order->id }}" data-email-type="before_email" type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2" data-bs-toggle="modal" data-bs-target="#checkListBeforeWash">
+                <button id="sendEmailBeforeWashBtn" data-order-id="{{ $order->id }}" data-email-type="before_email" type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2 sendEmailBeforeWashBtn">
                     {{$sendBeforeEmailTitle}}
                 </button>
             </div>
@@ -194,7 +231,7 @@
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="imageModalLabel">Mark The Affected Areas!</h5>
+                                    <h5 class="modal-title" id="imageModalLabel">Mark The Effected Areas!</h5>
                                     <button type="button" id="imageModalClosebtn" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -337,16 +374,25 @@
                                             <small>Item having Issue:</small>
                                             <div class="d-flex gap-2">
                                                 <div class="form-check form-check-inline d-flex align-items-center gap-1">
-                                                    <input class="form-check-input" type="radio" name="is_issue_identify[{{$item->id}}]" id="yesfault" value="2" @if( $item->is_issue_identify == 2 ) checked @endif >
+                                                    <input class="form-check-input yesfault" type="radio" data-barcode="{{$item->barcode}}" data-item="{{$item->id}}" name="is_issue_identify[{{$item->id}}]" id="yesfault-{{$item->id}}" value="2" data-bs-toggle="modal" data-bs-target="#itemissues" 
+                                                    data-saved-issue-{{$item->id}}=@if(!empty($item->issues)) "{{ implode(',', $item->issues->map(fn($row) => Arr::get($row->toArray(), 'issue'))->sort()->toArray()) }}" @else "" @endif
+                                                    @if( $item->is_issue_identify == 2 ) checked @endif >
                                                     <label class="form-check-label" for="yesfault">Yes</label>
                                                 </div>
                                                 <div class="form-check form-check-inline d-flex align-items-center gap-1">
-                                                    <input class="form-check-input" type="radio" name="is_issue_identify[{{$item->id}}]" id="nofault" value="1" @if( $item->is_issue_identify != 2 ) checked @endif>
+                                                    <input class="form-check-input nofault" type="radio" data-item="{{$item->id}}" name="is_issue_identify[{{$item->id}}]" id="nofault-{{$item->id}}" value="1" @if( $item->is_issue_identify != 2 ) checked @endif>
                                                     <label class="form-check-label" for="nofault">No</label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    @if(!empty($item->issues))
+                                        
+                                        <div class="form-check-label text-capitalize" for="color fading" id="savedOrderItemIssues-{{$item->id}}">
+                                            <strong>{{ implode(', ', $item->issues->map(fn($row) => config('constants.issues.'.Arr::get($row->toArray(), 'issue')))->toArray()) }}</strong>
+                                        </div>
+                                    
+                                    @endif
                                     <!-- <div>
                                         <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"
                                                 onclick="addMoreImageUpload({{ $item->id }},'pickup_images')">Add More</button>
@@ -499,6 +545,158 @@
     // }
 
 $(document).ready(function() {
+
+    $(document).on('click', '.yesfault', function(event) {
+        var itemId = $(this).data('item');
+        var itemBarcode = $(this).data('barcode'); // Get the 'data-item' value of the clicked radio button
+        var savedIssues = $(this).data('saved-issue-'+itemId); 
+        
+        $('#modal_item_id').val(itemId); // Set the modal content with the item data
+        $('#itemIssuesBarcode').text(itemBarcode);
+
+        // Ensure that savedIssues is treated as a string
+        savedIssues = String(savedIssues || '');  // Convert to string or use empty string if undefined/null
+                // Check if the string contains a comma (multiple values) or is a single value
+        if (savedIssues.includes(',')) {
+            // Multiple values (comma-separated)
+            var issueArray = savedIssues.split(',');  // Convert the string to an array
+            
+        } else {
+            // Single value
+            var issueArray = [savedIssues];  // Treat it as a single value in an array
+            
+        }
+
+        // Check if savedIssues contains a comma (i.e., multiple values) or is a single value
+        var issueArray = savedIssues.includes(',') ? savedIssues.split(',') : [savedIssues];  // Convert to array if multiple values, else keep as array with one value
+
+        // Loop through all checkboxes with class 'itemIssueList'
+        $('.modal .form-check input.itemIssueList').each(function() {
+            var checkboxValue = $(this).val();  // Get the value of the checkbox (e.g., 1, 2, 3)
+
+            // If issueArray has more than one element, perform array comparison, else perform string comparison
+            if (issueArray.length > 1) {
+                // Array comparison
+                if (issueArray.map(String).includes(String(checkboxValue))) {
+                    $(this).prop('checked', true);  // Check the checkbox if it exists in the array
+                } else {
+                    $(this).prop('checked', false);  // Uncheck the checkbox if it doesn't match
+                }
+            } else {
+                // String comparison (when only one value)
+                if (String(checkboxValue) === String(issueArray[0])) {
+                    $(this).prop('checked', true);  // Check the checkbox if it matches the single value
+                } else {
+                    $(this).prop('checked', false);  // Uncheck the checkbox if it doesn't match
+                }
+            }
+        });
+        
+    });
+
+    //savedOrderItemIssues
+
+    $(document).on('click', '.nofault', function(event) {
+        var itemId = $(this).data('item');
+
+        // Show confirmation dialog
+        var confirmAction = confirm('Are you sure you want to remove the issue for this item?');
+        
+        // If the user confirms, proceed with the action
+        if (confirmAction) {
+            // Empty the HTML content and set attribute to empty
+            $('#savedOrderItemIssues-' + itemId).html('');
+            $('#yesfault-' + itemId).attr('data-saved-issue-' + itemId, '');
+
+            // Send AJAX call to remove the option
+            var url = '{{ route('remove.item.issue') }}';
+            $.ajax({
+                type: 'POST',
+                url: url, // Get the form action URL
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    itemId: itemId
+                },
+                success: function(response) {
+                    // Handle response if necessary
+                }
+            });
+        } else {
+            // Action cancelled, no further action taken
+        }
+    });
+
+    //saveItemIssue
+    $(document).on('click', '#saveItemIssue', function(event) {
+        $('#errorIssuesMessage').html('');
+        $('#errorIssuesMessage').hide();
+        $('#successIssuesMessage').html('');
+        $('#successIssuesMessage').hide();
+        $(".loader").show(); //
+
+        var itemId =  $('#modal_item_id').val(); //itemIssueList
+
+        var itemIssueList = [];
+        
+        // Iterate over each checkbox with the 'itemIssueList' class
+        $('.itemIssueList:checked').each(function() {
+            itemIssueList.push($(this).val()); // Push the value of the checkbox
+        });
+
+
+
+        // Validation: Check if no checkboxes are selected
+        if (itemIssueList.length === 0) 
+        {
+            $(".loader").hide(); 
+            $('#errorIssuesMessage').show(); // Show the error message
+            $('#errorIssuesMessage').html('Please select at least one issue to proceed.'); // Display the error text
+            return; // Stop further execution
+        }
+
+        var url = '{{route('save.item.issue')}}'
+
+        $.ajax({
+            type: 'POST',
+            url: url, // Get the form action URL
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                itemId: itemId,
+                itemIssueList: itemIssueList
+            },
+            success: function(response) {
+                if (response.status) 
+                {
+                    $('#successIssuesMessage').show();
+                    $('#successIssuesMessage').html(response.message);
+                    $(".loader").hide(); //
+                    setTimeout(() => {
+                       
+                        location.reload(); // Refresh the page to reflect changes
+                    }, 1000);
+                   
+                } else 
+                {
+                    $('#errorIssuesMessage').show();
+                    $('#errorIssuesMessage').html(response.message);
+                    $(".loader").hide(); //
+                }
+            },
+            error: function(xhr, status, error) 
+            {
+                $('#errorIssuesMessage').show();
+                $('#errorIssuesMessage').html("Something went wrong. Please try again.");
+                $(".loader").hide(); //
+            }
+        });
+
+        
+    });
+
     // Handle delete button click
     $(document).on('click', '.delete-image', function(event) {
         event.preventDefault(); // Prevent any default action (just in case)
@@ -575,30 +773,30 @@ $(document).ready(function() {
 
         let formattedList;
         var remarks = "";
-        if( emailType === "before_email" ) {
-            let beforeWashCheckListItemList = [];
-            $('.modal-body .form-check-input:checked').each(function () {
-                beforeWashCheckListItemList.push($(this).val());
-            });
+        // if( emailType === "before_email" ) {
+        //     let beforeWashCheckListItemList = [];
+        //     $('.modal-body .form-check-input:checked').each(function () {
+        //         beforeWashCheckListItemList.push($(this).val());
+        //     });
 
-            if (beforeWashCheckListItemList.length === 1) {
-                // Only one item, no need for commas or "and"
-                formattedList = beforeWashCheckListItemList[0];
-            } else if (beforeWashCheckListItemList.length === 2) {
-                // Two items, join with "and"
-                formattedList = beforeWashCheckListItemList.join(' and ');
-            } else {
-                // More than two items, comma-separate them with "and" before the last item
-                formattedList = beforeWashCheckListItemList.slice(0, -1).join(', ') + ' and ' + beforeWashCheckListItemList.slice(-1);
-            }
+        //     if (beforeWashCheckListItemList.length === 1) {
+        //         // Only one item, no need for commas or "and"
+        //         formattedList = beforeWashCheckListItemList[0];
+        //     } else if (beforeWashCheckListItemList.length === 2) {
+        //         // Two items, join with "and"
+        //         formattedList = beforeWashCheckListItemList.join(' and ');
+        //     } else {
+        //         // More than two items, comma-separate them with "and" before the last item
+        //         formattedList = beforeWashCheckListItemList.slice(0, -1).join(', ') + ' and ' + beforeWashCheckListItemList.slice(-1);
+        //     }
 
-            if (beforeWashCheckListItemList.length === 0) {
-                alert('Please select at least one checkbox.');
-                return;
-            }
+        //     if (beforeWashCheckListItemList.length === 0) {
+        //         alert('Please select at least one checkbox.');
+        //         return;
+        //     }
 
-            remarks = $("#floatingbeforewashremarks").val();
-        }
+        //     remarks = $("#floatingbeforewashremarks").val();
+        // }
 
        let data = {
            orderId : orderId,

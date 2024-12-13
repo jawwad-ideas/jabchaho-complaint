@@ -106,5 +106,28 @@ return [
 		 'store'		=> 'Store',
 		 'facility' 	=> 'Facility',
 	],
+	'issues' => [
+		1 => 'color fading',
+		2 => 'iron shine',
+		3 => 'burn',
+		4 => 'shrinkage',
+		5 => 'tears and torn',
+		6 => 'holes',
+		7 => 'missed button',
+		8 => 'stitching',
+		9 => 'embroidery',
+		10 => 'missed logo',
+		11 => 'lint',
+		12 => 'rexine',
+		13 => 'sole damaged',
+		14 => 'snagging',
+		15 => 'rust',
+		16 => 'food',
+		17 => 'ink',
+		18 => 'paint',
+		19 => 'oil',
+		20 => 'hard',
+		21 => 'color stains'
+	]
 
 ];

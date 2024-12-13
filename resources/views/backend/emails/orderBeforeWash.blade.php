@@ -24,10 +24,6 @@
 
                                 <p class="greeting" style="margin-top:0;margin:20px 0">However, we will do our best to remove the stains, as long as it does not damage the fabric and we will be proceeding with the laundry services as requested.</p>
 
-                                @if(!empty($remarks))
-                                    <p class="greeting" style="margin-top:0;margin:20px 0">Additional Remarks: {{$remarks}}</p>
-                                @endif
-
                                 @if(!empty($orderItems))
                                     <table border="1" style="width:100%; border-collapse:collapse;border:none;">
                                         <thead style="background: #fce100;">
