@@ -121,7 +121,7 @@
                 <div class="modal-body">
                 <div class="alert alert-danger"  id="errorIssuesMessage"   style="display:none"></div>
                 <div class="alert alert-success" id="successIssuesMessage" style="display:none"></div>
-                    <div><strong>Barcode:</strong><span id="itemIssuesBarcode"></span></div>
+                    <div class="my-3"><strong>Barcode:</strong><span id="itemIssuesBarcode"></span></div>
                     <input value="" type="hidden" class="form-control" id="modal_item_id" name="item_id" readonly>
                     <div class="form-check-list">
                         @if(!empty(config('constants.issues')))
@@ -388,8 +388,10 @@
                                     </div>
                                     @if(!empty($item->issues))
                                         
-                                        <div class="form-check-label text-capitalize" for="color fading" id="savedOrderItemIssues-{{$item->id}}">
-                                            <strong>{{ implode(', ', $item->issues->map(fn($row) => config('constants.issues.'.Arr::get($row->toArray(), 'issue')))->toArray()) }}</strong>
+                                        <div class="form-check-label text-capitalize d-flex gap-2 flex-wrap mt-2 w-50 issuesPills " for="color fading" id="savedOrderItemIssues-{{$item->id}}">
+                                            @foreach($item->issues as $row)
+                                                <span class="rounded-pill badge-sm badge p-1 bg-theme-yellow text-dark">{{config('constants.issues.'.Arr::get($row, 'issue'))}}</span>
+                                            @endforeach
                                         </div>
                                     
                                     @endif
