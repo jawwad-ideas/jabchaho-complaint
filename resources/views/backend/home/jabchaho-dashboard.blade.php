@@ -236,9 +236,15 @@
                     </div>
                 </div>
               
-                <h3>Issues Type</h3>
+                
+            </div>
+            
+            
+            <button type="button" class="btn bg-theme-yellow fw-bold text-dark w-100 d-flex justify-content-between align-items-center" data-toggle="collapse" data-target="#demo">
+                Issues Type  <i class="toggle-icon fa fa-chevron-down text-right"></i></button>
+            <div id="demo" class="collapse mt-2">
                 <div class="d-flex align-items-center flex-wrap">
-                   
+                    
 
                     <div class="stats-card border bg-theme-yellow px-2 m-r-10 w-180px m-b-10" onclick="handleClick('{{ route('orders.barcode.images') }}/?issue_type=1')" style="cursor: pointer;">
                         <div class="stats-card-content d-flex align-items-center justify-content-between align-items-center py-1 px-0">
@@ -492,8 +498,13 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+
+
+           
+
+
+
 
         </div>
 
@@ -537,7 +548,7 @@
                     @endif
                 </select>
             </div>
-            <div class="col-sm-3 px-2">
+            <div class="col-sm-3 px-2  mt-2">
                 <button type="submit"
                     class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1 custom-order-search"
                     id="consult">
@@ -585,11 +596,7 @@
 
 <script>
     let currentPage = 1; // Start with the first page
-    const itemsPerPage = {
-        {
-            config('constants.per_page')
-        }
-    }; // Items per page
+    const itemsPerPage ="{{config('constants.per_page')}}";
     // Function to render pagination buttons
 
 
@@ -603,6 +610,7 @@
         let orderNumber = $("#order_number").val();
         let filterValue = $('#filtersValue').val();
         let locationType = $("#location_type").val();
+        let issueType = $("#issue_type").val();
 
 
         // Clear the pagination container
@@ -670,7 +678,8 @@
                 'name': name,
                 'telephone': telephone,
                 'orderNumber': orderNumber,
-                'locationType': locationType
+                'locationType': locationType,
+                'issueType':issueType
             };
 
             getCountData(objParams);
@@ -679,7 +688,7 @@
 
 
     function getCountData(objParams = null) {
-        var filterValue = customStartDate = customEndDate = name = telephone = orderNumber = locationType = '';
+        var filterValue = customStartDate = customEndDate = name = telephone = orderNumber = locationType = issueType='';
         var page = 1;
 
         if (objParams) {
@@ -714,6 +723,10 @@
             if (objParams.locationType != undefined || objParams.locationType != null) {
                 locationType = objParams.locationType;
             }
+
+            if (objParams.issueType != undefined || objParams.issueType != null) {
+                issueType = objParams.issueType;
+            }
         }
 
         $.ajaxSetup({
@@ -733,7 +746,8 @@
                 name: name,
                 telephone: telephone,
                 orderNumber: orderNumber,
-                locationType: locationType
+                locationType: locationType,
+                issueType:issueType
             },
             success: function(result) {
                 console.log(result.itemIssueWithCount.color_fading);
@@ -851,6 +865,7 @@
         let telephone = $("#telephone").val();
         let orderNumber = $("#order_number").val();
         let locationType = $("#location_type").val();
+        let issueType = $("#issue_type").val();
         let filterValue = $(this).attr("data-value");
 
         let objParams = {
@@ -858,7 +873,8 @@
             'name': name,
             'telephone': telephone,
             'orderNumber': orderNumber,
-            'locationType': locationType
+            'locationType': locationType,
+            'issueType':issueType
         };
 
         getCountData(objParams);
@@ -876,6 +892,7 @@
         let telephone = $("#telephone").val();
         let orderNumber = $("#order_number").val();
         let locationType = $("#location_type").val();
+        let issueType = $("#issue_type").val();
 
         $(".custom-date-search").prop("selectedIndex", 0);
 
@@ -885,7 +902,8 @@
             'name': name,
             'telephone': telephone,
             'orderNumber': orderNumber,
-            'locationType': locationType
+            'locationType': locationType,
+            'issueType':issueType
         };
 
         getCountData(objParams);
@@ -901,6 +919,7 @@
         let telephone = $("#telephone").val();
         let orderNumber = $("#order_number").val();
         let locationType = $("#location_type").val();
+        let issueType = $("#issue_type").val();
         let filterValue = $('#filtersValue').val();
 
         $(".custom-date-search").prop("selectedIndex", 0);
@@ -912,7 +931,8 @@
             'name': name,
             'telephone': telephone,
             'orderNumber': orderNumber,
-            'locationType': locationType
+            'locationType': locationType,
+            'issueType':issueType
         };
 
         getCountData(objParams);
@@ -931,6 +951,11 @@
     function handleClick(url) {
         window.location.href = url;
     }
+
+
+    $('.btn[data-toggle="collapse"]').on('click', function () {
+    $(this).find('.toggle-icon').toggleClass('fa-chevron-down fa-chevron-up');
+  });
 
 
     getCountData(null);
