@@ -246,7 +246,7 @@ class OrderController extends Controller
             $orderId = $request->input('orderId');
             $emailType = $request->input('emailType');
             $data = null;
-            if ($emailType == "before_email") 
+            if ($emailType == "before_email")
             {
                 $orderUpdateArray["before_email"] = 2;
             } else {
@@ -420,6 +420,85 @@ class OrderController extends Controller
         $ordersImagesModel->createOrderHistory($historyData);
     }
 
+    public function uploadOrderImageWithoutBase64(Request $request)
+    {
+        try {
+            $image = $thumbnail = $imageType = $imageTypeDirectory = '';
+            $status = false;
+            $imageItemId= 0;
+            $message = "Oops! We couldn't upload your image. Please check the file and try again.";
+
+            $type           = $request->imageType;
+            $itemId         = $request->item_id;
+            $orderNumber    = $request->order_num;
+            $orderId        = $request->order_id;
+            // Get the base64 string from the request
+            $adminUser      = $request->user()->id;
+
+            $uploadFolderPath   = config('constants.files.orders') . $orderNumber;
+            $thumbnailPath      = $uploadFolderPath . '/thumbnail';
+
+            if ($type == "pickup_images" || $type == "pickup_image") {
+                $imageType          = "Before Wash";
+                $imageTypeDirectory = "before";
+                $mainImagePath      = $uploadFolderPath . "/" . $imageTypeDirectory;
+                $thumbnailImagePath = $thumbnailPath . "/" . $imageTypeDirectory;
+            } else if ($type == "delivery_images" || $type == "delivery_image") {
+                $imageTypeDirectory = "after";
+                $imageType          = "After Wash";
+                $mainImagePath      = $uploadFolderPath . "/" . $imageTypeDirectory;
+                $thumbnailImagePath = $thumbnailPath . "/" . $imageTypeDirectory;
+            }
+            $historyData = [];
+
+            if( $request->has('image') ) {
+                $file = $request->file('image');
+                $newFileName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $file->getClientOriginalExtension();
+                $this->uploadMainImage( $file, $mainImagePath, $newFileName , $thumbnailImagePath );
+
+                $orderImages = [
+                    'item_id'    => $itemId,
+                    'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
+                    'imagename'  => $newFileName,
+                    'admin_user' => $adminUser,
+                    'status'     => 1,
+                ];
+
+                $ordersImagesModel = new OrderItemImage;
+                $imageItemId = $ordersImagesModel->createOrderItemImage($orderImages);
+
+                $data = [ 'image_type' => $imageType , 'imagename' => $newFileName  ];
+                $historyData[] = [
+                    'order_id'      => $orderId,
+                    'item_id'       => $itemId,
+                    'item_image_id' => $imageItemId,
+                    'action'        => "image_upload",
+                    'admin_user'    => $adminUser,
+                    'data' => json_encode($data)
+                ];
+                $this->addHistory($historyData);
+
+                $status     = true;
+                $message    = "Image uploaded successfully";
+                $baseUrl = URL::to('/');
+                $image      = $baseUrl . '/' . $mainImagePath . '/' . $newFileName;
+                $thumbnail  =  $baseUrl . '/' . $thumbnailImagePath . '/' . $newFileName;
+            }
+
+            return response()->json([
+                'success'                   => $status,
+                'image_url'                 => $image,
+                'thumbnail'                 => $thumbnail,
+                'item_id'                   => $itemId,
+                'imageType'                 => $type,
+                'item_image_id'             => $imageItemId,
+                'message'                   => $message
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("OrderController->uploadOrderImage->" . $e->getMessage());
+            return false;
+        }
+    }
     public function save(OrderSaveRequest $request)
     {
         //dd( $request->all() );
@@ -607,7 +686,7 @@ class OrderController extends Controller
     {
         try {
             $image = $thumbnail = $imageType = $imageTypeDirectory = '';
-            $status = false; 
+            $status = false;
             $imageItemId= 0;
             $message = "Oops! We couldn't upload your image. Please check the file and try again.";
 
@@ -638,7 +717,7 @@ class OrderController extends Controller
             // Remove the base64 encoding prefix (data:image/png;base64, etc.)
             $imageData = base64_decode(preg_replace('/^data:image\/\w+;base64,/', '', $base64Image));
 
-            if (!empty($imageData)) 
+            if (!empty($imageData))
             {
                 // Detect the image type (MIME type)
                 $imageInfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -668,11 +747,11 @@ class OrderController extends Controller
                 $result = $this->processBase64Image($base64Image, $mainImagePath, $thumbnailImagePath, $newFileName);
 
 
-                
-                if (!empty($result)) 
+
+                if (!empty($result))
                 {
                     $status     = true;
-                    $message    = "Image uploaded successfully"; 
+                    $message    = "Image uploaded successfully";
                     $image      = Arr::get($result, 'image');
                     $thumbnail  = Arr::get($result, 'thumbnail');
 
@@ -762,7 +841,7 @@ class OrderController extends Controller
 
     public function saveItemIssue(Request $request)
     {
-        try 
+        try
         {
 
             $itemId             = $request->itemId;
@@ -783,16 +862,16 @@ class OrderController extends Controller
 
             $isInserted = OrderItemIssue::insert($orderItemIssue);
 
-            if ($isInserted) 
+            if ($isInserted)
             {
                 //update order item field is_issue_identify
                 OrderItem::where('id', $itemId)->update(['is_issue_identify' => 2]);
-                
+
                 return response()->json([
                     'status'                   => true,
                     'message'                  => "Issues Saved successfully!!"
                 ]);
-            } else 
+            } else
             {
                 return response()->json([
                     'status'                   => false,
@@ -800,8 +879,8 @@ class OrderController extends Controller
                 ]);
             }
 
-            
-            
+
+
         } catch (\Exception $e) {
             \Log::error("OrderController->saveItemIssue->" . $e->getMessage());
             return false;
@@ -811,7 +890,7 @@ class OrderController extends Controller
 
     public function removeItemIssue(Request $request)
     {
-        try 
+        try
         {
             $itemId             = $request->itemId;
 
@@ -832,15 +911,15 @@ class OrderController extends Controller
         }
     }
 
-    
+
     public function isItemIssueFixed(Request $request)
     {
-        try 
+        try
         {
             $itemId             = $request->itemId;
             $isIssueFixed       = $request->isIssueFixed;
 
-            
+
             //update order item field is_issue_identify is yes mean 2
             if($isIssueFixed == 2)
             {
@@ -849,7 +928,7 @@ class OrderController extends Controller
             {
                 OrderItem::where(['id'=> $itemId])->update(['is_issue_fixed' => $isIssueFixed]);
             }
-            
+
 
             return response()->json([
                 'status'                   => true,

@@ -117,7 +117,7 @@
                     <h1 class="modal-title fs-5" id="itemIssuesLabel">The item contains issues</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
+
                 <div class="modal-body">
                 <div class="alert alert-danger"  id="errorIssuesMessage"   style="display:none"></div>
                 <div class="alert alert-success" id="successIssuesMessage" style="display:none"></div>
@@ -168,7 +168,7 @@
                 </button>
             </div>
             <!-- <div class="mb-3 update-order-button-div">
-                
+
                 <button type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"> Update order </button>
             </div> -->
 
@@ -369,12 +369,12 @@
                                     <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
                                         <input value="" type="file" class="form-control img-upload-input"
                                                name="image[{{$item->id}}][pickup_images][]" placeholder="" accept="image/png, image/jpeg, image/jpg" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
-                                               
+
                                         <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
                                             <small>Item having Issue:</small>
                                             <div class="d-flex gap-2">
                                                 <div class="form-check form-check-inline d-flex align-items-center gap-1">
-                                                    <input class="form-check-input yesfault" type="radio" data-barcode="{{$item->barcode}}" data-item="{{$item->id}}" name="is_issue_identify[{{$item->id}}]" id="yesfault-{{$item->id}}" value="2" data-bs-toggle="modal" data-bs-target="#itemissues" 
+                                                    <input class="form-check-input yesfault" type="radio" data-barcode="{{$item->barcode}}" data-item="{{$item->id}}" name="is_issue_identify[{{$item->id}}]" id="yesfault-{{$item->id}}" value="2" data-bs-toggle="modal" data-bs-target="#itemissues"
                                                     data-saved-issue-{{$item->id}}=@if(!empty($item->issues)) "{{ implode(',', $item->issues->map(fn($row) => Arr::get($row->toArray(), 'issue'))->sort()->toArray()) }}" @else "" @endif
                                                     @if( $item->is_issue_identify == 2 ) checked @endif >
                                                     <label class="form-check-label" for="yesfault">Yes</label>
@@ -387,13 +387,13 @@
                                         </div>
                                     </div>
                                     @if(!empty($item->issues))
-                                        
+
                                         <div class="form-check-label text-capitalize d-flex gap-2 flex-wrap mt-2 w-50 issuesPills " for="color fading" id="savedOrderItemIssues-{{$item->id}}">
                                             @foreach($item->issues as $row)
                                                 <span class="rounded-pill badge-sm badge p-1 bg-theme-yellow text-dark">{{config('constants.issues.'.Arr::get($row, 'issue'))}}</span>
                                             @endforeach
                                         </div>
-                                    
+
                                     @endif
                                     <!-- <div>
                                         <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"
@@ -401,7 +401,7 @@
                                     </div> -->
                                     <div class="items-images-sec mt-3" id="items-images-sec-pickup_images-{{ $item->id }}">
                                     @if( $item->images->isNotEmpty() )
-                                    
+
                                         @foreach ($item->images as $image)
                                         @if( $image->image_type == "Before Wash" )
                                           <?php
@@ -423,10 +423,10 @@
                                         </div>
                                         @endif
                                         @endforeach
-                                   
+
                                     @endif
 
-                                    
+
                                     </div>
 
                                 </div>
@@ -434,7 +434,7 @@
                                 <div class="col-lg-6 pb-1 pt-3  border-light">
                                     <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
                                     <div class="upload-img-input-sec" id="image-upload-container-delivery_images-{{ $item->id }}">
-                                        <input value="" type="file" class="form-control img-upload-input" name="image[{{$item->id}}][delivery_images][]" placeholder=""  accept="image/png, image/jpeg, image/jpg" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="delivery_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
+                                        <input value="" type="file" class="form-control img-upload-input-after" name="image[{{$item->id}}][delivery_images][]" placeholder=""  accept="image/png, image/jpeg, image/jpg" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="delivery_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
                                         <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
                                             <small>Issue Fixed:</small>
                                             <div class="d-flex gap-2">
@@ -453,12 +453,12 @@
                                     <!-- <div>
                                         <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"  onclick="addMoreImageUpload({{ $item->id }},'delivery_images')">Add More</button>
                                     </div> -->
-                                    
+
                                     <div class="items-images-sec mt-3" id="items-images-sec-delivery_images-{{ $item->id }}">
-                                   
+
 
                                     @if( $item->images->isNotEmpty() )
-                                   
+
                                         @foreach ($item->images as $image)
                                         @if( $image->image_type == "After Wash" )
                                             <?php
@@ -479,7 +479,7 @@
                                         </div>
                                         @endif
                                         @endforeach
-                                   
+
                                     @endif
                                     </div>
                                 </div>
@@ -580,17 +580,17 @@ $(document).ready(function() {
                 isIssueFixed:isIssueFixed
             },
             success: function(response) {
-                
+
             }
         });
-        
+
     });
 
     $(document).on('click', '.yesfault', function(event) {
         var itemId = $(this).data('item');
         var itemBarcode = $(this).data('barcode'); // Get the 'data-item' value of the clicked radio button
-        var savedIssues = $(this).data('saved-issue-'+itemId); 
-        
+        var savedIssues = $(this).data('saved-issue-'+itemId);
+
         $('#modal_item_id').val(itemId); // Set the modal content with the item data
         $('#itemIssuesBarcode').text(itemBarcode);
 
@@ -600,11 +600,11 @@ $(document).ready(function() {
         if (savedIssues.includes(',')) {
             // Multiple values (comma-separated)
             var issueArray = savedIssues.split(',');  // Convert the string to an array
-            
+
         } else {
             // Single value
             var issueArray = [savedIssues];  // Treat it as a single value in an array
-            
+
         }
 
         // Check if savedIssues contains a comma (i.e., multiple values) or is a single value
@@ -631,7 +631,7 @@ $(document).ready(function() {
                 }
             }
         });
-        
+
     });
 
     //savedOrderItemIssues
@@ -641,7 +641,7 @@ $(document).ready(function() {
 
         // Show confirmation dialog
         var confirmAction = confirm('Are you sure you want to remove the issue for this item?');
-        
+
         // If the user confirms, proceed with the action
         if (confirmAction) {
             // Empty the HTML content and set attribute to empty
@@ -679,7 +679,7 @@ $(document).ready(function() {
         var itemId =  $('#modal_item_id').val(); //itemIssueList
 
         var itemIssueList = [];
-        
+
         // Iterate over each checkbox with the 'itemIssueList' class
         $('.itemIssueList:checked').each(function() {
             itemIssueList.push($(this).val()); // Push the value of the checkbox
@@ -688,9 +688,9 @@ $(document).ready(function() {
 
 
         // Validation: Check if no checkboxes are selected
-        if (itemIssueList.length === 0) 
+        if (itemIssueList.length === 0)
         {
-            $(".loader").hide(); 
+            $(".loader").hide();
             $('#errorIssuesMessage').show(); // Show the error message
             $('#errorIssuesMessage').html('Please select at least one issue to proceed.'); // Display the error text
             return; // Stop further execution
@@ -709,7 +709,7 @@ $(document).ready(function() {
                 itemIssueList: itemIssueList
             },
             success: function(response) {
-                if (response.status) 
+                if (response.status)
                 {
                     $('#successIssuesMessage').show();
                     $('#successIssuesMessage').html(response.message);
@@ -718,18 +718,18 @@ $(document).ready(function() {
 
                     $(".loader").hide(); //
                     setTimeout(() => {
-                       
+
                         location.reload(); // Refresh the page to reflect changes
                     }, 1000);
-                   
-                } else 
+
+                } else
                 {
                     $('#errorIssuesMessage').show();
                     $('#errorIssuesMessage').html(response.message);
                     $(".loader").hide(); //
                 }
             },
-            error: function(xhr, status, error) 
+            error: function(xhr, status, error)
             {
                 $('#errorIssuesMessage').show();
                 $('#errorIssuesMessage').html("Something went wrong. Please try again.");
@@ -737,7 +737,7 @@ $(document).ready(function() {
             }
         });
 
-        
+
     });
 
     // Handle delete button click

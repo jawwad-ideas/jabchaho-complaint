@@ -1492,6 +1492,11 @@ ul.btn-toggle-nav li {
 .orderItemSec.itemForm .inner-row .form-control.img-upload-input{
     width: 50%;
 }
+
+.orderItemSec.itemForm .inner-row .form-control.img-upload-input-after{
+    width: 50%;
+}
+
 .checkListBeforeWashModal .form-check-list {
     display: flex;
     flex-wrap: wrap;
@@ -1622,6 +1627,10 @@ ul.btn-toggle-nav li {
         font-size: 12px;
     }
     .orderItemSec.itemForm .inner-row .form-control.img-upload-input{
+        width: 100%;
+    }
+
+    .orderItemSec.itemForm .inner-row .form-control.img-upload-input-after{
         width: 100%;
     }
 

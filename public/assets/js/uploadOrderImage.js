@@ -9,7 +9,69 @@ $(document).ready(function () {
     let imageData;
     let reader = new FileReader();
 
-    
+    $('.img-upload-input-after').on('change', function (e) {
+        const itemId = $(this).data('item-id');
+        const itemType = $(this).data('item-type');
+        const orderNum = $(this).data('order-num');
+        const orderId = $(this).data('order-id');
+        const file = e.target.files[0];
+
+        if (!file) {
+            alert('Please select a file.');
+            return;
+        }
+
+        activeItemId = itemId;
+        activeItemType = itemType;
+        activeOrderNum = orderNum;
+        activeOrderId = orderId;
+
+        let formData = new FormData();
+        formData.append('image', file);
+        formData.append('item_id', itemId);
+        formData.append('imageType', itemType);
+        formData.append('order_num', orderNum);
+        formData.append('order_id', orderId);
+        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+        var url = '/upload-order-image-whithoutbase64';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: formData,
+            processData: false, // Required for FormData
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    const imageHtml = `
+                            <div class="img-item">
+                                <a href="${response.image_url}" target="_blank">
+                                    <img class="img-thumbnail" src="${response.image_url}" alt="Edited Image">
+                                </a>
+                                <div class="item-img-action-btn">
+                                    <button class="btn btn-danger btn-sm delete-image ms-2" title="Delete" data-image-id="${response.item_image_id}" data-order-number="${activeOrderNum}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    $(`#items-images-sec-${activeItemType}-${activeItemId}`).append(imageHtml);
+
+
+                    $(`#uploadImage-${activeItemId}`).val('');
+                    $('.img-upload-input-after').val('');
+
+                    imageLoaded = false;
+
+                } else {
+                    alert('Failed to save image.');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred while saving the image. Check the console for details.');
+            }
+        });
+    });
 
     $('.img-upload-input').on('change', function (e) {
         const itemId = $(this).data('item-id');
@@ -23,7 +85,7 @@ $(document).ready(function () {
             $(".modal-body .toolbar").attr("style", "display: none !important;");
             $("#clearCanvasBtn").attr("style", "display: none !important;");
             $('#imageModalLabel').text("After Wash Image");
-            
+
         }else{
             $('#imageModalLabel').text("Mark The Affected Areas!");
 
@@ -41,7 +103,7 @@ $(document).ready(function () {
         }
     });
 
-    
+
 
 
     $('#imageModal').on('shown.bs.modal', function () {

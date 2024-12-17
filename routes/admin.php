@@ -147,9 +147,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         });
 
         Route::post('/upload-order-image', 'OrderController@uploadOrderImage')->name('upload.order.image');
+        Route::post('/upload-order-image-whithoutbase64', 'OrderController@uploadOrderImageWithoutBase64')->name('upload.order.image.whithoutbase64');
     });
 
-   
+
 });
 
 Route::post('/save-item-issue', 'App\Http\Controllers\Backend\OrderController@saveItemIssue')->name('save.item.issue');
