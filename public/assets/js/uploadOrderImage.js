@@ -33,6 +33,7 @@ $(document).ready(function () {
         formData.append('order_num', orderNum);
         formData.append('order_id', orderId);
         formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+        $(".loader").addClass("show");
 
         var url = '/upload-order-image-whithoutbase64';
         $.ajax({
@@ -42,6 +43,7 @@ $(document).ready(function () {
             processData: false, // Required for FormData
             contentType: false,
             success: function (response) {
+
                 if (response.success) {
                     const imageHtml = `
                             <div class="img-item">
@@ -66,9 +68,12 @@ $(document).ready(function () {
                 } else {
                     alert('Failed to save image.');
                 }
+                $(".loader").removeClass("show");
             },
+
             error: function (xhr, status, error) {
                 alert('An error occurred while saving the image. Check the console for details.');
+                $(".loader").removeClass("show");
             }
         });
     });
@@ -208,7 +213,7 @@ $(document).ready(function () {
                 format: 'png',
                 quality: 1
             });
-
+            $(".loader").addClass("show");
             var url = '/upload-order-image';
             $.ajax({
                 url: url,
@@ -254,9 +259,12 @@ $(document).ready(function () {
                     } else {
                         alert('Failed to save image.');
                     }
+
+                    $(".loader").removeClass("show");
                 },
                 error: function (xhr, status, error) {
                     alert('An error occurred while saving the image. Check the console for details.');
+                    $(".loader").removeClass("show");
                 }
             });
         }
