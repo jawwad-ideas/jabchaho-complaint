@@ -80,17 +80,15 @@ $(document).ready(function () {
         const orderId = $(this).data('order-id');
         const file = this.files[0];
 
+
         console.log(itemType);
-        if(itemType =='delivery_images'){
-            $(".modal-body .toolbar").attr("style", "display: none !important;");
+        if (itemType == 'delivery_images') {
             $("#clearCanvasBtn").attr("style", "display: none !important;");
             $('#imageModalLabel').text("After Wash Image");
 
-        }else{
-            $('#imageModalLabel').text("Mark The Affected Areas!");
-
-            $(".modal-body .toolbar").attr("style", "display: flex !important;");
+        } else {
             $("#clearCanvasBtn").attr("style", "display: flex !important;");
+            $('#imageModalLabel').text("Mark The Affected Areas!");
         }
 
         if (file) {
@@ -100,6 +98,7 @@ $(document).ready(function () {
             activeOrderId = orderId;
             reader.value = null;
             reader.readAsDataURL(file);
+
         }
     });
 
@@ -109,7 +108,11 @@ $(document).ready(function () {
     $('#imageModal').on('shown.bs.modal', function () {
         const modalBody = $('#imageModal .modal-body');
         const modalWidth = modalBody.width();
-        const modalHeight = modalBody.height();
+        var modalHeight = modalBody.height();
+
+        const screenHeight = window.innerHeight;
+        modalHeight = screenHeight / 2;
+
         if (!canvas) {
             canvas = new fabric.Canvas('imageCanvas');
         }
@@ -119,8 +122,6 @@ $(document).ready(function () {
 
         if (!imageLoaded) {
             imageLoaded = true;
-            // console.log(imageData)
-            // console.log(fabric.Image);
             fabric.Image.fromURL(imageData, function (img) {
                 const scaleWidth = modalWidth / img.width;
                 const scaleHeight = modalHeight / img.height;
@@ -128,7 +129,7 @@ $(document).ready(function () {
                 img.scale(scale);
                 img.set({
                     left: (modalWidth - img.getScaledWidth()) / 2,
-                    top: (modalHeight - img.getScaledHeight()) / 5,
+                    top: (modalHeight - img.getScaledHeight()) / 2,
                     selectable: false
                 });
                 canvas.add(img);
@@ -137,42 +138,43 @@ $(document).ready(function () {
             });
         }
 
-        // canvas.isDrawingMode = true;
-        // canvas.freeDrawingBrush.color = 'red';
-        // canvas.freeDrawingBrush.width = 5;
+        canvas.isDrawingMode = true;
+        canvas.freeDrawingBrush.color = 'red';
+        canvas.freeDrawingBrush.width = 5;
 
-        $('#pencilTool').on('click', function () {
-            canvas.isDrawingMode = true;
-            canvas.freeDrawingBrush.color = 'red';
-            canvas.freeDrawingBrush.width = 5;
-        });
-        $('#circleTool').on('click', function () {
-            canvas.isDrawingMode = false;
-            const circle = new fabric.Circle({
-                radius: 50,
-                fill: 'transparent',
-                stroke: 'red',
-                strokeWidth: 2,
-                left: canvas.width / 2 - 50,
-                top: canvas.height / 2 - 50,
-                selectable: true
-            });
-            canvas.add(circle);
-        });
-        $('#squareTool').on('click', function () {
-            canvas.isDrawingMode = false;
-            const square = new fabric.Rect({
-                width: 100,
-                height: 100,
-                fill: 'transparent',
-                stroke: 'red',
-                strokeWidth: 2,
-                left: canvas.width / 2 - 50,
-                top: canvas.height / 2 - 50,
-                selectable: true
-            });
-            canvas.add(square);
-        });
+        // $('#pencilTool').on('click', function () {
+        //     canvas.isDrawingMode = true;
+        //     canvas.freeDrawingBrush.color = 'red';
+        //     canvas.freeDrawingBrush.width = 5;
+        // });
+        // $('#circleTool').on('click', function () {
+        //     canvas.isDrawingMode = false;
+        //     const circle = new fabric.Circle({
+        //         radius: 50,
+        //         fill: 'transparent',
+        //         stroke: 'red',
+        //         strokeWidth: 2,
+        //         left: canvas.width / 2 - 50,
+        //         top: canvas.height / 2 - 50,
+        //         selectable: true
+        //     });
+        //     canvas.add(circle);
+        // });
+        // $('#squareTool').on('click', function () {
+        //     canvas.isDrawingMode = false;
+        //     const square = new fabric.Rect({
+        //         width: 100,
+        //         height: 100,
+        //         fill: 'transparent',
+        //         stroke: 'red',
+        //         strokeWidth: 2,
+        //         left: canvas.width / 2 - 50,
+        //         top: canvas.height / 2 - 50,
+        //         selectable: true
+        //     });
+        //     canvas.add(square);
+        // });
+
     });
 
     $('#imageModal').on('hidden.bs.modal', function (e) {
