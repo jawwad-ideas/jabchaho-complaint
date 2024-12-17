@@ -101,7 +101,7 @@
                 @endforeach
             </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" >
                 <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button data-order-id="{{ $order->id }}" data-email-type="before_email" type="button"  class="sendEmailBeforeWashBtn btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold">Send Email</button>
             </div>

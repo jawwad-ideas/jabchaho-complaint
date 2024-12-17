@@ -16,7 +16,7 @@ $(document).ready(function () {
         const orderId = $(this).data('order-id');
         const file = e.target.files[0];
 
-        if (!file) {
+        if (!file) { 
             alert('Please select a file.');
             return;
         }
