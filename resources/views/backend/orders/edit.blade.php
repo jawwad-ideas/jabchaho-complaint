@@ -167,17 +167,10 @@
                     {{$sendFinalEmailTitle}}
                 </button>
             </div>
-<<<<<<< HEAD
-            <!-- <div class="mb-3 update-order-button-div">
-
-                <button type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"> Update order </button>
-            </div> -->
-=======
             <div class="mb-3 update-order-button-div">
 
                 <button type="button" id="updateOrderTopButton" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"> Update Order </button>
             </div>
->>>>>>> e40ab14945fdb103d84c5eaa6799831bd5d7b3f2
 
 
         {{--<div class="mb-3 complete-button-div">
@@ -747,13 +740,10 @@ $(document).ready(function() {
 
     });
 
-<<<<<<< HEAD
-=======
     $(document).on('click', '#updateOrderTopButton', function(event) {
         console.log("click btn");
         $("#UpdateOrderBtn").click();
     })
->>>>>>> e40ab14945fdb103d84c5eaa6799831bd5d7b3f2
     // Handle delete button click
     $(document).on('click', '.delete-image', function(event) {
         event.preventDefault(); // Prevent any default action (just in case)
