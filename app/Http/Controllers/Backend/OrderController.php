@@ -37,7 +37,9 @@ class OrderController extends Controller
     public function itemImage(Request $request)
     {
 
-        $orderItemImage = OrderItemImage::with(['orderItem.order','orderItem.issues'])->orderBy('id', 'desc');
+        $orderItemImage = OrderItemImage::with(['orderItem.order','orderItem.issues'])
+            ->where('status', 1)
+            ->orderBy('id', 'desc');
 
         $filterData = [
             'barcode'               => $request->get('barcode', ''),
