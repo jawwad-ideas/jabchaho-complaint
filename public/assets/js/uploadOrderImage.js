@@ -16,7 +16,7 @@ $(document).ready(function () {
         const orderId = $(this).data('order-id');
         const file = e.target.files[0];
 
-        if (!file) { 
+        if (!file) {
             alert('Please select a file.');
             return;
         }
@@ -98,7 +98,7 @@ $(document).ready(function () {
             activeOrderId = orderId;
             reader.value = null;
             reader.readAsDataURL(file);
-            
+
         }
     });
 
@@ -174,7 +174,7 @@ $(document).ready(function () {
         //     });
         //     canvas.add(square);
         // });
-        
+
     });
 
     $('#imageModal').on('hidden.bs.modal', function (e) {
@@ -245,6 +245,7 @@ $(document).ready(function () {
 
                         $('#imageModal').modal('hide');
                         imageLoaded = false;
+
                         if( !response.disableAfterUploadInput  ){
                             $(".img-upload-input-after").attr("disabled", false);
                         }

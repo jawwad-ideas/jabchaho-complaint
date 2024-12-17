@@ -65,7 +65,41 @@
 .item-img-action-btn .delete-image i.fa.fa-trash {
     font-size: 11px;
 }
+.page-title-section.sticky {
+    position: sticky;
+    top: 0;
+    background: #fbee7e !important;
+    padding: 30px 60px 30px 80px;
+    z-index: 1;
+}
+@media only screen and (max-width: 600px) {
+    .page-title-section.sticky {
+        padding: 10px 0 15px !IMPORTANT;
+    }
+}
 </style>
+
+<script>
+    document.addEventListener('scroll', () => {
+        const pageTitleSection = document.querySelector('.page-title-section');
+
+        if (pageTitleSection) {
+
+            console.log("window scroll value:"+ window.scrollY);
+            console.log("page title top value:"+ pageTitleSection.offsetTop);
+
+
+            const pageTitleSectionTop = pageTitleSection.offsetTop-10;
+
+            if (window.scrollY >= pageTitleSectionTop) {
+                pageTitleSection.classList.add('sticky');
+                // pageTitleSection.style.top =
+            } else {
+                pageTitleSection.classList.remove('sticky');
+            }
+        }
+    });
+</script>
 @section('content')
 <div
     class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
@@ -74,43 +108,43 @@
     </div>
 
         <!-- Modal -->
-        <div class="modal fade checkListBeforeWashModal" id="checkListBeforeWash" tabindex="-1" aria-labelledby="checkListBeforeWashLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="checkListBeforeWashLabel">Send Email Before Wash</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
+        <!-- <div class="modal fade checkListBeforeWashModal" id="checkListBeforeWash" tabindex="-1" aria-labelledby="checkListBeforeWashLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="checkListBeforeWashLabel">Send Email Before Wash</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
 
-            <div class="form-floating">
-                <textarea class="form-control mt-3 mb-2" placeholder="Before Wash Order Remarks" id="floatingbeforewashremarks" style="height:200px;"></textarea>
-                <label for="floatingbeforewashremarks" >Before Wash Order Remarks</label>
-            </div>
+                <div class="form-floating">
+                    <textarea class="form-control mt-3 mb-2" placeholder="Before Wash Order Remarks" id="floatingbeforewashremarks" style="height:200px;"></textarea>
+                    <label for="floatingbeforewashremarks" >Before Wash Order Remarks</label>
+                </div>
 
-                <?php
-                    $beforeWashCheckList = "color fading, iron shine ,burn, shrinkage, tears and torn, holes, missed button,stitching,embroidery,missed logo, lint, rexine, sole damaged, snagging, rust, food, ink, paint, oil, hard, color stains";
-                    $beforeWashCheckListArr = explode(",", $beforeWashCheckList);
-                ?>
-            <div class="form-check-list">
-                @foreach ($beforeWashCheckListArr as $listItem)
-                    <div class="form-check">
-                        <input class="form-check-input beforeWashCheckListItem" type="checkbox" value="{{$listItem}}" id="{{$listItem}}" >
-                        <label class="form-check-label text-capitalize" for="{{$listItem}}">{{$listItem}}</label>
-                    </div>
-                @endforeach
+                    <?php
+                        $beforeWashCheckList = "color fading, iron shine ,burn, shrinkage, tears and torn, holes, missed button,stitching,embroidery,missed logo, lint, rexine, sole damaged, snagging, rust, food, ink, paint, oil, hard, color stains";
+                        $beforeWashCheckListArr = explode(",", $beforeWashCheckList);
+                    ?>
+                <div class="form-check-list">
+                    @foreach ($beforeWashCheckListArr as $listItem)
+                        <div class="form-check">
+                            <input class="form-check-input beforeWashCheckListItem" type="checkbox" value="{{$listItem}}" id="{{$listItem}}" >
+                            <label class="form-check-label text-capitalize" for="{{$listItem}}">{{$listItem}}</label>
+                        </div>
+                    @endforeach
+                </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button data-order-id="{{ $order->id }}" data-email-type="before_email" type="button"  class="sendEmailBeforeWashBtn btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold">Send Email</button>
+                </div>
+                </div>
             </div>
-            </div>
-            <div class="modal-footer" >
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button data-order-id="{{ $order->id }}" data-email-type="before_email" type="button"  class="sendEmailBeforeWashBtn btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold">Send Email</button>
-            </div>
-            </div>
-        </div>
-        </div>
+        </div> -->
 
         <!--item issue modal start-->
-    <div class="modal fade itemIssuesModal" id="itemIssues" tabindex="-1" aria-labelledby="itemIssuesLabel" aria-hidden="true">
+    <div class="modal fade itemIssuesModal" id="itemIssues" tabindex="-1" data-bs-backdrop="" data-backdrop="false" aria-labelledby="itemIssuesLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -147,7 +181,7 @@
 
 
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
-        <div class="btn-group order-action-btns" role="group">
+        <div class="btn-group order-action-btns flex-wrap justify-content-center" role="group">
 
             <div class="mb-3 complete-button-div" @if ( $showCompleteButton ) style="display:block;" @else style="display:none;" @endif >
                 <button data-order-id="{{ $order->id }}" type="button" class="complete-order btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
@@ -167,17 +201,11 @@
                     {{$sendFinalEmailTitle}}
                 </button>
             </div>
-<<<<<<< HEAD
-            <!-- <div class="mb-3 update-order-button-div">
 
-                <button type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"> Update order </button>
-            </div> -->
-=======
             <div class="mb-3 update-order-button-div">
 
                 <button type="button" id="updateOrderTopButton" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"> Update Order </button>
             </div>
->>>>>>> e40ab14945fdb103d84c5eaa6799831bd5d7b3f2
 
 
         {{--<div class="mb-3 complete-button-div">
@@ -235,7 +263,7 @@
                     </div>
 
                     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="imageModalLabel">Mark The Effected Areas!</h5>
@@ -243,16 +271,16 @@
                                 </div>
                                 <div class="modal-body">
                                 <div class="toolbar mb-3 d-flex align-items-center justify-content-end gap-2">
-                                    <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="pencilTool"><i class="fa fa-pencil"></i>Draw</button>
-                                    <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="circleTool"><i class="fa fa-circle"></i>Circle</button>
-                                    <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="squareTool"><i class="fa fa-square"></i>Square</button>
-                                </div>
-                                    <canvas id="imageCanvas" width="500" height="500" style="border: 1px solid #ccc;"></canvas>
-                                </div>
-                                <div class="modal-footer">
                                     <button type="button" id="clearCanvasBtn" class="btn btn-sm btn-danger rounded border-0 fw-bold d-flex align-items-center p-2 gap-2"><i class="fa fa-solid fa-eraser"></i> Remove Marking</button>
                                     <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="saveImage"><i class="fa fa-solid fa-upload"></i> Upload Image</button>
+                                    <!-- <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="pencilTool"><i class="fa fa-pencil"></i>Draw</button> -->
+                                    <!-- <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="circleTool"><i class="fa fa-circle"></i>Circle</button>
+                                    <button type="button" class="btn btn-sm rounded bg-theme-yellow text-dark border-0 fw-bold d-flex align-items-center p-2 gap-2" id="squareTool"><i class="fa fa-square"></i>Square</button> -->
                                 </div>
+                                    <canvas id="imageCanvas" style="border: 1px solid #ccc;"></canvas>
+                                </div>
+                                <!-- <div class="modal-footer">
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -352,8 +380,8 @@
 
                     @foreach ($order->orderItems as $item)
                     <div class="itemForm orderItemSec border-bottom border-2">
-                        <div class="item-form-row p-3 bg-light rounded border-light">
-                            <div class="itemLabel">
+                        <div class="item-form-row p-xl-3 p-lg-3 p-md-3 p-sm-0 bg-light rounded border-light">
+                            <div class="itemLabel p-3">
                                 <label class="d-flex">
                                     <h6 class="d-inline-block fw-bold"> Service Type: </h6>
                                     <span> {{$item->service_type}} </span>
@@ -367,8 +395,8 @@
                                     <span> {{$item->barcode}} </span>
                                 </label>
                             </div>
-                            <div class="inner-row d-xl-flex d-lg-flex d-md-block justify-content-between pb-2 gap-4">
-                                <div class="col-lg-6 pb-1 pt-3 border-light">
+                            <div class="inner-row d-xl-flex d-lg-flex d-md-block justify-content-between pb-2 gap-0">
+                                <div class="col-lg-6 pb-1 pt-3 border-light px-3" style="border-bottom: 4px double;border-color: #f7e441 ! IMPORTANT;background: #eee;">
                                     <div class="d-flex align-items-center gap-3">
                                         <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
                                     </div>
@@ -381,7 +409,7 @@
                                             <small>Item having Issue:</small>
                                             <div class="d-flex gap-2">
                                                 <div class="form-check form-check-inline d-flex align-items-center gap-1">
-                                                    <input class="form-check-input yesfault" type="radio" data-barcode="{{$item->barcode}}" data-item="{{$item->id}}" name="is_issue_identify[{{$item->id}}]" id="yesfault-{{$item->id}}" value="2" data-bs-toggle="modal" data-bs-target="#itemissues"
+                                                    <input class="form-check-input yesfault" type="radio" data-barcode="{{$item->barcode}}" data-item="{{$item->id}}" name="is_issue_identify[{{$item->id}}]" id="yesfault-{{$item->id}}" value="2"
                                                     data-saved-issue-{{$item->id}}=@if(!empty($item->issues)) "{{ implode(',', $item->issues->map(fn($row) => Arr::get($row->toArray(), 'issue'))->sort()->toArray()) }}" @else "" @endif
                                                     @if( $item->is_issue_identify == 2 ) checked @endif >
                                                     <label class="form-check-label" for="yesfault">Yes</label>
@@ -418,6 +446,11 @@
                                               if(  !\Illuminate\Support\Facades\File::exists($isBeforeThumbnail)  ){
                                                   $beforeThumbnail = $beforeMainImage;
                                               }
+
+                                              $isBeforeMainImage = public_path(config('constants.files.orders')).'/'.$order->order_id.'/before/'.$image->imagename;
+                                              if( !\Illuminate\Support\Facades\File::exists($isBeforeMainImage)  ){
+                                                  $beforeMainImage = $beforeThumbnail;
+                                              }
                                           ?>
 
                                         <div class="img-item">
@@ -438,7 +471,7 @@
 
                                 </div>
 
-                                <div class="col-lg-6 pb-1 pt-3  border-light">
+                                <div class="col-lg-6 pb-1 pt-3 border-light px-3" style="background: #fbee7e4f;">
                                     <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
                                     <div class="upload-img-input-sec" id="image-upload-container-delivery_images-{{ $item->id }}">
                                         <input @if( $disableAfterUploadInput ) disabled @endif value="" type="file" class="form-control img-upload-input-after" name="image[{{$item->id}}][delivery_images][]" placeholder=""  accept="image/png, image/jpeg, image/jpg" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="delivery_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
@@ -474,6 +507,11 @@
                                             $isAfterThumbnail = public_path(config('constants.files.orders')).'/'.$order->order_id.'/thumbnail/after/'.$image->imagename;
                                             if( !\Illuminate\Support\Facades\File::exists($isAfterThumbnail)  ){
                                                 $afterThumbnail = $afterMainImage;
+                                            }
+
+                                            $isAfterMainImage = public_path(config('constants.files.orders')).'/'.$order->order_id.'/after/'.$image->imagename;
+                                            if( !\Illuminate\Support\Facades\File::exists($isAfterMainImage)  ){
+                                                $afterMainImage = $afterThumbnail;
                                             }
                                             ?>
                                         <div class="img-item">
@@ -524,7 +562,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <button type="submit" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3"> Update order </button>
+                        <button type="submit" id="UpdateOrderBtn" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3"> Update Order </button>
                         <a href="{{ route('orders.index') }}/{{$order->status}}" class="btn bg-theme-dark-300 text-light">Back</a>
                     </div>
                 </div>
@@ -568,8 +606,6 @@
     // }
 
 $(document).ready(function() {
-
-
     $(document).on('click', '.issueFixed', function(event) {
         var itemId = $(this).data('item');
         var isIssueFixed =  $(this).val();
@@ -594,6 +630,10 @@ $(document).ready(function() {
     });
 
     $(document).on('click', '.yesfault', function(event) {
+        $("#itemIssues").modal({
+            backdrop:false,
+        });
+        $("#itemIssues").modal('show');
         var itemId = $(this).data('item');
         var itemBarcode = $(this).data('barcode'); // Get the 'data-item' value of the clicked radio button
         var savedIssues = $(this).data('saved-issue-'+itemId);
@@ -747,13 +787,10 @@ $(document).ready(function() {
 
     });
 
-<<<<<<< HEAD
-=======
     $(document).on('click', '#updateOrderTopButton', function(event) {
         console.log("click btn");
         $("#UpdateOrderBtn").click();
     })
->>>>>>> e40ab14945fdb103d84c5eaa6799831bd5d7b3f2
     // Handle delete button click
     $(document).on('click', '.delete-image', function(event) {
         event.preventDefault(); // Prevent any default action (just in case)
