@@ -244,6 +244,9 @@ $(document).ready(function () {
                         $('#imageModal').modal('hide');
                         imageLoaded = false;
 
+                        if( !response.disableAfterUploadInput  ){
+                            $(".img-upload-input-after").attr("disabled", false);
+                        }
 
                         canvas.clear();
                     } else {

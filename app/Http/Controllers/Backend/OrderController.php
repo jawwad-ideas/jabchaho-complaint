@@ -330,22 +330,19 @@ class OrderController extends Controller
             $query->where('status', 1);
         },'orderItems.issues'])->find($orderId);
 
+        $disableAfterUploadInput = false;
         $beforeEmailShow = $afterEmailShow = false;
         foreach ($order->orderItems as $item):
+            if( $item->images->isEmpty() ){
+                $disableAfterUploadInput = true;
+            }
             foreach ($item->images as $image):
-                if ($afterEmailShow && $beforeEmailShow):
-                    break;
-                endif;
                 if ($image->image_type == "After Wash"):
                     $afterEmailShow = true;
-                    break;
                 elseif ($image->image_type == "Before Wash"):
                     $beforeEmailShow = true;
                 endif;
             endforeach;
-            if ($afterEmailShow && $beforeEmailShow):
-                break;
-            endif;
         endforeach;
 
         return view('backend.orders.edit', [
@@ -354,7 +351,8 @@ class OrderController extends Controller
             'sendFinalEmail'       => $afterEmailShow,
             'sendFinalEmailTitle'       => ($order->final_email == 2) ? 'Resend Email After Wash' : 'Send Email After Wash',
             'sendBeforeEmail' => $beforeEmailShow,
-            'sendBeforeEmailTitle' => ($order->before_email == 2) ? 'Resend Email Before Wash' : 'Send Email Before Wash'
+            'sendBeforeEmailTitle' => ($order->before_email == 2) ? 'Resend Email Before Wash' : 'Send Email Before Wash',
+            'disableAfterUploadInput' =>  $disableAfterUploadInput
         ]);
     }
 
@@ -782,6 +780,18 @@ class OrderController extends Controller
                 }
             }
 
+            $disableAfterUploadInput = false;
+            $orders = Order::with(['orderItems' => function ($query) {
+                $query->whereDoesntHave('images', function ($imageQuery) {
+                    $imageQuery->where('image_type', 'Before Wash')->where('status', 1);
+                });
+            }])->find($orderId);
+            $orderItemsWithoutBeforeImage = $orders->orderItems;
+            if ( !$orderItemsWithoutBeforeImage->isEmpty()) {
+                $disableAfterUploadInput = true;
+            }
+
+
             return response()->json([
                 'success'                   => $status,
                 'image_url'                 => $image,
@@ -789,7 +799,8 @@ class OrderController extends Controller
                 'item_id'                   => $itemId,
                 'imageType'                 => $type,
                 'item_image_id'             => $imageItemId,
-                'message'                   => $message
+                'message'                   => $message,
+                'disableAfterUploadInput'  => $disableAfterUploadInput
             ]);
         } catch (\Exception $e) {
             \Log::error("OrderController->uploadOrderImage->" . $e->getMessage());
