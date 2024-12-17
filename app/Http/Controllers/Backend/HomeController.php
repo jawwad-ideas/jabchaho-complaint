@@ -179,6 +179,12 @@ class HomeController extends Controller
                 $params['locationType']    = $request->get('locationType');
             }
 
+            //issueType
+            if(!empty($request->get('issueType')))
+            {
+                $params['issueType']    = $request->get('issueType');
+            }
+
             $params['page']                     = $page;
             $params['limit']                    = $limit;
 

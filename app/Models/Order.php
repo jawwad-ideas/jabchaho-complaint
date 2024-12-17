@@ -126,6 +126,7 @@ class Order extends Model
         $telephone      = Arr::get($params, 'telephone');
         $orderNumber    = Arr::get($params, 'orderNumber');
         $locationType   = Arr::get($params, 'locationType');
+        $issueType      = Arr::get($params, 'issueType');
         $startDate      = Arr::get($params, 'startDate');
         $endDate        = Arr::get($params, 'endDate');
         $page           = Arr::get($params, 'page');
@@ -165,6 +166,10 @@ class Order extends Model
             }
         }
 
+        if (!empty($issueType)) {
+            $query->where('order_item_issues.issue', '=', $issueType); // Filter by issue type
+        }
+
         return $query;
     }
 
@@ -175,14 +180,15 @@ class Order extends Model
         $customerName   = Arr::get($params, 'name');
         $telephone      = Arr::get($params, 'telephone');
         $orderNumber    = Arr::get($params, 'orderNumber');
-        $locationType    = Arr::get($params, 'locationType');
+        $locationType   = Arr::get($params, 'locationType');
+        $issueType      = Arr::get($params, 'issueType');
         $startDate      = Arr::get($params, 'startDate');
         $endDate        = Arr::get($params, 'endDate');
         $page           = Arr::get($params, 'page');
         $limit          = Arr::get($params, 'limit');
         
         $orders = Null;
-        if($customerName || $telephone || $orderNumber ||$locationType)
+        if($customerName || $telephone || $orderNumber ||$locationType ||$issueType)
         {
             
             $query = Order::select(
@@ -198,12 +204,13 @@ class Order extends Model
                 'after', // Count with image_type = 2
             ])
             ->leftjoin('order_items', 'orders.id', '=', 'order_items.order_id') // Join orders with order_items
+            ->leftjoin('order_item_issues', 'order_items.id', '=', 'order_item_issues.item_id')
             ->groupBy('orders.id')// Group by orders.id to calculate the item count
             ->orderBy('orders.created_at', 'desc');
     
                
            $queryWithFilter =  $this->filterOrdersWithItemCount($params,$query);
-    
+         
             // Apply pagination
             $orders = $queryWithFilter
             ->skip(($page - 1) * $limit)
@@ -214,6 +221,7 @@ class Order extends Model
             #########################################count query #####################################
             $countQuery = DB::table('orders')
             ->leftJoin('order_items', 'orders.id', '=', 'order_items.order_id')
+            ->leftjoin('order_item_issues', 'order_items.id', '=', 'order_item_issues.item_id')
             ->select('orders.id')
             ->groupBy('orders.id');
             
