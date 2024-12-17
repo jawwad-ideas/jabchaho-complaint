@@ -330,20 +330,34 @@ class OrderController extends Controller
             $query->where('status', 1);
         },'orderItems.issues'])->find($orderId);
 
-        $disableAfterUploadInput = false;
         $beforeEmailShow = $afterEmailShow = false;
         foreach ($order->orderItems as $item):
-            if( $item->images->isEmpty() ){
-                $disableAfterUploadInput = true;
-            }
             foreach ($item->images as $image):
+                if ($afterEmailShow && $beforeEmailShow):
+                    break;
+                endif;
                 if ($image->image_type == "After Wash"):
                     $afterEmailShow = true;
+                    break;
                 elseif ($image->image_type == "Before Wash"):
                     $beforeEmailShow = true;
                 endif;
             endforeach;
+            if ($afterEmailShow && $beforeEmailShow):
+                break;
+            endif;
         endforeach;
+
+        $disableAfterUploadInput = false;
+        $orders = Order::with(['orderItems' => function ($query) {
+            $query->whereDoesntHave('images', function ($imageQuery) {
+                $imageQuery->where('image_type', 'Before Wash')->where('status', 1);
+            });
+        }])->find($orderId);
+        $orderItemsWithoutBeforeImage = $orders->orderItems;
+        if ( !$orderItemsWithoutBeforeImage->isEmpty()) {
+            $disableAfterUploadInput = true;
+        }
 
         return view('backend.orders.edit', [
             'order' => $order,
