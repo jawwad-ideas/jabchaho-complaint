@@ -127,8 +127,8 @@
                         @if(!empty(config('constants.issues')))
                             @foreach (config('constants.issues') as $key=>$listItem)
                             <div class="form-check">
-                                <input class="form-check-input itemIssueList" type="checkbox" value="{{$key}}" id="{{$listItem}}">
-                                <label class="form-check-label text-capitalize" for="{{$listItem}}">{{$listItem}}</label>
+                                <input class="form-check-input itemIssueList" type="checkbox" value="{{$key}}" id="{{$listItem}}-{{$key}}">
+                                <label class="form-check-label text-capitalize" for="{{$listItem}}-{{$key}}">{{$listItem}}</label>
                             </div>
                             @endforeach
                         @endif
@@ -435,6 +435,20 @@
                                     <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
                                     <div class="upload-img-input-sec" id="image-upload-container-delivery_images-{{ $item->id }}">
                                         <input value="" type="file" class="form-control img-upload-input" name="image[{{$item->id}}][delivery_images][]" placeholder=""  accept="image/png, image/jpeg, image/jpg" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="delivery_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
+                                        <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
+                                            <small>Issue Fixed:</small>
+                                            <div class="d-flex gap-2">
+                                                <div class="form-check form-check-inline d-flex align-items-center gap-1">
+                                                    <input class="form-check-input yesFixed issueFixed" type="radio" data-item="{{$item->id}}" name="is_issue_fixed[{{$item->id}}]" id="yesfixed-{{$item->id}}" value="2"
+                                                    @if( $item->is_issue_fixed == 2 ) checked @endif   @if( $item->is_issue_identify == 1 ) disabled @endif  >
+                                                    <label class="form-check-label" for="yesFixed">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline d-flex align-items-center gap-1">
+                                                    <input class="form-check-input noFixed issueFixed" @if( $item->is_issue_identify == 1 ) disabled @endif type="radio" data-item="{{$item->id}}" name="is_issue_fixed[{{$item->id}}]" id="nofixed-{{$item->id}}" value="1" @if( $item->is_issue_fixed != 2 ) checked @endif>
+                                                    <label class="form-check-label" for="noFixed">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <!-- <div>
                                         <button title="Add More Images" type="button" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3 btn-primary mt-2"  onclick="addMoreImageUpload({{ $item->id }},'delivery_images')">Add More</button>
@@ -547,6 +561,30 @@
     // }
 
 $(document).ready(function() {
+
+
+    $(document).on('click', '.issueFixed', function(event) {
+        var itemId = $(this).data('item');
+        var isIssueFixed =  $(this).val();
+
+        // Send AJAX call to remove the option
+        var url = '{{ route('is.item.issue.fixed') }}';
+        $.ajax({
+            type: 'POST',
+            url: url, // Get the form action URL
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                itemId: itemId,
+                isIssueFixed:isIssueFixed
+            },
+            success: function(response) {
+                
+            }
+        });
+        
+    });
 
     $(document).on('click', '.yesfault', function(event) {
         var itemId = $(this).data('item');
@@ -675,6 +713,9 @@ $(document).ready(function() {
                 {
                     $('#successIssuesMessage').show();
                     $('#successIssuesMessage').html(response.message);
+                    $('#yesfixed-'+itemId).removeAttr('disabled');
+                    $('#nofixed-'+itemId).removeAttr('disabled');
+
                     $(".loader").hide(); //
                     setTimeout(() => {
                        

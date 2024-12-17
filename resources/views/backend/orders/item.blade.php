@@ -111,6 +111,24 @@ tr[data-url]:hover {
                                     @endif
                                 </select>
                             </div>
+
+
+                            <div class="col-sm-3 px-2 mt-2">
+                                <select class="form-select p-2" id="issue_type" name="issue_type">
+                                    <option value=''>Issue Type</option>
+                                    @if(!empty(config('constants.issues')) )
+                                        @foreach(config('constants.issues') as $key => $option )
+                                            @if( $key == $issue_type )
+                                                <option value="{{$key}}" selected>
+                                                    {{ucfirst($option)}}</option>
+                                            @else
+                                                <option value="{{$key}}">
+                                                    {{ucfirst($option)}}</option>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
                         </div>
 
                         <div class="col-lg-12 text-end mt-4">

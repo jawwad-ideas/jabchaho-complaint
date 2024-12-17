@@ -92,6 +92,8 @@ class Order extends Model
     {
         $query = Order::selectRaw('
             COUNT(*) as total,
+            SUM(CASE WHEN location_type IS NOT NULL THEN 1 ELSE 0 END) as store,
+            SUM(CASE WHEN location_type IS NULL THEN 1 ELSE 0 END) as facility,
             SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as process,
             SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) as completed,
             SUM(CASE WHEN before_email = 2 THEN 1 ELSE 0 END) as before_email,
@@ -107,6 +109,8 @@ class Order extends Model
         $result = $query->first();
         $data = [
             'total' => (int) $result->total,
+            'store' => (int) $result->store,
+            'facility' => (int) $result->facility,
             'process' => (int) $result->process,
             'completed' => (int) $result->completed,
             'before_email' => (int) $result->before_email,

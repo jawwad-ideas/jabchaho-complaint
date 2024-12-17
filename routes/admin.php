@@ -154,4 +154,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
 Route::post('/save-item-issue', 'App\Http\Controllers\Backend\OrderController@saveItemIssue')->name('save.item.issue');
 Route::post('/remove-item-issue', 'App\Http\Controllers\Backend\OrderController@removeItemIssue')->name('remove.item.issue');
+//is.item.issue.fixed
+Route::post('/is-item-issue-fixed', 'App\Http\Controllers\Backend\OrderController@isItemIssueFixed')->name('is.item.issue.fixed');
 

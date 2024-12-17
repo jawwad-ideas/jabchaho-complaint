@@ -37,7 +37,7 @@ class OrderController extends Controller
     public function itemImage(Request $request)
     {
 
-        $orderItemImage = OrderItemImage::with('orderItem.order')->orderBy('id', 'desc');
+        $orderItemImage = OrderItemImage::with(['orderItem.order','orderItem.issues'])->orderBy('id', 'desc');
 
         $filterData = [
             'barcode'               => $request->get('barcode', ''),
@@ -50,6 +50,7 @@ class OrderController extends Controller
             'telephone' => $request->get('telephone', ''),
             'issue' =>  $request->get('issue', ''),
             'location_type' =>  $request->get('location_type', ''),
+            'issue_type' =>  $request->get('issue_type', '')
         ];
 
         // Apply filters based on request
@@ -114,6 +115,13 @@ class OrderController extends Controller
             }
         }
 
+        if (!empty($filterData['issue_type'])) {
+            //$orders->where('orderItems.issues', '=',  $issue_type);
+            $orderItemImage->whereHas('orderItem.issues', function ($query) use ($filterData) {
+                $query->where('issue', $filterData['issue_type']);
+            }); // Filter orders where orderItems have issues of the given type
+        }
+
         $orderItemImage = $orderItemImage->latest()->paginate(config('constants.per_page'));
 
         return view('backend.orders.item', compact('orderItemImage'))->with($filterData);
@@ -128,6 +136,7 @@ class OrderController extends Controller
         $after_email        = $request->input('after_email');
         $status             = $request->segment(3);
         $location_type      = $request->input('location_type');
+        $issue_type         = $request->input('issue_type');
 
         //$orders = Order::select('*')->orderBy('id', 'desc');
         $orders = Order::withCount([
@@ -136,6 +145,7 @@ class OrderController extends Controller
             'after', // Count with image_type = 2
             'orderItems as items_count', // Count of order items
         ])
+            ->with(['orderItems.issues']) // Eager load order_items and their issues
             ->orderBy('id', 'desc');
 
         if (!empty($order_number)) {
@@ -176,6 +186,13 @@ class OrderController extends Controller
             }
         }
 
+        if (!empty($issue_type)) {
+            //$orders->where('orderItems.issues', '=',  $issue_type);
+            $orders->whereHas('orderItems.issues', function ($query) use ($issue_type) {
+                $query->where('issue', $issue_type);
+            }); // Filter orders where orderItems have issues of the given type
+        }
+
         $orders = $orders->latest()->paginate(config('constants.per_page'));
         //dd($orders);
         $filterData = [
@@ -187,7 +204,8 @@ class OrderController extends Controller
             'email_status_options' => [1 => "No", 2 => "Yes"],
             'before_email' => $before_email,
             'after_email' => $after_email,
-            'location_type' => $location_type
+            'location_type' => $location_type,
+            'issue_type'    => $issue_type
         ];
 
         return view('backend.orders.index', compact('orders'))->with($filterData);
@@ -804,7 +822,37 @@ class OrderController extends Controller
             OrderItem::where('id', $itemId)->update(['is_issue_identify' => 1]);
 
             return response()->json([
-                'status'                   => false,
+                'status'                   => true,
+            ]);
+
+
+        } catch (\Exception $e) {
+            \Log::error("OrderController->removeItemIssue->" . $e->getMessage());
+            return false;
+        }
+    }
+
+    
+    public function isItemIssueFixed(Request $request)
+    {
+        try 
+        {
+            $itemId             = $request->itemId;
+            $isIssueFixed       = $request->isIssueFixed;
+
+            
+            //update order item field is_issue_identify is yes mean 2
+            if($isIssueFixed == 2)
+            {
+                OrderItem::where(['id'=> $itemId, 'is_issue_identify' => 2])->update(['is_issue_fixed' => $isIssueFixed]);
+            }else
+            {
+                OrderItem::where(['id'=> $itemId])->update(['is_issue_fixed' => $isIssueFixed]);
+            }
+            
+
+            return response()->json([
+                'status'                   => true,
             ]);
 
 

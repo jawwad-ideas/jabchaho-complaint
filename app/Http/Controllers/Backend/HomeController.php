@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Arr;
 use App\Models\Order;
 use App\Models\OrderItemImage;
+use App\Models\OrderItemIssue;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -128,6 +129,7 @@ class HomeController extends Controller
 
             $orderObject                 = new Order;
             $orderItemImageObject        = new OrderItemImage; //
+            $orderItemIssueObject        = new OrderItemIssue;
 
             
             $page = $request->query('page'); // Default to page 1 if not provided
@@ -182,6 +184,19 @@ class HomeController extends Controller
 
             $orders                             = $orderObject->orderCount($params);
             $orderItemImage                     = $orderItemImageObject->orderItemImagesCount($params);
+            $orderItemIssuesWithCount           = $orderItemIssueObject->getItemissuesCount($params);
+
+            $itemIssueWithCount = [];
+            $itemIssueWithCountArray = [];
+
+            if(!empty($orderItemIssuesWithCount))
+            {
+                foreach($orderItemIssuesWithCount as $row)
+                {
+                    $itemIssueWithCount[str_replace(" ", "_", config('constants.issues.'.Arr::get($row, 'issue')))]     = Arr::get($row,'count');
+
+                }
+            }
 
             $ordersWithItemsCountData           = $orderObject->getOrdersWithItemCount($params);
             $ordersWithItemsCount               = Arr::get($ordersWithItemsCountData, 'orders');
@@ -191,6 +206,7 @@ class HomeController extends Controller
             $data['orderItemImage']             = $orderItemImage;
             $data['ordersWithItemsCount']       = $ordersWithItemsCount;
             $data['orderWithItemTotalCount']    = $orderWithItemTotalCount;
+            $data['itemIssueWithCount']         = $itemIssueWithCount;
             
             return response()->json($data);
 
