@@ -474,7 +474,7 @@
                                 <div class="col-lg-6 pb-1 pt-3 border-light px-3" style="background: #fbee7e4f;">
                                     <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
                                     <div class="upload-img-input-sec" id="image-upload-container-delivery_images-{{ $item->id }}">
-                                        <input @if( $disableAfterUploadInput ) disabled @endif value="" type="file" class="form-control img-upload-input-after" name="image[{{$item->id}}][delivery_images][]" placeholder="" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="delivery_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
+                                        <input @if( $disableAfterUploadInput ) disabled @endif value="" type="file" class="form-control img-upload-input" name="image[{{$item->id}}][delivery_images][]" placeholder="" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="delivery_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
                                         <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
                                             <small>Issue Fixed:</small>
                                             <div class="d-flex gap-2">
