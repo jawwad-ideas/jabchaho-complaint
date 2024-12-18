@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Machine;
+use App\Models\MachineDetail;
+use App\Models\MachineImage;
+use App\Models\MachineBarcode;
 use App\Http\Requests\Backend\StoreMachineDetailRequest;
+use Illuminate\Support\Arr;
 
 use Illuminate\Http\Request;
 
@@ -22,22 +26,19 @@ class MachineController extends Controller
 
 
 
-    public function save(StoreMachineDetailRequest $request)
+    public function store(StoreMachineDetailRequest $request)
     {
-        // Get the input value from the textarea
-        $textareaValue = $request->input('remarks');
+        $postData = $request->validated();
 
-        // Split the lines into an array
-        $lines = explode("\n", $textareaValue);
+        $machineDetail = array('machine_id' => Arr::get($postData,'machine_id'));
+        $machineDetailId = MachineDetail::insertGetId($machineDetail);
 
-        // Remove extra whitespace or empty lines
-        $lines = array_map('trim', $lines);
-        $lines = array_filter($lines);
-
-        // Convert the array to a comma-separated string
-        $commaSeparated = implode(',', $lines);
-
-        // Use or return the result
-        return response()->json(['commaSeparated' => $commaSeparated]);
+        if(!empty(Arr::get($postData,'barcode')))
+        {
+            // Clean up the string and convert to an array
+            $barcodeArray = array_filter(
+                array_map('trim', preg_split('/\r\n|\r|\n/', Arr::get($postData,'barcode')))
+            );
+        }
     }
 }

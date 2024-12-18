@@ -13,26 +13,21 @@
     <div class="alert alert-danger" id="error" style="display:none"></div>
     <div class="alert alert-success" id="success" style="display:none"></div>
 
-    <form method="POST" action="">
+    <form method="POST" action="{{ route('machine.detail.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
 
-                <div class="form-section mb-5">
+                <div class="form-section mb-3">
                     <div class="form-section mb-5 form-section-title m-xl-0 mx-2 my-3">
                         <h4 class="fw-bold mt-0">Add Machine Detail.</h4>
                     </div>
                 </div>
 
-                <div class="container mt-4">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Machine Image</label>
-                        <input type="file" class="form-control img-upload-input" name="image" placeholder="" accept="image/png, image/jpeg, image/jpg" >
-
-                    </div>
+                <div class="container mt-4" >
                     <div class="mb-3">
                         <label for="email" class="form-label">Type</label>
-                        <select class="form-control img-upload-input" id="machine_type">
+                        <select class="form-control img-upload-input" id="machine_type" name="machine_id">
                             <option>--Select--</option>
                             @if(!empty($machines) )
                                 @foreach($machines as $row )
@@ -42,9 +37,27 @@
                         </select>
 
                     </div>
+                    <div class="row align-items-center mb-3" id="file-input-container" >
+                        <label for="email" class="form-label">Machine Image</label>
+                        <div class="row align-items-center mb-3" >
+                            <div class="col">
+                                <input 
+                                    type="file" 
+                                    class="form-control img-upload-input" 
+                                    name="image[]" 
+                                    placeholder="" 
+                                    accept="image/png, image/jpeg, image/jpg">
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" id="add-file-btn" class="btn btn-primary"> <i class="fas fa-plus"></i></button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                   
                     <div class="mb-3">
                         <label for="username" class="form-label">Barcodes</label>
-                        <textarea name="remarks" class="form-control" style="height: 300px;"></textarea>
+                        <textarea name="barcode" class="form-control" style="height: 300px;" ></textarea>
 
                     </div>
 
@@ -61,4 +74,63 @@
 </div>
 
 
+
+
+
+<script>
+    $(document).ready(function () {
+    let fileCount = 0;
+    const maxFiles = 2; // Limit to 2 file inputs
+
+    // Add file input
+    $('#add-file-btn').click(function () {
+        if (fileCount < maxFiles) {
+            fileCount++;
+            $('#file-input-container').append(`
+                <div class="row align-items-center mb-3" id="file-${fileCount}">
+                    <div class="col">
+                            <input 
+                                type="file" 
+                                class="form-control img-upload-input" 
+                                name="image[]" 
+                                placeholder="" 
+                                accept="image/png, image/jpeg, image/jpg">
+                        </div>
+                        <div class="col-auto">
+                            <button 
+                                type="button" 
+                                class="btn btn-danger remove-file-btn" 
+                                data-id="file-${fileCount}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+
+                        </div>
+                    
+                </div>
+            `);
+
+            // Disable add button if max limit is reached
+            if (fileCount >= maxFiles) {
+                $('#add-file-btn').prop('disabled', true);
+            }
+        } else {
+            alert(`You can only upload up to ${maxFiles} files.`);
+        }
+    });
+
+    // Remove file input
+    $('#file-input-container').on('click', '.remove-file-btn', function () {
+        const id = $(this).data('id');
+        $('#' + id).remove();
+        fileCount--;
+
+        // Re-enable add button if below max limit
+        if (fileCount < maxFiles) {
+            $('#add-file-btn').prop('disabled', false);
+        }
+    });
+});
+
+
+</script>    
 @endsection

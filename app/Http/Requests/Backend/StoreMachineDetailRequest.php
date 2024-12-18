@@ -24,9 +24,13 @@ class StoreMachineDetailRequest extends FormRequest
     public function rules()
     {
         return [
-            'image'     => 'required|image|mimes:jpeg,png,jpg|max:2048', // Image must be jpeg, png, jpg and max 2MB
-            'type'      => 'required|string|max:255',                    // Type must be a string, max 255 characters
-            'barcode'   => 'required|string',                         // Barcode is required, accept a string
+            // 'image'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Image must be jpeg, png, jpg and max 2MB
+            // 'type'      => 'nullable|string|max:255',                    // Type must be a string, max 255 characters
+            // 'barcode'   => 'nullable|string',                         // Barcode is required, accept a string
+
+            'image'     => 'nullable', // Image must be jpeg, png, jpg and max 2MB
+            'machine_id'      => 'nullable',                    // Type must be a string, max 255 characters
+            'barcode'   => 'nullable',
         ];
     }
 

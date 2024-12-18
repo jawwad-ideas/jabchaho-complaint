@@ -157,6 +157,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
 
     Route::get('/machine-detail-form', 'MachineController@detailForm')->name('machine.detail.form');
+    Route::post('/machine-detail-form', 'MachineController@store')->name('machine.detail.store');
 
 });
 
