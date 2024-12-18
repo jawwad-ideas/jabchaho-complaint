@@ -9,7 +9,8 @@ $(document).ready(function () {
     let imageData;
     let reader = new FileReader();
 
-    $('.img-upload-input-after').on('change', function (e) {
+
+    $(document).on('change', '.img-upload-input-after', function (e) {
         const itemId = $(this).data('item-id');
         const itemType = $(this).data('item-type');
         const orderNum = $(this).data('order-num');
