@@ -403,7 +403,7 @@
 
                                     <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
                                         <input value="" type="file" class="form-control img-upload-input"
-                                               name="image[{{$item->id}}][pickup_images][]" placeholder="" accept="image/png, image/jpeg, image/jpg" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
+                                               name="image[{{$item->id}}][pickup_images][]" placeholder="" data-order-num="{{$order->order_id}}" data-order-id="{{$order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}"  id="uploadImage-{{ $item->id }}">
 
                                         <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
                                             <small>Item having Issue:</small>

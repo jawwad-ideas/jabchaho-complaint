@@ -11,7 +11,7 @@ $(document).ready(function () {
 
 
     $(document).on('change', '.img-upload-input-after', function (e) {
-        alert("Debugging After Upload");
+        //alert("Debugging After Upload");
         const itemId = $(this).data('item-id');
         const itemType = $(this).data('item-type');
         const orderNum = $(this).data('order-num');
