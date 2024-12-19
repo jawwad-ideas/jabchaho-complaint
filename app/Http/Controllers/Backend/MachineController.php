@@ -14,6 +14,31 @@ use Illuminate\Http\Request;
 
 class MachineController extends Controller
 {
+    public function machineIndex(Request $request)
+    {
+        $machinesQuery = Machine::select();
+
+        // Apply filters if needed
+        if ($request->has('name') && !empty($request->name)) {
+            $machinesQuery->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('is_enabled')) {
+            $machinesQuery->where('is_enabled', $request->is_enabled);
+        }
+        // Paginate the query and order by latest
+        $machines = $machinesQuery->latest('id')->paginate(config('constants.per_page'));
+
+        $filterData = [
+            'name'          => $request->get('name', ''), // Default to empty
+            'is_enabled'    => $request->get('is_enabled', null), // Default to null if not provided
+            'statusOption'  => [0 => "Inactive", 1 => "Active"],
+        ];
+
+        return view('backend.machine.machineIndex', compact('machines'))->with($filterData);
+    }
+
+
     public function detailForm()
     {
         $data           = array();
@@ -44,7 +69,7 @@ class MachineController extends Controller
                 array_map('trim', preg_split('/\r\n|\r|\n/', Arr::get($postData,'barcode')))
             );
 
-           
+
             if(!empty($barcodeArray))
             {
                 $barcodeArray = array_unique($barcodeArray);
@@ -71,16 +96,16 @@ class MachineController extends Controller
     public function uploadImages($request=null,$machineDetailId=0)
     {
         $files = $request->file('attachments');
-  
+
         if(!empty($files))
         {
             $counter = 1;
-            $machineImages = array(); 
+            $machineImages = array();
             foreach($files as $fieldName =>$file)
             {
                 if(!empty($file))
                 {
-                    
+
                     $uploadFolderPath = config('constants.files.machines').$machineDetailId;
                     $filePath = public_path($uploadFolderPath);
                     if (!File::exists($filePath)) {
@@ -95,16 +120,16 @@ class MachineController extends Controller
                     $machineImage                           = array();
                     $machineImage['machine_detail_id']      = $machineDetailId;
                     $machineImage['file']                   = $newName;
-                    
-                    $machineImages[$counter] = $machineImage;           
+
+                    $machineImages[$counter] = $machineImage;
                 }
 
                 $counter++;
             }
 
             MachineImage::insert($machineImages);
-        }   
-        
+        }
+
         return true;
     }
 }

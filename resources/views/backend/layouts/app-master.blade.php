@@ -226,13 +226,47 @@
 
                                     <div class="collapse mt-3 ms-5" id="orders" style="">
                                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                           
+
                                         </ul>
                                     </div>
 
                                 </li>
                             @endif
                             {{-- Order Profiling --}}
+
+
+                            {{-- Machine Profiling --}}
+                            @if(Auth::user()->can('machine.list'))
+                                <li class="list-item px-3 py-3">
+                                    <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
+                                         data-bs-toggle="collapse" data-bs-target="#machines">
+                            <span class="d-flex align-items-center gap-3 text-light">
+                                <i class="fa fa-solid fa-clipboard-list fa-2x text-theme-yellow-light"></i>
+                                Machines </span>
+                                        <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
+                                    </div>
+
+                                    <div class="collapse mt-3 ms-5" id="machines" style="">
+                                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                            @if(Auth::user()->can('machine.detail.form'))
+                                                <li class="py-2 "><a href="{{ route('machine.list') }}"
+                                                                     class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                        <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
+                                                        Machines</a>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </div>
+
+                                    <div class="collapse mt-3 ms-5" id="machines" style="">
+                                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+                                        </ul>
+                                    </div>
+
+                                </li>
+                            @endif
+                            {{-- Machine Profiling --}}
 
                         @if(Auth::user()->can('configurations.form') || Auth::user()->can('complaints.status.index') )
                         <li class="list-item px-3 py-3">
