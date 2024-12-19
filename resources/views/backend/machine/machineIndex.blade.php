@@ -17,7 +17,7 @@
             <h3 class="fw-bold text-dark m-0">
                 Machines
             </h3>
-            <small class="text-dark">Manage your machines here.</small>
+            <small class="text-dark">Manage your machines here</small>
         </div>
         {{--<div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
 
