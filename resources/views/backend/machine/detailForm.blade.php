@@ -44,7 +44,7 @@
                                 <input 
                                     type="file" 
                                     class="form-control img-upload-input" 
-                                    name="image[]" 
+                                    name="attachments[]" 
                                     placeholder="" 
                                     accept="image/png, image/jpeg, image/jpg">
                             </div>
@@ -167,7 +167,7 @@ document.getElementById("removeLine").addEventListener("click", function () {
                             <input 
                                 type="file" 
                                 class="form-control img-upload-input" 
-                                name="image[]" 
+                                name="attachments[]" 
                                 placeholder="" 
                                 accept="image/png, image/jpeg, image/jpg">
                         </div>
