@@ -20,7 +20,7 @@ class MachineDetail extends Model
 
     public function machineBarcodes()
     {
-        return $this->hasMany(MachineBarcode::class);
+        return $this->hasMany(MachineBarcode::class, 'machine_detail_id', 'id');
     }
 
     public function machineImages()

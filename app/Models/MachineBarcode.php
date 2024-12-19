@@ -15,6 +15,12 @@ class MachineBarcode extends Model
 
     public function machineDetail()
     {
-        return $this->belongsTo(MachineDetail::class);
+        return $this->belongsTo(MachineDetail::class, 'machine_detail_id', 'id');
+    }
+
+    // Define the relationship with OrderItem
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'barcode', 'barcode');
     }
 }

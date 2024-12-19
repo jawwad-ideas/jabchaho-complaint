@@ -48,6 +48,12 @@ class OrderItem extends Model
         return $this->hasMany(OrderItemIssue::class, 'item_id');
     }
 
+    // Define the relationship with MachineBarcode
+    public function machineBarcode()
+    {
+        return $this->belongsTo(MachineBarcode::class, 'barcode', 'barcode');
+    }
+
 
 
     public function createOrderItem($data = array())
