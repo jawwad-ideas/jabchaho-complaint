@@ -236,7 +236,7 @@
 
 
                             {{-- Machine Profiling --}}
-                            @if(Auth::user()->can('machine.list'))
+                            @if(Auth::user()->can('machine.list') || Auth::user()->can('machine.details'))
                                 <li class="list-item px-3 py-3">
                                     <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
                                          data-bs-toggle="collapse" data-bs-target="#machines">
@@ -248,7 +248,7 @@
 
                                     <div class="collapse mt-3 ms-5" id="machines" style="">
                                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                            @if(Auth::user()->can('machine.detail.form'))
+                                            @if(Auth::user()->can('machine.list'))
                                                 <li class="py-2 "><a href="{{ route('machine.list') }}"
                                                                      class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
                                                         <i class="fa fa-solid fa-list text-theme-yellow-light"></i>

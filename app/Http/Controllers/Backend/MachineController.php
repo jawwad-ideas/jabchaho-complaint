@@ -39,7 +39,7 @@ class MachineController extends Controller
             $message = "Machine has been added successfully";
         }
 
-        return redirect()->route('machine.view', ['machine_id' => $machineId])
+        return redirect()->route('machine.list', ['machine_id' => $machineId])
             ->with('success', $message );
 
     }
