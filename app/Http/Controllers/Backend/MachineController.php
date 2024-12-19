@@ -15,6 +15,12 @@ use Illuminate\Http\Request;
 class MachineController extends Controller
 {
 
+    public function machineSave( Request $request ){
+
+    }
+
+
+
     public function machineIndex(Request $request)
     {
         $machinesQuery = Machine::select();

@@ -19,14 +19,39 @@
             </h3>
             <small class="text-dark">Manage your machines here.</small>
         </div>
-        <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
+        {{--<div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
+
+            <a href="{{ route('users.create') }}" class="text-decoration-none">
+                <small id="" type="button"
+                       class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                        class="fa fa-solid fa-user-plus"></i><span>New User</span></small>
+            </a>
+
             <div class="btn-group" role="group">
                 <small id="showFilterBox" type="button"
                        class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
                         class="fa fa-solid fa-filter"></i> <span>Filter</span>
                 </small>
             </div>
+        </div>--}}
+
+
+        <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
+            <div class="btn-group" role="group">
+                <a href="{{ route('users.create') }}" class="text-decoration-none">
+                    <small id="" type="button"
+                           class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                            class="fa fa-solid fa-user-plus"></i><span>New User</span></small>
+                </a>
+                <small id="showFilterBox" type="button"
+                       class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                        class="fa fa-solid fa-filter"></i> <span>Filter</span>
+                </small>
+
+            </div>
         </div>
+
+
     </div>
     <div class="page-content bg-white p-lg-5 px-2">
 
@@ -110,17 +135,17 @@
 
     <script>
         $(document).ready(function () {
-            $("#showFilterBox").click(function() {
+            $("#showFilterBox").click(function () {
                 $("#filterBox").toggle();
             });
 
-        document.getElementById('clickableTable').addEventListener('click', function(event) {
-            const row = event.target.closest('tr'); // Get the clicked <tr>
-            if (row && row.dataset.url) {
-                window.location.href = row.dataset.url;
-            }
+            document.getElementById('clickableTable').addEventListener('click', function (event) {
+                const row = event.target.closest('tr'); // Get the clicked <tr>
+                if (row && row.dataset.url) {
+                    window.location.href = row.dataset.url;
+                }
+            });
         });
-
     </script>
 
 @endsection
