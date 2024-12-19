@@ -10,7 +10,11 @@
         </div>
         <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
             <div class="btn-group" role="group">
-
+                <a href="{{ route('machine.detail.create') }}" class="text-decoration-none">
+                    <small id="" type="button"
+                        class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                            class="fa fa-solid fa-user-plus"></i><span>Add</span></small>
+                </a>
             </div>
         </div>
 
@@ -36,14 +40,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($machineDetails as $machineDetail)
+                        @if(!$machineDetails->isEmpty())
+                            @foreach ($machineDetails as $machineDetail)
+                                <tr>
+                                    <td scope="row">{{ Arr::get($machineDetail,'id') }}</td>
+                                    <td width="15%">{{ Arr::get($machineDetail->machine,'name') }}</td>
+                                    <td width="15%">{{ date('l, F j, Y, \a\t h:i A', strtotime(Arr::get($machineDetail,'created_at'))) }}</td>
+                                    <td><a href="{{ route('machine.detail.show', Arr::get($machineDetail,'id')) }}" class="btn bg-theme-yellow btn-sm"><i class="fa fa-eye"></i></a>
+                                </tr>
+                            @endforeach
+                        @else
                             <tr>
-                                <td scope="row">{{ Arr::get($machineDetail,'id') }}</td>
-                                <td width="15%">{{ Arr::get($machineDetail->machine,'name') }}</td>
-                                <td width="15%">{{ date('l, F j, Y, \a\t h:i A', strtotime(Arr::get($machineDetail,'created_at'))) }}</td>
-                                <td width="15%"><href="">View</a></td>
+                                <td colspan="4" align="center">No record Found</td>
                             </tr>
-                        @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

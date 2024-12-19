@@ -27,4 +27,9 @@ class MachineDetail extends Model
     {
         return $this->hasMany(MachineImage::class);
     }
+
+    public function getMachineDetailById($machineDetailId=0)
+    {
+        return MachineDetail::with(['machine', 'machineBarcodes', 'machineImages'])->find($machineDetailId);
+    }
 }
