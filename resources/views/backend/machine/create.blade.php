@@ -71,7 +71,7 @@
                     <div class="mb-3">
                         <input type="submit"
                             class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3" value="Save">
-                        <a href="{{ route('users.index') }}" class="btn bg-theme-dark-300 text-light">Back</a>
+                        <a href="{{ route('machine.details') }}" class="btn bg-theme-dark-300 text-light">Back</a>
                     </div>
                 </div>
             </div>
