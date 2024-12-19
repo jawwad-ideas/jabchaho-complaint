@@ -20,7 +20,7 @@
 
                 <div class="form-section mb-5">
                     <div class="form-section mb-5 form-section-title m-xl-0 mx-2 my-3">
-                        <h4 class="fw-bold mt-0">Add New Machine.</h4>
+                        <h4 class="fw-bold mt-0">Add New Machine</h4>
                     </div>
                 </div>
 
