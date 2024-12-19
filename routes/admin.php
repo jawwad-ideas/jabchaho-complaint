@@ -155,10 +155,16 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::post('/is-item-issue-fixed', 'OrderController@isItemIssueFixed')->name('is.item.issue.fixed');
     });
 
+    Route::group(['prefix' => 'machine-details'], function() {
+        Route::get('/', 'MachineController@index')->name('machine.details');
+        Route::get('/create', 'MachineController@create')->name('machine.detail.create');
+        Route::post('/save', 'MachineController@save')->name('machine.detail.save');
+        Route::get('/machine-list', 'MachineController@machineIndex')->name('machine.list');
+    });
 
-    Route::get('/machine-detail-form', 'MachineController@detailForm')->name('machine.detail.form');
-    Route::post('/machine-detail-form', 'MachineController@store')->name('machine.detail.store');
-    Route::get('/machine-list', 'MachineController@machineIndex')->name('machine.list');
+
+
+    //Route::get('machine-detail-form/{machineDetail}', 'MachineController@edit')->name('machine.detail.edit');
 
 });
 

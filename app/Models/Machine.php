@@ -25,4 +25,9 @@ class Machine extends Model
         'name',
         'is_enabled'
     ];
+
+    public function machineDetails()
+    {
+        return $this->hasMany(MachineDetail::class);
+    }
 }

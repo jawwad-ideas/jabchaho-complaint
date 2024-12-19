@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 
 class MachineController extends Controller
 {
+
     public function machineIndex(Request $request)
     {
         $machinesQuery = Machine::select();
@@ -38,8 +39,7 @@ class MachineController extends Controller
         return view('backend.machine.machineIndex', compact('machines'))->with($filterData);
     }
 
-
-    public function detailForm()
+    public function create()
     {
         $data           = array();
         $filterData     = array();
@@ -47,12 +47,12 @@ class MachineController extends Controller
         $machines       = Machine::where(['is_enabled' => 1])->get();
 
         $data['machines']   = $machines;
-        return view('backend.machine.detailForm')->with($data)->with($filterData);
+        return view('backend.machine.create')->with($data)->with($filterData);
     }
 
 
 
-    public function store(StoreMachineDetailRequest $request)
+    public function save(StoreMachineDetailRequest $request)
     {
         $machineBarcodes = array();
         $postData = $request->validated();
@@ -88,7 +88,7 @@ class MachineController extends Controller
         //Files upload code
         $this->uploadImages($request,$machineDetailId);
 
-        return redirect()->route('machine.detail.form')
+        return redirect()->route('machine.details')
                 ->with('success', 'Machine detail saved successfully.');
     }
 
@@ -132,4 +132,40 @@ class MachineController extends Controller
 
         return true;
     }
+
+    /**
+     * Display all machine detail
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    public function index(Request $request)
+    {
+        $query                          = MachineDetail::with('machine')->orderBy('id', 'desc');
+        $machineDetails                 = $query->latest()->paginate(config('constants.per_page'));
+        $data['machineDetails']         = $machineDetails;
+
+        return view('backend.machine.index')->with($data);
+    }
+
+
+    /**
+     * Edit machine detail data
+     *
+     * @param Review $machineDetail
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+     public function edit(MachineDetail $machineDetail)
+     {
+        dd($machineDetail);
+
+        //  return view('backend.reviews.edit', [
+        //      'review' => $review,
+        //      'reviewStatuses' => config('constants.review_statues')
+        //  ]);
+     }
+
+
 }
