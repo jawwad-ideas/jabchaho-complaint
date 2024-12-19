@@ -38,10 +38,10 @@
 
         <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
             <div class="btn-group" role="group">
-                <a href="{{ route('users.create') }}" class="text-decoration-none">
+                <a href="{{ route('machine.add') }}" class="text-decoration-none">
                     <small id="" type="button"
-                           class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
-                            class="fa fa-solid fa-user-plus"></i><span>New User</span></small>
+                           class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
+                        <i class="fa fa-plus-circle"></i><span>New Machine</span></small>
                 </a>
                 <small id="showFilterBox" type="button"
                        class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i

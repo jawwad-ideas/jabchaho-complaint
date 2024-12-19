@@ -30,4 +30,18 @@ class Machine extends Model
     {
         return $this->hasMany(MachineDetail::class);
     }
+
+    public function createMachine($data = array())
+    {
+        $inserted = Machine::insertGetId($data);
+        if($inserted)
+        {
+            return $inserted;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

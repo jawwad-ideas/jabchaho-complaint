@@ -15,7 +15,20 @@ use Illuminate\Http\Request;
 class MachineController extends Controller
 {
 
+    public function machineAdd(){
+        $filterData["statusOptions"] = [0 => "Inactive",1 => "Active"];
+        return view('backend.machine.machineAdd')->with($filterData);
+    }
     public function machineSave( Request $request ){
+        $status            = $request->get('status');
+        $name            = $request->get('name');
+        $data = ["name" => $name , "is_enabled" => $status ];
+
+        $machine = new Machine();
+        $machineId = $machine->createMachine($data);
+
+        return redirect()->route('machine.edit', ['machine_id' => $machineId])
+            ->with('success', 'Machine created successfully.');
 
     }
 
