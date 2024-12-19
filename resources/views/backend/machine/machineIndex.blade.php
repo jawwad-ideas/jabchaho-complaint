@@ -112,11 +112,11 @@
                     <tbody>
 
                     @foreach ($machines as $machine)
-                        <tr data-url="{{ route('orders.edit', $machine->id) }}">
+                        <tr data-url="{{ route('machine.view', $machine->id) }}">
                             <td scope="row">{{ $machine->id }}</td>
                             <td width="15%">{{ $machine->name }}</td>
                             <td width="15%">@if( $machine->is_enabled == 1  ) Active @else Inactive @endif</td>
-                            <td><a href="{{ route('orders.edit', $machine->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
+                            <td><a href="{{ route('machine.view', $machine->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
                             </td>
                         </tr>
                     @endforeach

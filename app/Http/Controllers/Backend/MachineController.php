@@ -21,16 +21,35 @@ class MachineController extends Controller
         return view('backend.machine.machineAdd')->with($filterData);
     }
     public function machineSave( Request $request ){
-        $status            = $request->get('status');
-        $name            = $request->get('name');
+        $status            = $request->get('is_enabled');
+        $name              = $request->get('name');
+
         $data = ["name" => $name , "is_enabled" => $status ];
+        if ($request->has('machine_id')) {
+            $machineId              = $request->get('machine_id');
+            $machine = Machine::where(['id' => $machineId])->first();
+            $data["updated_at"] = now();
+            $machine->update(
+                $data
+            );
+            $message = "Machine has been updated successfully";;
+        }else{
+            $machine = new Machine();
+            $machineId = $machine->createMachine($data);
+            $message = "Machine has been added successfully";
+        }
 
-        $machine = new Machine();
-        $machineId = $machine->createMachine($data);
+        return redirect()->route('machine.view', ['machine_id' => $machineId])
+            ->with('success', $message );
 
-        return redirect()->route('machine.edit', ['machine_id' => $machineId])
-            ->with('success', 'Machine created successfully.');
+    }
 
+    public function machineView( $machineId ){
+        $machine = Machine::where(['id' => $machineId])->first();
+        return view('backend.machine.machineEdit', [
+            'machine' => $machine,
+            'statusOptions' => [0 => "Inactive",1 => "Active"]
+        ]);
     }
 
 
@@ -147,14 +166,14 @@ class MachineController extends Controller
                     $imageAttachmentItem = Image::make($file->getPathname());
                     // Compress the image quality (e.g., 60%)
                     $imageAttachmentItem->save($filePath . '/' . $newName, 60);
-            
-            
+
+
                     $thumbnail = Image::make($file->getRealPath())
                         ->resize(150, 150, function ($constraint) {
                             $constraint->aspectRatio(); // Maintain aspect ratio
                             $constraint->upsize();     // Prevent upsizing
                         });
-            
+
                     $thumbnail->save($thumbnailPath . '/' . $newName, 60);
 
 
@@ -200,10 +219,10 @@ class MachineController extends Controller
     public function show(Request $request)
     {
         $machineDetailObject = new MachineDetail;
-        
+
         $machineDetailId        = $request->route('machineDetailId');
         $machineDetailData      = $machineDetailObject->getMachineDetailById($machineDetailId);
-        
+
         if(!empty($machineDetailData))
         {
             $data                           = array();
@@ -214,7 +233,7 @@ class MachineController extends Controller
         {
             return redirect()->route('machine.details')->withErrors(['error' => "Invalid Machine Details"]);
         }
-        
+
     }
 
 }

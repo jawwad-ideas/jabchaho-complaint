@@ -163,7 +163,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::get('/{machineDetailId}/show', 'MachineController@show')->name('machine.detail.show');
         Route::get('/machine-add', 'MachineController@machineAdd')->name('machine.add');
         Route::post('/machine-save', 'MachineController@machineSave')->name('machine.save');
-        Route::get('/{machine_id}/machine-edit', 'MachineController@machineEdit')->name('machine.edit');
+        Route::get('/{machine_id}/machine-view', 'MachineController@machineView')->name('machine.view');
     });
 
 
