@@ -13,7 +13,7 @@
     <div class="alert alert-danger" id="error" style="display:none"></div>
     <div class="alert alert-success" id="success" style="display:none"></div>
 
-    <form method="POST" action="{{ route('machine.detail.store') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('machine.detail.save') }}" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
