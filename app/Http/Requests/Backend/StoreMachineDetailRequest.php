@@ -24,13 +24,10 @@ class StoreMachineDetailRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'image'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Image must be jpeg, png, jpg and max 2MB
-            // 'type'      => 'nullable|string|max:255',                    // Type must be a string, max 255 characters
-            // 'barcode'   => 'nullable|string',                         // Barcode is required, accept a string
-
-            'image'     => 'nullable', // Image must be jpeg, png, jpg and max 2MB
-            'machine_id'      => 'nullable',                    // Type must be a string, max 255 characters
-            'barcode'   => 'nullable',
+            'attachments'       => 'required', // Ensure the array itself is present
+            'attachments.*'     => 'image|mimes:jpeg,png,jpg|max:2048', 
+            'machine_id'        => 'required|exists:machines,id',                    // Type must be a string, max 255 characters
+            'barcode'           => 'required|string',                         // Barcode is required, accept a string
         ];
     }
 
@@ -42,13 +39,15 @@ class StoreMachineDetailRequest extends FormRequest
     public function messages()
     {
         return [
-            'image.required' => 'The machine image is required.',
-            'image.image' => 'The file must be a valid image.',
-            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
-            'image.max' => 'The image size must not exceed 2MB.',
-            'type.required' => 'The machine type is required.',
-            'type.string' => 'The machine type must be a valid string.',
-            'type.max' => 'The machine type must not exceed 255 characters.',
+            'attachments.required' => 'The machine image is required.',
+            //'attachments.*.required' => 'The machine image is required.',
+            'attachments.*.image' => 'The file must be a valid image.',
+            'attachments.*.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
+            'attachments.*.max' => 'The image size must not exceed 2MB.',
+            
+            'machine_id.required' => 'The machine type is required.',
+            'machine_id.exists' => 'The machine type is not valid.',
+           
             'barcode.required' => 'The barcode is required.',
             'barcode.string' => 'The barcode must be a valid string.',
         ];

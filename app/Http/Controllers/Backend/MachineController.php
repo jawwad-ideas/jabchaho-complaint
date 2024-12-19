@@ -47,6 +47,7 @@ class MachineController extends Controller
            
             if(!empty($barcodeArray))
             {
+                $barcodeArray = array_unique($barcodeArray);
                 foreach($barcodeArray as $barcode)
                 {
                     $machineBarcodes[] = array('machine_detail_id'=>$machineDetailId, 'barcode' =>$barcode);

@@ -27,11 +27,15 @@
                 <div class="container mt-4" >
                     <div class="mb-3">
                         <label for="email" class="form-label">Type</label>
-                        <select class="form-control img-upload-input" id="machine_type" name="machine_id">
-                            <option>--Select--</option>
+                        <select class="form-control img-upload-input" id="machine_type" name="machine_id" required>
+                            <option value=''>--Select--</option>
                             @if(!empty($machines) )
                                 @foreach($machines as $row )
+                                    @if(old('machine_id') == Arr::get($row, 'id'))  
+                                        <option value="{{Arr::get($row, 'id')}}" selected>{{Arr::get($row, 'name')}}</option>
+                                    @else 
                                         <option value="{{Arr::get($row, 'id')}}">{{Arr::get($row, 'name')}}</option>
+                                    @endif
                                 @endforeach
                             @endif
                         </select>
@@ -46,7 +50,9 @@
                                     class="form-control img-upload-input" 
                                     name="attachments[]" 
                                     placeholder="" 
-                                    accept="image/png, image/jpeg, image/jpg">
+                                    accept="image/png, image/jpeg, image/jpg"
+                                    required
+                                    >
                             </div>
                             <div class="col-auto">
                                 <button type="button" id="add-file-btn" class="btn btn-primary"> <i class="fas fa-plus"></i></button>
@@ -57,7 +63,7 @@
                    
                     <div class="mb-3">
                         <label for="username" class="form-label">Barcodes</label>
-                        <textarea name="barcode" id="barcode" class="form-control" style="height: 300px;"  readonly></textarea>
+                        <textarea name="barcode" id="barcode" class="form-control" style="height: 300px;"  readonly required>{{ old('barcode') }}</textarea>
                         <input type="button" class="btn btn-danger remove-file-btn mt-3" id="removeLine" value="Remove barcode">
                     </div>
 
