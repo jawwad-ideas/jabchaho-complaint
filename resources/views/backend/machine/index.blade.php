@@ -36,14 +36,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($machineDetails as $machineDetail)
+                        @if(!$machineDetails->isEmpty())
+                            @foreach ($machineDetails as $machineDetail)
+                                <tr>
+                                    <td scope="row">{{ Arr::get($machineDetail,'id') }}</td>
+                                    <td width="15%">{{ Arr::get($machineDetail->machine,'name') }}</td>
+                                    <td width="15%">{{ date('l, F j, Y, \a\t h:i A', strtotime(Arr::get($machineDetail,'created_at'))) }}</td>
+                                    <td><a href="{{ route('machine.detail.show', Arr::get($machineDetail,'id')) }}" class="btn bg-theme-yellow btn-sm"><i class="fa fa-eye"></i></a>
+                                </tr>
+                            @endforeach
+                        @else
                             <tr>
-                                <td scope="row">{{ Arr::get($machineDetail,'id') }}</td>
-                                <td width="15%">{{ Arr::get($machineDetail->machine,'name') }}</td>
-                                <td width="15%">{{ date('l, F j, Y, \a\t h:i A', strtotime(Arr::get($machineDetail,'created_at'))) }}</td>
-                                <td width="15%"><href="">View</a></td>
+                                <td colspan="4" align="center">No record Found</td>
                             </tr>
-                        @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

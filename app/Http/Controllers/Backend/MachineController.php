@@ -9,6 +9,7 @@ use App\Models\MachineBarcode;
 use App\Http\Requests\Backend\StoreMachineDetailRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 
 use Illuminate\Http\Request;
 
@@ -106,16 +107,38 @@ class MachineController extends Controller
                 if(!empty($file))
                 {
 
-                    $uploadFolderPath = config('constants.files.machines').$machineDetailId;
-                    $filePath = public_path($uploadFolderPath);
+                    $uploadFolderPath         = config('constants.files.machines').$machineDetailId;
+                    $thumbnailFolderPath      = $uploadFolderPath . '/thumbnail';
+                    $filePath                 = public_path($uploadFolderPath);
+                    $thumbnailPath            = public_path($thumbnailFolderPath);
+
                     if (!File::exists($filePath)) {
                         File::makeDirectory($filePath, 0777, true, true);
                     }
+
+                    if (!File::exists($thumbnailPath)) {
+                        File::makeDirectory($thumbnailPath, 0777, true, true);
+                    }
+
                     $filename = $file->getClientOriginalName(); // Get original filename
                     $fileExtension = strtolower($file->guessExtension()?$file->guessExtension():$file->getClientOriginalExtension());
                     $uniqueName = time().'-'.uniqid().'-'.$machineDetailId.'-'.$counter;
                     $newName = $uniqueName. '.' . $fileExtension; // Generate unique name
-                    $file->move($filePath, $newName);
+
+                    $imageAttachmentItem = Image::make($file->getPathname());
+                    // Compress the image quality (e.g., 60%)
+                    $imageAttachmentItem->save($filePath . '/' . $newName, 60);
+            
+            
+                    $thumbnail = Image::make($file->getRealPath())
+                        ->resize(150, 150, function ($constraint) {
+                            $constraint->aspectRatio(); // Maintain aspect ratio
+                            $constraint->upsize();     // Prevent upsizing
+                        });
+            
+                    $thumbnail->save($thumbnailPath . '/' . $newName, 60);
+
+
 
                     $machineImage                           = array();
                     $machineImage['machine_detail_id']      = $machineDetailId;
@@ -149,23 +172,30 @@ class MachineController extends Controller
     }
 
 
-    /**
-     * Edit machine detail data
-     *
-     * @param Review $machineDetail
+     /**
+     * Display machine detail
      *
      * @return \Illuminate\Http\Response
      */
 
-     public function edit(MachineDetail $machineDetail)
-     {
-        dd($machineDetail);
-
-        //  return view('backend.reviews.edit', [
-        //      'review' => $review,
-        //      'reviewStatuses' => config('constants.review_statues')
-        //  ]);
-     }
-
+    public function show(Request $request)
+    {
+        $machineDetailObject = new MachineDetail;
+        
+        $machineDetailId        = $request->route('machineDetailId');
+        $machineDetailData      = $machineDetailObject->getMachineDetailById($machineDetailId);
+        
+        if(!empty($machineDetailData))
+        {
+            $data                           = array();
+            $data['machineDetailData']      = $machineDetailData;
+            return view('backend.machine.show')->with($data);
+        }
+        else
+        {
+            return redirect()->route('machine.details')->withErrors(['error' => "Invalid Machine Details"]);
+        }
+        
+    }
 
 }
