@@ -255,6 +255,14 @@
                                                         Machines</a>
                                                 </li>
                                             @endif
+
+                                            @if(Auth::user()->can('machine.details'))
+                                            <li class="py-2 "><a href="{{ route('machine.details') }}"
+                                                    class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                    <i class="fa fa-solid fa-table-columns text-theme-yellow-light"></i>
+                                                    Details</a>
+                                            </li>
+                                            @endif
                                         </ul>
                                     </div>
 
