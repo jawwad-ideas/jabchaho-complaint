@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\MachineBarcode; 
+use App\Models\MachineDetail; 
 
 #use  App\Models\OrdersImages;
 class OrderItem extends Model
@@ -51,10 +53,8 @@ class OrderItem extends Model
     // Define the relationship with MachineBarcode
     public function machineBarcode()
     {
-        return $this->belongsTo(MachineBarcode::class, 'barcode', 'barcode');
+        return $this->hasMany(MachineBarcode::class, 'barcode', 'barcode');
     }
-
-
 
     public function createOrderItem($data = array())
     {

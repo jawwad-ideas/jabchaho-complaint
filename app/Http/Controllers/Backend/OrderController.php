@@ -330,7 +330,9 @@ class OrderController extends Controller
     {
         $order = Order::with(['orderItems.images' => function ($query) {
             $query->where('status', 1);
-        },'orderItems.issues'])->find($orderId);
+        },'orderItems.issues','orderItems.machineBarcode.machineDetail','orderItems.machineBarcode.machineDetail.machine','orderItems.machineBarcode.machineDetail.machineImages'])->find($orderId);
+
+        dd($order);
 
         $beforeEmailShow = $afterEmailShow = false;
         foreach ($order->orderItems as $item):

@@ -395,6 +395,19 @@
                                     <span> {{$item->barcode}} </span>
                                 </label>
                             </div>
+                            <button type="button" class="btn bg-theme-yellow fw-bold text-dark w-100 d-flex justify-content-between align-items-center" data-toggle="collapse" data-target="#machine-detail-{{$item->id}}">
+                            Machine Detail  <i class="toggle-icon fa fa-chevron-down text-right"></i></button>
+                            
+                            <div id="machine-detail-{{$item->id}}" class="collapse mb-2">
+                            
+                                @if(!empty(Arr::get($item,'machineBarcode')))
+                                    @if(!empty(Arr::get($item->machineBarcode,'machineDetail')))
+                                            {{$item->machineBarcode->machineDetail->machine_id;}}
+                                    @endif
+
+                                @endif
+                            </div>
+
                             <div class="inner-row d-xl-flex d-lg-flex d-md-block justify-content-between pb-2 gap-0">
                                 <div class="col-lg-6 pb-1 pt-3 border-light px-3" style="border-bottom: 4px double;border-color: #f7e441 ! IMPORTANT;background: #eee;">
                                     <div class="d-flex align-items-center gap-3">
@@ -940,5 +953,9 @@ $(document).ready(function() {
         });
     });
 });
+
+$('.btn[data-toggle="collapse"]').on('click', function () {
+    $(this).find('.toggle-icon').toggleClass('fa-chevron-down fa-chevron-up');
+  });
 </script>
 @endsection
