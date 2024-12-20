@@ -332,7 +332,7 @@ class OrderController extends Controller
             $query->where('status', 1);
         },'orderItems.issues','orderItems.machineBarcode.machineDetail','orderItems.machineBarcode.machineDetail.machine','orderItems.machineBarcode.machineDetail.machineImages'])->find($orderId);
 
-        dd($order);
+        
 
         $beforeEmailShow = $afterEmailShow = false;
         foreach ($order->orderItems as $item):

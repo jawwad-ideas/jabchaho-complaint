@@ -22,7 +22,7 @@
     <div class="page-content bg-white p-lg-5 px-2">
         <div class="bg-light p-2 rounded">
 
-        <div class="" id="filterBox" >
+        <div class="" id="filterBox" style="display:block;" >
                
         </div>
 

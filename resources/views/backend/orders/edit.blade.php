@@ -395,17 +395,43 @@
                                     <span> {{$item->barcode}} </span>
                                 </label>
                             </div>
-                            <button type="button" class="btn bg-theme-yellow fw-bold text-dark w-100 d-flex justify-content-between align-items-center" data-toggle="collapse" data-target="#machine-detail-{{$item->id}}">
-                            Machine Detail  <i class="toggle-icon fa fa-chevron-down text-right"></i></button>
+                            <button type="button" class="btn bg-theme-yellow fw-bold text-dark w-100 d-flex justify-content-between align-items-center mb-3" data-toggle="collapse" data-target="#machine-detail-{{$item->id}}">
+                            Washing Detail  <i class="toggle-icon fa fa-chevron-down text-right"></i></button>
                             
                             <div id="machine-detail-{{$item->id}}" class="collapse mb-2">
                             
-                                @if(!empty(Arr::get($item,'machineBarcode')))
-                                    @if(!empty(Arr::get($item->machineBarcode,'machineDetail')))
-                                            {{$item->machineBarcode->machineDetail->machine_id;}}
-                                    @endif
+                                <table class="table table-bordered table-striped table-compact mt-3">
+                                    <tr>
+                                        <th scope="col" width="45%">Machine type</th>
+                                        <th scope="col" width="45%">Process At</th>
+                                        <th scope="col" width="10%">Image</th>
+                                    </tr>
+                                    @if(!Arr::get($item,'machineBarcode')->isEmpty())
+                                        @foreach(Arr::get($item,'machineBarcode') as $row)
+                                            @if(!empty($row->machineDetail))
+                                                <tr>
+                                                    <td>@if(!empty($row->machineDetail->machine)){{Arr::get($row->machineDetail->machine,'name')}} @endif</td>
+                                                    <td>{{date('l, F j, Y, \a\t h:i A', strtotime(Arr::get($row->machineDetail,'created_at')))}}</td>
+                                                    <td>
+                                                        @if(!empty($row->machineDetail->machineImages[0]))
+                                                            @if(file_exists(public_path(asset(config('constants.files.machines')).'/'.Arr::get($row->machineDetail,'id').'/'.Arr::get($row->machineDetail->machineImages[0],'file'))))
+                                                                <a href="{{asset(config('constants.files.machines'))}}/{{Arr::get($row->machineDetail,'id') }}/{{Arr::get($row->machineDetail->machineImages[0],'file')}}" target="_blank" class="d-block">
+                                                                    <img src="{{asset(config('constants.files.machines'))}}/{{Arr::get($row->machineDetail,'id') }}/thumbnail/{{Arr::get($row->machineDetail->machineImages[0],'file')}}" class="img-fluid rounded-lg shadow-sm"> 
+                                                                </a>
+                                                            @endif
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endforeach    
+                                    
+                                    @else
+                                        <tr>
+                                            <td colspan="3" align="center">No record Found</td>
+                                        </tr>
 
-                                @endif
+                                    @endif
+                                </table>
                             </div>
 
                             <div class="inner-row d-xl-flex d-lg-flex d-md-block justify-content-between pb-2 gap-0">
