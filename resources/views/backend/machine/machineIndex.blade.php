@@ -65,7 +65,7 @@
                             <div class="col-sm-3 px-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="name" value="{{ $name ?? '' }}" placeholder="Machine Name">
                             </div>
-                            <div class="col-sm-3 px-2 mt-2">
+                            <div class="col-sm-3 px-2">
                                 <select class="form-select p-2" id="is_enabled" name="is_enabled">
                                     <option value="" {{ $is_enabled === null ? 'selected' : '' }}>Status</option>
                                     @foreach($statusOption as $key => $option)
