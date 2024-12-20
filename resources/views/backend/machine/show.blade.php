@@ -6,7 +6,7 @@
 
 <div class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
     <div class="p-title">
-        <h3 class="fw-bold text-dark m-0">Machine Detail</h3>
+        <h3 class="fw-bold text-dark m-0">Washing Detail</h3>
     </div>
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
         <div class="btn-group" role="group">

@@ -242,7 +242,7 @@
                                          data-bs-toggle="collapse" data-bs-target="#machines">
                             <span class="d-flex align-items-center gap-3 text-light">
                                 <i class="fa fa-solid fa-clipboard-list fa-2x text-theme-yellow-light"></i>
-                                Machines </span>
+                                Washing </span>
                                         <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
                                     </div>
 

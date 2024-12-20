@@ -4,7 +4,7 @@
 <div
     class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
     <div class="p-title">
-        <h3 class="fw-bold text-dark m-0">Machine Detail</h3>
+        <h3 class="fw-bold text-dark m-0">Washing Detail</h3>
     </div>
 
 </div>
@@ -20,7 +20,7 @@
 
                 <div class="form-section mb-3">
                     <div class="form-section mb-5 form-section-title m-xl-0 mx-2 my-3">
-                        <h4 class="fw-bold mt-0">Add Machine Detail.</h4>
+                        <h4 class="fw-bold mt-0">Add Washing Detail.</h4>
                     </div>
                 </div>
 
