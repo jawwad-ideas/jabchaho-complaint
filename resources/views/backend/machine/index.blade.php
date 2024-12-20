@@ -35,6 +35,7 @@
                             <th scope="col" width="1%">#</th>
                             <th scope="col" width="1%">Machine type</th>
                             <th scope="col" width="15%">Process At</th>
+                            <th scope="col" width="1%">Image</th>
                             <th scope="col" width="15%">Action</th>
                             
                         </tr>
@@ -46,6 +47,13 @@
                                     <td scope="row">{{ Arr::get($machineDetail,'id') }}</td>
                                     <td width="15%">{{ Arr::get($machineDetail->machine,'name') }}</td>
                                     <td width="15%">{{ date('l, F j, Y, \a\t h:i A', strtotime(Arr::get($machineDetail,'created_at'))) }}</td>
+                                    <td scope="row">
+                                                @if(file_exists(public_path(asset(config('constants.files.machines')).'/'.Arr::get($machineDetail,'id').'/'.Arr::get($machineDetail->machineImages[0],'file'))))
+                                                <a href="{{asset(config('constants.files.machines'))}}/{{Arr::get($machineDetail,'id') }}/{{Arr::get($machineDetail->machineImages[0],'file')}}" target="_blank" class="d-block">
+                                                    <img src="{{asset(config('constants.files.machines'))}}/{{Arr::get($machineDetail,'id') }}/thumbnail/{{Arr::get($machineDetail->machineImages[0],'file')}}" class="img-fluid rounded-lg shadow-sm"> 
+                                                </a>
+                                                @endif
+                                    </td>
                                     <td><a href="{{ route('machine.detail.show', Arr::get($machineDetail,'id')) }}" class="btn bg-theme-yellow btn-sm"><i class="fa fa-eye"></i></a>
                                 </tr>
                             @endforeach
