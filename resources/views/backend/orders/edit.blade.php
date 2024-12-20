@@ -402,7 +402,7 @@
                             
                                 <table class="table table-bordered table-striped table-compact mt-3">
                                     <tr>
-                                        <th scope="col" width="45%">Machine type</th>
+                                        <th scope="col" width="45%">Machine Type</th>
                                         <th scope="col" width="45%">Process At</th>
                                         <th scope="col" width="10%">Image</th>
                                     </tr>

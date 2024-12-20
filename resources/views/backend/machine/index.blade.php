@@ -10,10 +10,16 @@
         </div>
         <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
             <div class="btn-group" role="group">
+                <small id="showFilterBox" type="button"
+                       class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                        class="fa fa-solid fa-filter"></i> <span>Filter</span>
+                </small>
+            </div>
+            <div class="btn-group" role="group">
                 <a href="{{ route('machine.detail.create') }}" class="text-decoration-none">
                     <small id="" type="button"
                         class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
-                            class="fa fa-solid fa-user-plus"></i><span>Add</span></small>
+                            class="fa fa-solid fa-atom"></i><span>Add</span></small>
                 </a>
             </div>
         </div>
@@ -23,7 +29,44 @@
         <div class="bg-light p-2 rounded">
 
         <div class="" id="filterBox" style="display:block;" >
-               
+            <form class="form-inline" method="GET" action="{{ route('machine.details') }}">
+                <div class="row mb-3">
+                    <div class="col-lg-12 d-flex flex-wrap">
+                        <div class="form-group px-2">
+                            <label class="fw-bold text-dark" for="from_time">Machine Type:</label>
+                            <input type="text" class="form-control p-2" autocomplete="off" name="machine_type"
+                                    value="{{ $machineType ?? '' }}" >
+                        </div>
+                        <div class="form-group px-2">
+                            <label class="fw-bold text-dark" for="from_time">Process From:</label>
+                            <input type="datetime-local" class="form-control p-2" name="from" id="from" value="{{ $from ?? '' }}"  autocomplete="off">
+                        </div>
+
+                        <div class="form-group px-2 ">
+                            <label class="fw-bold text-dark" for="to_time">Process To:</label>
+                            <input type="datetime-local" class="form-control p-2" name="to" id="to" value="{{ $to ?? '' }}"  autocomplete="off">
+                        </div>
+                        
+                        <div class="form-group px-2">
+                            <label class="fw-bold text-dark" for="from_time">Barcode:</label>
+                            <input type="text" class="form-control p-2" autocomplete="off" name="barcode"
+                                    value="{{ $barcode ?? '' }}" >
+                        </div>
+                    </div>
+                    <div class="col-lg-12 text-end mt-4">
+                            <button type="submit"
+                                    class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
+                                    id="consult">
+                                <span>Search</span>
+                                <i alt="Search" class="fa fa-search"></i>
+                            </button>
+                            <a href="{{ route('machine.details') }}"
+                               class="btn bg-theme-dark-300 text-light p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
+                                <span>Clear</span>
+                                <i class="fa fa-solid fa-arrows-rotate"></i></a>
+                        </div>
+                </div>
+            </form>
         </div>
 
      
@@ -33,7 +76,7 @@
                     <thead>
                         <tr>
                             <th scope="col" width="1%">#</th>
-                            <th scope="col" width="1%">Machine type</th>
+                            <th scope="col" width="1%">Machine Type</th>
                             <th scope="col" width="15%">Process At</th>
                             <th scope="col" width="1%">Image</th>
                             <th scope="col" width="15%">Action</th>
@@ -59,7 +102,7 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="4" align="center">No record Found</td>
+                                <td colspan="5" align="center">No record Found</td>
                             </tr>
                         @endif
                     </tbody>

@@ -202,11 +202,47 @@ class MachineController extends Controller
 
     public function index(Request $request)
     {
-        $query                          = MachineDetail::with('machine')->orderBy('id', 'desc');
+        
+        $machineType        = $request->input('machine_type');
+        $from               = $request->input('from');
+        $to                 = $request->input('to');
+        $barcode          = $request->input('barcode');
+        
+        $query              = MachineDetail::with('machine')->orderBy('id', 'desc');
+        
+        //Filters apply here
+        if (!empty($machineType)) 
+        {
+            $query->whereHas('machine', function ($q) use ($machineType) {
+                $q->where('name', 'like', '%' . $machineType . '%');
+            });
+        } 
+
+        if (!empty($from) && !empty($to)) 
+        {
+            $query->whereBetween('created_at', [$from,$to]);
+        } 
+
+
+        if (!empty($barcode)) 
+        {
+            $query->whereHas('machineBarcodes', function ($q) use ($barcode) {
+                $q->where('barcode', 'like', '%' . $barcode . '%');
+            });
+        } 
+
         $machineDetails                 = $query->latest()->paginate(config('constants.per_page'));
         $data['machineDetails']         = $machineDetails;
 
-        return view('backend.machine.index')->with($data);
+
+        $filterData = [
+            'machineType'   => $machineType,
+            'from'          => $from,
+            'to'            => $to,
+            'barcode'       => $barcode
+        ];
+
+        return view('backend.machine.index')->with($data)->with($filterData);
     }
 
 
