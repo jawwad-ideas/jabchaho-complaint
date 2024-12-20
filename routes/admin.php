@@ -153,18 +153,21 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::post('/remove-item-issue', 'OrderController@removeItemIssue')->name('remove.item.issue');
         //is.item.issue.fixed
         Route::post('/is-item-issue-fixed', 'OrderController@isItemIssueFixed')->name('is.item.issue.fixed');
+
+
+        Route::group(['prefix' => 'machine-details'], function() {
+            Route::get('/', 'MachineController@index')->name('machine.details');
+            Route::get('/create', 'MachineController@create')->name('machine.detail.create');
+            Route::post('/save', 'MachineController@save')->name('machine.detail.save');
+            Route::get('/machine-list', 'MachineController@machineIndex')->name('machine.list');
+            Route::get('/{machineDetailId}/show', 'MachineController@show')->name('machine.detail.show');
+            Route::get('/machine-add', 'MachineController@machineAdd')->name('machine.add');
+            Route::post('/machine-save', 'MachineController@machineSave')->name('machine.save');
+            Route::get('/{machine_id}/machine-view', 'MachineController@machineView')->name('machine.view');
+        });
     });
 
-    Route::group(['prefix' => 'machine-details'], function() {
-        Route::get('/', 'MachineController@index')->name('machine.details');
-        Route::get('/create', 'MachineController@create')->name('machine.detail.create');
-        Route::post('/save', 'MachineController@save')->name('machine.detail.save');
-        Route::get('/machine-list', 'MachineController@machineIndex')->name('machine.list');
-        Route::get('/{machineDetailId}/show', 'MachineController@show')->name('machine.detail.show');
-        Route::get('/machine-add', 'MachineController@machineAdd')->name('machine.add');
-        Route::post('/machine-save', 'MachineController@machineSave')->name('machine.save');
-        Route::get('/{machine_id}/machine-view', 'MachineController@machineView')->name('machine.view');
-    });
+    
 
 
 
