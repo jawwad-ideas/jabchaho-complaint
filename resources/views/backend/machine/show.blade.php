@@ -26,7 +26,7 @@
             
             <div class="mb-3">
                 <strong class="d-block mb-1 text-dark">Process At:</strong>
-                <span class="text-muted">{{ date('l, F j, Y, \a\t h:i A', strtotime(Arr::get($machineDetailData,'created_at'))) }}</span>
+                <span class="text-muted">{{ date('j M, Y, \a\t h:i A', strtotime(Arr::get($machineDetailData,'created_at'))) }}</span>
             </div>
 
             <div class="mb-3">

@@ -85,10 +85,6 @@
 
         if (pageTitleSection) {
 
-            console.log("window scroll value:"+ window.scrollY);
-            console.log("page title top value:"+ pageTitleSection.offsetTop);
-
-
             const pageTitleSectionTop = pageTitleSection.offsetTop-10;
 
             if (window.scrollY >= pageTitleSectionTop) {
@@ -392,7 +388,7 @@
                                 </label>
                                 <label class="d-flex ">
                                     <h6 class="d-inline-block fw-bold"> Barcode: </h6>
-                                    <span> {{$item->barcode}} </span>
+                                    <span class="barcode"> {{$item->barcode}} </span>
                                 </label>
                             </div>
                             <button type="button" class="btn bg-theme-yellow fw-bold text-dark w-100 d-flex justify-content-between align-items-center mb-3" data-toggle="collapse" data-target="#machine-detail-{{$item->id}}">
@@ -411,7 +407,7 @@
                                             @if(!empty($row->machineDetail))
                                                 <tr>
                                                     <td>@if(!empty($row->machineDetail->machine)){{Arr::get($row->machineDetail->machine,'name')}} @endif</td>
-                                                    <td>{{date('l, F j, Y, \a\t h:i A', strtotime(Arr::get($row->machineDetail,'created_at')))}}</td>
+                                                    <td>{{date('j M, Y, \a\t h:i A', strtotime(Arr::get($row->machineDetail,'created_at')))}}</td>
                                                     <td>
                                                         @if(!empty($row->machineDetail->machineImages[0]))
                                                             @if(file_exists(public_path(asset(config('constants.files.machines')).'/'.Arr::get($row->machineDetail,'id').'/'.Arr::get($row->machineDetail->machineImages[0],'file'))))
@@ -609,6 +605,8 @@
         </div>
     </form>
 </div>
+
+
 
 <script>
     // function addMoreImageUpload(itemId,fieldName) {
@@ -983,5 +981,57 @@ $(document).ready(function() {
 $('.btn[data-toggle="collapse"]').on('click', function () {
     $(this).find('.toggle-icon').toggleClass('fa-chevron-down fa-chevron-up');
   });
+
+
+
+      //barcode scanner
+
+      document.addEventListener('DOMContentLoaded', () => {
+        let barcodeInput = ''; // To capture the barcode input
+        let timer; // For debouncing
+
+        // Listen for keypress events
+        document.addEventListener('keypress', (event) => {
+            // If Enter key is pressed, search for the barcode
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent default behavior (if needed)
+
+                // Locate the barcode element and its parent label
+                const barcodeElement = Array.from(document.querySelectorAll('.barcode')).find(el => 
+                    el.textContent.trim() === barcodeInput.trim()
+                );
+
+                if (barcodeElement) {
+                    // Get the parent label
+                    const labelElement = barcodeElement.closest('label');
+
+                    // Scroll to the label element and highlight it
+                    labelElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    labelElement.style.backgroundColor = '#ffff99'; // Highlight
+
+                    // Remove highlight after 2 seconds
+                    setTimeout(() => {
+                        labelElement.style.backgroundColor = ''; // Remove highlight
+                    }, 2000);
+                } else {
+                    alert(' Barcode not found!   '+barcodeInput);
+                }
+
+                // Reset the barcode input
+                barcodeInput = '';
+                return;
+            }
+
+            // Append the character to the barcodeInput
+            barcodeInput += event.key;
+
+            // Reset input after a delay (debouncing)
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                barcodeInput = '';
+            }, 500); // Reset after 500ms
+        });
+    });
+
 </script>
 @endsection

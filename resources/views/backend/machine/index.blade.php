@@ -89,7 +89,7 @@
                                 <tr>
                                     <td scope="row">{{ Arr::get($machineDetail,'id') }}</td>
                                     <td width="15%">{{ Arr::get($machineDetail->machine,'name') }}</td>
-                                    <td width="15%">{{ date('l, F j, Y, \a\t h:i A', strtotime(Arr::get($machineDetail,'created_at'))) }}</td>
+                                    <td width="15%">{{ date('j M, Y, \a\t h:i A', strtotime(Arr::get($machineDetail,'created_at'))) }}</td>
                                     <td scope="row">
                                                 @if(file_exists(public_path(asset(config('constants.files.machines')).'/'.Arr::get($machineDetail,'id').'/'.Arr::get($machineDetail->machineImages[0],'file'))))
                                                 <a href="{{asset(config('constants.files.machines'))}}/{{Arr::get($machineDetail,'id') }}/{{Arr::get($machineDetail->machineImages[0],'file')}}" target="_blank" class="d-block">
