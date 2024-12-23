@@ -171,7 +171,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
 
 
-    //Route::get('machine-detail-form/{machineDetail}', 'MachineController@edit')->name('machine.detail.edit');
+    Route::get('scanner', 'OrderController@uploadView')->name('scanner');
 
 });
 
