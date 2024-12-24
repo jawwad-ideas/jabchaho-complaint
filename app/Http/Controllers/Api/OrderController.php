@@ -28,6 +28,10 @@ class OrderController extends Controller
     public function create(CreateOrderRequest $request)
     {
         $validateValues                     = $request->validated();
+        
+        \Log::info('Order Api Call');
+        \Log::info(''.print_r($validateValues,true));
+        
         $responseStatus                     = true;
         try
         {
