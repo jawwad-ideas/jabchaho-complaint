@@ -77,7 +77,7 @@
         padding: 10px 0 15px !IMPORTANT;
     }
 }
-</style>
+ </style>
 
 <script>
     document.addEventListener('scroll', () => {
@@ -103,6 +103,7 @@
         <h3 class="fw-bold text-dark m-0">Edit Order</h3>
     </div>
 
+    
         <!-- Modal -->
         <!-- <div class="modal fade checkListBeforeWashModal" id="checkListBeforeWash" tabindex="-1" aria-labelledby="checkListBeforeWashLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -179,6 +180,12 @@
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
         <div class="btn-group order-action-btns flex-wrap justify-content-center" role="group">
 
+            @if(Auth::user()->hasRole(config('constants.roles.admin')))
+                <div class="mb-3 update-order-button-div">
+                    <button id="startScanner" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">Barcode Scan</button>
+                </div>
+            @endif
+
             <div class="mb-3 complete-button-div" @if ( $showCompleteButton ) style="display:block;" @else style="display:none;" @endif >
                 <button data-order-id="{{ $order->id }}" type="button" class="complete-order btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
                     Complete Order
@@ -203,7 +210,6 @@
                 <button type="button" id="updateOrderTopButton" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"> Update Order </button>
             </div>
 
-
         {{--<div class="mb-3 complete-button-div">
                 <button type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2" data-bs-toggle="modal" data-bs-target="#checkListBeforeWash">
                         Send Email Before Wash
@@ -213,6 +219,7 @@
         </div>
     </div>
 </div>
+
 <div class="page-content bg-white p-lg-5 px-2">
 
     <div class="alert alert-danger" id="error" style="display:none"></div>
@@ -372,6 +379,12 @@
                             });
                         });
                     </script> -->
+
+                     <!-- Div to display barcode scanning -->
+                    <div id="scanner-container"></div>
+
+                    <!-- Display scanned barcode -->
+                    <div id="barcode-value">Scanned Barcode: <span id="code"></span></div>
 
 
                     @foreach ($order->orderItems as $item)
@@ -1034,4 +1047,78 @@ $('.btn[data-toggle="collapse"]').on('click', function () {
     });
 
 </script>
+@if(Auth::user()->hasRole(config('constants.roles.admin')))
+<!-- Include the html5-barcode library -->
+<script src="{!! url('assets/js/html5-qrcode.min.js') !!}" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function () {
+        let scanner;
+
+        // Add click event for the "Start Barcode Scanner" button
+        $("#startScanner").click(function () {
+            const scannerContainer = "scanner-container"; // Use the ID of the div, not the element itself
+
+            // Create an instance of the barcode scanner
+            scanner = new Html5QrcodeScanner(scannerContainer, {
+                fps: 10, // Frames per second for scanning
+                qrbox: { width: 250, height: 250 }, // Define the scanning box size
+            });
+
+            // Start scanning
+            scanner.render(onScanSuccess, onScanError);
+        });
+
+        // Success callback when barcode is scanned
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log(`Scanned Barcode: ${decodedText}`);
+            $("#code").text(decodedText);
+
+            // Find the barcode element on the page
+            const barcodeElement = Array.from(document.querySelectorAll('.barcode')).find(el =>
+                el.textContent.trim() === decodedText.trim()
+            );
+
+            if (barcodeElement) {
+              /*   const containerElement = barcodeElement.closest('.container');
+                containerElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                containerElement.classList.add('highlight');
+
+                setTimeout(() => {
+                    containerElement.classList.remove('highlight');
+                }, 2000); */
+                
+                const labelElement = barcodeElement.closest('label');
+
+                // Scroll to the label element and highlight it
+                labelElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                labelElement.style.backgroundColor = '#ffff99'; // Highlight
+
+                // Remove highlight after 2 seconds
+                setTimeout(() => {
+                    labelElement.style.backgroundColor = ''; // Remove highlight
+                }, 2000);
+            } else {
+                alert('Barcode not found on the page: ' + decodedText);
+            }
+
+            // Reset the scanner state without stopping the scanning
+            resetScannerState();
+        }
+
+        // Error callback
+        function onScanError(errorMessage) {
+            console.error("Barcode Scan Error:", errorMessage);
+        }
+
+        // Function to reset the scanner state without stopping it
+        function resetScannerState() {
+            // Reset scanned barcode text
+            $("#code").text('');
+
+            // Optional: You can reset the UI or do other tasks if needed
+        }
+    });
+</script>
+@endif
 @endsection

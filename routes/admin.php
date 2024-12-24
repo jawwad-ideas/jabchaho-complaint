@@ -165,13 +165,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::post('/machine-save', 'MachineController@machineSave')->name('machine.save');
             Route::get('/{machine_id}/machine-view', 'MachineController@machineView')->name('machine.view');
         });
+
+        Route::get('scanner', 'OrderController@uploadView')->name('scanner');
     });
 
     
 
 
 
-    Route::get('scanner', 'OrderController@uploadView')->name('scanner');
+   
 
 });
 
