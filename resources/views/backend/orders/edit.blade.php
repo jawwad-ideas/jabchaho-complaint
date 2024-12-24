@@ -9,6 +9,22 @@
         width: 80px !important;
         height: 100px !important;
     } */
+
+    .scroll-to-scanner {
+    position: fixed;
+    bottom: 5px;
+    right: 10px;
+    background: #000;
+    border-radius: 100%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+
+.scroll-to-scanner button {color: #fff;}
+
 }
 
 .itemLabel label.d-flex {
@@ -181,8 +197,8 @@
         <div class="btn-group order-action-btns flex-wrap justify-content-center" role="group">
 
             @if(Auth::user()->hasRole(config('constants.roles.admin')))
-                <div class="mb-3 update-order-button-div">
-                    <button id="startScanner" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">Barcode Scan</button>
+                <div class="mb-3 update-order-button-div d-xl-none d-lg-none d-md-block d-sm-block d-block">
+                    <button id="startScanner" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">  Barcode Scan</button>
                 </div>
             @endif
 
@@ -381,7 +397,9 @@
                     </script> -->
 
                      <!-- Div to display barcode scanning -->
-                    <div id="scanner-container"></div>
+                      <div id="#barcode_scanner_section" >
+                          <div id="scanner-container"></div>
+                      </div>
 
                     @foreach ($order->orderItems as $item)
                     <div class="itemForm orderItemSec border-bottom border-2">
@@ -613,11 +631,19 @@
             </div>
         </div>
     </form>
+    <div class="scroll-to-scanner d-xl-none d-lg-none d-md-block d-sm-block">
+        <button onclick="scrollToScanner()" class="btn btn-sm text-white p-2 "><i class="fa fa-angle-up"></i></button>
+    </div>
 </div>
 
 
-
 <script>
+    function scrollToScanner() {
+        window.scrollTo({
+        top: 300,
+        behavior: 'smooth',
+        })
+    }
     // function addMoreImageUpload(itemId,fieldName) {
     //     event.preventDefault();
     //     const container = document.getElementById(`image-upload-container-${fieldName}-${itemId}`);
