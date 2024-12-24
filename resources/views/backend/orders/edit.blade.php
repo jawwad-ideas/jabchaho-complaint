@@ -383,10 +383,6 @@
                      <!-- Div to display barcode scanning -->
                     <div id="scanner-container"></div>
 
-                    <!-- Display scanned barcode -->
-                    <div id="barcode-value">Scanned Barcode: <span id="code"></span></div>
-
-
                     @foreach ($order->orderItems as $item)
                     <div class="itemForm orderItemSec border-bottom border-2">
                         <div class="item-form-row p-xl-3 p-lg-3 p-md-3 p-sm-0 bg-light rounded border-light">
@@ -1071,8 +1067,7 @@ $('.btn[data-toggle="collapse"]').on('click', function () {
 
         // Success callback when barcode is scanned
         function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Scanned Barcode: ${decodedText}`);
-            $("#code").text(decodedText);
+            
 
             // Find the barcode element on the page
             const barcodeElement = Array.from(document.querySelectorAll('.barcode')).find(el =>
