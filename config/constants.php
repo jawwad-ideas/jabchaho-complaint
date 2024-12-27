@@ -131,6 +131,8 @@ return [
 		21 => 'color stains'
 	],
 
+	'dryer_statues' 	=> [1=>'Pending', 2=>'Completed'],
+	'dryer_statues_id'  => ['pending'=>1, 'completed'=>2]
 
 
 

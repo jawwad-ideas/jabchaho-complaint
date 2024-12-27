@@ -276,6 +276,31 @@
                             @endif
                             {{-- Machine Profiling --}}
 
+                            <li class="list-item px-3 py-3">
+                                <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer " data-bs-toggle="collapse" data-bs-target="#dryer">
+                                    <span class="d-flex align-items-center gap-3 text-light">
+                                        <i class="fa fa-solid fa-clipboard-list fa-2x text-theme-yellow-light"></i>
+                                        Dryer
+                                    </span>
+                                    <i class="fa fa-solid fa-angle-down text-theme-yellow-light"></i>
+                                </div>
+
+                                <div class="collapse mt-3 ms-5" id="dryer" style="">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                       
+                                            <li class="py-2 "><a href="{{ route('sunny.dryer') }}"
+                                                                    class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                    <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
+                                                    Sunny</a>
+                                            </li>
+                                        
+
+                                        
+                                    </ul>
+                                </div>
+
+                            </li>
+
                         @if(Auth::user()->can('configurations.form') || Auth::user()->can('complaints.status.index') )
                         <li class="list-item px-3 py-3">
                             <div class="d-flex align-items-center justify-content-between gap-2  cursor-pointer "
