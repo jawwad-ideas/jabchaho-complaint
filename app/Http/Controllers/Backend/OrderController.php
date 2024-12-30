@@ -969,4 +969,32 @@ class OrderController extends Controller
             return false;
         }
     }
+
+    public function barcodeImageUpload(Request $request)
+    {
+        try
+        {
+            $orderItem = array();
+            $barcode            = $request->input('barcode');
+
+            if(!empty($barcode))
+            {
+                $orderItem = OrderItem::with(['images' => function ($query) {
+                    $query->where('status', 1);
+                },'order','issues','machineBarcode.machineDetail','machineBarcode.machineDetail.machine','machineBarcode.machineDetail.machineImages'])->where(['barcode' => $barcode])->first();
+            }
+
+            //dd($orderItem);
+
+
+            $data['barcode']    = $barcode;  
+            $data['item']       = $orderItem;
+            
+            return view('backend.orders.barcodeImageUpload')->with($data);;
+
+        } catch (\Exception $e) {
+            \Log::error("OrderController->barcodeImageUpload->" . $e->getMessage());
+            return false;
+        }
+    }
 }
