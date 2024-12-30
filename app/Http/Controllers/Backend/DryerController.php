@@ -34,6 +34,7 @@ class DryerController extends Controller
     public function save( StoreDryerDetailRequest $request )
     {
        
+        $beforeBarcodeCommaSeparated =$afterBarcodeCommaSeparated ='';
         $postData = $request->validated();
 
          // Clean up the string and convert to an array
@@ -41,15 +42,23 @@ class DryerController extends Controller
             array_map('trim', preg_split('/\r\n|\r|\n/', Arr::get($postData,'before_barcodes')))
         );
 
-        $beforeBarcodeArray          = array_unique($beforeBarcodeArray);
-        $beforeBarcodeCommaSeparated = implode(',', $beforeBarcodeArray);
+        if(!empty($beforeBarcodeArray))
+        {
+            $beforeBarcodeArray          = array_unique($beforeBarcodeArray);
+            $beforeBarcodeCommaSeparated = implode(',', $beforeBarcodeArray);
+        }
+       
 
         $afterBarcodeArray = array_filter(
             array_map('trim', preg_split('/\r\n|\r|\n/', Arr::get($postData,'after_barcodes')))
         );
 
-        $afterBarcodeArray          = array_unique($afterBarcodeArray);
-        $afterBarcodeCommaSeparated = implode(',', $afterBarcodeArray);
+        
+        if(!empty($afterBarcodeArray))
+        {
+            $afterBarcodeArray          = array_unique($afterBarcodeArray);
+            $afterBarcodeCommaSeparated = implode(',', $afterBarcodeArray);
+        }
 
         $dryer                       = array();
         $dryer['status']             = config('constants.dryer_statues_id.pending');
@@ -109,11 +118,14 @@ class DryerController extends Controller
             array_map('trim', preg_split('/\r\n|\r|\n/', Arr::get($postData,'after_barcodes')))
         );
 
-        $afterBarcodeArray          = array_unique($afterBarcodeArray);
-        $afterBarcodeCommaSeparated = implode(',', $afterBarcodeArray);
-
+        if(!empty($afterBarcodeArray))
+        {
+            $afterBarcodeArray          = array_unique($afterBarcodeArray);
+            $afterBarcodeCommaSeparated = implode(',', $afterBarcodeArray);
+        }
+        
         $dryerData                       = array();
-        $dryerData['status']             = config('constants.dryer_statues_id.approved');
+        $dryerData['status']             = config('constants.dryer_statues_id.completed');
         $dryerData['after_barcodes']     = $afterBarcodeCommaSeparated;
 
         $dryer->update($dryerData);

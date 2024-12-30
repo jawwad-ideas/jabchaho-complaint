@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Backend;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\MatchBarcode;
 
 class StoreDryerDetailRequest extends FormRequest
 {
@@ -25,7 +26,8 @@ class StoreDryerDetailRequest extends FormRequest
         {
             return 
             [
-                'after_barcodes'           => 'required|string',                         // Barcode is required, accept a string
+                'after_barcodes' => ['required', 'string', new MatchBarcode($this->segment(2))], 
+                //'after_barcodes'           => 'required|string',                         // Barcode is required, accept a string
             ];
         }
         else

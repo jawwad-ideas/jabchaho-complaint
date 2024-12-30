@@ -38,7 +38,33 @@
         <div class="bg-light p-2 rounded">
 
         <div class="" id="filterBox" style="display:block;" >
-            
+        <form class="form-inline" method="GET" action="{{ route('sunny.dryer') }}">
+                    <div class="row mb-3">
+                        <div class="col-lg-12 d-flex flex-wrap">
+                            <div class="col-sm-3 px-2">
+                                <input type="text" class="form-control p-2" autocomplete="off" name=""
+                                       value="" placeholder="Before Dry Barcode">
+                            </div>
+                            <div class="col-sm-3 px-2">
+                                <input type="text" class="form-control p-2" autocomplete="off" name=""
+                                       value="" placeholder="After Dry Barcode">
+                            </div>
+
+                        </div>
+                        <div class="col-lg-12 text-end mt-4">
+                            <button type="submit"
+                                    class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
+                                    id="consult">
+                                <span>Search</span>
+                                <i alt="Search" class="fa fa-search"></i>
+                            </button>
+                            <a href="{{ route('orders.index') }}"
+                               class="btn bg-theme-dark-300 text-light p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
+                                <span>Clear</span>
+                                <i class="fa fa-solid fa-arrows-rotate"></i></a>
+                        </div>
+                    </div>
+        </form>
         </div>
 
      
