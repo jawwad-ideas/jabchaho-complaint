@@ -27,7 +27,7 @@
                         </a>
                     </form>
                 </div>
-				 <div class="mb-3 update-order-button-div ">
+				 <div class="mb-3 update-order-button-div d-xl-none d-lg-none d-md-block d-sm-block d-block ">
 					<button id="startScanner" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">  Barcode Scan</button>
 				</div>
             </div>
