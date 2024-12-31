@@ -223,6 +223,18 @@
                                         </ul>
                                     </div>
 
+                                    <div class="collapse mt-3 ms-5" id="orders" style="">
+                                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        @if(Auth::user()->can('barcode.image.upload'))
+                                                <li class="py-2 "><a href="{{ route('barcode.image.upload') }}"
+                                                                     class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                        <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
+                                                        Barcode Image Upload</a>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </div>
+
 
                                     <div class="collapse mt-3 ms-5" id="orders" style="">
                                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">

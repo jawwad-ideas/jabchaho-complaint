@@ -31,7 +31,7 @@ tr[data-url]:hover {
         <div class="bg-light p-2 rounded">
             <div id="modalDiv"></div>
 
-            <div class="" id="filterBox" style="display:block;"
+            <div class="" id="filterBox" 
                  @if (request()->has('order_number') || request()->has('customer_email') || request()->has('customer_name') || request()->has('telephone')  )
                      style="display:block;"
                  @else
@@ -62,17 +62,17 @@ tr[data-url]:hover {
                                        value="{{ $order_number ?? '' }}" placeholder="Order Number">
                             </div>
 
-                            <div class="col-sm-3 px-2">
+                            <div class="col-sm-3 px-2 mt-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="customer_email"
                                        value="{{ $customer_email ?? '' }}" placeholder="Customer Email">
                             </div>
 
-                            <div class="col-sm-3 px-2">
+                            <div class="col-sm-3 px-2 mt-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="customer_name"
                                        value="{{ $customer_name ?? '' }}" placeholder="Customer Name">
                             </div>
 
-                            <div class="col-sm-3 px-2">
+                            <div class="col-sm-3 px-2 mt-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="telephone"
                                        value="{{ $telephone ?? '' }}" placeholder="Telephone">
                             </div>

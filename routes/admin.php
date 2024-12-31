@@ -144,6 +144,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::post('/sync-order', 'OrderController@syncOrder')->name('orders.sync');
             Route::post('/send-email', 'OrderController@sendEmail')->name('send.email');
             Route::get('/barcode-image', 'OrderController@itemImage')->name('orders.barcode.images');
+            //Barcode Image Upload
+            Route::get('/barcode-image-upload', 'OrderController@barcodeImageUpload')->name('barcode.image.upload');
         });
 
         Route::post('/upload-order-image', 'OrderController@uploadOrderImage')->name('upload.order.image');
