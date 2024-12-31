@@ -125,11 +125,13 @@
                                                     onclick="addMoreImageUpload({{ $item->id }},'pickup_images')">Add More</button>
                                         </div> -->
                     <div class="items-images-sec mt-3" id="items-images-sec-pickup_images-{{ $item->id }}">
-                        @if( $item->images->isNotEmpty() )
+                    <?php $beforeImagecount = 0; ?>    
+                    @if( $item->images->isNotEmpty() )
 
                         @foreach ($item->images as $image)
                         @if( $image->image_type == "Before Wash" )
                         <?php
+                        $beforeImagecount++;
                         $beforeMainImage = asset(config('constants.files.orders')) . '/' . $item->order->order_id . '/before/' . $image->imagename;
                         $beforeThumbnail = asset(config('constants.files.orders')) . '/' . $item->order->order_id . '/thumbnail/before/' . $image->imagename;
                         $isBeforeThumbnail = public_path(config('constants.files.orders')) . '/' . $item->order->order_id . '/thumbnail/before/' . $image->imagename;
@@ -143,7 +145,7 @@
                         }
                         ?>
 
-                        <div class="img-item">
+                        <div class="img-item before-image">
                             <a href="{{$beforeMainImage}}" target="_blank"> <img class="img-thumbnail" src="{{$beforeThumbnail}}" alt="{{$image->imagename}}"> </a>
                             <div class="item-img-action-btn">
                                 <button class="btn btn-danger btn-sm delete-image ms-2" data-image-id="{{ $image->id }}" data-order-number="{{ $item->order->order_id }}" title="Delete">
@@ -164,7 +166,7 @@
                 <div class="col-lg-6 pb-1 pt-3 border-light px-3" style="background: #fbee7e4f;">
                     <label for="delivery_images" class="form-label fw-bold">After Wash Images</label>
                     <div class="upload-img-input-sec" id="image-upload-container-delivery_images-{{ $item->id }}">
-                        <input value="" type="file" class="form-control img-upload-input-after" name="image[{{$item->id}}][delivery_images][]" placeholder="" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="delivery_images" data-item-id="{{ $item->id }}" id="uploadImage-{{ $item->id }}">
+                        <input @if( empty($beforeImagecount) ) disabled @endif value="" type="file" class="form-control img-upload-input-after barcode-img-upload" name="image[{{$item->id}}][delivery_images][]" placeholder="" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="delivery_images" data-item-id="{{ $item->id }}" id="uploadImage-{{ $item->id }}">
                         <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
                             <small>Issue Fixed:</small>
                             <div class="d-flex gap-2">

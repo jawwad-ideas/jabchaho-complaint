@@ -232,7 +232,7 @@ $(document).ready(function () {
                     if (response.success) {
 
                         const imageHtml = `
-                            <div class="img-item">
+                            <div class="img-item before-image">
                                 <a href="${response.image_url}" target="_blank">
                                     <img class="img-thumbnail" src="${response.image_url}" alt="Edited Image">
                                 </a>
@@ -256,6 +256,8 @@ $(document).ready(function () {
                         if( !response.disableAfterUploadInput  ){
                             $(".img-upload-input-after").attr("disabled", false);
                         }
+
+                        $('.barcode-img-upload').attr("disabled", false);
 
                         canvas.clear();
                     } else {
