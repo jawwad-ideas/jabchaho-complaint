@@ -19,7 +19,7 @@
             <div class="container mt-4">
                 <div class="mb-3">
                     <form class="d-flex align-items-center" method="GET" action="{{ route('barcode.image.upload') }}">
-                        <input type="text" class="form-control me-3" id="barcode" name="barcode" required placeholder="Barcode" style="max-width: 300px;" value="{{$barcode}}">
+                        <input type="text" class="form-control me-3" id="barcode" name="barcode" required placeholder="Barcode" style="max-width: 300px;" autocomplete="off" value="{{$barcode}}">
                         <button type="submit" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Search</button>
                     </form>
                 </div>

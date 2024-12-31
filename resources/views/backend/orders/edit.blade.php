@@ -52,12 +52,11 @@
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
         <div class="btn-group order-action-btns flex-wrap justify-content-center" role="group">
 
-            @if(Auth::user()->hasRole(config('constants.roles.admin')))
-                <div class="mb-3 update-order-button-div d-xl-none d-lg-none d-md-block d-sm-block d-block">
-                    <button id="startScanner" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">  Barcode Scan</button>
-                </div>
-            @endif
-
+            
+            <div class="mb-3 update-order-button-div d-xl-none d-lg-none d-md-block d-sm-block d-block">
+                <button id="startScanner" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">  Barcode Scan</button>
+            </div>
+            
             <div class="mb-3 complete-button-div" @if ( $showCompleteButton ) style="display:block;" @else style="display:none;" @endif >
                 <button data-order-id="{{ $order->id }}" type="button" class="complete-order btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
                     Complete Order
@@ -105,6 +104,18 @@
                 <div class="form-section mb-5">
                     <div class="form-section mb-5 form-section-title m-xl-0 mx-2 my-3">
                         <h4 class="fw-bold mt-0 ">Edit Order And Upload Images.</h4>
+                    </div>
+                    <div class="d-flex justify-content-end align-items-center">
+                        <input type="text" 
+                            class="form-control me-3" 
+                            id="barcode" 
+                            name="barcode"  
+                            placeholder="Barcode"
+                            autocomplete="off" 
+                            style="max-width: 300px;">
+                        <input type="button" 
+                            value="Search"  
+                            class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3" onclick="scrollToBarcode()">
                     </div>
                 </div>
 
@@ -474,6 +485,34 @@
 @include('backend.orders.common')
 <script>
 
+
+    function scrollToBarcode()
+    {
+        // Get input value
+        const barcodeInput = document.getElementById('barcode').value;
+
+        // Find the matching barcode element
+        const barcodeElement = Array.from(document.querySelectorAll('.barcode')).find(el => 
+            el.textContent.trim() === barcodeInput.trim()
+        );
+
+        if (barcodeElement) {
+            // Get the parent label
+            const labelElement = barcodeElement.closest('label');
+
+            // Scroll to the label element and highlight it
+            labelElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            labelElement.style.backgroundColor = '#ffff99'; // Highlight
+
+            // Remove highlight after 2 seconds
+            setTimeout(() => {
+                labelElement.style.backgroundColor = ''; // Remove highlight
+            }, 2000);
+        } else {
+            alert('Barcode not found: ' + barcodeInput);
+        }
+    }
+
       //barcode scanner
 
       document.addEventListener('DOMContentLoaded', () => {
@@ -524,7 +563,6 @@
     });
 
 </script>
-@if(Auth::user()->hasRole(config('constants.roles.admin')))
 <!-- Include the html5-barcode library -->
 <script src="{!! url('assets/js/html5-qrcode.min.js') !!}" type="text/javascript"></script>
 
@@ -596,6 +634,5 @@
         }
     });
 </script>
-@endif
-</script>
+
 @endsection
