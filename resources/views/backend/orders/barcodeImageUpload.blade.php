@@ -18,14 +18,27 @@
         <div class="col-lg-12">
             <div class="container mt-4">
                 <div class="mb-3">
-                    <form class="d-flex align-items-center" method="GET" action="{{ route('barcode.image.upload') }}">
+                    <form class="d-flex align-items-center" id="barcodeImageUploadForm" method="GET" action="{{ route('barcode.image.upload') }}">
                         <input type="text" class="form-control me-3" id="barcode" name="barcode" required placeholder="Barcode" style="max-width: 300px;" autocomplete="off" value="{{$barcode}}">
                         <button type="submit" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Search</button>
+						<a href="{{ route('barcode.image.upload') }}"
+                                class="btn bg-theme-dark-300 text-light p-2 d-inline-flex align-items-center gap-1 ms-1 text-decoration-none">
+                                <span>Clear</span>
+                        </a>
                     </form>
                 </div>
+				 <div class="mb-3 update-order-button-div ">
+					<button id="startScanner" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">  Barcode Scan</button>
+				</div>
             </div>
         </div>
     </div>
+	
+	   <!-- Div to display barcode scanning -->
+	  <div id="#barcode_scanner_section" >
+		  <div id="scanner-container"></div>
+	  </div>
+
 
     @if(!empty($barcode))
 
@@ -235,6 +248,15 @@
 
 
 </div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+
+
 
 
 
@@ -276,6 +298,52 @@ document.addEventListener('DOMContentLoaded', () => {
             document.addEventListener('click', () => {
                 barcodeInput.focus();
             });
+        });
+</script>
+
+<!-- Include the html5-barcode library -->
+<script src="{!! url('assets/js/html5-qrcode.min.js') !!}" type="text/javascript"></script>
+
+<script>
+  $(document).ready(function () {
+            let scanner; // Initialize scanner variable
+
+            // Start barcode scanner on button click
+            $("#startScanner").click(function () {
+				 $("#barcode").val('');
+                const scannerContainer = "scanner-container"; // ID of the container div
+
+                // Create an instance of Html5QrcodeScanner
+                scanner = new Html5QrcodeScanner(scannerContainer, {
+                    fps: 10, // Frames per second
+                    qrbox: { width: 250, height: 250 }, // Scanning box dimensions
+                });
+
+                // Render the scanner and define success and error callbacks
+                scanner.render(onScanSuccess, onScanError);
+            });
+
+            // Success callback: Insert barcode into the text field and submit the form
+            function onScanSuccess(decodedText, decodedResult) {
+                console.log(`Scanned Barcode: ${decodedText}`);
+                
+                // Insert the scanned barcode into the input field
+                $("#barcode").val(decodedText);
+
+                // Stop the scanner (optional, depending on use case)
+                if (scanner) {
+                    scanner.clear(); // Clear scanner UI
+                    scanner = null; // Reset scanner instance
+                }
+
+                // Automatically submit the form
+                $("#barcodeImageUploadForm").submit();
+            }
+
+            // Error callback: Handle scanning errors
+            function onScanError(error) {
+                console.warn(`Barcode scanning error: ${error}`);
+            }
         });
 </script>
 @endsection

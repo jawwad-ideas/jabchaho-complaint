@@ -168,9 +168,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::get('/{machine_id}/machine-view', 'MachineController@machineView')->name('machine.view');
         });
 
-        Route::group(['prefix' => 'barcode'], function() {
-
-        });
         Route::get('scanner', 'OrderController@uploadView')->name('scanner');
     });
 
