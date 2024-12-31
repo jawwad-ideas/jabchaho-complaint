@@ -47,32 +47,32 @@ tr[data-url]:hover {
         <div class="bg-light p-2 rounded">
             <div id="modalDiv"></div>
 
-            <div class="" id="filterBox" style="display:block;"
-                 {{--@if (request()->has('order_number') || request()->has('customer_email') || request()->has('customer_name') || request()->has('telephone')  )
+            <div class="" id="filterBox" 
+                 @if (request()->has('order_number') || request()->has('customer_email') || request()->has('customer_name') || request()->has('telephone') ||request()->has('before_email') ||request()->has('after_email') ||request()->has('location_type') ||request()->has('issue_type') )
                      style="display:block;"
                  @else
                      style="display:none;"
-                @endif--}}
+                @endif
             >
                 <form class="form-inline" method="GET" action="{{ route('orders.index') }}/{{$order_status}}">
                     <div class="row mb-3">
                         <div class="col-lg-12 d-flex flex-wrap">
-                            <div class="col-sm-3 px-2">
+                            <div class="col-sm-3 px-2 mt-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="order_number"
                                        value="{{ $order_number ?? '' }}" placeholder="Order Number">
                             </div>
 
-                            <div class="col-sm-3 px-2">
+                            <div class="col-sm-3 px-2 mt-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="customer_email"
                                        value="{{ $customer_email ?? '' }}" placeholder="Customer Email">
                             </div>
 
-                            <div class="col-sm-3 px-2">
+                            <div class="col-sm-3 px-2 mt-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="customer_name"
                                        value="{{ $customer_name ?? '' }}" placeholder="Customer Name">
                             </div>
 
-                            <div class="col-sm-3 px-2">
+                            <div class="col-sm-3 px-2 mt-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="telephone"
                                        value="{{ $telephone ?? '' }}" placeholder="Telephone">
                             </div>
