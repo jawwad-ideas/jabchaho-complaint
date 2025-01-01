@@ -981,14 +981,11 @@ class OrderController extends Controller
             {
                 $orderItem = OrderItem::with(['images' => function ($query) {
                     $query->where('status', 1);
-                },'order','issues','machineBarcode.machineDetail','machineBarcode.machineDetail.machine','machineBarcode.machineDetail.machineImages'])->where(['barcode' => $barcode])->first();
+                },'order','issues','machineBarcode.machineDetail','machineBarcode.machineDetail.machine','machineBarcode.machineDetail.machineImages'])->where('barcode', 'like', '%'.$barcode.'%')->take(10)->get();
             }
 
-            //dd($orderItem);
-
-
             $data['barcode']    = $barcode;  
-            $data['item']       = $orderItem;
+            $data['items']       = $orderItem;
             
             return view('backend.orders.barcodeImageUpload')->with($data);;
 
