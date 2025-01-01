@@ -486,33 +486,47 @@
 <script>
 
 
-    function scrollToBarcode()
-    {
-        // Get input value
-        const barcodeInput = document.getElementById('barcode').value;
+let currentMatchIndex = 0; // Keeps track of the current match
 
-        // Find the matching barcode element
-        const barcodeElement = Array.from(document.querySelectorAll('.barcode')).find(el => 
-            el.textContent.trim() === barcodeInput.trim()
-        );
+function scrollToBarcode() {
+    // Get input value
+    const barcodeInput = document.getElementById('barcode').value.trim();
 
-        if (barcodeElement) {
-            // Get the parent label
-            const labelElement = barcodeElement.closest('label');
-
-            // Scroll to the label element and highlight it
-            labelElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            labelElement.style.backgroundColor = '#ffff99'; // Highlight
-
-            // Remove highlight after 2 seconds
-            setTimeout(() => {
-                labelElement.style.backgroundColor = ''; // Remove highlight
-            }, 2000);
-        } else {
-            alert('Barcode not found: ' + barcodeInput);
-        }
+    if (!barcodeInput) {
+        alert('Please enter a barcode to search.');
+        return;
     }
 
+    // Find all matching barcode elements (partial match)
+    const matchingElements = Array.from(document.querySelectorAll('.barcode')).filter(el =>
+        el.textContent.trim().includes(barcodeInput)
+    );
+
+    if (matchingElements.length > 0) {
+        // Loop back to the first match if at the end
+        if (currentMatchIndex >= matchingElements.length) {
+            currentMatchIndex = 0;
+        }
+
+        // Get the current matching element
+        const barcodeElement = matchingElements[currentMatchIndex];
+        const labelElement = barcodeElement.closest('label');
+
+        // Scroll to the label element and highlight it
+        labelElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        labelElement.style.backgroundColor = '#ffff99'; // Highlight
+
+        // Remove highlight after 2 seconds
+        setTimeout(() => {
+            labelElement.style.backgroundColor = ''; // Remove highlight
+        }, 2000);
+
+        // Move to the next match
+        currentMatchIndex++;
+    } else {
+        alert('No matching barcodes found for: ' + barcodeInput);
+    }
+}
       //barcode scanner
 
       document.addEventListener('DOMContentLoaded', () => {
