@@ -40,7 +40,7 @@
 
                     <div class="mb-3">
                         <label for="username" class="form-label">After the dryer barcodes:</label>
-                        <textarea name="after_barcodes" id="after-barcode" class="form-control" style="height: 300px;"  @if(Arr::get($dryer, 'status') != config('constants.dryer_statues_id.completed')) readonly @else disabled @endif required>@if(old('after_barcodes')) {{ old('after_barcodes') }} @else {{$afterBarcodesNewLineSeparated}} @endif</textarea>
+                        <textarea name="after_barcodes" id="after-barcode" class="form-control" style="height: 300px;" @if(Arr::get($dryer, 'status') != config('constants.dryer_statues_id.completed')) readonly @else disabled @endif required>@if(old('after_barcodes')){{old('after_barcodes')}}@else{{$afterBarcodesNewLineSeparated}}@endif</textarea>
                         @if(Arr::get($dryer, 'status') != config('constants.dryer_statues_id.completed'))
                         <input type="button" class="btn btn-danger remove-file-btn mt-3" id="after-removeLine" value="Remove After Barcode">
                         @endif    
@@ -65,17 +65,20 @@
 
 //insert barcodes in readonly 
 document.addEventListener("DOMContentLoaded", () => {
-  const afterBarcodeInput = document.getElementById("after-barcode");
+  const beforeBarcodeInput = document.getElementById("after-barcode");
+  //const afterBarcodeInput = document.getElementById("after-barcode");
 
   let activeInput = null; // Tracks which input field is active
   let barcodeData = ""; // Temporary storage for the current barcode
   let scannerTimeout;
 
   // Listen for focus events to track active input field
-
-  afterBarcodeInput.addEventListener("focus", () => {
-    activeInput = afterBarcodeInput;
+  beforeBarcodeInput.addEventListener("focus", () => {
+    activeInput = beforeBarcodeInput;
   });
+//   afterBarcodeInput.addEventListener("focus", () => {
+//     activeInput = afterBarcodeInput;
+//   });
 
   // Capture barcode input
   document.addEventListener("keypress", (event) => {
@@ -104,15 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
 // Remove a line from the "after-barcode" textarea
 document.getElementById("after-removeLine").addEventListener("click", function () {
     removeLine("after-barcode");
 });
 
-// Remove a line from the "before-barcode" textarea
-document.getElementById("before-removeLine").addEventListener("click", function () {
-    removeLine("before-barcode");
-});
+
 
 /**
  * Removes the line where the caret is located in the specified textarea.
@@ -123,6 +124,14 @@ function removeLine(textareaId) {
 
     // Get the content of the textarea
     const content = textarea.value;
+
+    // Handle empty content case
+    if (!content.trim()) {
+        console.log("The textarea is empty. Nothing to remove.");
+        $('#after-barcode').val('');
+        textarea.focus(); // Ensure the field remains focused
+        return;
+    }
 
     // Get the caret position in the textarea
     const startPos = textarea.selectionStart;
@@ -149,9 +158,37 @@ function removeLine(textareaId) {
     if (selectedLineIndex !== -1) {
         lines.splice(selectedLineIndex, 1); // Remove the line
         textarea.value = lines.join("\n"); // Update the textarea content
+
+        // Restore focus and cursor position
+        textarea.focus();
+        const newCursorPos = charCount - lines[selectedLineIndex]?.length - 1 || 0;
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+    } else {
+        console.log("No line found to remove at the current caret position.");
     }
 }
 
+// Handle barcode scanner input
+document.getElementById("after-barcode").addEventListener("input", (event) => {
+    const textarea = event.target;
+    let content = textarea.value;
+
+    // Normalize line endings
+    content = content.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
+    // If the content doesn't end with a newline, append one
+    if (content && !content.endsWith("\n")) {
+        textarea.value = content + "\n";
+    }
+
+    // Prevent concatenation: reset if the textarea is empty
+    if (!textarea.value.trim()) {
+        textarea.value = "";
+    }
+
+    // Scroll to the bottom to show the most recent barcode
+    textarea.scrollTop = textarea.scrollHeight;
+});
 
 
 

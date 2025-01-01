@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
 //     removeLine("after-barcode");
 // });
 
-// Remove a line from the "before-barcode" textarea
 document.getElementById("before-removeLine").addEventListener("click", function () {
     removeLine("before-barcode");
 });
@@ -109,6 +108,14 @@ function removeLine(textareaId) {
 
     // Get the content of the textarea
     const content = textarea.value;
+
+    // Handle empty content case
+    if (!content.trim()) {
+        console.log("The textarea is empty. Nothing to remove.");
+        $('#before-barcode').val('');
+        textarea.focus(); // Ensure the field remains focused
+        return;
+    }
 
     // Get the caret position in the textarea
     const startPos = textarea.selectionStart;
@@ -135,9 +142,37 @@ function removeLine(textareaId) {
     if (selectedLineIndex !== -1) {
         lines.splice(selectedLineIndex, 1); // Remove the line
         textarea.value = lines.join("\n"); // Update the textarea content
+
+        // Restore focus and cursor position
+        textarea.focus();
+        const newCursorPos = charCount - lines[selectedLineIndex]?.length - 1 || 0;
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+    } else {
+        console.log("No line found to remove at the current caret position.");
     }
 }
 
+// Handle barcode scanner input
+document.getElementById("before-barcode").addEventListener("input", (event) => {
+    const textarea = event.target;
+    let content = textarea.value;
+
+    // Normalize line endings
+    content = content.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
+    // If the content doesn't end with a newline, append one
+    if (content && !content.endsWith("\n")) {
+        textarea.value = content + "\n";
+    }
+
+    // Prevent concatenation: reset if the textarea is empty
+    if (!textarea.value.trim()) {
+        textarea.value = "";
+    }
+
+    // Scroll to the bottom to show the most recent barcode
+    textarea.scrollTop = textarea.scrollHeight;
+});
 
 
 

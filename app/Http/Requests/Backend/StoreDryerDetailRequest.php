@@ -22,11 +22,13 @@ class StoreDryerDetailRequest extends FormRequest
      */
     public function rules()
     {
-        if(!empty($this->segment(2)))
+        $id = (int) $this->segment(2);
+        
+        if(!empty($id))
         {
             return 
             [
-                'after_barcodes' => ['required', 'string', new MatchBarcode($this->segment(2))], 
+                'after_barcodes' => ['required', 'string', new MatchBarcode($id)], 
                 //'after_barcodes'           => 'required|string',                         // Barcode is required, accept a string
             ];
         }
@@ -48,12 +50,12 @@ class StoreDryerDetailRequest extends FormRequest
     public function messages()
     {
         
-        if(!empty($this->segment(2)))
+        if(!empty($id ))
         {
             return 
             [
-                'before_barcodes.required'  => 'After the dryer barcodes is required.',
-                'before_barcodes.string'    => 'After the dryer barcodes must be a valid string.',
+                'after_barcodes.required'  => 'After the dryer barcodes is required.',
+                'after_barcodes.string'    => 'After the dryer barcodes must be a valid string.',
             ];
         }
         else

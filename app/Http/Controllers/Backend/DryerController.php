@@ -82,7 +82,7 @@ class DryerController extends Controller
      */
     public function edit(Dryer $dryer) 
     {
-        $afterBarcodesNewLineSeparated = $beforeBarcodesNewLineSeparated = '';
+        $afterBarcodesNewLineSeparated = $beforeBarcodesNewLineSeparated = NULL;
         $beforeBarcodes = Arr::get($dryer,'before_barcodes');
         
         if(!empty($beforeBarcodes))
