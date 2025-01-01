@@ -488,6 +488,16 @@
 
 let currentMatchIndex = 0; // Keeps track of the current match
 
+
+// Attach event listener to the input field
+document.getElementById('barcode').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission or default behavior
+        scrollToBarcode(); // Call the function
+    }
+});
+
+
 function scrollToBarcode() {
     // Get input value
     const barcodeInput = document.getElementById('barcode').value.trim();
@@ -526,6 +536,7 @@ function scrollToBarcode() {
     } else {
         alert('No matching barcodes found for: ' + barcodeInput);
     }
+    $("#barcode").val('');
 }
       //barcode scanner
 
