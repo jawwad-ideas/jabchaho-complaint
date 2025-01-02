@@ -131,6 +131,11 @@ return [
 		21 => 'color stains'
 	],
 
+	'jabchaho_service' =>
+	[
+		'regular'	=> 'regular',
+		'express' 	=> 'express',
+	],
 
 
 
