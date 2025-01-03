@@ -169,6 +169,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         });
 
         Route::get('scanner', 'OrderController@uploadView')->name('scanner');
+
+        Route::get('/pricing', 'PricingController@index')->name('pricing');
     });
 
     
