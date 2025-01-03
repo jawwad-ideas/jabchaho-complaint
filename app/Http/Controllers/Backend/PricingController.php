@@ -66,7 +66,7 @@ class PricingController extends Controller
                 $item = 
                 [
                     "label" => Arr::get($result, 'laundry_item_name'), 
-                    "price" => Arr::get($result, $price), 
+                    "price" => (int) Arr::get($result, $price), 
                     "img" => Arr::get($result, 'laundry_item_icon'),
                 ];
 
