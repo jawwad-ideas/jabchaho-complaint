@@ -6,6 +6,17 @@
     <div class="p-title">
         <h3 class="fw-bold text-dark m-0">Pricing Json</h3>
     </div>
+    <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
+            <div class="btn-group" role="group">
+            <a href="{{ route('pricing.sync') }}" class="text-decoration-none" onclick="return confirmSync()">
+                <small id="" type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
+                    <i class="fa fa-solid fa fa-sync"></i><span>Sync Pricing</span>
+                </small>
+            </a>
+               
+
+            </div>
+        </div>
 </div>
 
 <div class="page-content bg-white p-lg-5 px-2">
@@ -15,7 +26,7 @@
             <label for="regular" class="form-label fw-bold text-dark m-0">Regular:</label>
             <div class="d-flex align-items-center">
                 <textarea name="regular" id="regular" class="form-control" style="height: 300px;" readonly>
-@if(!empty($regular->getContent())){{$regular->getContent()}}@endif
+                @if($regular && !empty($regular->getContent())){{$regular->getContent()}}@endif
                 </textarea>
                 <button class="btn btn-primary ms-2" onclick="copyToClipboard('regular')">Copy</button>
             </div>
@@ -25,7 +36,7 @@
             <label for="express" class="form-label fw-bold text-dark m-0">Express:</label>
             <div class="d-flex align-items-center">
                 <textarea name="express" id="express" class="form-control" style="height: 300px;" readonly>
-@if(!empty($express->getContent())){{$express->getContent()}}@endif
+                @if($express && !empty($express->getContent())){{$express->getContent()}}@endif
                 </textarea>
                 <button class="btn btn-primary ms-2" onclick="copyToClipboard('express')">Copy</button>
             </div>
@@ -64,6 +75,11 @@
         }).catch(err => {
             alert("Failed to copy: " + err);
         });
+    }
+
+    // Function to show the confirmation dialog
+    function confirmSync() {
+        return confirm("Are you sure you want to sync the pricing?");
     }
 </script>
 

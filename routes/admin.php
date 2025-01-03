@@ -170,7 +170,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
         Route::get('scanner', 'OrderController@uploadView')->name('scanner');
 
-        Route::get('/pricing', 'PricingController@index')->name('pricing');
+        Route::group(['prefix' => 'pricing'], function() {
+            Route::get('/', 'PricingController@index')->name('pricing');
+            Route::get('/sync', 'PricingController@syncPricing')->name('pricing.sync');
+        });
     });
 
     

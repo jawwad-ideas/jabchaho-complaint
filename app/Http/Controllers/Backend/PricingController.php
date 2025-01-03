@@ -14,12 +14,10 @@ class PricingController extends Controller
     {
         try
         {
-            $laundryItemServicesObject = new LaundryItemServices;
+            $data = array();
 
-            $pricingData = $laundryItemServicesObject->getPricing();
-
-            $data['regular'] = $this->getPricingDetail($pricingData,config('constants.jabchaho_service.regular'));
-            $data['express'] = $this->getPricingDetail($pricingData,config('constants.jabchaho_service.express'));
+            $data['regular'] = $this->getDataFromFile(config('constants.jabchaho_service.regular'));
+            $data['express'] =$this->getDataFromFile(config('constants.jabchaho_service.express'));
 
             return view('backend.pricing.index')->with($data);
         }
@@ -28,6 +26,22 @@ class PricingController extends Controller
             \Log::error("PricingController->index->" . $e->getMessage());
             return false;
         }
+    }
+
+
+    public function getDataFromFile($fileName = '')
+    {
+        $filePath = public_path(config('constants.files.pricing')).'/'.$fileName.'.json'; // Full path to the file
+
+        if (file_exists($filePath)) 
+        {
+            $content = file_get_contents($filePath);
+            // Decode the JSON content to use as an array or object
+            $jsonData = json_decode($content, true); // Set to false if you want an object instead of an array
+        
+            // Do something with the $jsonData
+            return response()->json($jsonData);
+        } 
     }
 
 
@@ -68,5 +82,53 @@ class PricingController extends Controller
         }
 
         return response()->json($json);
+    }
+
+
+    public function syncPricing()
+    {
+        
+        try
+        {
+            $laundryItemServicesObject = new LaundryItemServices;
+            $pricingData = $laundryItemServicesObject->getPricing();
+
+            $regular = $this->getPricingDetail($pricingData,config('constants.jabchaho_service.regular'));
+            $express = $this->getPricingDetail($pricingData,config('constants.jabchaho_service.express'));
+            
+            $this->generateFile(config('constants.jabchaho_service.regular'),$regular);
+            $this->generateFile(config('constants.jabchaho_service.express'),$express);
+
+            return redirect()->route('pricing')
+                ->with('success', 'Pricing Synced Successfully.');
+        }
+        catch(\Exception $e) 
+        {
+            \Log::error("PricingController->syncPricing->" . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function generateFile($fileName='',$json=NULL)
+    {
+        if(!empty($json->getContent()))
+        {
+            $filePath = public_path(config('constants.files.pricing')).'/'.$fileName.'.json'; // Full path to the file
+            if (!file_exists($filePath)) 
+            {
+                // Create the folder if it doesn't exist
+                if (!file_exists(dirname($filePath))) 
+                {
+                    mkdir(dirname($filePath), 0755, true);
+                }
+            }
+            
+            // Create the file with initial content
+            file_put_contents($filePath, $json->getContent());
+            
+
+        }
+       
+        return true;
     }
 }
