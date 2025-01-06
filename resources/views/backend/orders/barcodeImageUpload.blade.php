@@ -18,7 +18,7 @@
         <div class="col-lg-12">
             <div class="container mt-4">
                 <div class="mb-3">
-                    <form class="d-flex align-items-center" id="barcodeImageUploadForm" method="GET" action="{{ route('barcode.image.upload') }}">
+                    <form class="d-flex align-items-center" id="barcodeImageUploadForm" method="GET" action="{{ route('barcode.image.upload') }}" onsubmit="return validateForm()">
                         <input type="text" class="form-control me-3" id="barcode" name="barcode" required placeholder="Barcode" style="max-width: 300px;" autocomplete="off" value="{{$barcode}}">
                         <button type="submit" class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Search</button>
 						<a href="{{ route('barcode.image.upload') }}"
@@ -44,7 +44,8 @@
 
     <div class="itemForm orderItemSec border-bottom border-2">
         <div class="item-form-row p-xl-3 p-lg-3 p-md-3 p-sm-0 bg-light rounded border-light">
-            @if(!empty($item))
+            @if($items->isNotEmpty())
+            @foreach($items as $item)
             <div class="itemLabel p-3">
                 <label class="d-flex">
                     <h6 class="d-inline-block fw-bold"> Service Type: </h6>
@@ -234,6 +235,7 @@
                     </div>
                 </div>
             </div>
+            @endforeach
             @else
             <div class="text-center">
                 <strong>No Record Found</strong>
@@ -242,22 +244,12 @@
     </div>
 
     @endif
-
+ 
 
     @endif
 
 
 </div>
-<div>&nbsp;</div>
-<div>&nbsp;</div>
-<div>&nbsp;</div>
-<div>&nbsp;</div>
-<div>&nbsp;</div>
-<div>&nbsp;</div>
-
-
-
-
 
 
 @push('order-id')@if(!empty($item->order->id)){{$item->order->id}}@endif @endpush
@@ -295,9 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // Prevent focus from being lost if clicked outside
-            document.addEventListener('click', () => {
-                barcodeInput.focus();
-            });
+            
         });
 </script>
 
@@ -345,5 +335,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.warn(`Barcode scanning error: ${error}`);
             }
         });
+
+
+
+        function validateForm() 
+        {
+            var input = document.getElementById("barcode").value;
+            if (input.length < 6) {
+            alert("Please enter at least 6 characters.");
+            return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
 </script>
 @endsection

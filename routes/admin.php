@@ -177,6 +177,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::get('/{dryer}/edit', 'DryerController@edit')->name('sunny.dryer.edit');
             Route::patch('/{dryer}/update', 'DryerController@update')->name('sunny.dryer.update');
         });
+        
+        Route::group(['prefix' => 'pricing'], function() {
+            Route::get('/', 'PricingController@index')->name('pricing');
+            Route::get('/sync', 'PricingController@syncPricing')->name('pricing.sync');
+        });
     });
 
     

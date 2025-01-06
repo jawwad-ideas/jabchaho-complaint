@@ -481,6 +481,11 @@ class Helper
 
         return redirect(route($redirectUrl));
     }
+
+	public static function transformString($str) {
+		// Convert the string to lowercase and replace spaces with underscores
+		return str_replace(' ', '_', strtolower($str));
+	}
 	
 	
 }

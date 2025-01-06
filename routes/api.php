@@ -26,3 +26,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Api','middleware' => ['custom
     Route::get('/get-reviews', 'App\Http\Controllers\Api\ComplaintController@getReviews')->name('get.review');
     Route::post('/create-order', 'App\Http\Controllers\Api\OrderController@create')->name('create.order');
 });
+
+
+Route::get('/pricing/{type}', 'App\Http\Controllers\Api\PricingController@index')->name('get.pricing');

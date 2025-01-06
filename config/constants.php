@@ -19,7 +19,8 @@ return [
 		'complaint_documents' 		=> 'assets/uploads/complaint_documents/',
 		'profile'					=> 'assets/uploads/profile/',
         'orders'                    => 'assets/uploads/orders/',
-		'machines'                  => 'assets/uploads/machines/'
+		'machines'                  => 'assets/uploads/machines/',
+		'pricing'					=> 'assets/pricing'
     ],
 	'file_extension_for_icon' =>['psd','doc','docx','xls','xlsx','zip','rar','ppt','pptx','pdf','mp3','mp4', 'webp', 'avif','jpg','jpeg','png'],
 	'admin_user_default_action'=>[
@@ -130,9 +131,13 @@ return [
 		20 => 'hard',
 		21 => 'color stains'
 	],
-
 	'dryer_statues' 	=> [1=>'Pending', 2=>'Completed'],
-	'dryer_statues_id'  => ['pending'=>1, 'completed'=>2]
+	'dryer_statues_id'  => ['pending'=>1, 'completed'=>2],
+	'jabchaho_service' =>
+	[
+		'regular'	=> 'regular',
+		'express' 	=> 'express',
+	],
 
 
 
