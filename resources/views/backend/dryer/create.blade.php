@@ -24,9 +24,14 @@
                     </div>
                 </div>
 
+                <div class="container mt-4">
+                    <label for="name" class="form-label">Lot*</label>
+                    <input value="" type="text" class="form-control" name="lot_number">
+                </div>
+
                 <div class="container mt-4" >
                     <div class="mb-3">
-                        <label for="username" class="form-label">Before the dryer barcodes:</label>
+                        <label for="username" class="form-label">Before the dryer barcodes*:</label>
                         <textarea name="before_barcodes" id="before-barcode" class="form-control" style="height: 300px;"  readonly required>{{ old('before_barcodes') }}</textarea>
                         <input type="button" class="btn btn-danger remove-file-btn mt-3" id="before-removeLine" value="Remove Before Barcode">
                     </div>
@@ -35,7 +40,7 @@
                     <div class="mb-3">
                         <input type="submit"
                             class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3" value="Save">
-                        <a href="{{ route('sunny.dryer') }}" class="btn bg-theme-dark-300 text-light">Back</a>
+                            <a href="javascript:history.back()" class="btn bg-theme-dark-300 text-light">Back</a>
                     </div>
                 </div>
             </div>

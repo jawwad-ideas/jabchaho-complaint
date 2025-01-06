@@ -82,13 +82,14 @@ class DryerController extends Controller
         }
 
         $dryer                       = array();
+        $dryer['lot_number']         = Arr::get($postData,'lot_number');
         $dryer['status']             = config('constants.dryer_statues_id.pending');
         $dryer['before_barcodes']    = $beforeBarcodeCommaSeparated;
         $dryer['after_barcodes']     = $afterBarcodeCommaSeparated;
 
         $isInserted = Dryer::insert($dryer);
 
-        return redirect()->route('sunny.dryer')
+        return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.pending'))
                 ->with('success', 'Sunny Dry Detail Saved Successfully.');
 
     }
@@ -146,12 +147,13 @@ class DryerController extends Controller
         }
         
         $dryerData                       = array();
+        $dryer['lot_number']             = Arr::get($postData,'lot_number');
         $dryerData['status']             = config('constants.dryer_statues_id.completed');
         $dryerData['after_barcodes']     = $afterBarcodeCommaSeparated;
 
         $dryer->update($dryerData);
 
-        return redirect()->route('sunny.dryer')
+        return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.completed'))
         ->with('success', 'Sunny Dry Detail Saved Successfully.');
 
     }

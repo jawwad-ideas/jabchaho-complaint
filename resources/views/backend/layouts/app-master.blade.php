@@ -398,9 +398,7 @@
                 </div>
             </div>
             <div class="main-content">
-                <div class="mt-2">
-                    @include('backend.layouts.partials.messages')
-                </div>
+            
                 <div class="secondary-menu my-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="side-bar-collapse-btn">
@@ -438,7 +436,11 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="inner-content">
+                    <div class="mt-2">
+                        @include('backend.layouts.partials.messages')
+                    </div>
                     @yield('content')
                 </div>
             </div>

@@ -33,6 +33,11 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="name" class="form-label">Lot*</label>
+                        <input value="{{Arr::get($dryer, 'lot_number')}}" type="text" class="form-control" name="lot_number" readonly>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="username" class="form-label">Before the dryer barcodes:</label>
                         <textarea name="before_barcodes" id="before-barcode" class="form-control" style="height: 300px;" disabled>{{ $beforeBarcodesNewLineSeparated }}</textarea>
                     </div>
@@ -52,7 +57,7 @@
                             <input type="submit"
                                 class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3" value="Save">
                         @endif    
-                        <a href="{{ route('sunny.dryer') }}" class="btn bg-theme-dark-300 text-light">Back</a>
+                        <a href="javascript:history.back()" class="btn bg-theme-dark-300 text-light">Back</a>
                     </div>
                 </div>
             </div>

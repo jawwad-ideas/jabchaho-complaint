@@ -11,5 +11,5 @@ class Dryer extends Model
 
     protected $table = 'dryer';
 
-    protected $fillable = ['status', 'before_barcodes','after_barcodes'];
+    protected $fillable = ['lot_number','status', 'before_barcodes','after_barcodes'];
 }
