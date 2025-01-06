@@ -2,14 +2,30 @@
 
 @section('content')
 <style>
-    table.table td, table.table th {
-        word-wrap: break-word;
-        white-space: normal;
-    }
+table.table {
+    border-collapse: collapse;
+    width: 100%;
+}
 
+table.table th, table.table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+table.table td {
+    max-width: 300px;
+}
+
+@media (max-width: 600px) {
     table.table td {
-        max-width: 300px; /* Adjust this value for your desired maximum width */
+        max-width: 100%;
+        display: block;
+        word-wrap: break-word;
     }
+}
+
 </style>
 
 <div
