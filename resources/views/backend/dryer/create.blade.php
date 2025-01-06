@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="container mt-4">
-                    <label for="name" class="form-label">Lot*</label>
+                    <label for="name" class="form-label">Lot*:</label>
                     <input value="" type="text" class="form-control" name="lot_number">
                 </div>
 

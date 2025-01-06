@@ -13,7 +13,8 @@ class DryerController extends Controller
     public function index(Request $request)
     {
         $data =  $filterData = array();
-        $status                 = $request->segment(2);
+        $status                = $request->segment(2);
+        $lotNumber             = $request->input('lot_number');
         $beforeBarcodes        = $request->input('before_barcodes');
         $afterBarcodes         = $request->input('after_barcodes');
 
@@ -21,6 +22,11 @@ class DryerController extends Controller
         if (!empty($status)) 
         {
             $query->where('status', '=',  $status);
+        }
+
+        if (!empty($lotNumber)) 
+        {
+            $query->where('lot_number', '=',  $lotNumber);
         }
 
         if (!empty($beforeBarcodes)) 
@@ -37,9 +43,10 @@ class DryerController extends Controller
 
         $data['dryerlots']                  = $dryerlots;
         $filterData['status']               = $status;
+        $filterData['lotNumber']            = $lotNumber;
         $filterData['beforeBarcodes']       = $beforeBarcodes;
         $filterData['afterBarcodes']        = $afterBarcodes;
-
+        
         return view('backend.dryer.index')->with($data)->with($filterData);
     }
     

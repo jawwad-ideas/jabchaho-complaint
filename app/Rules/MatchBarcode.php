@@ -48,9 +48,16 @@ class MatchBarcode implements ValidationRule
         // Check for elements in $afterBarcodeArray that are not in $beforeBarcodeArray
         $extraInAfter = array_diff($afterBarcodeArray, $beforeBarcodeArray);
 
-        if (!empty($missingInAfter) || !empty($extraInAfter))
+        if (!empty($missingInAfter))
         {
-            $fail('After dryer barcodes does not match Before the dryer barcodes.');
+            //$fail('After dryer barcodes does not match Before the dryer barcodes.');
+
+            $fail('Missing: '.implode(', ',$missingInAfter));
+        }
+
+        if(!empty($extraInAfter))
+        {
+            $fail('Not Match: '.implode(', ',$extraInAfter));
         }
        
     }

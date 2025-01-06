@@ -26,6 +26,15 @@ table.table td {
     }
 }
 
+tr[data-url] {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+tr[data-url]:hover {
+  background-color: #f0f0f0;
+}
+
 </style>
 
 <div
@@ -65,6 +74,11 @@ table.table td {
         <form class="form-inline" method="GET" action="{{ route('sunny.dryer') }}/{{$status}}">
                     <div class="row mb-3">
                         <div class="col-lg-12 d-flex flex-wrap">
+                            <div class="col-sm-3 px-2 ">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="lot_number"
+                                       value="{{ $lotNumber}}" placeholder="Lot">
+                            </div>
+                        
                             <div class="col-sm-3 px-2">
                                 <input type="text" class="form-control p-2" autocomplete="off" name="before_barcodes"
                                        value="{{$beforeBarcodes}}" placeholder="Before Dry Barcode">
@@ -97,14 +111,17 @@ table.table td {
                 {{ min($dryerlots->currentPage() * config('constants.per_page'), $dryerlots->total()) }} of {{ $dryerlots->total() }}
             </div>
             <div class="table-scroll-hr">
-                <table class="table table-bordered table-striped table-compact ">
+                <table class="table table-bordered table-striped table-compact " id="clickableTable">
                     <thead>
                         <tr>
-                            <th scope="col" width="5%">#</th>
+                            <th scope="col" width="1%">#</th>
+                            <th scope="col" width="4%">Lot</th>
                             <th scope="col" width="5%">Status</th>
-                            <th scope="col" width="30%">Before Dry</th>
-                            <th scope="col" width="30%">After Dry</th>
-                            <th scope="col" width="20%">Created</th>
+                            <th scope="col" width="25%">Before Dry</th>
+                            <th scope="col" width="5%">Before barcode count</th>
+                            <th scope="col" width="25%">After Dry</th>
+                            <th scope="col" width="5%">After barcode count</th>
+                            <th scope="col" width="10%">Created</th>
                             <th scope="col" width="10%">Action</th>
                             
                         </tr>
@@ -112,11 +129,14 @@ table.table td {
                     <tbody>
                         @if(!$dryerlots->isEmpty())
                             @foreach ($dryerlots as $dryerlot)
-                                <tr>
+                                <tr data-url="{{ route('sunny.dryer.edit', Arr::get($dryerlot,'id')) }}">
                                     <td >{{ Arr::get($dryerlot,'id') }}</td>
+                                    <td >{{ Arr::get($dryerlot,'lot_number') }}</td>
                                     <td >{{ config('constants.dryer_statues.'.Arr::get($dryerlot, 'status')) }}</td>
                                     <td >{{ Arr::get($dryerlot,'before_barcodes') }}</td>
+                                    <td >@if(!empty(Arr::get($dryerlot,'before_barcodes'))) {{ count(explode(',', Arr::get($dryerlot,'before_barcodes')))}} @else 0 @endif</td>
                                     <td >{{ Arr::get($dryerlot,'after_barcodes') }}</td>
+                                    <td >@if(!empty(Arr::get($dryerlot,'after_barcodes'))) {{ count(explode(',', Arr::get($dryerlot,'after_barcodes')))  }} @else 0 @endif</td>
                                     <td >{{ date('j M, Y, \a\t h:i A', strtotime(Arr::get($dryerlot,'created_at'))) }}</td>
                                     
                                     <td><a href="{{ route('sunny.dryer.edit', Arr::get($dryerlot,'id')) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
@@ -154,6 +174,13 @@ table.table td {
                 return false;
             }
         }
+
+        document.getElementById('clickableTable').addEventListener('click', function(event) {
+        const row = event.target.closest('tr'); // Get the clicked <tr>
+        if (row && row.dataset.url) {
+            window.location.href = row.dataset.url;
+        }
+        });
 </script>
 
 @endsection
