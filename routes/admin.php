@@ -171,11 +171,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::get('scanner', 'OrderController@uploadView')->name('scanner');
 
         Route::group(['prefix' => 'sunny-dryer'], function() {
-            Route::get('/', 'DryerController@index')->name('sunny.dryer');
             Route::get('/create', 'DryerController@create')->name('sunny.dryer.create');
             Route::post('/save', 'DryerController@save')->name('sunny.dryer.save');
             Route::get('/{dryer}/edit', 'DryerController@edit')->name('sunny.dryer.edit');
             Route::patch('/{dryer}/update', 'DryerController@update')->name('sunny.dryer.update');
+            Route::get('/{status?}', 'DryerController@index')->name('sunny.dryer');
         });
         
         Route::group(['prefix' => 'pricing'], function() {

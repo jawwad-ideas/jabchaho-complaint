@@ -300,10 +300,16 @@
                                 <div class="collapse mt-3 ms-5" id="dryer" style="">
                                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                        
-                                            <li class="py-2 "><a href="{{ route('sunny.dryer') }}"
+                                            <li class="py-2 "><a href="{{ route('sunny.dryer') }}/1"
                                                                     class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
                                                     <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
-                                                    Sunny</a>
+                                                    Pending</a>
+                                            </li>
+
+                                            <li class="py-2 "><a href="{{ route('sunny.dryer') }}/2"
+                                                                    class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                    <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
+                                                    Completed</a>
                                             </li>
                                         
 

@@ -15,7 +15,15 @@
 <div
         class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
-            <h3 class="fw-bold text-dark m-0">Sunny Dryer Detail</h3>
+            <h3 class="fw-bold text-dark m-0"> 
+                @if( $status == 2 )
+                    Complete Dryer Detail
+                @elseif( $status == 1 )
+                    Pending Dryer Detail
+                @else
+                    Dryer Detail
+                @endif 
+            </h3>
         </div>
         <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
             <div class="btn-group" role="group">
@@ -38,16 +46,16 @@
         <div class="bg-light p-2 rounded">
 
         <div class="" id="filterBox" style="display:block;" >
-        <form class="form-inline" method="GET" action="{{ route('sunny.dryer') }}">
+        <form class="form-inline" method="GET" action="{{ route('sunny.dryer') }}/{{$status}}">
                     <div class="row mb-3">
                         <div class="col-lg-12 d-flex flex-wrap">
                             <div class="col-sm-3 px-2">
-                                <input type="text" class="form-control p-2" autocomplete="off" name=""
-                                       value="" placeholder="Before Dry Barcode">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="before_barcodes"
+                                       value="{{$beforeBarcodes}}" placeholder="Before Dry Barcode">
                             </div>
                             <div class="col-sm-3 px-2">
-                                <input type="text" class="form-control p-2" autocomplete="off" name=""
-                                       value="" placeholder="After Dry Barcode">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="after_barcodes"
+                                       value="{{$afterBarcodes}}" placeholder="After Dry Barcode">
                             </div>
 
                         </div>
@@ -58,7 +66,7 @@
                                 <span>Search</span>
                                 <i alt="Search" class="fa fa-search"></i>
                             </button>
-                            <a href="{{ route('orders.index') }}"
+                            <a href="{{ route('sunny.dryer') }}/{{$status}}"
                                class="btn bg-theme-dark-300 text-light p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
                                 <span>Clear</span>
                                 <i class="fa fa-solid fa-arrows-rotate"></i></a>
@@ -68,7 +76,10 @@
         </div>
 
      
-
+            <div class="d-flex my-2">
+                Showing results {{ ($dryerlots->currentPage() - 1) * config('constants.per_page') + 1 }} to
+                {{ min($dryerlots->currentPage() * config('constants.per_page'), $dryerlots->total()) }} of {{ $dryerlots->total() }}
+            </div>
             <div class="table-scroll-hr">
                 <table class="table table-bordered table-striped table-compact ">
                     <thead>

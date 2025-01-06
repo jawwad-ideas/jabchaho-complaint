@@ -65,7 +65,7 @@
 
 //insert barcodes in readonly 
 document.addEventListener("DOMContentLoaded", () => {
-  const beforeBarcodeInput = document.getElementById("after-barcode");
+  const afterBarcodeInput = document.getElementById("after-barcode");
   //const afterBarcodeInput = document.getElementById("after-barcode");
 
   let activeInput = null; // Tracks which input field is active
@@ -73,8 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let scannerTimeout;
 
   // Listen for focus events to track active input field
-  beforeBarcodeInput.addEventListener("focus", () => {
-    activeInput = beforeBarcodeInput;
+  afterBarcodeInput.addEventListener("focus", () => {
+    activeInput = afterBarcodeInput;
   });
 //   afterBarcodeInput.addEventListener("focus", () => {
 //     activeInput = afterBarcodeInput;
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Ensure beforeBarcodeInput is readonly
-  beforeBarcodeInput.readOnly = true;
+  afterBarcodeInput.readOnly = true;
 });
 
 
@@ -163,7 +163,8 @@ function removeLine(textareaId) {
         textarea.focus();
         const newCursorPos = charCount - lines[selectedLineIndex]?.length - 1 || 0;
         textarea.setSelectionRange(newCursorPos, newCursorPos);
-    } else {
+    } else 
+    {
         console.log("No line found to remove at the current caret position.");
     }
 }

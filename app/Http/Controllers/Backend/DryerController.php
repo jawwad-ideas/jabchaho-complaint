@@ -13,11 +13,32 @@ class DryerController extends Controller
     public function index(Request $request)
     {
         $data =  $filterData = array();
+        $status                 = $request->segment(2);
+        $beforeBarcodes        = $request->input('before_barcodes');
+        $afterBarcodes         = $request->input('after_barcodes');
 
         $query              = Dryer::orderBy('id', 'desc');
+        if (!empty($status)) 
+        {
+            $query->where('status', '=',  $status);
+        }
+
+        if (!empty($beforeBarcodes)) 
+        {
+            $query->where('before_barcodes', 'like',  '%' . $beforeBarcodes . '%');
+        }
+
+        if (!empty($afterBarcodes)) 
+        {
+            $query->where('after_barcodes', 'like',  '%' . $afterBarcodes . '%');
+        }
+
         $dryerlots          = $query->latest()->paginate(config('constants.per_page'));
 
-        $data['dryerlots']      = $dryerlots;
+        $data['dryerlots']                  = $dryerlots;
+        $filterData['status']               = $status;
+        $filterData['beforeBarcodes']       = $beforeBarcodes;
+        $filterData['afterBarcodes']        = $afterBarcodes;
 
         return view('backend.dryer.index')->with($data)->with($filterData);
     }
