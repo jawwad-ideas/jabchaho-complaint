@@ -28,7 +28,7 @@ class StoreDryerDetailRequest extends FormRequest
         {
             return 
             [
-                'lot_number'     => ['required'],
+                'lot_number'     => ['required','unique:dryer,lot_number,'.$id],
                 'after_barcodes' => ['required', 'string', new MatchBarcode($id)], 
                 //'after_barcodes'           => 'required|string',                         // Barcode is required, accept a string
             ];
@@ -37,7 +37,7 @@ class StoreDryerDetailRequest extends FormRequest
         {
             return 
             [
-                'lot_number'                => ['required'],
+                'lot_number'                => ['required','unique:dryer,lot_number'],
                 'before_barcodes'           => 'required|string',                         // Barcode is required, accept a string
             ];
         }
@@ -56,7 +56,8 @@ class StoreDryerDetailRequest extends FormRequest
         {
             return 
             [
-                'lot_number'                => 'Lot is required',
+                'lot_number'               => 'Lot is required',
+                'lot_number.unique'        => 'The Lot has already been taken.',
                 'after_barcodes.required'  => 'After the dryer barcodes is required.',
                 'after_barcodes.string'    => 'After the dryer barcodes must be a valid string.',
             ];
@@ -66,7 +67,7 @@ class StoreDryerDetailRequest extends FormRequest
             return 
             [
                 'lot_number'                => 'Lot is required',
-                
+                'lot_number.unique'         => 'The Lot has already been taken.',
                 'before_barcodes.required'  => 'Before the dryer barcodes is required.',
                 'before_barcodes.string'    => 'Before the dryer barcodes must be a valid string.',
             ];

@@ -26,7 +26,7 @@
 
                 <div class="container mt-4">
                     <label for="name" class="form-label">Lot*:</label>
-                    <input value="" type="text" class="form-control" name="lot_number">
+                    <input value="{{ old('lot_number') }}" type="text" class="form-control" name="lot_number">
                 </div>
 
                 <div class="container mt-4" >
