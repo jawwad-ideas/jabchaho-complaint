@@ -144,7 +144,7 @@ tr[data-url]:hover {
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="6" align="center">No record Found</td>
+                                <td colspan="9" align="center">No record Found</td>
                             </tr>
                         @endif
                     </tbody>
