@@ -51,6 +51,7 @@ class StoreDryerDetailRequest extends FormRequest
      */
     public function messages()
     {
+        $id = (int) $this->segment(2);
         
         if(!empty($id ))
         {
