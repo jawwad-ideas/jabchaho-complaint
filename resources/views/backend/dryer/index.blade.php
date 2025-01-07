@@ -88,6 +88,16 @@ tr[data-url]:hover {
                                        value="{{$afterBarcodes}}" placeholder="After Dry Barcode">
                             </div>
 
+                            <div class="form-group px-2">
+                                <label class="fw-bold text-dark" for="from_time">From:</label>
+                                <input type="datetime-local" class="form-control p-2" name="from" id="from" value="{{ $from}}"  autocomplete="off">
+                            </div>
+
+                            <div class="form-group px-2 ">
+                                <label class="fw-bold text-dark" for="to_time">To:</label>
+                                <input type="datetime-local" class="form-control p-2" name="to" id="to" value="{{ $to}}"  autocomplete="off">
+                            </div>
+
                         </div>
                         <div class="col-lg-12 text-end mt-4">
                             <button type="submit"
@@ -114,13 +124,13 @@ tr[data-url]:hover {
                 <table class="table table-bordered table-striped table-compact " id="clickableTable">
                     <thead>
                         <tr>
-                            <th scope="col" width="1%">#</th>
-                            <th scope="col" width="4%">Lot</th>
-                            <th scope="col" width="5%">Status</th>
-                            <th scope="col" width="25%">Before Dry</th>
-                            <th scope="col" width="5%">Before barcode count</th>
-                            <th scope="col" width="25%">After Dry</th>
-                            <th scope="col" width="5%">After barcode count</th>
+                            <th scope="col" width="2%">#</th>
+                            <th scope="col" width="2%">Lot</th>
+                            <th scope="col" width="34%">Before Dry</th>
+                            <th scope="col" width="2%">Pre-Count</th>
+                            <th scope="col" width="34%">After Dry</th>
+                            <th scope="col" width="2%">Post-Count</th>
+                            <th scope="col" width="4%">Status</th>
                             <th scope="col" width="10%">Created</th>
                             <th scope="col" width="10%">Action</th>
                             
@@ -132,12 +142,15 @@ tr[data-url]:hover {
                                 <tr data-url="{{ route('sunny.dryer.edit', Arr::get($dryerlot,'id')) }}">
                                     <td >{{ Arr::get($dryerlot,'id') }}</td>
                                     <td >{{ Arr::get($dryerlot,'lot_number') }}</td>
-                                    <td >{{ config('constants.dryer_statues.'.Arr::get($dryerlot, 'status')) }}</td>
                                     <td >{{ Arr::get($dryerlot,'before_barcodes') }}</td>
                                     <td >@if(!empty(Arr::get($dryerlot,'before_barcodes'))) {{ count(explode(',', Arr::get($dryerlot,'before_barcodes')))}} @else 0 @endif</td>
                                     <td >{{ Arr::get($dryerlot,'after_barcodes') }}</td>
                                     <td >@if(!empty(Arr::get($dryerlot,'after_barcodes'))) {{ count(explode(',', Arr::get($dryerlot,'after_barcodes')))  }} @else 0 @endif</td>
-                                    <td >{{ date('j M, Y, \a\t h:i A', strtotime(Arr::get($dryerlot,'created_at'))) }}</td>
+                                    <td >{{ config('constants.dryer_statues.'.Arr::get($dryerlot, 'status')) }}</td>
+                                    <td >
+                                        {{ date('j M, Y', strtotime(Arr::get($dryerlot, 'created_at'))) }}<br>
+                                        <small>{{ date('h:i A', strtotime(Arr::get($dryerlot, 'created_at'))) }}</small>
+                                    </td>
                                     
                                     <td><a href="{{ route('sunny.dryer.edit', Arr::get($dryerlot,'id')) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
                                 </tr>

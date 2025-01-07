@@ -52,12 +52,12 @@ class MatchBarcode implements ValidationRule
         {
             //$fail('After dryer barcodes does not match Before the dryer barcodes.');
 
-            $fail('Missing: '.implode(', ',$missingInAfter));
+            $fail('Missing from before the dryer barcodes: '.implode(', ',$missingInAfter));
         }
 
         if(!empty($extraInAfter))
         {
-            $fail('Not Match: '.implode(', ',$extraInAfter));
+            $fail('Additional items from before the dryer barcodes: '.implode(', ',$extraInAfter));
         }
        
     }

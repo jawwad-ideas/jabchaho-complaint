@@ -17,6 +17,8 @@ class DryerController extends Controller
         $lotNumber             = $request->input('lot_number');
         $beforeBarcodes        = $request->input('before_barcodes');
         $afterBarcodes         = $request->input('after_barcodes');
+        $from                  = $request->input('from');
+        $to                    = $request->input('to');
 
         $query              = Dryer::orderBy('id', 'desc');
         if (!empty($status)) 
@@ -39,6 +41,12 @@ class DryerController extends Controller
             $query->where('after_barcodes', 'like',  '%' . $afterBarcodes . '%');
         }
 
+        if (!empty($from) && !empty($to)) 
+        {
+            $query->whereBetween('created_at', [$from,$to]);
+        } 
+
+
         $dryerlots          = $query->latest()->paginate(config('constants.per_page'));
 
         $data['dryerlots']                  = $dryerlots;
@@ -46,6 +54,8 @@ class DryerController extends Controller
         $filterData['lotNumber']            = $lotNumber;
         $filterData['beforeBarcodes']       = $beforeBarcodes;
         $filterData['afterBarcodes']        = $afterBarcodes;
+        $filterData['from']                 = $from;
+        $filterData['to']                   = $to;
         
         return view('backend.dryer.index')->with($data)->with($filterData);
     }
@@ -152,16 +162,79 @@ class DryerController extends Controller
             $afterBarcodeArray          = array_unique($afterBarcodeArray);
             $afterBarcodeCommaSeparated = implode(',', $afterBarcodeArray);
         }
+
+        $error = $this->matchBarcode($dryer,$postData);
+
+        
+        if(!empty($error))
+        {
+            $status = config('constants.dryer_statues_id.pending');
+        }
+        else
+        {
+            $status = config('constants.dryer_statues_id.completed');
+        }
         
         $dryerData                       = array();
         $dryer['lot_number']             = Arr::get($postData,'lot_number');
-        $dryerData['status']             = config('constants.dryer_statues_id.completed');
+        $dryerData['status']             = $status;
         $dryerData['after_barcodes']     = $afterBarcodeCommaSeparated;
 
         $dryer->update($dryerData);
 
-        return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.completed'))
-        ->with('success', 'Sunny Dry Detail Saved Successfully.');
+        if($status == config('constants.dryer_statues_id.pending'))
+        {
+            return redirect()->route('sunny.dryer.edit',Arr::get($dryer,'id'))->withErrors($error);
+        }
+        else
+        {
+            return redirect()->route('sunny.dryer',$status)
+             ->with('success', 'Sunny Dry Detail Saved Successfully.');
+        }
 
     }
+
+
+    public function matchBarcode($dryer=null,$postData= array())
+    {
+        $error = '';
+        $beforeBarcodeArray = $afterBarcodeArray =array();
+        // Fetch the `before_barcodes` from the database
+        $beforeBarcode = Arr::get($dryer,'before_barcodes');//Dryer::where('id', $this->recordId)->value('before_barcodes');
+        if(!empty($beforeBarcode))
+        {
+            $beforeBarcodeArray = array_map('trim', explode(',', $beforeBarcode));
+        }
+
+        $afterBarcodeArray = array_filter(
+            array_map('trim', preg_split('/\r\n|\r|\n/', Arr::get($postData,'after_barcodes')))
+        );
+
+        if(!empty($afterBarcodeArray))
+        {
+            $afterBarcodeArray          = array_unique($afterBarcodeArray);
+        }
+
+        // Check for elements in $beforeBarcodeArray that are not in $afterBarcodeArray
+        $missingInAfter = array_diff($beforeBarcodeArray, $afterBarcodeArray);
+
+        // Check for elements in $afterBarcodeArray that are not in $beforeBarcodeArray
+        $extraInAfter = array_diff($afterBarcodeArray, $beforeBarcodeArray);
+
+        if (!empty($missingInAfter))
+        {
+            $error.= '<b>Missing from before the dryer barcodes:</b> '.implode(', ',$missingInAfter)."\r\n";
+        }
+
+        if(!empty($extraInAfter))
+        {
+            $error.= '<b>Additional items from before the dryer barcodes:</b> '.implode(', ',$extraInAfter)."\r\n";
+        }
+
+        $error = nl2br(trim($error));
+
+        return $error;
+    }
+
+    
 }

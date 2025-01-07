@@ -25,13 +25,13 @@
                 </div>
 
                 <div class="container mt-4">
-                    <label for="name" class="form-label">Lot*:</label>
+                    <label for="name" class="form-label">Lot<span class="red"> *</span></label>
                     <input value="{{ old('lot_number') }}" type="text" class="form-control" name="lot_number">
                 </div>
 
                 <div class="container mt-4" >
                     <div class="mb-3">
-                        <label for="username" class="form-label">Before the dryer barcodes*:</label>
+                        <label for="username" class="form-label">Before the dryer barcodes<span class="red"> *</span></label>
                         <textarea name="before_barcodes" id="before-barcode" class="form-control" style="height: 300px;"  readonly required>{{ old('before_barcodes') }}</textarea>
                         <input type="button" class="btn btn-danger remove-file-btn mt-3" id="before-removeLine" value="Remove Before Barcode">
                     </div>

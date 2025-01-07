@@ -33,19 +33,19 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="name" class="form-label">Lot*:</label>
+                        <label for="name" class="form-label">Lot<span class="red"> *</span></label>
                         <input value="{{Arr::get($dryer, 'lot_number')}}" type="text" class="form-control" name="lot_number" readonly>
                     </div>
 
                     <div class="mb-3">
-                        <label for="username" class="form-label">Before the dryer barcodes*:</label>
+                        <label for="username" class="form-label">Before the dryer barcodes<span class="red"> *</span></label>
                         <textarea name="before_barcodes" id="before-barcode" class="form-control" style="height: 300px;" disabled>{{ $beforeBarcodesNewLineSeparated }}</textarea>
                         <strong><small>Total Before the dryer barcodes: @if(!empty(Arr::get($dryer,'before_barcodes'))) {{ count(explode(',', Arr::get($dryer,'before_barcodes')))}} @else 0 @endif</small></strong>
                     </div>
 
 
                     <div class="mb-3">
-                        <label for="username" class="form-label">After the dryer barcodes*:</label>
+                        <label for="username" class="form-label">After the dryer barcodes<span class="red"> *</span></label>
                         <textarea name="after_barcodes" id="after-barcode" class="form-control" style="height: 300px;" @if(Arr::get($dryer, 'status') != config('constants.dryer_statues_id.completed')) readonly @else disabled @endif required>@if(old('after_barcodes')){{old('after_barcodes')}}@else{{$afterBarcodesNewLineSeparated}}@endif</textarea>
                         @if(Arr::get($dryer, 'status') != config('constants.dryer_statues_id.completed'))
                         <input type="button" class="btn btn-danger remove-file-btn mt-3" id="after-removeLine" value="Remove After Barcode">

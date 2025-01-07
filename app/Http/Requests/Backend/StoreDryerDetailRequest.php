@@ -29,8 +29,7 @@ class StoreDryerDetailRequest extends FormRequest
             return 
             [
                 'lot_number'     => ['required','unique:dryer,lot_number,'.$id],
-                'after_barcodes' => ['required', 'string', new MatchBarcode($id)], 
-                //'after_barcodes'           => 'required|string',                         // Barcode is required, accept a string
+                'after_barcodes' => ['required', 'string'], 
             ];
         }
         else
