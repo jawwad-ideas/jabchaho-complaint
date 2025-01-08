@@ -42,9 +42,9 @@ tr[data-url]:hover {
         <div class="p-title">
             <h3 class="fw-bold text-dark m-0"> 
                 @if( $status == 2 )
-                    Complete Dryer Detail
+                    Complete Sunny Dryer Details
                 @elseif( $status == 1 )
-                    Pending Dryer Detail
+                    Pending Sunny Dryer Details
                 @else
                     Dryer Detail
                 @endif 
