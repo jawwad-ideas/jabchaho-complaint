@@ -33,7 +33,7 @@
                     <div class="mb-3">
                         <label for="username" class="form-label">Before the dryer barcodes<span class="red"> *</span></label>
                         <textarea name="before_barcodes" id="before-barcode" class="form-control" style="height: 300px;"  readonly required>{{ old('before_barcodes'). "\r\n" }}</textarea>
-                        <input type="button" class="btn btn-danger remove-file-btn mt-3" id="before-removeLine" value="Remove Before Barcode">
+                        <input type="button" class="btn btn-danger remove-file-btn mt-3" id="before-removeLine" value="Remove Selected Barcode">
                     </div>
                     
                     <div>&nbsp;</div>
@@ -111,51 +111,35 @@ document.getElementById("before-removeLine").addEventListener("click", function 
 function removeLine(textareaId) {
     const textarea = document.getElementById(textareaId);
 
-    // Get the content of the textarea
-    const content = textarea.value;
+    // Get the selected text
+    const selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
 
-    // Handle empty content case
-    if (!content.trim()) {
-        console.log("The textarea is empty. Nothing to remove.");
-        $('#before-barcode').val('');
+    // Check if any text is selected
+    if (!selectedText.trim()) {
+        console.log("No text selected. Nothing to remove.");
         textarea.focus(); // Ensure the field remains focused
         return;
     }
 
-    // Get the caret position in the textarea
-    const startPos = textarea.selectionStart;
+    // Get the content of the textarea
+    const content = textarea.value;
 
     // Split content into lines
     const lines = content.split("\n");
 
-    // Calculate which line the cursor is on
-    let charCount = 0; // Cumulative character count
-    let selectedLineIndex = -1;
-
+    // Find and remove the line containing the selected text
     for (let i = 0; i < lines.length; i++) {
-        // Count characters in this line + 1 for the newline
-        charCount += lines[i].length + 1;
-
-        // If the startPos falls within this line, capture the index
-        if (startPos <= charCount - 1) {
-            selectedLineIndex = i;
+        if (lines[i].includes(selectedText)) {
+            lines.splice(i, 1); // Remove the line containing the selection
+            textarea.value = lines.join("\n"); // Update the textarea content
             break;
         }
     }
 
-    // Remove the selected line only if a valid line is found
-    if (selectedLineIndex !== -1) {
-        lines.splice(selectedLineIndex, 1); // Remove the line
-        textarea.value = lines.join("\n"); // Update the textarea content
-
-        // Restore focus and cursor position
-        textarea.focus();
-        const newCursorPos = charCount - lines[selectedLineIndex]?.length - 1 || 0;
-        textarea.setSelectionRange(newCursorPos, newCursorPos);
-    } else {
-        console.log("No line found to remove at the current caret position.");
-    }
+    // Restore focus and cursor position
+    textarea.focus();
 }
+
 
 // Handle barcode scanner input
 document.getElementById("before-barcode").addEventListener("input", (event) => {
