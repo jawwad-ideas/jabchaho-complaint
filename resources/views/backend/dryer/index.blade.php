@@ -57,13 +57,15 @@ tr[data-url]:hover {
                         class="fa fa-solid fa-filter"></i> <span>Filter</span>
                 </small>
             </div>
-            <div class="btn-group" role="group">
-                <a href="{{ route('sunny.dryer.create') }}" class="text-decoration-none">
-                    <small id="" type="button"
-                        class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
-                            class="fa fa-solid fa-atom"></i><span>Add</span></small>
-                </a>
-            </div>
+            @if(Auth::user()->can('sunny.dryer.create'))
+                <div class="btn-group" role="group">
+                    <a href="{{ route('sunny.dryer.create') }}" class="text-decoration-none">
+                        <small id="" type="button"
+                            class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                                class="fa fa-solid fa-atom"></i><span>Add</span></small>
+                    </a>
+                </div>
+            @endif 
         </div>
 
     </div>
@@ -158,7 +160,7 @@ tr[data-url]:hover {
                                         <small>{{ date('h:i A', strtotime(Arr::get($dryerlot, 'created_at'))) }}</small>
                                     </td>
                                     
-                                    <td><a href="{{ route('sunny.dryer.edit', Arr::get($dryerlot,'id')) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>
+                                    <td>@if(Auth::user()->can('sunny.dryer.edit'))<a href="{{ route('sunny.dryer.edit', Arr::get($dryerlot,'id')) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a> @endif</td>
                                 </tr>
                             @endforeach
                         @else
