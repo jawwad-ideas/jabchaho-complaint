@@ -70,7 +70,13 @@ tr[data-url]:hover {
     <div class="page-content bg-white p-lg-5 px-2">
         <div class="bg-light p-2 rounded">
 
-        <div class="" id="filterBox" style="display:block;" >
+        <div class="" id="filterBox" 
+        @if (request()->has('lot_number') || request()->has('before_barcodes') || request()->has('after_barcodes') || request()->has('from') ||request()->has('to')  )
+                style="display:block;"
+            @else
+                style="display:none;"
+        @endif
+        >
         <form class="form-inline" method="GET" action="{{ route('sunny.dryer') }}/{{$status}}">
                     <div class="row mb-3">
                         <div class="col-lg-12 d-flex flex-wrap">
