@@ -46,7 +46,7 @@
 
                     <div class="mb-3">
                         <label for="username" class="form-label">After the dryer barcodes<span class="red"> *</span></label>
-                        <textarea name="after_barcodes" id="after-barcode" class="form-control" style="height: 300px;" @if(Arr::get($dryer, 'status') != config('constants.dryer_statues_id.completed')) readonly @else disabled @endif required>@if(old('after_barcodes')){{old('after_barcodes')}}@else{{$afterBarcodesNewLineSeparated}}@endif</textarea>
+                        <textarea name="after_barcodes" id="after-barcode" class="form-control" style="height: 300px;" @if(Arr::get($dryer, 'status') != config('constants.dryer_statues_id.completed')) readonly @else disabled @endif required>@if(old('after_barcodes')){{old('after_barcodes'). "\r\n"}}@else{{$afterBarcodesNewLineSeparated}}@endif</textarea>
                         @if(Arr::get($dryer, 'status') != config('constants.dryer_statues_id.completed'))
                         <input type="button" class="btn btn-danger remove-file-btn mt-3" id="after-removeLine" value="Remove After Barcode">
                         @else
@@ -88,11 +88,15 @@ document.addEventListener("DOMContentLoaded", () => {
 //     activeInput = afterBarcodeInput;
 //   });
 
+
+
   // Capture barcode input
   document.addEventListener("keypress", (event) => {
+
     if (event.key === "Enter") {
       // When "Enter" is pressed, append barcode to the active input field
-      if (activeInput) {
+      if (activeInput) 
+      {
         activeInput.value += barcodeData.trim() + "\n"; // Append barcode
       }
       barcodeData = ""; // Reset barcode data for the next scan

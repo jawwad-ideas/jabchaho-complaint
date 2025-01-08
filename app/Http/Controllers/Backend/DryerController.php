@@ -127,12 +127,14 @@ class DryerController extends Controller
         if(!empty($beforeBarcodes))
         {
             $beforeBarcodesNewLineSeparated = str_replace(',', "\n", $beforeBarcodes);
+            $beforeBarcodesNewLineSeparated .= "\r\n";
         }
                 
         $afterBarcodes = Arr::get($dryer,'after_barcodes');
         if(!empty($afterBarcodes))
         {
             $afterBarcodesNewLineSeparated = str_replace(',', "\n", $afterBarcodes);
+            $afterBarcodesNewLineSeparated .= "\r\n";
         }
         
         
