@@ -219,7 +219,7 @@ tr[data-url]:hover {
             </div>
 
             <div class="d-flex">
-                {!! $orders->links() !!}
+                {!! $orders->appends(Request::except('page'))->render() !!}
             </div>
 
         </div>

@@ -173,7 +173,7 @@ tr[data-url]:hover {
             </div>
 
         <div class="d-flex">
-                {!! $dryerlots->links() !!}
+                {!! $dryerlots->appends(Request::except('page'))->render() !!}
             </div>
 
         </div>

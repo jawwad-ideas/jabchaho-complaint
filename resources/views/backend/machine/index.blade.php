@@ -110,7 +110,7 @@
             </div>
 
         <div class="d-flex">
-                {!! $machineDetails->links() !!}
+                {!! $machineDetails->appends(Request::except('page'))->render() !!}
             </div>
 
         </div>
