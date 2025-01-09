@@ -86,7 +86,7 @@ class RemoveLaundryData extends Command
 
                             $ordersImagesModel->createOrderHistory($historyData);
 
-                            \Log::error("RemoveLaundryData -> handle => Cron Run for order NO".$orderNo);
+                            \Log::error("RemoveLaundryData -> handle => Cron Run for order NO: ".$orderNo);
                             
 
                         } else 
