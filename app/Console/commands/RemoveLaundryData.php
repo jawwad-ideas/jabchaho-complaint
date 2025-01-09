@@ -34,6 +34,7 @@ class RemoveLaundryData extends Command
     {
         try
         {
+            \Log::error("RemoveLaundryData -> handle => Cron Start");
             //configuration filters
             $filters            = ['laundry_order_cron_enable','laundry_order_delete_days_from_now'];
             
@@ -101,6 +102,8 @@ class RemoveLaundryData extends Command
                 error_log('Disable Cron');
                 return false;
             }
+
+            \Log::error("RemoveLaundryData -> handle => Cron End");
         }
         catch(\Exception $e) 
         {
