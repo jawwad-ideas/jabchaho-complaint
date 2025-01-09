@@ -125,7 +125,7 @@
             </div>
 
             <div class="d-flex">
-                {!! $machines->links() !!}
+                {!! $machines->appends(Request::except('page'))->render() !!}
             </div>
 
         </div>
