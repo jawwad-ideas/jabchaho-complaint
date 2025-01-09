@@ -29,6 +29,8 @@ class SyncLaundryData extends Command
     public function handle()
     {
         try {
+            \Log::error("SyncLaundryData -> handle => Cron Start");
+
             $this->info('Laundry orders sync Start!');
             // Query the 'orders' table from the second database
             $orders = DB::connection('laundry_mysql')
@@ -151,6 +153,8 @@ class SyncLaundryData extends Command
             {
                 $this->info('Order not found!');
             }
+
+            \Log::error("SyncLaundryData -> handle => Cron End");
 
         } catch (\Exception $e)
         {
