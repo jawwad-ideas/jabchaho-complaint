@@ -34,7 +34,6 @@ class RemoveLaundryData extends Command
     {
         try
         {
-            \Log::error("RemoveLaundryData -> handle => Cron Start");
             //configuration filters
             $filters            = ['laundry_order_cron_enable','laundry_order_delete_days_from_now'];
             
@@ -85,25 +84,21 @@ class RemoveLaundryData extends Command
                                 'data'          => "Order: {$orderNo} history deleted via the cron job RemoveLaundryData."
                             ];
 
-                            $ordersImagesModel->createOrderHistory($historyData);
-
-                            \Log::error("RemoveLaundryData -> handle => Cron Run for order NO: ".$orderNo);
-                            
+                            $ordersImagesModel->createOrderHistory($historyData); 
 
                         } else 
                         {
-                            \Log::error("RemoveLaundryData -> handle => No folder found for order NO".$orderNo);
+                            $this->info("RemoveLaundryData -> handle => No folder found for order NO".$orderNo);
                         }
                     }
                 }
             }
             else
             {
-                error_log('Disable Cron');
+                \Log::error('Disable Cron');
                 return false;
             }
 
-            \Log::error("RemoveLaundryData -> handle => Cron End");
         }
         catch(\Exception $e) 
         {
