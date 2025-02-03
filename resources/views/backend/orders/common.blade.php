@@ -89,7 +89,7 @@
 }
 @media only screen and (max-width: 600px) {
     .page-title-section.sticky {
-        padding: 10px 0 15px !IMPORTANT;
+        padding: 10px 0 15px !important;
     }
 }
  </style>
@@ -100,7 +100,7 @@
 
         if (pageTitleSection) {
 
-            const pageTitleSectionTop = pageTitleSection.offsetTop-10;
+            const pageTitleSectionTop = pageTitleSection.offsetTop-25;
 
             if (window.scrollY >= pageTitleSectionTop) {
                 pageTitleSection.classList.add('sticky');
