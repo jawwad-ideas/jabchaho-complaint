@@ -994,4 +994,26 @@ class OrderController extends Controller
             return false;
         }
     }
+
+    //show image
+    public function showImage($orderNo, $folder, $imageName)
+    {
+        // Define the paths
+        $imagePath = public_path("assets/uploads/orders/{$orderNo}/{$folder}/{$imageName}");
+        $fallbackImagePath = public_path("assets/uploads/orders/{$orderNo}/thumbnail/{$folder}/{$imageName}");
+        $defaultPlaceholder = public_path('assets/uploads/default-placeholder.png'); // Your fallback placeholder image
+        
+        // Check if the original image exists
+        if (file_exists($imagePath)) {
+            return response()->file($imagePath); // Return the original image
+        }
+
+        // If the original file doesn't exist, check for the fallback image
+        if (file_exists($fallbackImagePath)) {
+            return response()->file($fallbackImagePath); // Return the fallback image
+        }
+
+        // If neither file exists, return a default placeholder image
+        return response()->file($defaultPlaceholder); // Return a default placeholder
+    }
 }

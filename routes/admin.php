@@ -15,6 +15,8 @@ use App\Http\Controllers\Backend\PermissionsController;
 |
 */
 
+
+Route::get('/assets/uploads/orders/{orderNo}/{folder}/{imageName}', 'App\Http\Controllers\Backend\OrderController@showImage')->name('order.showImage');
 Route::get('/download-images/{orderId}/{folderName}/{token}', 'App\Http\Controllers\Backend\OrderController@downloadImages')->name('download.images');
 
 Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('constants.admin_url_prefix')], function()

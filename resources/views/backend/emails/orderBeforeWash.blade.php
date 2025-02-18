@@ -38,7 +38,18 @@
                                             @foreach($orderItems as $orderItem)
                                                 <tr  @if($beforeCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
                                                     <td style="border:none;padding:10px;">{{ $beforeCounter }}</td>
-                                                    <td  style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/> <small style="display:inline-block;font-weight:700;">Barcode:</small><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span></td>
+                                                    <td  style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/> <small style="display:inline-block;font-weight:700;">Barcode:</small><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span>
+                                                    
+                                                        @if(!empty($orderItem->issues))
+                                                        <br/><small>Item having Issue:</small>
+                                                            <div class="form-check-label text-capitalize d-flex gap-2 flex-wrap mt-2 w-50 issuesPills " for="color fading" id="savedOrderItemIssues-{{$orderItem->id}}">
+                                                                @foreach($orderItem->issues as $row)
+                                                                <span style="border-radius: 50rem !important; background-color: #f7dd0282 !important; padding: .25rem !important; display: inline-block; padding: .35em .65em; font-size: .75em; font-weight: 700; line-height: 1; color: #000; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem; font-family: 'Comfortaa', sans-serif !important; text-transform: capitalize !important;">{{config('constants.issues.'.Arr::get($row, 'issue'))}}</span>
+                                                                @endforeach
+                                                            </div>
+
+                                                        @endif
+                                                </td>
                                                     <td  style="border:none;padding:10px;">
                                                         @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
 
