@@ -21,26 +21,11 @@ class StoreDryerDetailRequest extends FormRequest
      * @return array
      */
     public function rules()
-    {
-        $id = (int) $this->segment(2);
-        
-        if(!empty($id))
-        {
-            return 
-            [
-                'lot_number'     => ['required','unique:dryer,lot_number,'.$id],
-                'after_barcodes' => ['required', 'string'], 
-            ];
-        }
-        else
-        {
-            return 
-            [
-                'lot_number'                => ['required','unique:dryer,lot_number'],
-                'before_barcodes'           => 'required|string',                         // Barcode is required, accept a string
-            ];
-        }
-       
+    {   
+        return 
+        [
+            'barcode' => ['required', 'string'], 
+        ];
     }
 
      /**
@@ -50,27 +35,10 @@ class StoreDryerDetailRequest extends FormRequest
      */
     public function messages()
     {
-        $id = (int) $this->segment(2);
-        
-        if(!empty($id ))
-        {
-            return 
-            [
-                'lot_number'               => 'Lot is required',
-                'lot_number.unique'        => 'The Lot has already been taken.',
-                'after_barcodes.required'  => 'After the dryer barcodes is required.',
-                'after_barcodes.string'    => 'After the dryer barcodes must be a valid string.',
-            ];
-        }
-        else
-        {
-            return 
-            [
-                'lot_number'                => 'Lot is required',
-                'lot_number.unique'         => 'The Lot has already been taken.',
-                'before_barcodes.required'  => 'Before the dryer barcodes is required.',
-                'before_barcodes.string'    => 'Before the dryer barcodes must be a valid string.',
-            ];
-        }
+        return 
+        [
+            'barcode.required'  => 'The dryer barcodes is required.',
+            'barcode.string'    => 'The dryer barcodes must be a valid string.',
+        ];
     }
 }

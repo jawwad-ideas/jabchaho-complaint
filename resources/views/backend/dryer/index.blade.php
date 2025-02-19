@@ -66,6 +66,16 @@ tr[data-url]:hover {
                     </a>
                 </div>
             @endif 
+
+            @if(Auth::user()->can('sunny.dryer.marked.complete.form'))
+                <div class="btn-group" role="group">
+                    <a href="{{ route('sunny.dryer.marked.complete.form') }}" class="text-decoration-none">
+                        <small id="" type="button"
+                            class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                                class="fa fa-solid fa-check-circle"></i><span>Mark Complete</span></small>
+                    </a>
+                </div>
+            @endif 
         </div>
 
     </div>
@@ -73,7 +83,7 @@ tr[data-url]:hover {
         <div class="bg-light p-2 rounded">
 
         <div class="" id="filterBox" 
-        @if (request()->has('lot_number') || request()->has('before_barcodes') || request()->has('after_barcodes') || request()->has('from') ||request()->has('to')  )
+        @if (request()->has('barcode') || request()->has('from') ||request()->has('to')  )
                 style="display:block;"
             @else
                 style="display:none;"
@@ -83,19 +93,11 @@ tr[data-url]:hover {
                     <div class="row mb-3">
                         <div class="col-lg-12 d-flex flex-wrap">
                             <div class="col-sm-3 px-2 ">
-                                <input type="text" class="form-control p-2" autocomplete="off" name="lot_number"
-                                       value="{{ $lotNumber}}" placeholder="Lot">
+                                <label class="fw-bold text-dark" for="from_time"></label>
+                                <input type="text" class="form-control p-2" autocomplete="off" name="barcode"
+                                       value="{{ $barcode}}" placeholder="Barcodes">
                             </div>
                         
-                            <div class="col-sm-3 px-2">
-                                <input type="text" class="form-control p-2" autocomplete="off" name="before_barcodes"
-                                       value="{{$beforeBarcodes}}" placeholder="Before Dry Barcode">
-                            </div>
-                            <div class="col-sm-3 px-2">
-                                <input type="text" class="form-control p-2" autocomplete="off" name="after_barcodes"
-                                       value="{{$afterBarcodes}}" placeholder="After Dry Barcode">
-                            </div>
-
                             <div class="form-group px-2">
                                 <label class="fw-bold text-dark" for="from_time">From:</label>
                                 <input type="datetime-local" class="form-control p-2" name="from" id="from" value="{{ $from}}"  autocomplete="off">
@@ -132,40 +134,28 @@ tr[data-url]:hover {
                 <table class="table table-bordered table-striped table-compact " id="clickableTable">
                     <thead>
                         <tr>
-                            <th scope="col" width="2%">#</th>
-                            <th scope="col" width="2%">Lot</th>
-                            <th scope="col" width="34%">Before Dry</th>
-                            <th scope="col" width="2%">Pre-Count</th>
-                            <th scope="col" width="34%">After Dry</th>
-                            <th scope="col" width="2%">Post-Count</th>
-                            <th scope="col" width="4%">Status</th>
-                            <th scope="col" width="10%">Created</th>
-                            <th scope="col" width="10%">Action</th>
-                            
+                            <th scope="col" width="10%">#</th>
+                            <th scope="col" width="40%">Barcode </th>
+                            <th scope="col" width="20%">Status</th>
+                            <th scope="col" width="30%">Created</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(!$dryerlots->isEmpty())
                             @foreach ($dryerlots as $dryerlot)
-                                <tr data-url="{{ route('sunny.dryer.edit', Arr::get($dryerlot,'id')) }}">
+                                <tr>
                                     <td >{{ Arr::get($dryerlot,'id') }}</td>
-                                    <td >{{ Arr::get($dryerlot,'lot_number') }}</td>
-                                    <td >{{ Arr::get($dryerlot,'before_barcodes') }}</td>
-                                    <td >@if(!empty(Arr::get($dryerlot,'before_barcodes'))) {{ count(explode(',', Arr::get($dryerlot,'before_barcodes')))}} @else 0 @endif</td>
-                                    <td >{{ Arr::get($dryerlot,'after_barcodes') }}</td>
-                                    <td >@if(!empty(Arr::get($dryerlot,'after_barcodes'))) {{ count(explode(',', Arr::get($dryerlot,'after_barcodes')))  }} @else 0 @endif</td>
+                                    <td >{{ Arr::get($dryerlot,'barcode') }}</td>
                                     <td >{{ config('constants.dryer_statues.'.Arr::get($dryerlot, 'status')) }}</td>
                                     <td >
-                                        {{ date('j M, Y', strtotime(Arr::get($dryerlot, 'created_at'))) }}<br>
+                                        {{ date('j M, Y', strtotime(Arr::get($dryerlot, 'created_at'))) }}
                                         <small>{{ date('h:i A', strtotime(Arr::get($dryerlot, 'created_at'))) }}</small>
                                     </td>
-                                    
-                                    <td>@if(Auth::user()->can('sunny.dryer.edit'))<a href="{{ route('sunny.dryer.edit', Arr::get($dryerlot,'id')) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a> @endif</td>
                                 </tr>
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="9" align="center">No record Found</td>
+                                <td colspan="4" align="center">No record Found</td>
                             </tr>
                         @endif
                     </tbody>
@@ -196,12 +186,6 @@ tr[data-url]:hover {
             }
         }
 
-        document.getElementById('clickableTable').addEventListener('click', function(event) {
-        const row = event.target.closest('tr'); // Get the clicked <tr>
-        if (row && row.dataset.url) {
-            window.location.href = row.dataset.url;
-        }
-        });
 </script>
 
 @endsection

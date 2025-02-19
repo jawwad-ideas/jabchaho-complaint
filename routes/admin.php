@@ -175,9 +175,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
         Route::group(['prefix' => 'sunny-dryer'], function() {
             Route::get('/create', 'DryerController@create')->name('sunny.dryer.create');
             Route::post('/save', 'DryerController@save')->name('sunny.dryer.save');
-            Route::get('/{dryer}/edit', 'DryerController@edit')->name('sunny.dryer.edit');
-            Route::patch('/{dryer}/update', 'DryerController@update')->name('sunny.dryer.update');
+            Route::get('/marked-complete', 'DryerController@markedCompleteForm')->name('sunny.dryer.marked.complete.form');
+            Route::post('/marked-complete', 'DryerController@markedComplete')->name('sunny.dryer.marked.complete');
+            #Route::get('/{dryer}/edit', 'DryerController@edit')->name('sunny.dryer.edit');
+            #Route::patch('/{dryer}/update', 'DryerController@update')->name('sunny.dryer.update');
             Route::get('/{status?}', 'DryerController@index')->name('sunny.dryer');
+
+       
         });
         
         Route::group(['prefix' => 'pricing'], function() {

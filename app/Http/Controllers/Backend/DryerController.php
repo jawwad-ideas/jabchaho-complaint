@@ -14,9 +14,7 @@ class DryerController extends Controller
     {
         $data =  $filterData = array();
         $status                = $request->segment(2);
-        $lotNumber             = $request->input('lot_number');
-        $beforeBarcodes        = $request->input('before_barcodes');
-        $afterBarcodes         = $request->input('after_barcodes');
+        $barcode               = $request->input('barcode');
         $from                  = $request->input('from');
         $to                    = $request->input('to');
 
@@ -26,21 +24,17 @@ class DryerController extends Controller
             $query->where('status', '=',  $status);
         }
 
-        if (!empty($lotNumber)) 
-        {
-            $query->where('lot_number', '=',  $lotNumber);
+        if (!empty($barcode)) {
+            $barcodes = explode(',', $barcode);
+        
+            $query->where(function($q) use ($barcodes) {
+                foreach ($barcodes as $singleBarcode) {
+                    $q->orWhere('barcode', 'like', '%' . trim($singleBarcode) . '%');
+                }
+            });
         }
 
-        if (!empty($beforeBarcodes)) 
-        {
-            $query->where('before_barcodes', 'like',  '%' . $beforeBarcodes . '%');
-        }
-
-        if (!empty($afterBarcodes)) 
-        {
-            $query->where('after_barcodes', 'like',  '%' . $afterBarcodes . '%');
-        }
-
+        
         if (!empty($from) && !empty($to)) 
         {
             $query->whereBetween('created_at', [$from,$to]);
@@ -51,9 +45,7 @@ class DryerController extends Controller
 
         $data['dryerlots']                  = $dryerlots;
         $filterData['status']               = $status;
-        $filterData['lotNumber']            = $lotNumber;
-        $filterData['beforeBarcodes']       = $beforeBarcodes;
-        $filterData['afterBarcodes']        = $afterBarcodes;
+        $filterData['barcode']              = $barcode;
         $filterData['from']                 = $from;
         $filterData['to']                   = $to;
         
@@ -71,45 +63,128 @@ class DryerController extends Controller
 
     public function save( StoreDryerDetailRequest $request )
     {
-       
-        $beforeBarcodeCommaSeparated =$afterBarcodeCommaSeparated ='';
+        $records  = [];
+        $duplicateBarcodes = [];
         $postData = $request->validated();
 
          // Clean up the string and convert to an array
-        $beforeBarcodeArray = array_filter(
-            array_map('trim', preg_split('/\r\n|\r|\n/', Arr::get($postData,'before_barcodes')))
+        $barcodeArray = array_filter(
+            array_map('trim', preg_split('/\r\n|\r|\n/', Arr::get($postData,'barcode')))
         );
 
-        if(!empty($beforeBarcodeArray))
+        if (!empty($barcodeArray)) 
         {
-            $beforeBarcodeArray          = array_unique($beforeBarcodeArray);
-            $beforeBarcodeCommaSeparated = implode(',', $beforeBarcodeArray);
+            // Remove duplicate barcode values from the input array
+            $barcodeArray = array_unique($barcodeArray);
+        
+            // Fetch existing barcodes from the database
+            $existingBarcodes = Dryer::whereIn('barcode', $barcodeArray)
+                ->pluck('barcode')
+                ->toArray();
+        
+            // Build the records array only for barcodes that do not already exist
+            foreach ($barcodeArray as $barcode) {
+                if (in_array($barcode, $existingBarcodes)) {
+                    $duplicateBarcodes[] = $barcode;
+                } else {
+                    $records[] = [
+                        'status'     => config('constants.dryer_statues_id.pending'),
+                        'barcode'    => $barcode,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
         }
-       
 
-        $afterBarcodeArray = array_filter(
-            array_map('trim', preg_split('/\r\n|\r|\n/', Arr::get($postData,'after_barcodes')))
-        );
+        // Insert new records if any
+        if (!empty($records)) 
+        {
+            Dryer::insert($records);
+        }
+    
+        // Optionally, flash a message for duplicates
+        if (!empty($duplicateBarcodes)) 
+        {
+            $message = "The following barcodes already exist: " . implode(', ', $duplicateBarcodes);
+
+            if(count($duplicateBarcodes) != count($barcodeArray) )
+            {
+                $message.= ". The remaining barcodes added successfully.";
+            }
+            return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.pending'))->withErrors($message);
+        } 
+        else 
+        {
+            $message = "Sunny Dry Detail Saved Successfully.";
+            return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.pending'))
+            ->with('success', $message);
+        }
 
         
-        if(!empty($afterBarcodeArray))
-        {
-            $afterBarcodeArray          = array_unique($afterBarcodeArray);
-            $afterBarcodeCommaSeparated = implode(',', $afterBarcodeArray);
-        }
 
-        $dryer                       = array();
-        $dryer['lot_number']         = Arr::get($postData,'lot_number');
-        $dryer['status']             = config('constants.dryer_statues_id.pending');
-        $dryer['before_barcodes']    = $beforeBarcodeCommaSeparated;
-        $dryer['after_barcodes']     = $afterBarcodeCommaSeparated;
 
-        $isInserted = Dryer::insert($dryer);
-
-        return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.pending'))
-                ->with('success', 'Sunny Dry Detail Saved Successfully.');
+       
 
     }
+
+    public function markedCompleteForm()
+    {
+        $data           = array();
+        $filterData     = array();
+        
+        return view('backend.dryer.markedComplete')->with($data);
+    }
+
+
+    public function markedComplete(StoreDryerDetailRequest $request)
+    {
+        $notFoundBarcodes = [];
+        $postData = $request->validated();
+
+         // Clean up the string and convert to an array
+        $barcodeArray = array_filter(
+            array_map('trim', preg_split('/\r\n|\r|\n/', Arr::get($postData,'barcode')))
+        );
+
+        if (!empty($barcodeArray)) 
+        {
+            // Remove duplicate barcode values
+            $barcodeArray = array_unique($barcodeArray);
+            
+            foreach ($barcodeArray as $barcode) {
+                // Attempt to update the record with the given barcode
+                $updated = Dryer::where(['barcode' => $barcode, 'status' => config('constants.dryer_statues_id.pending')])
+                    ->update(['status' => config('constants.dryer_statues_id.completed')]);
+        
+                // If no records were updated, the barcode wasn't found
+                if ($updated == 0) {
+                    $notFoundBarcodes[] = $barcode;
+                }
+            }
+        }
+
+
+        if (!empty($notFoundBarcodes)) 
+        {
+            $message = "The following barcodes were not found:".implode(', ', $notFoundBarcodes);
+
+            if(count($notFoundBarcodes) != count($barcodeArray) )
+            {
+                $message.= ". The remaining barcodes have been marked as completed.";
+            }
+
+            return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.completed'))->withErrors($message);
+        } 
+        else 
+        {
+            $message = "All barcodes marked as complete successfully.";
+            return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.completed'))->with('success', $message);
+        }
+
+        
+    }
+
 
 
      /**
