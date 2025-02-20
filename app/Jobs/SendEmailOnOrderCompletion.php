@@ -85,8 +85,8 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                             Arr::get($emailSettings, 'from_title')
                         );
                         $message->subject('Your Order Is Ready for Dispatch '. Arr::get($orderData, 'order_id') );
-                        $message->cc(
-                            Arr::get($emailSettings, 'cc')
+                        $message->bcc(
+                            Arr::get($emailSettings, 'bcc')
                         );
                     }
                 );
@@ -147,8 +147,8 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                             Arr::get($emailSettings, 'from_title')
                         );
                         $message->subject('Product Issues In Order '.Arr::get($orderData, 'order_id') );
-                        $message->cc(
-                            Arr::get($emailSettings, 'cc')
+                        $message->bcc(
+                            Arr::get($emailSettings, 'bcc')
                         );
                     }
                 );

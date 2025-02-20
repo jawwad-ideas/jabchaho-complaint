@@ -138,10 +138,11 @@ return [
 		'regular'	=> 'regular',
 		'express' 	=> 'express',
 	],
-	'email_settings' =>[
+	'email_settings' =>
+	[
 		'from_title'	=> 'Jab Chaho Support',
 		'from' 			=> 'support@jabchaho.com',
-		'cc'   			=> 'jawwad.shamim@ideas.com.pk'
+		'bcc'   	    => 'jawwad.shamim@ideas.com.pk'
 	]
 
 
