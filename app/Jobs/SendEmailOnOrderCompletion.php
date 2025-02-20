@@ -44,6 +44,7 @@ class SendEmailOnOrderCompletion implements ShouldQueue
         try
         {
             $orderData=array();
+            $emailSettings =  config('constants.email_settings');
             if( $emailType == "final_email" )
             {
                 $orderData = Order::with([
@@ -77,10 +78,16 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                         'orderItems'            => Arr::get($orderData, 'orderItems'),
                         'orderItemCount'        => Arr::get($orderData, 'items_count'),
                     ],
-                    function ($message) use ($orderData) {
+                    function ($message) use ($orderData,$emailSettings) {
                         $message->to(trim(Arr::get($orderData, 'customer_email')));
-                        $message->from('support@jabchaho.com', 'Jab Chaho Support'); 
+                        $message->from(
+                            Arr::get($emailSettings, 'from'),
+                            Arr::get($emailSettings, 'from_title')
+                        );
                         $message->subject('Your Order Is Ready for Dispatch '. Arr::get($orderData, 'order_id') );
+                        $message->cc(
+                            Arr::get($emailSettings, 'cc')
+                        );
                     }
                 );
             }else
@@ -133,10 +140,16 @@ class SendEmailOnOrderCompletion implements ShouldQueue
                         'options'               => $optionsString,
                         'orderItems'            => Arr::get($orderData, 'orderItems'),
                     ],
-                    function ($message) use ($orderData) {
+                    function ($message) use ($orderData,$emailSettings) {
                         $message->to(trim(Arr::get($orderData, 'customer_email')));
-                        $message->from('support@jabchaho.com', 'Jab Chaho Support'); 
+                        $message->from(
+                            Arr::get($emailSettings, 'from'),
+                            Arr::get($emailSettings, 'from_title')
+                        );
                         $message->subject('Product Issues In Order '.Arr::get($orderData, 'order_id') );
+                        $message->cc(
+                            Arr::get($emailSettings, 'cc')
+                        );
                     }
                 );
             }
