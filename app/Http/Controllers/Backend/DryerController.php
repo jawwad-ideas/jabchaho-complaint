@@ -104,15 +104,17 @@ class DryerController extends Controller
         }
     
         // Optionally, flash a message for duplicates
+        $successMessage = '';
+        $message ='';
         if (!empty($duplicateBarcodes)) 
         {
-            $message = "The following barcodes already exist: " . implode(', ', $duplicateBarcodes);
+            $message = "The following barcodes already exist: " . implode(', ', $duplicateBarcodes).".";;
 
             if(count($duplicateBarcodes) != count($barcodeArray) )
             {
-                $message.= ". The remaining barcodes added successfully.";
+                $successMessage= "The remaining barcodes added successfully.";
             }
-            return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.pending'))->withErrors($message);
+            return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.pending'))->withErrors($message)->with('success', $successMessage);;
         } 
         else 
         {
@@ -165,21 +167,23 @@ class DryerController extends Controller
         }
 
 
+        $successMessage = '';
+        $message ='';
         if (!empty($notFoundBarcodes)) 
         {
-            $message = "The following barcodes were not found:".implode(', ', $notFoundBarcodes);
+            $message = "The following barcodes were not found:".implode(', ', $notFoundBarcodes).".";
 
             if(count($notFoundBarcodes) != count($barcodeArray) )
             {
-                $message.= ". The remaining barcodes have been marked as completed.";
+                $successMessage= "The remaining barcodes have been marked as completed.";
             }
 
-            return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.completed'))->withErrors($message);
+            return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.pending'))->withErrors($message)->with('success', $successMessage);
         } 
         else 
         {
             $message = "All barcodes marked as complete successfully.";
-            return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.completed'))->with('success', $message);
+            return redirect()->route('sunny.dryer',config('constants.dryer_statues_id.pending'))->with('success', $message);
         }
 
         

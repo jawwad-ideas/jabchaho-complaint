@@ -1,3 +1,13 @@
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{!! $error !!}</li>
+            @endforeach
+        </ul>
+    </div>  
+@endif
+
 @if(Session::get('success', false))
     <?php $data = Session::get('success'); ?>
     @if (is_array($data))
@@ -13,13 +23,4 @@
             {{ $data }}
         </div>
     @endif
-
-@elseif ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{!! $error !!}</li>
-            @endforeach
-        </ul>
-    </div>  
 @endif
