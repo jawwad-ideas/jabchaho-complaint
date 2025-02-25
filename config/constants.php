@@ -142,7 +142,7 @@ return [
 	[
 		'from_title'	=> 'Jab Chaho Support',
 		'from' 			=> 'support@jabchaho.com',
-		'bcc'   	    => 'jawwad.shamim@ideas.com.pk'
+		'bcc'   	    => 'irfan.ullah@jabchaho.com'
 	]
 
 
