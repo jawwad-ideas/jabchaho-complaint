@@ -37,7 +37,16 @@ class DryerController extends Controller
         
         if (!empty($from) && !empty($to)) 
         {
-            $query->whereBetween('created_at', [$from,$to]);
+            $strat   = $from." 00:00:00";
+            $end     = $to." 23:59:59";
+
+            if( $status == config('constants.dryer_statues_id.completed') ){
+                $query->whereBetween('updated_at', [$strat,$end]);
+            }
+            else{
+                $query->whereBetween('created_at', [$strat,$end]);
+            }
+            
         } 
 
 

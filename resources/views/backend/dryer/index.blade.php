@@ -41,9 +41,9 @@ tr[data-url]:hover {
         class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
         <div class="p-title">
             <h3 class="fw-bold text-dark m-0"> 
-                @if( $status == 2 )
+                @if( $status == config('constants.dryer_statues_id.completed') )
                     Complete Sunny Dryer Details
-                @elseif( $status == 1 )
+                @elseif( $status == config('constants.dryer_statues_id.pending') )
                     Pending Sunny Dryer Details
                 @else
                     Dryer Detail
@@ -100,12 +100,12 @@ tr[data-url]:hover {
                         
                             <div class="form-group px-2">
                                 <label class="fw-bold text-dark" for="from_time">From:</label>
-                                <input type="datetime-local" class="form-control p-2" name="from" id="from" value="{{ $from}}"  autocomplete="off">
+                                <input type="date" class="form-control p-2" name="from" id="from" value="{{ $from}}"  autocomplete="off">
                             </div>
 
                             <div class="form-group px-2 ">
                                 <label class="fw-bold text-dark" for="to_time">To:</label>
-                                <input type="datetime-local" class="form-control p-2" name="to" id="to" value="{{ $to}}"  autocomplete="off">
+                                <input type="date" class="form-control p-2" name="to" id="to" value="{{ $to}}"  autocomplete="off">
                             </div>
 
                         </div>
@@ -137,7 +137,11 @@ tr[data-url]:hover {
                             <th scope="col" width="10%">#</th>
                             <th scope="col" width="40%">Barcode </th>
                             <th scope="col" width="20%">Status</th>
-                            <th scope="col" width="30%">Created</th>
+                            @if( $status == config('constants.dryer_statues_id.completed') )
+                                <th scope="col" width="30%">Completed</th>
+                            @else
+                                <th scope="col" width="30%">Initiated</th>
+                            @endif 
                         </tr>
                     </thead>
                     <tbody>
@@ -147,10 +151,17 @@ tr[data-url]:hover {
                                     <td >{{ Arr::get($dryerlot,'id') }}</td>
                                     <td >{{ Arr::get($dryerlot,'barcode') }}</td>
                                     <td >{{ config('constants.dryer_statues.'.Arr::get($dryerlot, 'status')) }}</td>
-                                    <td >
-                                        {{ date('j M, Y', strtotime(Arr::get($dryerlot, 'created_at'))) }}
-                                        <small>{{ date('h:i A', strtotime(Arr::get($dryerlot, 'created_at'))) }}</small>
-                                    </td>
+                                    @if( $status == config('constants.dryer_statues_id.completed') )
+                                        <td >
+                                            {{ date('j M, Y', strtotime(Arr::get($dryerlot, 'updated_at'))) }}
+                                            <small>{{ date('h:i A', strtotime(Arr::get($dryerlot, 'updated_at'))) }}</small>
+                                        </td>
+                                    @else
+                                        <td >
+                                            {{ date('j M, Y', strtotime(Arr::get($dryerlot, 'created_at'))) }}
+                                            <small>{{ date('h:i A', strtotime(Arr::get($dryerlot, 'created_at'))) }}</small>
+                                        </td>
+                                    @endif 
                                 </tr>
                             @endforeach
                         @else
