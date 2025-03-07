@@ -323,7 +323,7 @@ class ComplaintController extends Controller
         //get configurations
         $configurations     = $this->getConfigurations($filters);
 
-        if(Arr::get($configurations, 'complaint_status_id') == $complaintStatusId)
+        if(in_array($complaintStatusId, explode(',',Arr::get($configurations, 'complaint_status_id'))))
         {
             // Dispatch job to send emails
             dispatch(new ComplaintStatusChanged($complaintId,$complaintStatusId,$configurations));

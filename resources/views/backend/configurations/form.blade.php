@@ -112,18 +112,16 @@
                         <h4>Complaint Status Change Notify Configuration</h4>
                         <div class="mb-3">
                             <label for="complaint_status_id" class="form-label">Complaint Status:</label>
-                            <select class="form-select p-2" id="complaint_status_id" name="complaint_status_id">
-                                <option value=''>Select Status</option>
+                            <select class="mySelect form-select p-2" id="complaint_status_id" name="complaint_status_id[]" multiple="multiple">
+                                
                                 @if(!empty($complaintStatuses) )
                                 @foreach($complaintStatuses as $complaintStatus)
-                                @if(Arr::get($configurations, 'complaint_status_id') == Arr::get($complaintStatus,
-                                'id'))
-                                <option value="{{ trim(Arr::get($complaintStatus, 'id')) }}" selected>
-                                    {{trim(Arr::get($complaintStatus, 'name'))}}</option>
-                                @else
-                                <option value="{{trim(Arr::get($complaintStatus, 'id'))}}">
-                                    {{trim(Arr::get($complaintStatus, 'name'))}}</option>
-                                @endif
+                                
+                                <option value="{{ trim(Arr::get($complaintStatus, 'id')) }}"
+                                    {{ in_array(trim(Arr::get($complaintStatus, 'id')), explode(',',Arr::get($configurations, 'complaint_status_id'))) ? 'selected' : '' }}>
+                                    {{ trim(Arr::get($complaintStatus, 'name')) }}
+                                </option>
+                                    
                                 @endforeach
                                 @endif
                             </select>
@@ -155,7 +153,6 @@
                             <label for="complaint_track_initiated" class="form-label">Initiated:</label>
                             <select class="mySelect form-control form-control-sm" id="complaint_status_id"
                                 name="complaint_track_initiated[]" multiple="multiple">
-                                <option value="">--Select--</option>
                                 @if (!empty($complaintStatuses))
                                 @foreach ($complaintStatuses as $row)
                                 <option value="{{ trim(Arr::get($row, 'id')) }}"
@@ -171,7 +168,6 @@
                             <label for="complaint_track_in_progress" class="form-label">In progress:</label>
                             <select class="mySelect form-control form-control-sm" id="complaint_status_id"
                                 name="complaint_track_in_progress[]" multiple="multiple">
-                                <option value="">--Select--</option>
                                 @if (!empty($complaintStatuses))
                                 @foreach ($complaintStatuses as $row)
                                 <option value="{{ trim(Arr::get($row, 'id')) }}"
@@ -187,7 +183,6 @@
                             <label for="complaint_track_completed" class="form-label">Completed:</label>
                             <select class="mySelect form-control form-control-sm" id="complaint_status_id"
                                 name="complaint_track_completed[]" multiple="multiple">
-                                <option value="">--Select--</option>
                                 @if (!empty($complaintStatuses))
                                 @foreach ($complaintStatuses as $row)
                                 <option value="{{ trim(Arr::get($row, 'id')) }}"
@@ -239,7 +234,10 @@
 
 <script>
 $(document).ready(function() {
-    $('.mySelect').select2();
+    $('.mySelect').select2({
+        placeholder: "--Select--", // Placeholder Text
+        allowClear: true // Optional Clear Button
+    });
 });
 </script>
 
