@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use PragmaRX\Google2FA\Google2FA;
 
 class User extends Authenticatable
 {
@@ -36,6 +36,8 @@ class User extends Authenticatable
         'department_id',
         'new_area_id',
         'password',
+        'google2fa_secret',
+        'google2fa_enabled'
     ];
 
     /**
@@ -97,5 +99,15 @@ class User extends Authenticatable
     {
         return User::where(['id' => $userId])->first();
     }
+
+    public function generateGoogle2FASecret()
+    {
+        $google2fa = new Google2FA();
+        $secret = $google2fa->generateSecretKey();
+        $this->google2fa_secret = $secret;
+        $this->save();
+        return $secret;
+    }
+
 
 }

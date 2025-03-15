@@ -37,7 +37,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
     });
 
-    Route::group(['middleware' => ['auth', 'permission']], function() {
+    Route::group(['middleware' => ['auth', 'permission','google2fa']], function() {
         /**
          * Logout Routes
          */
@@ -188,15 +188,22 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::get('/', 'PricingController@index')->name('pricing');
             Route::get('/sync', 'PricingController@syncPricing')->name('pricing.sync');
         });
+
+
+     
     });
 
     
 
 
-
+    Route::get('google2fa/setup', 'Google2FAController@show')->name('google2fa.setup');
+    Route::post('google2fa/enable', 'Google2FAController@enable')->name('google2fa.enable');
    
 
 });
+
+
+
 
 
 

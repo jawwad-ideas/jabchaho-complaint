@@ -17,6 +17,9 @@
             <div>
                 Username: {{ $user->username }}
             </div>
+            <div>
+                Google 2FA: {{ config('constants.boolean_options.'.$user->google2fa_enabled) }}
+            </div>
             
             
         </div>

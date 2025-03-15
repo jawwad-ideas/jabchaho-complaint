@@ -19,6 +19,7 @@ class LogoutController extends Controller
     {
         //Session::flush();
         
+        session()->forget(['2fa_required', '2fa_verified']);
         Auth::logout();
 
         return redirect()->guest(route('login.perform'));

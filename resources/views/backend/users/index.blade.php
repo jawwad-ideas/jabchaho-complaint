@@ -83,6 +83,7 @@
                             <th scope="col" width="15%">Email</th>
                             <th scope="col" width="10%">Username</th>
                             <th scope="col" width="10%">Roles</th>
+                            <th scope="col" width="10%">2FA</th>
                             <th scope="col" width="1%" colspan="3">Action</th>
                         </tr>
                     </thead>
@@ -102,6 +103,7 @@
                                         <span class="badge bg-theme-dark-300">{{ $role->name }}</span>
                                     @endforeach
                                 </td>
+                                <td> {{ config('constants.boolean_options.'.$user->google2fa_enabled) }}</td>
                                 <td><a href="{{ route('users.show', $user->id) }}" class="btn bg-theme-yellow btn-sm"><i class="fa fa-eye"></i></a>
                                 </td>
                                 <td><a href="{{ route('users.edit', $user->id) }}" class="btn btn-info btn-sm"><i class="fa fa-pencil"></i></a>

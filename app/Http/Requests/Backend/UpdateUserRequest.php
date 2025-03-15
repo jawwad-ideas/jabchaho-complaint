@@ -39,7 +39,8 @@ class UpdateUserRequest extends FormRequest
             'email' => 'required|email:rfc,dns|unique:users,email,'.$user->id,
             'username' => 'required|unique:users,username,'.$user->id,
             'password' => $passwordCondition,
-            'confirm_password'=>$confirmPasswordCondition
+            'confirm_password'=>$confirmPasswordCondition,
+            'google2fa_enabled' => 'required'
         ];
     }
 }

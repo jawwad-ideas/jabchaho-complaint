@@ -81,5 +81,6 @@ class Kernel extends HttpKernel
         'auth.role.base' => \App\Http\Middleware\RoleBasedMiddleware::class,
         'ipcheck' => \App\Http\Middleware\IpMiddleware::class,
         'custom.client' => \App\Http\Middleware\CustomCheckClientCredentials::class,
+        'google2fa' => \App\Http\Middleware\Google2FAMiddleware::class,
     ];
 }

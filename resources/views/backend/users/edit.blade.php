@@ -59,6 +59,27 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="inputName">Google 2FA Enable:</label>
+                            <select id="google2fa_enabled" class="form-control" name="google2fa_enabled" rel="{{Arr::get($user,
+                                'google2fa_enabled')}}">
+                            <option value=''>--Select--</option>    
+                            @if(!empty($booleanOptions) )
+                                @foreach($booleanOptions as $key =>$value)
+                                @if(old('_token')!==null && old('google2fa_enabled') == $key)
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @elseif( old('_token') === null && Arr::get($user,
+                                'google2fa_enabled')==$key && array_key_exists(Arr::get($user,
+                                'google2fa_enabled'), config('constants.boolean_options')) )
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @else
+                                <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                @endif
+                                @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="role" class="form-label">Role</label>
                             <select class="form-control" id="role" name="role" rel="{{ old('role') }}">
                                 <option value="">Select role</option>

@@ -59,6 +59,23 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="role" class="form-label">Google 2FA Enable</label>
+                        <select class="mySelect form-control form-control-sm" id="google2fa_enabled" name="google2fa_enabled">
+                            <option value=''>--Select--</option>
+                            @if(!empty($booleanOptions) )
+                                @foreach($booleanOptions as $key =>$value)
+                                @if(old('_token') !==null && old('google2fa_enabled') == $key)
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                               
+                                @else
+                                <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                @endif
+                                @endforeach
+                                @endif
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="role" class="form-label">Role</label>
                         <select class="mySelect form-control form-control-sm" id="role" name="role">
                             <option value=''>--Select--</option>

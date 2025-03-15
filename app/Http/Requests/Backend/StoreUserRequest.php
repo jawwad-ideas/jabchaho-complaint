@@ -29,7 +29,8 @@ class StoreUserRequest extends FormRequest
             'username' => 'required|unique:users,username',
             'password' => 'required|min:6|max:20',
             'confirm_password'=>'required|same:password|min:6|max:20',
-            'role'=>'required'
+            'role'=>'required',
+            'google2fa_enabled' => 'required'
         ];
     }
 }

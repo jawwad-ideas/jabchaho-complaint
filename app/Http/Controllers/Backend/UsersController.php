@@ -72,9 +72,9 @@ class UsersController extends Controller
     {
         $roles = Role::all();
 
-        $data = [
-            'roles' => $roles,
-        ];
+        $data['booleanOptions']                 = config('constants.boolean_options'); 
+        $data['roles']                          =  $roles;
+
         return view('backend.users.create')->with($data);
     }
 
@@ -141,7 +141,8 @@ class UsersController extends Controller
         return view('backend.users.edit', [
             'user' => $user,
             'userRole' => $user->roles->pluck('name')->toArray(),
-            'roles' => Role::latest()->get()
+            'roles' => Role::latest()->get(),
+            'booleanOptions' => config('constants.boolean_options'), 
         ]);
     }
 

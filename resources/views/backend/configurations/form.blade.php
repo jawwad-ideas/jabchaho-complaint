@@ -220,6 +220,28 @@
                             <input type = 'text'  class="form-control" id="laundry_order_delete_days_from_now" name="laundry_order_delete_days_from_now" value="{{Arr::get($configurations, 'laundry_order_delete_days_from_now')}}">
                         </div>
 
+
+                        <h4>Google 2 FA Configuration</h4>
+
+                        <div class="mb-3">
+                            <label for="inputName">Google 2FA Enable:</label>
+                            <select id="google_2fa_enable" class="form-control" name="google_2fa_enable">
+                                @if(!empty($booleanOptions) )
+                                @foreach($booleanOptions as $key =>$value)
+                                @if(old('_token') && old('google_2fa_enable') === $key)
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @elseif( old('_token') === null && Arr::get($configurations,
+                                'google_2fa_enable')==$key && array_key_exists(Arr::get($configurations,
+                                'google_2fa_enable'), config('constants.boolean_options')) )
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @else
+                                <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                @endif
+                                @endforeach
+                                @endif
+                            </select>
+                        </div>
+
                         <button type="submit"
                             class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Save
                             Changes</button>

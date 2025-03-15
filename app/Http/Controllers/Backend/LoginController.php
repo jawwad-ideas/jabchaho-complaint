@@ -48,6 +48,18 @@ class LoginController extends Controller
             $this->setRememberMeExpiration($user);
         endif;
 
+        if(Helper::checkGoogle2FaIsenabled())
+        {
+            if ($user->google2fa_enabled) 
+            {
+                // Store 2FA required state in session
+                session(['2fa_required' => true]);
+        
+                // Redirect to 2FA verification page
+                return redirect()->to('google2fa/setup');
+            }
+        }
+        
         //return $this->authenticated($request, $user);
         return Helper::authenticated($user);
     }

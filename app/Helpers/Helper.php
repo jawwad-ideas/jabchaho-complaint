@@ -3,9 +3,11 @@
 namespace App\Helpers;
 use Illuminate\Support\Arr;
 use GuzzleHttp\Client as GClient;
+use App\Http\Traits\Configuration\ConfigurationTrait;
 
 class Helper
 {
+	use ConfigurationTrait;
     public static function shout(string $string)
     {
         return strtoupper($string);
@@ -487,6 +489,23 @@ class Helper
 		return str_replace(' ', '_', strtolower($str));
 	}
 	
+	public static function checkGoogle2FaIsenabled() 
+	{
+		$filters            = ['google_2fa_enable'];
+        //get configurations
+        $instance = new self();
+
+    // Call the non-static method using the instance
+    $configurations = $instance->getConfigurations($filters);
+
+		if(!empty(Arr::get($configurations, 'google_2fa_enable')))
+		{
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 	
 }
 
