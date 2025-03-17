@@ -115,74 +115,47 @@ $(document).ready(function () {
     $('#imageModal').on('shown.bs.modal', function () {
         const modalBody = $('#imageModal .modal-body');
         const modalWidth = modalBody.width();
-        var modalHeight = modalBody.height();
-
         const screenHeight = window.innerHeight;
-        modalHeight = screenHeight / 2;
-
+        const modalHeight = screenHeight / 2;
+    
         if (!canvas) {
             canvas = new fabric.Canvas('imageCanvas');
         }
-
+    
+        canvas.clear(); // Ensure no duplicate images
         canvas.setWidth(modalWidth);
         canvas.setHeight(modalHeight);
-
+    
         if (!imageLoaded) {
             imageLoaded = true;
+    
             fabric.Image.fromURL(imageData, function (img) {
+                originalImage = img; // Store original full-size image
+    
+                // Scale for modal preview
                 const scaleWidth = modalWidth / img.width;
                 const scaleHeight = modalHeight / img.height;
                 const scale = Math.min(scaleWidth, scaleHeight);
+    
                 img.scale(scale);
                 img.set({
                     left: (modalWidth - img.getScaledWidth()) / 2,
                     top: (modalHeight - img.getScaledHeight()) / 2,
                     selectable: false
                 });
+    
                 canvas.add(img);
                 canvas.sendToBack(img);
                 canvas.renderAll();
             });
         }
-
+    
+        // Enable drawing mode
         canvas.isDrawingMode = true;
         canvas.freeDrawingBrush.color = 'red';
         canvas.freeDrawingBrush.width = 5;
-
-        // $('#pencilTool').on('click', function () {
-        //     canvas.isDrawingMode = true;
-        //     canvas.freeDrawingBrush.color = 'red';
-        //     canvas.freeDrawingBrush.width = 5;
-        // });
-        // $('#circleTool').on('click', function () {
-        //     canvas.isDrawingMode = false;
-        //     const circle = new fabric.Circle({
-        //         radius: 50,
-        //         fill: 'transparent',
-        //         stroke: 'red',
-        //         strokeWidth: 2,
-        //         left: canvas.width / 2 - 50,
-        //         top: canvas.height / 2 - 50,
-        //         selectable: true
-        //     });
-        //     canvas.add(circle);
-        // });
-        // $('#squareTool').on('click', function () {
-        //     canvas.isDrawingMode = false;
-        //     const square = new fabric.Rect({
-        //         width: 100,
-        //         height: 100,
-        //         fill: 'transparent',
-        //         stroke: 'red',
-        //         strokeWidth: 2,
-        //         left: canvas.width / 2 - 50,
-        //         top: canvas.height / 2 - 50,
-        //         selectable: true
-        //     });
-        //     canvas.add(square);
-        // });
-
     });
+    
 
     $('#imageModal').on('hidden.bs.modal', function (e) {
         if (canvas) {
@@ -209,28 +182,34 @@ $(document).ready(function () {
     });
 
 
-    $('#saveImage').on('click', function () {
+    $('#saveImage').on('click', async function () {
         if (canvas && activeItemId) {
-            const dataURL = canvas.toDataURL({
-                format: 'png',
-                quality: 1
-            });
             $(".loader").addClass("show");
-            var url = '/upload-order-image';
+    
+            let fullSizeImageData = await getOriginalSizeImageWithMarkings();
+    
+            if (!fullSizeImageData) {
+                alert("Failed to generate full-size image.");
+                $(".loader").removeClass("show");
+                return;
+            }
+    
+            const formData = new FormData();
+            formData.append('item_id', activeItemId);
+            formData.append('imageType', activeItemType);
+            formData.append('order_num', activeOrderNum);
+            formData.append('order_id', activeOrderId);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+            formData.append('image_data', fullSizeImageData);
+    
             $.ajax({
-                url: url,
+                url: '/upload-order-image',
                 method: 'POST',
-                data: {
-                    item_id: activeItemId,
-                    imageType: activeItemType,
-                    image_data: dataURL,
-                    order_num: activeOrderNum,
-                    order_id: activeOrderId,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
+                data: formData,
+                contentType: false,
+                processData: false,
                 success: function (response) {
                     if (response.success) {
-
                         const imageHtml = `
                             <div class="img-item before-image">
                                 <a href="${response.image_url}" target="_blank">
@@ -244,34 +223,107 @@ $(document).ready(function () {
                             </div>
                         `;
                         $(`#items-images-sec-${activeItemType}-${activeItemId}`).append(imageHtml);
-
-
-                        $(`#uploadImage-${activeItemId}`).val('');
+    
+                        $('#uploadImage-' + activeItemId).val('');
                         $('.img-upload-input').val('');
-
-
                         $('#imageModal').modal('hide');
                         imageLoaded = false;
-
-                        if( !response.disableAfterUploadInput  ){
-                            $(".img-upload-input-after").attr("disabled", false);
-                        }
-
+                        $(".img-upload-input-after").attr("disabled", false);
                         $('.barcode-img-upload').attr("disabled", false);
-
                         canvas.clear();
                     } else {
                         alert('Failed to save image.');
                     }
-
                     $(".loader").removeClass("show");
                 },
-                error: function (xhr, status, error) {
-                    alert('An error occurred while saving the image. Check the console for details.');
+                error: function () {
+                    alert('An error occurred while saving the image.');
                     $(".loader").removeClass("show");
                 }
             });
         }
     });
 
+
+
+    function getOriginalSizeImageWithMarkings() {
+        return new Promise((resolve) => {
+            if (!originalImage) {
+                resolve(null);
+                return;
+            }
+    
+            // Create a new full-size canvas
+            let originalCanvas = document.createElement('canvas');
+            originalCanvas.width = originalImage.width;
+            originalCanvas.height = originalImage.height;
+            let ctx = originalCanvas.getContext('2d');
+    
+            // Draw the original image
+            let imgElement = originalImage.getElement();
+            ctx.drawImage(imgElement, 0, 0, originalImage.width, originalImage.height);
+    
+            // Copy and scale drawings
+            let tempCanvas = new fabric.Canvas();
+            tempCanvas.setWidth(originalImage.width);
+            tempCanvas.setHeight(originalImage.height);
+    
+            canvas.getObjects().forEach((obj) => {
+                if (obj.type !== 'image') {
+                    let clonedObj = fabric.util.object.clone(obj);
+                    let scaleX = originalImage.width / canvas.width;
+                    let scaleY = originalImage.height / canvas.height;
+                    clonedObj.scaleX *= scaleX;
+                    clonedObj.scaleY *= scaleY;
+                    clonedObj.left *= scaleX;
+                    clonedObj.top *= scaleY;
+                    clonedObj.setCoords();
+                    tempCanvas.add(clonedObj);
+                }
+            });
+    
+            tempCanvas.renderAll();
+    
+            // Convert drawings to an image
+            let drawingImage = new Image();
+            drawingImage.src = tempCanvas.toDataURL("image/png");
+    
+            drawingImage.onload = function () {
+                ctx.drawImage(drawingImage, 0, 0, originalImage.width, originalImage.height);
+    
+                // Resize the image to a smaller resolution (optional)
+                let scaledCanvas = document.createElement('canvas');
+                let scaledCtx = scaledCanvas.getContext('2d');
+                const MAX_WIDTH = 1024; // Max width for resizing
+                const MAX_HEIGHT = 1024; // Max height for resizing
+    
+                let width = originalImage.width;
+                let height = originalImage.height;
+    
+                // Scale down if the image is larger than the max dimensions
+                if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+                    const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+                    width *= ratio;
+                    height *= ratio;
+                }
+    
+                scaledCanvas.width = width;
+                scaledCanvas.height = height;
+                scaledCtx.drawImage(originalCanvas, 0, 0, width, height);
+    
+                // Convert the resized canvas to JPEG (lower quality for better compression)
+                scaledCanvas.toBlob((blob) => {
+                    let reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = function () {
+                        resolve(reader.result); // Return compressed image
+                    };
+                }, "image/jpeg", 0.8); // Lower quality for better compression
+            };
+        });
+    }
+    
+    
+    
+    
 });
