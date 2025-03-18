@@ -291,16 +291,18 @@ $(document).ready(function () {
             drawingImage.onload = function () {
                 ctx.drawImage(drawingImage, 0, 0, originalImage.width, originalImage.height);
     
-                // Resize the image to a smaller resolution (optional)
+                // Dynamic resizing while maintaining aspect ratio
                 let scaledCanvas = document.createElement('canvas');
                 let scaledCtx = scaledCanvas.getContext('2d');
-                const MAX_WIDTH = 1024; // Max width for resizing
-                const MAX_HEIGHT = 1024; // Max height for resizing
+                const SCALE_FACTOR = 0.6; // Resize to 60% of the original size
     
-                let width = originalImage.width;
-                let height = originalImage.height;
+                let width = originalImage.width * SCALE_FACTOR;
+                let height = originalImage.height * SCALE_FACTOR;
     
-                // Scale down if the image is larger than the max dimensions
+                // Optional max limits (set as needed)
+                const MAX_WIDTH = 2000;
+                const MAX_HEIGHT = 2000;
+    
                 if (width > MAX_WIDTH || height > MAX_HEIGHT) {
                     const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
                     width *= ratio;
@@ -311,17 +313,23 @@ $(document).ready(function () {
                 scaledCanvas.height = height;
                 scaledCtx.drawImage(originalCanvas, 0, 0, width, height);
     
-                // Convert the resized canvas to JPEG (lower quality for better compression)
+                // Get the original file type
+                let format = originalImage.getElement().src.split(';')[0].split('/')[1];
+                let mimeType = `image/${format}`;
+    
+                // Compress and keep the same format
                 scaledCanvas.toBlob((blob) => {
                     let reader = new FileReader();
                     reader.readAsDataURL(blob);
                     reader.onloadend = function () {
                         resolve(reader.result); // Return compressed image
                     };
-                }, "image/jpeg", 0.8); // Lower quality for better compression
+                }, mimeType, 0.6); // Compress to 60%
             };
         });
     }
+    
+    
     
     
     

@@ -847,7 +847,7 @@ class OrderController extends Controller
 
             // Save the compressed image
             $imageAttachmentItem = Image::make($imageData);
-            $imageAttachmentItem->save($filePath . '/' . $filename, 60); // Compress to 60% quality
+            $imageAttachmentItem->save($filePath . '/' . $filename); // Compress to 60% quality
 
             // Create a thumbnail
             $thumbnail = Image::make($imageData)
@@ -855,7 +855,7 @@ class OrderController extends Controller
                     $constraint->aspectRatio(); // Maintain aspect ratio
                     $constraint->upsize();     // Prevent upsizing
                 });
-            $thumbnail->save($thumbnailPath . '/' . $filename, 60); // Save thumbnail with compression
+            $thumbnail->save($thumbnailPath . '/' . $filename); // Save thumbnail with compression
 
             return [
                 'image' => $baseUrl . '/' . $filePath . '/' . $filename,
