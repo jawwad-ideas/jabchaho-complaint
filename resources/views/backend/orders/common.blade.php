@@ -494,7 +494,7 @@ $('.btn[data-toggle="collapse"]').on('click', function () {
 
 </script>
 
-<script src="{{asset('assets/js/uploadOrderImage.js')}}"></script>
+<script src="{{asset('assets/js/uploadOrderImage.js')}}?v={{config('constants.js_version')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 
 
