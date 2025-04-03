@@ -294,7 +294,7 @@ $(document).ready(function () {
                 // Dynamic resizing while maintaining aspect ratio
                 let scaledCanvas = document.createElement('canvas');
                 let scaledCtx = scaledCanvas.getContext('2d');
-                const SCALE_FACTOR = 0.4; // Resize to 40% of the original size
+                const SCALE_FACTOR = 0.5; // Resize to 50% of the original size
     
                 let width = originalImage.width * SCALE_FACTOR;
                 let height = originalImage.height * SCALE_FACTOR;
@@ -324,7 +324,7 @@ $(document).ready(function () {
                     reader.onloadend = function () {
                         resolve(reader.result); // Return compressed image
                     };
-                }, mimeType, 0.4); // Compress to 40%
+                }, mimeType, 0.5); // Compress to 50%
             };
         });
     }
