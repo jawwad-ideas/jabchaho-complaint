@@ -5,7 +5,7 @@ return [
 	'complainant_landing_route' => 'complaints',
     'per_page'=>20,
 	'report_per_page'=>50,
-	'js_version'=>'1.1',
+	'js_version'=>'1.2',
 	'css_version'=>'1.0',
 	'max_files' => 3,
 	'complaint_number_starting_index' =>1000,
