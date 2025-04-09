@@ -253,21 +253,22 @@ $(document).ready(function () {
                 return;
             }
     
-            // Create a new full-size canvas
+            // Create and configure original canvas
             let originalCanvas = document.createElement('canvas');
             originalCanvas.width = originalImage.width;
             originalCanvas.height = originalImage.height;
             let ctx = originalCanvas.getContext('2d');
-    
-            // Draw the original image
             let imgElement = originalImage.getElement();
+            
+            // Draw the original image onto the canvas
             ctx.drawImage(imgElement, 0, 0, originalImage.width, originalImage.height);
     
-            // Copy and scale drawings
+            // Create a temporary canvas for the drawing objects
             let tempCanvas = new fabric.Canvas();
             tempCanvas.setWidth(originalImage.width);
             tempCanvas.setHeight(originalImage.height);
-    
+            
+            // Add canvas objects to tempCanvas, scaled appropriately
             canvas.getObjects().forEach((obj) => {
                 if (obj.type !== 'image') {
                     let clonedObj = fabric.util.object.clone(obj);
@@ -284,50 +285,52 @@ $(document).ready(function () {
     
             tempCanvas.renderAll();
     
-            // Convert drawings to an image
+            // Convert the drawings to an image once tempCanvas is ready
             let drawingImage = new Image();
             drawingImage.src = tempCanvas.toDataURL("image/png");
     
             drawingImage.onload = function () {
+                // Draw the final image with markings onto originalCanvas
                 ctx.drawImage(drawingImage, 0, 0, originalImage.width, originalImage.height);
     
                 // Dynamic resizing while maintaining aspect ratio
-                let scaledCanvas = document.createElement('canvas');
-                let scaledCtx = scaledCanvas.getContext('2d');
-                const SCALE_FACTOR = 0.5; // Resize to 50% of the original size
-    
+                const SCALE_FACTOR = 0.5;
                 let width = originalImage.width * SCALE_FACTOR;
                 let height = originalImage.height * SCALE_FACTOR;
     
-                // Optional max limits (set as needed)
-                const MAX_WIDTH = 2000;
-                const MAX_HEIGHT = 2000;
+                // Optional max width/height limits
+                const MAX_WIDTH = 1800;
+                const MAX_HEIGHT = 1800;
     
+                // Apply max size restrictions if needed
                 if (width > MAX_WIDTH || height > MAX_HEIGHT) {
                     const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
                     width *= ratio;
                     height *= ratio;
                 }
     
+                // Resize the image if needed
+                let scaledCanvas = document.createElement('canvas');
                 scaledCanvas.width = width;
                 scaledCanvas.height = height;
+                let scaledCtx = scaledCanvas.getContext('2d');
                 scaledCtx.drawImage(originalCanvas, 0, 0, width, height);
     
-                // Get the original file type
+                // Compress and return image in original format
                 let format = originalImage.getElement().src.split(';')[0].split('/')[1];
                 let mimeType = `image/${format}`;
     
-                // Compress and keep the same format
                 scaledCanvas.toBlob((blob) => {
                     let reader = new FileReader();
                     reader.readAsDataURL(blob);
                     reader.onloadend = function () {
-                        resolve(reader.result); // Return compressed image
+                        resolve(reader.result); // Return the compressed image
                     };
                 }, mimeType, 0.5); // Compress to 50%
             };
         });
     }
+    
     
     
     
