@@ -128,7 +128,7 @@ return [
 		17 => 'ink',
 		18 => 'paint',
 		19 => 'oil',
-		20 => 'hard',
+		20 => 'hard stains',
 		21 => 'color stains'
 	],
 	'dryer_statues' 	=> [1=>'Pending', 2=>'Completed'],
