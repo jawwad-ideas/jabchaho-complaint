@@ -401,6 +401,52 @@ $(document).ready(function() {
         });
     }
 
+    function sendWhatsApp( data ){
+        var url = '{{route('send.whatsapp')}}';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: data ,
+            success: function (response) {
+                if (response.success) {
+                    alert('WhatsApp sent successfully!');
+                    location.reload(); // Refresh the page to reflect changes
+                } else {
+                    alert('Error sending WhatsApp.');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('An unexpected error occurred.');
+            }
+        });
+    }
+
+    //sendWhatsApp
+    $('.sendWhatsApp').on('click', function () {
+
+        if (!confirm('Are you sure you want to send a WhatsApp message to the customer?')) {
+            return false;
+        }
+
+        const button        = $(this); // Get the button that was clicked
+        const orderId       = button.data('order-id');
+        const orderNumber   = button.data('order-number');
+        const whatsAppType  = button.data('w-type');
+
+        let data = {
+           orderId : orderId,
+           orderNumber :orderNumber,
+           whatsAppType : whatsAppType,
+       }
+
+       sendWhatsApp( data );
+
+    });
+
     $('.sendEmailBeforeWashBtn').on('click', function () {
 
         if (!confirm('Are you sure you want to send email to customer?')) {

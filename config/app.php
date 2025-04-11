@@ -195,8 +195,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Buzz\LaravelGoogleCaptcha\CaptchaServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class
-
+        Intervention\Image\ImageServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -216,6 +216,7 @@ return [
         'Helper' => App\Helpers\Helper::class,
         'Captcha' => "Buzz\LaravelGoogleCaptcha\Facades\Captcha::class",
         'Image' => Intervention\Image\Facades\Image::class,
+        'PDF' => "Barryvdh\DomPDF\Facade::class",
 
     ])->toArray(),
 

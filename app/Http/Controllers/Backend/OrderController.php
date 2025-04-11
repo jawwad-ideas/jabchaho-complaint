@@ -19,6 +19,7 @@ use App\Http\Requests\Backend\OrderSaveRequest;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\URL;
 use App\Models\OrderItemIssue;
+use App\Jobs\SendWhatsAppJob as SendWhatsAppJob;
 
 #use App\Models\OrdersImages;
 class OrderController extends Controller
@@ -1015,5 +1016,64 @@ class OrderController extends Controller
 
         // If neither file exists, return a default placeholder image
         return response()->file($defaultPlaceholder); // Return a default placeholder
+    }
+
+
+    public function sendWhatsApp(Request $request)
+    {
+        try {
+            $orderId        = $request->input('orderId');
+            $orderNumber    = $request->input('orderNumber');
+            $whatsAppType   = $request->input('whatsAppType');
+
+
+            $params['orderId']              = $orderId;  
+            $params['orderNumber']          = $orderNumber;
+            $params['whatsAppType']         = $whatsAppType;
+
+            //SendWhatsApp Queue Called.
+            dispatch(new SendWhatsAppJob($params));
+            $this->queueWorker();
+
+            //$data = null;
+            // if ($emailType == "before_email")
+            // {
+            //     $orderUpdateArray["before_email"] = 2;
+            // } else {
+            //     $orderUpdateArray["final_email"] = 2;
+            // }
+
+            // $orderUpdateArray["updated_at"] = now();
+            // //Order Update
+            // $order = Order::where(['id' => $orderId])->first();
+            // $order->update(
+            //     $orderUpdateArray
+            // );
+
+            //email Queue Called.
+            // dispatch(new SendWhatsAppJob($orderId, $emailType));
+            // $this->queueWorker();
+
+            // try {
+            //     $adminUser      = $request->user()->id;
+            //     $historyData = [
+            //         'order_id'      => $orderId,
+            //         'item_id'       => null,
+            //         'item_image_id' => null,
+            //         'action'        => $emailType,
+            //         'admin_user'    => $adminUser,
+            //         'data'          => $data
+            //     ];
+
+            //     $this->addHistory($historyData);
+            // } catch (\Exception $exception) {
+            //     die($exception->getMessage());
+            // }
+
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }

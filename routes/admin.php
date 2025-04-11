@@ -193,7 +193,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
     
 
 
-
+    Route::post('/send-whatsapp', 'OrderController@sendWhatsApp')->name('send.whatsapp');
    
 
 });
