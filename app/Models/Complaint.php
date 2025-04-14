@@ -107,12 +107,27 @@ class Complaint extends Model
         $userId         = Arr::get($params, 'userId');
         $priorityId     = Arr::get($params, 'priorityId');
 
-        $assigned = Complaint::where(['id'=>$complaintId])->update(['user_id'=>$userId, 'complaint_priority_id'=>$priorityId]);
-        if ($assigned) {
-            return true;
-        } else {
-            return false;
+        $assigned= false;
+        if($userId != auth()->id())
+        {
+            //$assigned = Complaint::where(['id'=>$complaintId])->update(['user_id'=>$userId, 'complaint_priority_id'=>$priorityId]);
+
+            $complaint = Complaint::find($complaintId);
+
+            // Assign new values
+            $complaint->user_id = $userId;
+            $complaint->complaint_priority_id = $priorityId;
+
+            // Only update if there's a real change
+            if ($complaint->isDirty()) 
+            {
+                $complaint->save(); // returns true/false
+                $assigned = true;
+            } 
+
         }
+
+        return $assigned;
     }
 
     function complaintCount($params = array())

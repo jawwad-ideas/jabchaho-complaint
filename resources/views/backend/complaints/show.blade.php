@@ -286,6 +286,39 @@
             </div>
             <!--Row 3-->
 
+
+            <!--Row 4-->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-3 p-0">
+                        <h6 class="card-header">Complaint Assigned History</h6>
+                        <div class="card-body">
+                            <div class="row">
+                            @if (!empty($complaintAssignedHistory))
+                                    @foreach ($complaintAssignedHistory as $history)
+                                        <div class="py-2 px-4 border">
+                                            <div class="row">
+                                                <div class="p-0">
+                                                    <strong>{{ $loop->iteration }}.</strong>
+                                                    The complaint was assigned to <strong>{{ $history->assignedTo->name }}</strong>
+                                                    by <strong>{{ $history->assignedBy->name }}</strong>
+                                                    with priority <strong>{{ $history->priority->name }}</strong>
+                                                    on <strong>{{ $history->created_at->format('F d, Y \a\t h:i A') }}.</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                  
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <!--Row 4-->
+
         </div>
 
 
