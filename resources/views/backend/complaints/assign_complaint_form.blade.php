@@ -49,9 +49,9 @@
                                 @if(!empty($complaintPriorities))
                                     @foreach($complaintPriorities as $complaintPriority)
                                         @if(Arr::get($complaintPriority, 'id') == Arr::get($complaintData,'complaint_priority_id') )    
-                                            <option value="{{ Arr::get($complaintPriority, 'id') }}" selected >{{ Arr::get($complaintPriority, 'name') }} ({{ Arr::get($complaintPriority, 'days') }} Days)</option>
+                                            <option value="{{ Arr::get($complaintPriority, 'id') }}" selected >{{ Arr::get($complaintPriority, 'name') }} @if(!empty(Arr::get($complaintPriority, 'days'))) ({{ Arr::get($complaintPriority, 'days') }} Days)   @endif</option>
                                         @else
-                                        <option value="{{ Arr::get($complaintPriority, 'id') }}" >{{ Arr::get($complaintPriority, 'name') }} ({{ Arr::get($complaintPriority, 'days') }} Days)</option>
+                                        <option value="{{ Arr::get($complaintPriority, 'id') }}" >{{ Arr::get($complaintPriority, 'name') }} @if(!empty(Arr::get($complaintPriority, 'days'))) ({{ Arr::get($complaintPriority, 'days') }} Days)  @endif</option>
                                         @endif
                                     @endforeach
                                 @endif

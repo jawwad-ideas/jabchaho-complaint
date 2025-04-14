@@ -23,6 +23,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Jobs\AssignedComplaint as AssignedComplaint;
 use App\Jobs\ComplaintStatusChanged as ComplaintStatusChanged; 
 use App\Http\Traits\Configuration\ConfigurationTrait;
+use App\Models\ComplaintAssignedHistory;
+
 class ComplaintController extends Controller
 {
     use ConfigurationTrait;
@@ -197,9 +199,22 @@ class ComplaintController extends Controller
 
         if($assigned)
         {
-             // Dispatch job to send emails
-             dispatch(new AssignedComplaint($complaintId,$userId));
-             $this->queueWorker();
+            //add history
+            $historyData = array();
+
+            $historyData['complaint_id']            = $complaintId;
+            $historyData['complaint_priority_id']   = $request->input('priorityId');
+            $historyData['assigned_to']             = $userId;
+            $historyData['assigned_by']             = auth()->id();
+
+            if($userId != auth()->id())
+            {
+                ComplaintAssignedHistory::insert($historyData);
+            }
+            
+            // Dispatch job to send emails
+            dispatch(new AssignedComplaint($complaintId,$userId));
+            $this->queueWorker();
 
             return response()->json(['status' => true, 'message'=>"Complaint has been assigned successfully."]);
         }
@@ -212,9 +227,11 @@ class ComplaintController extends Controller
     public function show(Request $request)
     {
 
-        $complaintObject            = new Complaint;
-        $complaintDocumentObject    = new ComplaintDocument;
-        $objectComplaintFollowUp  = new ComplaintFollowUp;
+        $complaintObject                    = new Complaint;
+        $complaintDocumentObject            = new ComplaintDocument;
+        $objectComplaintFollowUp            = new ComplaintFollowUp;
+        $objectComplaintAssignedHistory     = new ComplaintAssignedHistory;
+
         $complaintId        = $request->route('complaintId');
         $complaintData      = $complaintObject->getComplaintDataById($complaintId);
         if(!empty($complaintData))
@@ -222,9 +239,10 @@ class ComplaintController extends Controller
             $complaintDocument  = $complaintDocumentObject->getComplaintDocumentById($complaintId);
 
             //Full data of complaint
-            $data['complaintData']      = $complaintData;
-            $data['complaintDocument']  = $complaintDocument;
-            $data['complaintFollowUps'] = $objectComplaintFollowUp->getComplaintFollowUps($complaintId);
+            $data['complaintData']                  = $complaintData;
+            $data['complaintDocument']              = $complaintDocument;
+            $data['complaintFollowUps']             = $objectComplaintFollowUp->getComplaintFollowUps($complaintId);
+            $data['complaintAssignedHistory']       = $objectComplaintAssignedHistory->getComplaintAssignedHistory($complaintId);
 
             return view('backend.complaints.show')->with($data);
         }
