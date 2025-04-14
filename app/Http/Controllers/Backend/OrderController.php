@@ -1026,10 +1026,13 @@ class OrderController extends Controller
             $orderNumber    = $request->input('orderNumber');
             $whatsAppType   = $request->input('whatsAppType');
 
+            $order = Order::where(['id' => $orderId])->first();
+
 
             $params['orderId']              = $orderId;  
             $params['orderNumber']          = $orderNumber;
             $params['whatsAppType']         = $whatsAppType;
+            $params['order']                = $order;
 
             //SendWhatsApp Queue Called.
             dispatch(new SendWhatsAppJob($params));

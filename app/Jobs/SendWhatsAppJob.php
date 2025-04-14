@@ -11,10 +11,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Order;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\URL;
+use App\Http\Traits\Configuration\ConfigurationTrait;
+use App\Helpers\Helper;
 
 class SendWhatsAppJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,ConfigurationTrait;
 
     /**
      * Create a new job instance.
@@ -31,28 +33,34 @@ class SendWhatsAppJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->generatePDF($this->params);
+        $this->sendWhatsApp($this->params);
     }
 
-
-
-    public function generatePDF($params=array())
+    public function sendWhatsApp($params=array())
     {
         try {
-            $orderId        = $params['orderId']; 
-            $orderNumber    = $params['orderNumber']; 
-            $whatsAppType   = $params['whatsAppType'];
-
+            $orderId        = Arr::get($params, 'orderId'); 
+            $orderNumber    = Arr::get($params, 'orderNumber'); 
+            $whatsAppType   = Arr::get($params, 'whatsAppType');
 
             if($whatsAppType == 'before_whatsapp')
             {
-                return $this->beforeWashPDF($params);
+                $this->generateBeforeWashPDF($params);
+
+                $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/before/pdf");
+                $params['fileName']         = "jabchaho-before-wash-".$orderNumber.'.pdf';
+                $params['title']            = 'Product Issues In Order '.$orderNumber;
+                $this->callWhatsAppApi($params);
             }
             else
             {
-                return $this->afterWashPDF($params);
+                $this->generateAfterWashPDF($params);
+
+                $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/after/pdf");
+                $params['fileName']         = "jabchaho-after-wash-".$orderNumber.'.pdf';
+                $params['title']            = 'Your Order Is Ready for Dispatch  '.$orderNumber;
+                $this->callWhatsAppApi($params);
             }
- 
             
         } catch (\Exception $e) {
             // Log the error message for debugging
@@ -62,14 +70,108 @@ class SendWhatsAppJob implements ShouldQueue
     
     }
 
+    public function callWhatsAppApi($params=array())
+    {
+        try{
 
-    public function beforeWashPDF($params=array())
+            //configuration filters
+            $filters            = ['laundry_order_whatsapp_api_enable','laundry_order_whatsapp_api_url','laundry_order_whatsapp_api_token'];
+            
+            //get configurations
+            $configurations     = $this->getConfigurations($filters);
+
+            //Check cron is enabled or not
+            if(!empty(Arr::get($configurations, 'laundry_order_whatsapp_api_enable')))
+            {
+                $order          = Arr::get($params, 'order'); 
+                $directoryPath  = Arr::get($params, 'directoryPath');
+                $orderNumber    = Arr::get($params, 'orderNumber'); 
+                $fileName       = Arr::get($params, 'fileName'); 
+                $title          = Arr::get($params, 'title'); 
+                $number         = Arr::get($order, 'telephone'); 
+                $postURL        = Arr::get($configurations, 'laundry_order_whatsapp_api_url');
+                $apiToken       = Arr::get($configurations, 'laundry_order_whatsapp_api_token');
+                $mediaUrl       = $directoryPath.'/'.$fileName;
+                $mediaUrl       ='https://careers.ideas.com.pk/assets/uploads/douments/1808792571-1744015370-22089-30621.jpg';
+
+                $headers = [
+                    'Content-Type' => 'application/json',
+                    'Token' => $apiToken
+                ];
+        
+                $input = [
+                    'phone_number' => $number ,
+                    'type' =>  'template',
+                    'parameters' => [
+                        'name' => 'hourly_report',
+                        'language' => [
+                            'code'  => 'en'
+                        ],
+                        'components' => [
+                            [
+                                'type' =>  'header',
+                                'parameters' => [
+                                    [
+                                        'type' => 'image',
+                                        'image' => [
+                                            'link' => $mediaUrl
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            [
+                                'type'=> 'body',
+                                'parameters'=> [
+                                    [
+                                        'type' => 'text',
+                                        'text' => $title
+                                    ],
+                                    [
+                                        'type' => 'text',
+                                        'text' =>  '456'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ];
+
+ 
+                $params 						= array(); 	
+                $params['apiUrl']     			= $postURL;
+                $params['input']     			= $input;
+                $params['headerParams']         = $headers;
+                $params['httpMethod']     		= config('constants.http_methods.post');
+                $params['apiType']     			= config('constants.content_type.json');
+
+                #call api
+                $axApiResponseDecode = Helper::sendRequestToGateway($params);
+
+                //\Log::error('axApiResponseDecode' .print_r($axApiResponseDecode,true));
+                return true;
+
+             
+            }
+            else{
+                \Log::error('Disable WhatsApp Api');
+                return false;
+            }
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('Error generating PDF: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    public function generateBeforeWashPDF($params=array())
     {
         
         try 
         {
-            $orderId        = $params['orderId']; 
-            $orderNumber    = $params['orderNumber']; 
+            $orderId        = Arr::get($params, 'orderId'); 
+            $orderNumber    = Arr::get($params, 'orderNumber'); 
             
             $directoryPath = public_path("assets/uploads/orders/{$orderNumber}/before/pdf");
 
@@ -117,8 +219,6 @@ class SendWhatsAppJob implements ShouldQueue
                 $optionsString = implode(', ', $options);
             }
 
-            
-
             $data = [
                 'orderNo'               => Arr::get($orderData, 'order_id'),
                 'name'                  => Arr::get($orderData, 'customer_name'),
@@ -131,9 +231,6 @@ class SendWhatsAppJob implements ShouldQueue
             $html = view('backend.pdf.beforeWash', $data)->render();
             $pdf = Pdf::loadHTML($html);
             
-            // Load the Blade view for the PDF
-            //$pdf = PDF::loadView('backend.pdf.before', $data);
-
             // Specify the file name and path
             $fileName = "before-".Arr::get($orderData, 'order_id').'.pdf';
             $path = $directoryPath . '/' . $fileName;
@@ -141,7 +238,7 @@ class SendWhatsAppJob implements ShouldQueue
             // Save the PDF file
             $pdf->save($path);
 
-            return true;
+            return $orderData;
         } catch (\Exception $e) {
             // Log the error message for debugging
             \Log::error('Error beforeWash PDF: ' . $e->getMessage());
@@ -151,7 +248,7 @@ class SendWhatsAppJob implements ShouldQueue
     }
 
 
-    public function afterWashPDF($params=array())
+    public function generateAfterWashPDF($params=array())
     {
         try 
         {
@@ -202,9 +299,6 @@ class SendWhatsAppJob implements ShouldQueue
             $html = view('backend.pdf.aftereWash', $data)->render();
             $pdf = Pdf::loadHTML($html);
             
-            // Load the Blade view for the PDF
-            //$pdf = PDF::loadView('backend.pdf.before', $data);
-
             // Specify the file name and path
             $fileName = "after-".Arr::get($orderData, 'order_id').'.pdf';
             $path = $directoryPath . '/' . $fileName;

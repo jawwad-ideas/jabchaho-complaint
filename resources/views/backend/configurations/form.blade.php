@@ -220,6 +220,41 @@
                             <input type = 'text'  class="form-control" id="laundry_order_delete_days_from_now" name="laundry_order_delete_days_from_now" value="{{Arr::get($configurations, 'laundry_order_delete_days_from_now')}}">
                         </div>
 
+                        <h4>WhatsApp Api Configuration</h4>
+
+                        <div class="mb-3">
+                            <label for="inputName">WhatsApp Api Enable:</label>
+                            <select id="laundry_order_whatsapp_api_enable" class="form-control" name="laundry_order_whatsapp_api_enable">
+                                @if(!empty($enableDisableSmsApi) )
+                                @foreach($enableDisableSmsApi as $key =>$value)
+                                @if(old('_token') && old('laundry_order_whatsapp_api_enable') === $key)
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @elseif( old('_token') === null && Arr::get($configurations,
+                                'laundry_order_whatsapp_api_enable')==$key && array_key_exists(Arr::get($configurations,
+                                'laundry_order_whatsapp_api_enable'), config('constants.boolean_options')) )
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @else
+                                <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                @endif
+                                @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="laundry_order_whatsapp_api_url" class="form-label">Whatsapp API Url:</label>
+                            <input type='text' class="form-control" id="laundry_order_whatsapp_api_url"
+                                name="laundry_order_whatsapp_api_url"
+                                value="{{Arr::get($configurations, 'laundry_order_whatsapp_api_url')}}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="laundry_order_whatsapp_api_token" class="form-label">Whatsapp API Token:</label>
+                            <input type='text' class="form-control" id="laundry_order_whatsapp_api_token"
+                                name="laundry_order_whatsapp_api_token"
+                                value="{{Arr::get($configurations, 'laundry_order_whatsapp_api_token')}}">
+                        </div>
+
                         <button type="submit"
                             class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Save
                             Changes</button>
