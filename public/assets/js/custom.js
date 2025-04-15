@@ -95,3 +95,7 @@ function ConfirmDelete()
         return false;
     }
 }
+
+function validateOnlyNumber(input) {
+    input.value = input.value.replace(/\D/g, '');
+}

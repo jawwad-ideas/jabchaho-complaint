@@ -11,6 +11,13 @@ return [
 	'complaint_number_starting_index' =>1000,
     'files_supported'=>'png, jpg, jpeg, doc, docx, xls, xlsx, pdf',
 	'complaint_type' =>[1=>'Damaged', 2=>'Incomplete Component', 3=>'Missing Article', 4=>'Stains', 5=>'Shrinkage issue', 6=>'Others'],
+	'services' => [
+		1 => "Dry Cleaning",
+		2 => "Iron Only",
+		3 => "Wash & Iron",
+		4 => "Wash Only",
+		5 => "Shoe Cleaning"
+	],
 	'boolean_options' => [1=>'Yes', 0 =>'No'],
 	'gender_options' => [1=>'Male', 0 =>'Female',3 =>'Others'],
 	'document_name'  => ['complaint'=>'Complaint'],

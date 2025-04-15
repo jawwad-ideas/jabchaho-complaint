@@ -23,7 +23,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Jobs\AssignedComplaint as AssignedComplaint;
 use App\Jobs\ComplaintStatusChanged as ComplaintStatusChanged; 
 use App\Http\Traits\Configuration\ConfigurationTrait;
-use App\Models\ComplaintAssignedHistory;
+use App\Models\ComplaintAssignedHistory as ComplaintAssignedHistory;
+use App\Http\Requests\StoreComplaintRequest;
 
 class ComplaintController extends Controller
 {
@@ -350,5 +351,36 @@ class ComplaintController extends Controller
 
         return redirect()->back()->with('success', "Description Added successfully.");
     }
+
+
+     /**
+     * Show form for creating user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $data = [];
+        
+        $users                          = User::get()->toArray();
+        $complaintPriorities            = ComplaintPriority::get()->toArray();
+
+        
+        $data['complaintTypes']          = config('constants.complaint_type'); 
+        $data['services']                = config('constants.services'); 
+        $data['complaintPriorities']    = $complaintPriorities;
+        $data['users']                  = $users;
+        
+        return view('backend.complaints.create')->with($data);
+    }
+
+    public function store(StoreComplaintRequest $request)
+    {
+        $validated = $request->validated();
+
+        // Process the complaint here
+    }
+
+
 
 }

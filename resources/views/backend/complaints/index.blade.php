@@ -7,12 +7,23 @@
         <small class="text-dark">Manage your Complaints here.</small>
 
     </div>
+
+
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
         <div class="btn-group" role="group">
-            <small id="showFilterBox" type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i class="fa fa-solid fa-filter"></i> <span>Filter</span>
+            <a href="{{ route('complaints.create.form') }}" class="text-decoration-none">
+                <small id="" type="button"
+                    class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                        class="fa fa-exclamation-circle"></i><span>New Complain</span></small>
+            </a>
+            <small id="showFilterBox" type="button"
+                class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                    class="fa fa-solid fa-filter"></i> <span>Filter</span>
             </small>
+
         </div>
     </div>
+
 
 </div>
 <div class="page-content bg-white p-lg-5 px-2">

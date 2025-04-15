@@ -78,7 +78,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::get('/track', 'ComplaintController@trackComplaint')->name('complaints.track');
 
             Route::get('/create', 'ComplaintController@create')->name('complaints.create.form');
-            Route::post('/store', 'ComplaintController@store')->name('rolebase.complaints.store');
+            Route::post('/store', 'ComplaintController@store')->name('complaints.store');
 
             Route::get('{complaint}/follow-up/', 'ComplaintController@followUp')->name('complaints.follow.up');
             Route::post('{complaint}/follow-up', 'ComplaintController@followUpSaved')->name('complaints.follow.up.saved');
