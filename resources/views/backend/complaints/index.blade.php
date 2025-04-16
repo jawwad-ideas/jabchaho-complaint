@@ -91,6 +91,23 @@ tr[data-url]:hover {
                         </select>
                     </div>
 
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
+                        <select class="form-select p-2" id="complaint_priority_id" name="complaint_priority_id">
+                            <option value=''>Select Priority</option>
+                            @if(!empty($complaintPriorities) )
+                                @foreach($complaintPriorities as $complaintPriority)
+                                    @if($complaintPriorityId == Arr::get($complaintPriority, 'id'))
+                                        <option value="{{ trim(Arr::get($complaintPriority, 'id')) }}" selected>
+                                            {{trim(Arr::get($complaintPriority, 'name'))}}</option>
+                                    @else
+                                        <option value="{{trim(Arr::get($complaintPriority, 'id'))}}">
+                                            {{trim(Arr::get($complaintPriority, 'name'))}}</option>
+                                    @endif
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+
                     <div class="col-lg-12 text-end mt-4">
                         <button type="submit"
                             class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
@@ -124,6 +141,7 @@ tr[data-url]:hover {
                         <th>Complaint #</th>
                         <th>Order Id</th>
                         <th>Assigned</th>
+                        <th>Priority</th>
                         <th>Mobile</th>
                         <th>Name</th>
                         <th>Email</th>
@@ -139,6 +157,7 @@ tr[data-url]:hover {
                         <td>{{Arr::get($complaint, 'complaint_number')}}</td>
                         <td>{{Arr::get($complaint, 'order_id')}}</td>
                         <td>@if(!empty(Arr::get($complaint->user, 'name'))){{ Arr::get($complaint->user, 'name') }} @else <span class="text-danger">Unassigned</span> @endif</td>
+                        <td>{{Arr::get($complaint->complaintPriority,'name')}}</td>
                         <td>{{Arr::get($complaint, 'mobile_number')}}</td>
                         <td>{{Arr::get($complaint, 'name')}}</td>
                         <td>{{Arr::get($complaint, 'email')}}</td>

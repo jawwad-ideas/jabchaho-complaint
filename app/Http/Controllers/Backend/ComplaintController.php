@@ -47,6 +47,7 @@ class ComplaintController extends Controller
         $name                       = $request->input('name');
         $email                      = $request->input('email');
         $complaint_status_id        = $request->input('complaint_status_id');
+        $complaint_priority_id      = $request->input('complaint_priority_id');
 
         //complaint_number condition
         if (!empty($complaint_number)) 
@@ -78,6 +79,11 @@ class ComplaintController extends Controller
         {
             $query->where('complaints.complaint_status_id','=', $complaint_status_id);
         }
+
+        if (!empty($complaint_priority_id)) 
+        {
+            $query->where('complaints.complaint_priority_id','=', $complaint_priority_id);
+        }
         
  
         $filterData = [
@@ -86,7 +92,8 @@ class ComplaintController extends Controller
             'mobile_number'         => $mobile_number,
             'name'                  => $name,
             'email'                 => $email,
-            'complaint_status_id'   => $complaint_status_id
+            'complaint_status_id'   => $complaint_status_id,
+            'complaintPriorityId'   => $complaint_priority_id
 
         ];
         
@@ -96,10 +103,12 @@ class ComplaintController extends Controller
             $query = $query->where(['user_id' =>$userId]);
         }
 
-        $complaints = $query->orderBy('id', 'DESC')->paginate(config('constants.per_page'));
+        $complaints                     = $query->orderBy('id', 'DESC')->paginate(config('constants.per_page'));
+        $complaintPriorities            = ComplaintPriority::get()->toArray();
         
         $data['complaints']             = $complaints;
         $data['complaintStatuses']      = $objectComplaintStatus->getComplaintStatuses();
+        $data['complaintPriorities']    = $complaintPriorities;
         
         return view('backend.complaints.index')->with($data)->with($filterData);
     }
@@ -369,7 +378,6 @@ class ComplaintController extends Controller
         $users                          = User::get()->toArray();
         $complaintPriorities            = ComplaintPriority::get()->toArray();
 
-        
         $data['complaintTypes']          = config('constants.complaint_type'); 
         $data['services']                = $servicesObject->getServices(['id','name']);
         $data['complaintPriorities']    = $complaintPriorities;
