@@ -130,4 +130,43 @@
     </div>
   </form>
 </div>
+
+<script>
+$(document).ready(function () {
+    $('#orderNo').on('input', function () {
+        let orderId = $(this).val();
+
+        if (orderId.length >= 6) {
+          $('#name, #email, #mobile').val('');
+
+          $(".loader").show();
+
+           var url = '{{ route('fetch.order.detail', ':orderId') }}';
+            url = url.replace(':orderId', orderId);
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) 
+                    {
+                        $('#name').val(response.order.customer_name || '');
+                        $('#email').val(response.order.customer_email || '');
+                        $('#mobile').val(response.order.telephone || '');
+                    } else {
+                        console.warn('Order not found.');
+                        $('#name, #email, #mobile').val('');
+                    }
+
+                    $(".loader").hide();
+                },
+                error: function () {
+                    console.error('Something went wrong with the request.');
+                    $(".loader").hide();
+                }
+            });
+        }
+    });
+});
+</script>
 @endsection

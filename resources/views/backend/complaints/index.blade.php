@@ -1,6 +1,16 @@
 @extends('backend.layouts.app-master')
 
 @section('content')
+<style>
+tr[data-url] {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+tr[data-url]:hover {
+  background-color: #f0f0f0;
+}
+</style>
 <div class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
     <div class="p-title">
         <h3 class="fw-bold text-dark m-0">Search Complains</h3>
@@ -106,7 +116,7 @@
         </div>
 
         <div class="table-scroll-hr">
-            <table class="table table-bordered table-striped table-compact  table-sm">
+            <table class="table table-bordered table-striped table-compact  table-sm" id="clickableTable">
                 <thead>
 
 
@@ -125,7 +135,7 @@
                 <tbody>
                     <?php $complaintTitle = ''; ?>
                     @foreach ($complaints as $key => $complaint)
-                    <tr>
+                    <tr data-url="{{ route('complaints.show', $complaint->id) }}">
                         <td>{{Arr::get($complaint, 'complaint_number')}}</td>
                         <td>{{Arr::get($complaint, 'order_id')}}</td>
                         <td>@if(!empty(Arr::get($complaint->user, 'name'))){{ Arr::get($complaint->user, 'name') }} @else <span class="text-danger">Unassigned</span> @endif</td>
@@ -184,7 +194,14 @@
         $("#filterBox").toggle();
     });
 
-</script>
+    document.getElementById('clickableTable').addEventListener('click', function(event) {
+        const row = event.target.closest('tr'); // Get the clicked <tr>
+        if (row && row.dataset.url) {
+            window.location.href = row.dataset.url;
+        }
+        });
+
+    </script>
 <!--Select 2 -->
 <link href="{!! url('assets/css/select2.min.css') !!}" rel="stylesheet">
 <script src="{!! url('assets/js/select2.min.js') !!}"></script>

@@ -987,7 +987,7 @@ class OrderController extends Controller
             $data['barcode']    = $barcode;  
             $data['items']       = $orderItem;
             
-            return view('backend.orders.barcodeImageUpload')->with($data);;
+            return view('backend.orders.barcodeImageUpload')->with($data);
 
         } catch (\Exception $e) {
             \Log::error("OrderController->barcodeImageUpload->" . $e->getMessage());
@@ -1015,5 +1015,31 @@ class OrderController extends Controller
 
         // If neither file exists, return a default placeholder image
         return response()->file($defaultPlaceholder); // Return a default placeholder
+    }
+
+
+    public function fetchOrderDetail($orderId=0)
+    {
+        try
+        {
+            $status = false;
+            $order = [];
+            
+            $orderModel = Order::where('order_id', $orderId)->select('customer_name','customer_email','telephone')->first();
+            
+            if ($orderModel) {
+                $order = $orderModel->toArray();
+                $status = true;
+            }
+            
+            return response()->json([
+                'success' => $status,
+                'order'   => $order
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error("OrderController->fetchOrderDetail->" . $e->getMessage());
+            return false;
+        }
     }
 }
