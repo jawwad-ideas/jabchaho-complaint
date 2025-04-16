@@ -15,33 +15,33 @@
     <div class="alert alert-danger" id="error" style="display:none"></div>
     <div class="alert alert-success" id="success" style="display:none"></div>
 
-    <form method="POST" action="{{ route('complaints.store') }}">
+    <form method="POST" action="{{ route('complaints.store') }}" enctype="multipart/form-data">
     @csrf
     <div class="row mb-3">
       <div class="col-md-6">
-        <label for="orderNo" class="form-label">Order #</label>
+        <label for="orderNo" class="form-label">Order # <span class="red"> *</span></label>
         <input type="text" class="form-control" id="orderNo" name="order_id" value="{{ old('order_id') }}" required placeholder="Order No" oninput="validateOnlyNumber(this)">
       </div>
       <div class="col-md-6">
-        <label for="name" class="form-label">Name</label>
+        <label for="name" class="form-label">Name <span class="red"> *</span></label>
         <input type="text" class="form-control" id="name" placeholder="Name" name="name" value="{{ old('name') }}" required>
       </div>
     </div>
 
     <div class="row mb-3">
       <div class="col-md-6">
-        <label for="email" class="form-label">Email</label>
+        <label for="email" class="form-label">Email <span class="red"> *</span></label>
         <input type="email" class="form-control" id="email" placeholder="Email" name="email" value="{{ old('email') }}" required>
       </div>
       <div class="col-md-6">
-        <label for="mobile" class="form-label">Mobile No</label>
+        <label for="mobile" class="form-label">Mobile No <span class="red"> *</span></label>
         <input type="text" class="form-control" id="mobile" placeholder="+9233xxxxxxxx"  maxlength="13"  name="mobile_number" value="{{ old('mobile_number') }}" required>
       </div>
     </div>
 
     <div class="row mb-3">
       <div class="col-md-6">
-        <label for="complaintType" class="form-label">Complaint/Inquiry Type</label>
+        <label for="complaintType" class="form-label">Complaint/Inquiry Type <span class="red"> *</span></label>
         <select id="complain_type" class="form-select form-select-sm"
             name="complaint_type" required>
             <option value="">Select Complaint Type</option>
@@ -57,15 +57,15 @@
         </select>
       </div>
       <div class="col-md-6">
-        <label for="service" class="form-label">Services</label>
-        <select id="service_id" class="form-select form-select-sm" name="services" required>
+        <label for="service" class="form-label">Services <span class="red"> *</span></label>
+        <select id="service_id" class="form-select form-select-sm" name="service_id" required>
             <option value="" >Select Service</option>
             @if(!empty($services) )
-                @foreach($services as $key =>$value)
-                    @if(old('_token') && old('services') == $key)
-                        <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                @foreach($services as $service)
+                    @if(old('_token') && old('service_id') == Arr::get($service, 'id'))
+                        <option value="{{ trim(Arr::get($service, 'id')) }}" selected>{{trim(Arr::get($service, 'name'))}}</option>
                     @else
-                        <option value="{{trim($key)}}">{{trim($value)}}</option>
+                        <option value="{{trim(Arr::get($service, 'id'))}}">{{trim(Arr::get($service, 'name'))}}</option>
                     @endif
                 @endforeach
             @endif
@@ -77,7 +77,7 @@
 
     <div class="row mb-3">
         <div class="col-md-6">
-            <label class="control-label col-sm-4" for="userId">Assign To:</label>
+            <label class="control-label col-sm-4" for="userId">Assign To <span class="red"> *</span></label>
             <select class="form-control c-select" name="user_id" required>
                 <option value="">Select...</option>
                 @if(!empty($users))
@@ -93,7 +93,7 @@
             </select>
         </div>
         <div class="col-md-6">
-            <label class="control-label col-sm-4" for="priorityId">Priority:</label>
+            <label class="control-label col-sm-4" for="priorityId">Priority <span class="red"> *</span></label>
             <select class="form-control c-select" name="complaint_priority_id" required>
                 <option value="">Select...</option>
                 @if(!empty($complaintPriorities))
@@ -114,13 +114,13 @@
 
 
     <div class="mb-3">
-      <label for="attachments" class="form-label">Attachments</label>
-      <input type="file" class="form-control" id="attachments">
+      <label for="attachments" class="form-label">Attachments <span class="red"> *</span></label>
+      <input type="file" class="form-control" id="attachments" name="attachments[]" multiple>
       
     </div>
 
     <div class="mb-4">
-      <label for="comments" class="form-label">Comments</label>
+      <label for="comments" class="form-label">Comments <span class="red"> *</span></label>
       <textarea class="form-control" id="comments" rows="5" name="comments" required>{{ old('comments') }}</textarea>
     </div>
 

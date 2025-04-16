@@ -60,6 +60,13 @@
         </div>
         <div class="text-lg-end text-center">
             <div class="btn-group chart-filter-btns mt-lg-0 mt-4" role="group">
+                
+                @if (Auth::user()->can('complaints.create.form'))
+                    <a href="{{ route('complaints.create.form') }}" class="btn btn-sm rounded bg-theme-dark-300 me-2 border-0 text-theme-yellow-light fw-bold">
+                       New Complain
+                    </a>
+                @endif
+
                 @if (Auth::user()->can('complaints.follow.up'))
                     <a class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold"
                         href="{{ route('complaints.follow.up', $complaintData->id) }}">Follow

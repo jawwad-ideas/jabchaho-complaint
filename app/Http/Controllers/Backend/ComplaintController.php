@@ -15,16 +15,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Complainant;
 use App\Models\ComplaintStatus;
 use App\Models\ComplaintFollowUp;
-use App\Http\Requests\Backend\ComplaintFollowUpRequest;
-use App\Http\Requests\Backend\ReAssignRequest;
+use App\Models\ComplaintAssignedHistory as ComplaintAssignedHistory;
 use App\Models\ComplaintPriority;
+use App\Models\Service;
+use App\Http\Requests\Backend\ComplaintFollowUpRequest;
+use App\Http\Requests\StoreComplaintRequest;
+use App\Http\Requests\Backend\ReAssignRequest;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Jobs\NotifyComplainant as NotifyComplainant;
 use App\Jobs\AssignedComplaint as AssignedComplaint;
 use App\Jobs\ComplaintStatusChanged as ComplaintStatusChanged; 
 use App\Http\Traits\Configuration\ConfigurationTrait;
-use App\Models\ComplaintAssignedHistory as ComplaintAssignedHistory;
-use App\Http\Requests\StoreComplaintRequest;
+
 
 class ComplaintController extends Controller
 {
@@ -361,13 +364,14 @@ class ComplaintController extends Controller
     public function create()
     {
         $data = [];
-        
+        $servicesObject                 = new Service();
+
         $users                          = User::get()->toArray();
         $complaintPriorities            = ComplaintPriority::get()->toArray();
 
         
         $data['complaintTypes']          = config('constants.complaint_type'); 
-        $data['services']                = config('constants.services'); 
+        $data['services']                = $servicesObject->getServices(['id','name']);
         $data['complaintPriorities']    = $complaintPriorities;
         $data['users']                  = $users;
         
@@ -376,11 +380,67 @@ class ComplaintController extends Controller
 
     public function store(StoreComplaintRequest $request)
     {
-        $validated = $request->validated();
+        $validateValues                             = $request->validated();
+            
+        $userId                                     = Arr::get($validateValues, 'user_id');
+        $priorityId                                 = Arr::get($validateValues, 'complaint_priority_id');
 
-        // Process the complaint here
+        $insertData['device_type']                  = Helper::getdevice($request); 
+        $insertData['complaint_type']               = Arr::get($validateValues, 'complaint_type');   
+        $insertData['order_id']                     = Arr::get($validateValues, 'order_id');
+        $insertData['service_id']                   = Arr::get($validateValues, 'service_id');
+        $insertData['name']                         = Arr::get($validateValues, 'name');
+        $insertData['email']                        = Arr::get($validateValues, 'email');
+        $insertData['mobile_number']                = Arr::get($validateValues, 'mobile_number');
+        $insertData['comments']                     = Arr::get($validateValues, 'comments');
+        $insertData['user_id']                      = $userId;
+        $insertData['complaint_priority_id']        = $priorityId;
+        
+        $complaintData  = array();
+        $complaintData  = Complaint::create($insertData);
+        
+        if(!empty($complaintData))
+        { 
+            $complaintId    = Arr::get($complaintData, 'id',0);
+
+            $prefix =config('constants.complaint_number_starting_index'); //complaint_number_starting_index
+            $complaintNumber = "JB-".($prefix + $complaintId)."-".date('Y');
+
+            $complaintData->update(['complaint_number' => $complaintNumber]);
+
+            //Files upload code
+            $this->uploadImages($request,$complaintId);
+            
+            // Dispatch job to send emails and SMS
+            dispatch(new NotifyComplainant($complaintId));
+            $this->queueWorker();
+
+            //add history
+            $historyData = array();
+
+            $historyData['complaint_id']            = $complaintId;
+            $historyData['complaint_priority_id']   = $priorityId;
+            $historyData['assigned_to']             = $userId;
+            $historyData['assigned_by']             = auth()->id();
+            
+            ComplaintAssignedHistory::insert($historyData);
+                        
+            // Dispatch job to send emails
+            dispatch(new AssignedComplaint($complaintId,$userId));
+            $this->queueWorker();
+
+            return redirect()->route('complaints.show', ['complaintId' => $complaintId])
+            ->with('success', 'Complaint has been register and assigned successfully.');
+            
+        }
+        else
+        {
+            return redirect()->route('complaints.create.form')
+            ->withErrors(['error' => "Whoops, looks like something went wrong."])
+            ->withInput();
+
+        }
+
     }
-
-
 
 }
