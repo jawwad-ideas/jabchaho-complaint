@@ -108,6 +108,22 @@ tr[data-url]:hover {
                         </select>
                     </div>
 
+
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
+                        <select class="form-select p-2" id="reported_from_id" name="reported_from_id">
+                            <option value=''>Select Reported From</option>
+                            @if(!empty($reportedFrom) )
+                                @foreach($reportedFrom as $key=>$value)
+                                    @if($reportedFromId == $key)
+                                        <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                    @else
+                                        <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                    @endif
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+
                     <div class="col-lg-12 text-end mt-4">
                         <button type="submit"
                             class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
@@ -139,6 +155,7 @@ tr[data-url]:hover {
 
                     <tr>
                         <th>Complaint #</th>
+                        <th>Reported From</th>
                         <th>Order Id</th>
                         <th>Assigned</th>
                         <th>Priority</th>
@@ -155,6 +172,7 @@ tr[data-url]:hover {
                     @foreach ($complaints as $key => $complaint)
                     <tr data-url="{{ route('complaints.show', $complaint->id) }}">
                         <td>{{Arr::get($complaint, 'complaint_number')}}</td>
+                        <td>{{config('constants.complaint_reported_from.'.Arr::get($complaint, 'reported_from'))}}</td>
                         <td>{{Arr::get($complaint, 'order_id')}}</td>
                         <td>@if(!empty(Arr::get($complaint->user, 'name'))){{ Arr::get($complaint->user, 'name') }} @else <span class="text-danger">Unassigned</span> @endif</td>
                         <td>{{Arr::get($complaint->complaintPriority,'name')}}</td>

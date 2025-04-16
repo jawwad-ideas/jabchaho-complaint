@@ -107,6 +107,15 @@
 
                 <div class="inner-row d-flex gap-4 my-1">
                     <div class="inner-label">
+                        <p class="mb-0"><b>Reported From:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{config('constants.complaint_reported_from.'.Arr::get($complaintData, 'reported_from'))}}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
                         <p class="mb-0"><b>Status:</b></p>
                     </div>
                     <div class="inner-value">

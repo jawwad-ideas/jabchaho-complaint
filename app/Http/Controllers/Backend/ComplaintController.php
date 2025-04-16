@@ -48,6 +48,7 @@ class ComplaintController extends Controller
         $email                      = $request->input('email');
         $complaint_status_id        = $request->input('complaint_status_id');
         $complaint_priority_id      = $request->input('complaint_priority_id');
+        $reported_from_id           = $request->input('reported_from_id');
 
         //complaint_number condition
         if (!empty($complaint_number)) 
@@ -84,6 +85,11 @@ class ComplaintController extends Controller
         {
             $query->where('complaints.complaint_priority_id','=', $complaint_priority_id);
         }
+
+        if (!empty($reported_from_id)) 
+        {
+            $query->where('complaints.reported_from','=', $reported_from_id);
+        }
         
  
         $filterData = [
@@ -93,7 +99,8 @@ class ComplaintController extends Controller
             'name'                  => $name,
             'email'                 => $email,
             'complaint_status_id'   => $complaint_status_id,
-            'complaintPriorityId'   => $complaint_priority_id
+            'complaintPriorityId'   => $complaint_priority_id,
+            'reportedFromId'        => $reported_from_id
 
         ];
         
@@ -109,6 +116,7 @@ class ComplaintController extends Controller
         $data['complaints']             = $complaints;
         $data['complaintStatuses']      = $objectComplaintStatus->getComplaintStatuses();
         $data['complaintPriorities']    = $complaintPriorities;
+        $data['reportedFrom']           = config('constants.complaint_reported_from');
         
         return view('backend.complaints.index')->with($data)->with($filterData);
     }
@@ -403,6 +411,7 @@ class ComplaintController extends Controller
         $insertData['comments']                     = Arr::get($validateValues, 'comments');
         $insertData['user_id']                      = $userId;
         $insertData['complaint_priority_id']        = $priorityId;
+        $insertData['reported_from']                = config('constants.complaint_reported_from_id.complaint_portal');
         
         $complaintData  = array();
         $complaintData  = Complaint::create($insertData);
