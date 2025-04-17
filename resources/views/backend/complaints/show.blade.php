@@ -195,7 +195,7 @@
                         <p class="mb-0"><b>Created:</b></p>
                     </div>
                     <div class="inner-value">
-                        <p class="text-muted mb-0"> {{ date("d,M,Y h:i A", strtotime(Arr::get($complaintData, 'created_at'))) }}</p>
+                        <p class="text-muted mb-0"> {{ date(config('constants.date_time_format'), strtotime(Arr::get($complaintData, 'created_at'))) }}</p>
                     </div>
                 </div>
 
@@ -279,7 +279,7 @@
                                                         {{ ucwords(Arr::get($complaintFollowUp->user, 'name')) }}</strong>
                                                     <small>|
                                                         @if (!empty(Arr::get($complaintFollowUp, 'created_at')))
-                                                            {{ date('M d, Y', strtotime(Arr::get($complaintFollowUp, 'created_at'))) }}
+                                                            {{ date(config('constants.date_time_format'), strtotime(Arr::get($complaintFollowUp, 'created_at'))) }}
                                                         @endif
                                                         | {{ Arr::get($complaintFollowUp->complaintStatus, 'name') }} 
                                                     </small>
@@ -319,7 +319,7 @@
                                                     The complaint was assigned to <strong>{{ $history->assignedTo->name }}</strong>
                                                     by <strong>{{ $history->assignedBy->name }}</strong>
                                                     with priority <strong>{{ $history->priority->name }}</strong>
-                                                    on <strong>{{ $history->created_at->format('F d, Y \a\t h:i A') }}.</strong>
+                                                    on <strong>{{ $history->created_at->format(config('constants.date_time_format')) }}.</strong>
                                                 </div>
                                             </div>
                                         </div>

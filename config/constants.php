@@ -9,6 +9,7 @@ return [
 	'css_version'=>'1.0',
 	'max_files' => 3,
 	'complaint_number_starting_index' =>1000,
+	'date_time_format'  => 'F d, Y \a\t h:i A',
     'files_supported'=>'png, jpg, jpeg, doc, docx, xls, xlsx, pdf',
 	'complaint_type' =>[1=>'Damaged', 2=>'Incomplete Component', 3=>'Missing Article', 4=>'Stains', 5=>'Shrinkage issue', 6=>'Others'],
 	'services' => [
