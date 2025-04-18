@@ -1,18 +1,41 @@
 @extends('backend.layouts.app-master')
 
 @section('content')
+<style>
+tr[data-url] {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+tr[data-url]:hover {
+  background-color: #f0f0f0;
+}
+</style>
 <div class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
     <div class="p-title">
         <h3 class="fw-bold text-dark m-0">Search Complains</h3>
         <small class="text-dark">Manage your Complaints here.</small>
 
     </div>
+
+
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
         <div class="btn-group" role="group">
-            <small id="showFilterBox" type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i class="fa fa-solid fa-filter"></i> <span>Filter</span>
+            @if (Auth::user()->can('complaints.create.form'))
+                <a href="{{ route('complaints.create.form') }}" class="text-decoration-none">
+                    <small id="" type="button"
+                        class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                            class="fa fa-exclamation-circle"></i><span>New Complain</span></small>
+                </a>
+            @endif
+            <small id="showFilterBox" type="button"
+                class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                    class="fa fa-solid fa-filter"></i> <span>Filter</span>
             </small>
+
         </div>
     </div>
+
 
 </div>
 <div class="page-content bg-white p-lg-5 px-2">
@@ -68,6 +91,39 @@
                         </select>
                     </div>
 
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
+                        <select class="form-select p-2" id="complaint_priority_id" name="complaint_priority_id">
+                            <option value=''>Select Priority</option>
+                            @if(!empty($complaintPriorities) )
+                                @foreach($complaintPriorities as $complaintPriority)
+                                    @if($complaintPriorityId == Arr::get($complaintPriority, 'id'))
+                                        <option value="{{ trim(Arr::get($complaintPriority, 'id')) }}" selected>
+                                            {{trim(Arr::get($complaintPriority, 'name'))}}</option>
+                                    @else
+                                        <option value="{{trim(Arr::get($complaintPriority, 'id'))}}">
+                                            {{trim(Arr::get($complaintPriority, 'name'))}}</option>
+                                    @endif
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+
+
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
+                        <select class="form-select p-2" id="reported_from_id" name="reported_from_id">
+                            <option value=''>Select Reported From</option>
+                            @if(!empty($reportedFrom) )
+                                @foreach($reportedFrom as $key=>$value)
+                                    @if($reportedFromId == $key)
+                                        <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                    @else
+                                        <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                    @endif
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+
                     <div class="col-lg-12 text-end mt-4">
                         <button type="submit"
                             class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
@@ -93,14 +149,16 @@
         </div>
 
         <div class="table-scroll-hr">
-            <table class="table table-bordered table-striped table-compact  table-sm">
+            <table class="table table-bordered table-striped table-compact  table-sm" id="clickableTable">
                 <thead>
 
 
                     <tr>
                         <th>Complaint #</th>
+                        <th>Reported From</th>
                         <th>Order Id</th>
                         <th>Assigned</th>
+                        <th>Priority</th>
                         <th>Mobile</th>
                         <th>Name</th>
                         <th>Email</th>
@@ -112,10 +170,12 @@
                 <tbody>
                     <?php $complaintTitle = ''; ?>
                     @foreach ($complaints as $key => $complaint)
-                    <tr>
+                    <tr data-url="{{ route('complaints.show', $complaint->id) }}">
                         <td>{{Arr::get($complaint, 'complaint_number')}}</td>
+                        <td>{{config('constants.complaint_reported_from.'.Arr::get($complaint, 'reported_from'))}}</td>
                         <td>{{Arr::get($complaint, 'order_id')}}</td>
                         <td>@if(!empty(Arr::get($complaint->user, 'name'))){{ Arr::get($complaint->user, 'name') }} @else <span class="text-danger">Unassigned</span> @endif</td>
+                        <td>{{Arr::get($complaint->complaintPriority,'name')}}</td>
                         <td>{{Arr::get($complaint, 'mobile_number')}}</td>
                         <td>{{Arr::get($complaint, 'name')}}</td>
                         <td>{{Arr::get($complaint, 'email')}}</td>
@@ -171,7 +231,14 @@
         $("#filterBox").toggle();
     });
 
-</script>
+    document.getElementById('clickableTable').addEventListener('click', function(event) {
+        const row = event.target.closest('tr'); // Get the clicked <tr>
+        if (row && row.dataset.url) {
+            window.location.href = row.dataset.url;
+        }
+        });
+
+    </script>
 <!--Select 2 -->
 <link href="{!! url('assets/css/select2.min.css') !!}" rel="stylesheet">
 <script src="{!! url('assets/js/select2.min.js') !!}"></script>

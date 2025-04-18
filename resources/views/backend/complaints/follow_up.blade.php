@@ -33,7 +33,7 @@
                     <div class="card-footer text-muted">
                         <strong>{{ ucwords(Arr::get($complaint->complainant,'full_name'))}}</strong> <span
                             class="float-right"><small>@if(!empty(Arr::get($complaint,
-                                'created_at'))){{ date("M d, Y", strtotime(Arr::get($complaint, 'created_at'))) }}@endif
+                                'created_at'))){{ date(config('constants.date_time_format'), strtotime(Arr::get($complaint, 'created_at'))) }}@endif
                             </small></span>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
                     <div class="col-sm-12"><strong> Created By:
                             {{ ucwords(Arr::get($complaintFollowUp->user,'name'))}}</strong> <small>|
                             @if(!empty(Arr::get($complaintFollowUp,
-                            'created_at'))){{ date("M d, Y", strtotime(Arr::get($complaintFollowUp, 'created_at'))) }}@endif
+                            'created_at'))){{ date(config('constants.date_time_format'), strtotime(Arr::get($complaintFollowUp, 'created_at'))) }}@endif
                             | {{ Arr::get($complaintFollowUp->complaintStatus,'name') }} </small></div>
                 </div>
                 <p class="font-weight-bold ">{!! Arr::get($complaintFollowUp,'description') !!}</p>

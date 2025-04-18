@@ -26,6 +26,7 @@ class Complaint extends Model
     protected $fillable = [
         'device_type',
         'complaint_number',
+        'reported_from',
         'complaint_status_id',
         'complaint_priority_id',
         'complaint_type',

@@ -60,6 +60,13 @@
         </div>
         <div class="text-lg-end text-center">
             <div class="btn-group chart-filter-btns mt-lg-0 mt-4" role="group">
+                
+                @if (Auth::user()->can('complaints.create.form'))
+                    <a href="{{ route('complaints.create.form') }}" class="btn btn-sm rounded bg-theme-dark-300 me-2 border-0 text-theme-yellow-light fw-bold">
+                       New Complain
+                    </a>
+                @endif
+
                 @if (Auth::user()->can('complaints.follow.up'))
                     <a class="btn btn-sm rounded bg-theme-dark-300 me-2 filters border-0 text-theme-yellow-light fw-bold"
                         href="{{ route('complaints.follow.up', $complaintData->id) }}">Follow
@@ -95,6 +102,15 @@
                     </div>
                     <div class="inner-value">
                         <p class="text-muted mb-0"> {{ Arr::get($complaintData, 'order_id') }}</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
+                        <p class="mb-0"><b>Reported From:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> {{config('constants.complaint_reported_from.'.Arr::get($complaintData, 'reported_from'))}}</p>
                     </div>
                 </div>
 
@@ -179,7 +195,7 @@
                         <p class="mb-0"><b>Created:</b></p>
                     </div>
                     <div class="inner-value">
-                        <p class="text-muted mb-0"> {{ date("d,M,Y h:i A", strtotime(Arr::get($complaintData, 'created_at'))) }}</p>
+                        <p class="text-muted mb-0"> {{ date(config('constants.date_time_format'), strtotime(Arr::get($complaintData, 'created_at'))) }}</p>
                     </div>
                 </div>
 
@@ -263,7 +279,7 @@
                                                         {{ ucwords(Arr::get($complaintFollowUp->user, 'name')) }}</strong>
                                                     <small>|
                                                         @if (!empty(Arr::get($complaintFollowUp, 'created_at')))
-                                                            {{ date('M d, Y', strtotime(Arr::get($complaintFollowUp, 'created_at'))) }}
+                                                            {{ date(config('constants.date_time_format'), strtotime(Arr::get($complaintFollowUp, 'created_at'))) }}
                                                         @endif
                                                         | {{ Arr::get($complaintFollowUp->complaintStatus, 'name') }} 
                                                     </small>
@@ -303,7 +319,7 @@
                                                     The complaint was assigned to <strong>{{ $history->assignedTo->name }}</strong>
                                                     by <strong>{{ $history->assignedBy->name }}</strong>
                                                     with priority <strong>{{ $history->priority->name }}</strong>
-                                                    on <strong>{{ $history->created_at->format('F d, Y \a\t h:i A') }}.</strong>
+                                                    on <strong>{{ $history->created_at->format(config('constants.date_time_format')) }}.</strong>
                                                 </div>
                                             </div>
                                         </div>

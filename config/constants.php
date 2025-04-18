@@ -9,8 +9,16 @@ return [
 	'css_version'=>'1.0',
 	'max_files' => 3,
 	'complaint_number_starting_index' =>1000,
+	'date_time_format'  => 'F d, Y \a\t h:i A',
     'files_supported'=>'png, jpg, jpeg, doc, docx, xls, xlsx, pdf',
 	'complaint_type' =>[1=>'Damaged', 2=>'Incomplete Component', 3=>'Missing Article', 4=>'Stains', 5=>'Shrinkage issue', 6=>'Others'],
+	'services' => [
+		1 => "Dry Cleaning",
+		2 => "Iron Only",
+		3 => "Wash & Iron",
+		4 => "Wash Only",
+		5 => "Shoe Cleaning"
+	],
 	'boolean_options' => [1=>'Yes', 0 =>'No'],
 	'gender_options' => [1=>'Male', 0 =>'Female',3 =>'Others'],
 	'document_name'  => ['complaint'=>'Complaint'],
@@ -51,6 +59,9 @@ return [
 	'complaint_sms_api_enable' => [1=>'Enable', 0 =>'Disable'],
 	'complaint_status_notify_type'  =>[0=>'Disabled',1=>'SMS',2=>'Email', 3=>'Both'],
 	'complaint_status_notify_type_id'  =>['disabled'=>0,'sms'=>1 ,'email'=>2, 'both'=>3],
+
+	'complaint_reported_from'  		=>[1=>'Frontend',2=>'Backend'],
+	'complaint_reported_from_id'  	=>['website'=>1 ,'complaint_portal'=>2],
 
 	'admin_action_with_description' =>[
 			'logout.perform'				 			=> 'Logout',

@@ -15,15 +15,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Complainant;
 use App\Models\ComplaintStatus;
 use App\Models\ComplaintFollowUp;
-use App\Http\Requests\Backend\ComplaintFollowUpRequest;
-use App\Http\Requests\Backend\ReAssignRequest;
+use App\Models\ComplaintAssignedHistory as ComplaintAssignedHistory;
 use App\Models\ComplaintPriority;
+use App\Models\Service;
+use App\Http\Requests\Backend\ComplaintFollowUpRequest;
+use App\Http\Requests\StoreComplaintRequest;
+use App\Http\Requests\Backend\ReAssignRequest;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Jobs\NotifyComplainant as NotifyComplainant;
 use App\Jobs\AssignedComplaint as AssignedComplaint;
 use App\Jobs\ComplaintStatusChanged as ComplaintStatusChanged; 
 use App\Http\Traits\Configuration\ConfigurationTrait;
-use App\Models\ComplaintAssignedHistory;
+
 
 class ComplaintController extends Controller
 {
@@ -43,6 +47,8 @@ class ComplaintController extends Controller
         $name                       = $request->input('name');
         $email                      = $request->input('email');
         $complaint_status_id        = $request->input('complaint_status_id');
+        $complaint_priority_id      = $request->input('complaint_priority_id');
+        $reported_from_id           = $request->input('reported_from_id');
 
         //complaint_number condition
         if (!empty($complaint_number)) 
@@ -74,6 +80,16 @@ class ComplaintController extends Controller
         {
             $query->where('complaints.complaint_status_id','=', $complaint_status_id);
         }
+
+        if (!empty($complaint_priority_id)) 
+        {
+            $query->where('complaints.complaint_priority_id','=', $complaint_priority_id);
+        }
+
+        if (!empty($reported_from_id)) 
+        {
+            $query->where('complaints.reported_from','=', $reported_from_id);
+        }
         
  
         $filterData = [
@@ -82,7 +98,9 @@ class ComplaintController extends Controller
             'mobile_number'         => $mobile_number,
             'name'                  => $name,
             'email'                 => $email,
-            'complaint_status_id'   => $complaint_status_id
+            'complaint_status_id'   => $complaint_status_id,
+            'complaintPriorityId'   => $complaint_priority_id,
+            'reportedFromId'        => $reported_from_id
 
         ];
         
@@ -92,10 +110,13 @@ class ComplaintController extends Controller
             $query = $query->where(['user_id' =>$userId]);
         }
 
-        $complaints = $query->orderBy('id', 'DESC')->paginate(config('constants.per_page'));
+        $complaints                     = $query->orderBy('id', 'DESC')->paginate(config('constants.per_page'));
+        $complaintPriorities            = ComplaintPriority::get()->toArray();
         
         $data['complaints']             = $complaints;
         $data['complaintStatuses']      = $objectComplaintStatus->getComplaintStatuses();
+        $data['complaintPriorities']    = $complaintPriorities;
+        $data['reportedFrom']           = config('constants.complaint_reported_from');
         
         return view('backend.complaints.index')->with($data)->with($filterData);
     }
@@ -349,6 +370,94 @@ class ComplaintController extends Controller
         }
 
         return redirect()->back()->with('success', "Description Added successfully.");
+    }
+
+
+     /**
+     * Show form for creating user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $data = [];
+        $servicesObject                 = new Service();
+
+        $users                          = User::get()->toArray();
+        $complaintPriorities            = ComplaintPriority::get()->toArray();
+
+        $data['complaintTypes']          = config('constants.complaint_type'); 
+        $data['services']                = $servicesObject->getServices(['id','name']);
+        $data['complaintPriorities']    = $complaintPriorities;
+        $data['users']                  = $users;
+        
+        return view('backend.complaints.create')->with($data);
+    }
+
+    public function store(StoreComplaintRequest $request)
+    {
+        $validateValues                             = $request->validated();
+            
+        $userId                                     = Arr::get($validateValues, 'user_id');
+        $priorityId                                 = Arr::get($validateValues, 'complaint_priority_id');
+
+        $insertData['device_type']                  = Helper::getdevice($request); 
+        $insertData['complaint_type']               = Arr::get($validateValues, 'complaint_type');   
+        $insertData['order_id']                     = Arr::get($validateValues, 'order_id');
+        $insertData['service_id']                   = Arr::get($validateValues, 'service_id');
+        $insertData['name']                         = Arr::get($validateValues, 'name');
+        $insertData['email']                        = Arr::get($validateValues, 'email');
+        $insertData['mobile_number']                = Arr::get($validateValues, 'mobile_number');
+        $insertData['comments']                     = Arr::get($validateValues, 'comments');
+        $insertData['user_id']                      = $userId;
+        $insertData['complaint_priority_id']        = $priorityId;
+        $insertData['reported_from']                = config('constants.complaint_reported_from_id.complaint_portal');
+        
+        $complaintData  = array();
+        $complaintData  = Complaint::create($insertData);
+        
+        if(!empty($complaintData))
+        { 
+            $complaintId    = Arr::get($complaintData, 'id',0);
+
+            $prefix =config('constants.complaint_number_starting_index'); //complaint_number_starting_index
+            $complaintNumber = "JB-".($prefix + $complaintId)."-".date('Y');
+
+            $complaintData->update(['complaint_number' => $complaintNumber]);
+
+            //Files upload code
+            $this->uploadImages($request,$complaintId);
+            
+            // Dispatch job to send emails and SMS
+            dispatch(new NotifyComplainant($complaintId));
+            $this->queueWorker();
+
+            //add history
+            $historyData = array();
+
+            $historyData['complaint_id']            = $complaintId;
+            $historyData['complaint_priority_id']   = $priorityId;
+            $historyData['assigned_to']             = $userId;
+            $historyData['assigned_by']             = auth()->id();
+            
+            ComplaintAssignedHistory::insert($historyData);
+                        
+            // Dispatch job to send emails
+            dispatch(new AssignedComplaint($complaintId,$userId));
+            $this->queueWorker();
+
+            return redirect()->route('complaints.show', ['complaintId' => $complaintId])
+            ->with('success', 'Complaint has been register and assigned successfully.');
+            
+        }
+        else
+        {
+            return redirect()->route('complaints.create.form')
+            ->withErrors(['error' => "Whoops, looks like something went wrong."])
+            ->withInput();
+
+        }
+
     }
 
 }
