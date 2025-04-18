@@ -108,13 +108,15 @@ class ComplaintController extends Controller
         {
             $userId= Auth::guard('web')->user()->id;
 
-            $query->distinct()
-                    ->join('complaint_assigned_history', 'complaints.id', '=', 'complaint_assigned_history.complaint_id')
-                    ->where(function ($q) use ($userId) {
-                        $q->where('complaint_assigned_history.assigned_to', $userId)
-                        ->orWhere('complaint_assigned_history.assigned_by', $userId);
-                    })
-                    ->select('complaints.*');
+            $query = Complaint::query()
+                        ->distinct()
+                        ->leftJoin('complaint_assigned_history', 'complaints.id', '=', 'complaint_assigned_history.complaint_id')
+                        ->where(function ($q) use ($userId) {
+                            $q->where('complaint_assigned_history.assigned_to', $userId)
+                            ->orWhere('complaint_assigned_history.assigned_by', $userId);
+                        })
+                        ->orWhere('complaints.user_id', $userId)
+                        ->select('complaints.*');
         }
 
         $complaints                     = $query->orderBy('id', 'DESC')->paginate(config('constants.per_page'));
