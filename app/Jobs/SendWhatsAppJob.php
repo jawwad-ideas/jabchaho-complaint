@@ -45,20 +45,21 @@ class SendWhatsAppJob implements ShouldQueue
 
             if($whatsAppType == 'before_whatsapp')
             {
-                $this->generateBeforeWashPDF($params);
+                
 
                 $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/before/pdf");
                 $params['fileName']         = "jabchaho-before-wash-".$orderNumber.'.pdf';
                 $params['title']            = 'Product Issues In Order '.$orderNumber;
+
+                $this->generateBeforeWashPDF($params);
                 $this->callWhatsAppApi($params);
             }
             else
             {
-                $this->generateAfterWashPDF($params);
-
                 $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/after/pdf");
                 $params['fileName']         = "jabchaho-after-wash-".$orderNumber.'.pdf';
                 $params['title']            = 'Your Order Is Ready for Dispatch  '.$orderNumber;
+                $this->generateAfterWashPDF($params);
                 $this->callWhatsAppApi($params);
             }
             
@@ -92,43 +93,41 @@ class SendWhatsAppJob implements ShouldQueue
                 $postURL        = Arr::get($configurations, 'laundry_order_whatsapp_api_url');
                 $apiToken       = Arr::get($configurations, 'laundry_order_whatsapp_api_token');
                 $mediaUrl       = $directoryPath.'/'.$fileName;
-                $mediaUrl       ='https://careers.ideas.com.pk/assets/uploads/douments/1808792571-1744015370-22089-30621.jpg';
-
+                $fileName       ='jabchaho-before-wash-101625.pdf';
+                $mediaUrl       ='https://complaint.jabchaho.com/assets/uploads/orders/101882/before/pdf/jabchaho-before-wash-101625.pdf';
+                //$mediaUrl = 'https://eoceanwaba.com:3050/uploads/platform/builder/support/Playbook.pdf';
                 $headers = [
                     'Content-Type' => 'application/json',
-                    'Token' => $apiToken
+                    'Token' =>$apiToken,
                 ];
         
                 $input = [
-                    'phone_number' => $number ,
-                    'type' =>  'template',
-                    'parameters' => [
-                        'name' => 'hourly_report',
-                        'language' => [
-                            'code'  => 'en'
+                    "phone_number" => $number,
+                    "type" => "template",
+                    "parameters" => [
+                        "name" => "order_issues",
+                        "language" => [
+                            "code" => "en"
                         ],
-                        'components' => [
+                        "components" => [
                             [
-                                'type' =>  'header',
-                                'parameters' => [
+                                "type" => "header",
+                                "parameters" => [
                                     [
-                                        'type' => 'image',
-                                        'image' => [
-                                            'link' => $mediaUrl
+                                        "type" => "document",
+                                        "document" => [
+                                            "link" => $mediaUrl,
+                                            "filename" => $fileName
                                         ]
                                     ]
                                 ]
                             ],
                             [
-                                'type'=> 'body',
-                                'parameters'=> [
+                                "type" => "body",
+                                "parameters" => [
                                     [
-                                        'type' => 'text',
-                                        'text' => $title
-                                    ],
-                                    [
-                                        'type' => 'text',
-                                        'text' =>  '456'
+                                        "type" => "text",
+                                        "text" => $orderNumber
                                     ]
                                 ]
                             ]
@@ -147,7 +146,7 @@ class SendWhatsAppJob implements ShouldQueue
                 #call api
                 $axApiResponseDecode = Helper::sendRequestToGateway($params);
 
-                //\Log::error('axApiResponseDecode' .print_r($axApiResponseDecode,true));
+                \Log::error('input' .print_r($input,true));
                 return true;
 
              
@@ -172,6 +171,7 @@ class SendWhatsAppJob implements ShouldQueue
         {
             $orderId        = Arr::get($params, 'orderId'); 
             $orderNumber    = Arr::get($params, 'orderNumber'); 
+            $fileName       = Arr::get($params, 'fileName'); 
             
             $directoryPath = public_path("assets/uploads/orders/{$orderNumber}/before/pdf");
 
@@ -232,7 +232,6 @@ class SendWhatsAppJob implements ShouldQueue
             $pdf = Pdf::loadHTML($html);
             
             // Specify the file name and path
-            $fileName = "before-".Arr::get($orderData, 'order_id').'.pdf';
             $path = $directoryPath . '/' . $fileName;
 
             // Save the PDF file
