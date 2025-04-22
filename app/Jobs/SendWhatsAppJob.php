@@ -173,7 +173,7 @@ class SendWhatsAppJob implements ShouldQueue
             $orderNumber    = Arr::get($params, 'orderNumber'); 
             $fileName       = Arr::get($params, 'fileName'); 
             
-            $directoryPath = public_path("assets/uploads/orders/{$orderNumber}/before/pdf");
+            $directoryPath = public_path("assets/uploads/orders/{$orderNumber}/pdf/before");
 
             // Ensure the directory exists
             if (!file_exists($directoryPath)) 
@@ -254,7 +254,7 @@ class SendWhatsAppJob implements ShouldQueue
             $orderId        = $params['orderId']; 
             $orderNumber    = $params['orderNumber']; 
             
-            $directoryPath = public_path("assets/uploads/orders/{$orderNumber}/after/pdf");
+            $directoryPath = public_path("assets/uploads/orders/{$orderNumber}/pdf/after");
 
             // Ensure the directory exists
             if (!file_exists($directoryPath)) 
