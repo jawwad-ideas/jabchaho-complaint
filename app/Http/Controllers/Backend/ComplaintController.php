@@ -107,7 +107,16 @@ class ComplaintController extends Controller
         if(!Auth::user()->hasRole(config('constants.roles.admin')) && !Auth::user()->hasRole(config('constants.roles.complaint_management_team')))
         {
             $userId= Auth::guard('web')->user()->id;
-            $query = $query->where(['user_id' =>$userId]);
+
+            $query = Complaint::query()
+                        ->distinct()
+                        ->leftJoin('complaint_assigned_history', 'complaints.id', '=', 'complaint_assigned_history.complaint_id')
+                        ->where(function ($q) use ($userId) {
+                            $q->where('complaint_assigned_history.assigned_to', $userId)
+                            ->orWhere('complaint_assigned_history.assigned_by', $userId);
+                        })
+                        ->orWhere('complaints.user_id', $userId)
+                        ->select('complaints.*');
         }
 
         $complaints                     = $query->orderBy('id', 'DESC')->paginate(config('constants.per_page'));
