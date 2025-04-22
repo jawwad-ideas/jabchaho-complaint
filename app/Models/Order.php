@@ -37,7 +37,9 @@ class Order extends Model
         'before_email',
         'before_email_remarks',
         'before_email_options',
-        'token'
+        'token',
+        'before_whatsapp',
+        'after_whatsapp'
     ];
 
     public function customer()

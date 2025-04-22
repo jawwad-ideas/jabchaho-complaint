@@ -371,7 +371,9 @@ class OrderController extends Controller
             'sendFinalEmailTitle'       => ($order->final_email == 2) ? 'Resend Email After Wash' : 'Send Email After Wash',
             'sendBeforeEmail' => $beforeEmailShow,
             'sendBeforeEmailTitle' => ($order->before_email == 2) ? 'Resend Email Before Wash' : 'Send Email Before Wash',
-            'disableAfterUploadInput' =>  $disableAfterUploadInput
+            'disableAfterUploadInput' =>  $disableAfterUploadInput,
+            'beforewhatsppTitle' => ($order->before_whatsapp == 2) ? 'Resend Whatsapp Before Wash' : 'Send Whatsapp Before Wash',
+            'afterwhatsppTitle' => ($order->after_whatsapp == 2) ? 'Resend Whatsapp After Wash' : 'Send Whatsapp After Wash',
         ]);
     }
 
@@ -1027,6 +1029,40 @@ class OrderController extends Controller
 
             $order = Order::where(['id' => $orderId])->first();
 
+            $data             = null;
+            $orderUpdateArray = array();
+
+            if ($whatsAppType == "before_whatsapp")
+            {
+                $orderUpdateArray["before_whatsapp"] = 2;
+            } else {
+                $orderUpdateArray["after_whatsapp"] = 2;
+            }
+
+            $orderUpdateArray["updated_at"] = now();
+   
+            //Order Update
+            $order->update(
+                $orderUpdateArray
+            );
+
+            try {
+                $adminUser      = $request->user()->id;
+                $historyData = [
+                    'order_id'      => $orderId,
+                    'item_id'       => null,
+                    'item_image_id' => null,
+                    'action'        => $whatsAppType,
+                    'admin_user'    => $adminUser,
+                    'data'          => $data
+                ];
+
+                $this->addHistory($historyData);
+            } catch (\Exception $exception) {
+                die($exception->getMessage());
+            }
+
+
 
             $params['orderId']              = $orderId;  
             $params['orderNumber']          = $orderNumber;
@@ -1036,42 +1072,6 @@ class OrderController extends Controller
             //SendWhatsApp Queue Called.
             dispatch(new SendWhatsAppJob($params));
             $this->queueWorker();
-
-            //$data = null;
-            // if ($emailType == "before_email")
-            // {
-            //     $orderUpdateArray["before_email"] = 2;
-            // } else {
-            //     $orderUpdateArray["final_email"] = 2;
-            // }
-
-            // $orderUpdateArray["updated_at"] = now();
-            // //Order Update
-            // $order = Order::where(['id' => $orderId])->first();
-            // $order->update(
-            //     $orderUpdateArray
-            // );
-
-            //email Queue Called.
-            // dispatch(new SendWhatsAppJob($orderId, $emailType));
-            // $this->queueWorker();
-
-            // try {
-            //     $adminUser      = $request->user()->id;
-            //     $historyData = [
-            //         'order_id'      => $orderId,
-            //         'item_id'       => null,
-            //         'item_image_id' => null,
-            //         'action'        => $emailType,
-            //         'admin_user'    => $adminUser,
-            //         'data'          => $data
-            //     ];
-
-            //     $this->addHistory($historyData);
-            // } catch (\Exception $exception) {
-            //     die($exception->getMessage());
-            // }
-
 
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
