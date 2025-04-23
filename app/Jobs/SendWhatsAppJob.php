@@ -47,7 +47,7 @@ class SendWhatsAppJob implements ShouldQueue
             {
                 
 
-                $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/before/pdf");
+                $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/pdf/before");
                 $params['fileName']         = "jabchaho-before-wash-".$orderNumber.'.pdf';
                 $params['title']            = 'Product Issues In Order '.$orderNumber;
 
@@ -56,7 +56,7 @@ class SendWhatsAppJob implements ShouldQueue
             }
             else
             {
-                $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/after/pdf");
+                $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/pdf/after");
                 $params['fileName']         = "jabchaho-after-wash-".$orderNumber.'.pdf';
                 $params['title']            = 'Your Order Is Ready for Dispatch  '.$orderNumber;
                 $this->generateAfterWashPDF($params);
@@ -93,8 +93,8 @@ class SendWhatsAppJob implements ShouldQueue
                 $postURL        = Arr::get($configurations, 'laundry_order_whatsapp_api_url');
                 $apiToken       = Arr::get($configurations, 'laundry_order_whatsapp_api_token');
                 $mediaUrl       = $directoryPath.'/'.$fileName;
-                $fileName       ='jabchaho-before-wash-101625.pdf';
-                $mediaUrl       ='https://complaint.jabchaho.com/assets/uploads/orders/101882/before/pdf/jabchaho-before-wash-101625.pdf';
+                ///$fileName       ='jabchaho-before-wash-101625.pdf';
+                //$mediaUrl       ='https://complaint.jabchaho.com/assets/uploads/orders/101882/before/pdf/jabchaho-before-wash-101882.pdf';
                 //$mediaUrl = 'https://eoceanwaba.com:3050/uploads/platform/builder/support/Playbook.pdf';
                 $headers = [
                     'Content-Type' => 'application/json',
@@ -229,6 +229,7 @@ class SendWhatsAppJob implements ShouldQueue
 
             
             $html = view('backend.pdf.beforeWash', $data)->render();
+            PDF::setOptions(['isRemoteEnabled' => true]);
             $pdf = Pdf::loadHTML($html);
             
             // Specify the file name and path
