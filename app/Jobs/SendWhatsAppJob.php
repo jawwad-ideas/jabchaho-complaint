@@ -146,7 +146,7 @@ class SendWhatsAppJob implements ShouldQueue
                 #call api
                 $axApiResponseDecode = Helper::sendRequestToGateway($params);
 
-                \Log::error('input' .print_r($input,true));
+                //\Log::error('input' .print_r($input,true));
                 return true;
 
              
