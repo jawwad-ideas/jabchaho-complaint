@@ -48,7 +48,7 @@ class SendWhatsAppJob implements ShouldQueue
                 
 
                 $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/pdf/before");
-                $params['fileName']         = "jabchaho-before-wash-".$orderNumber.'.pdf';
+                $params['fileName']         = "JabChaho-Before-Wash-".$orderNumber.'-'.time().'.pdf';
                 $params['title']            = 'Product Issues In Order '.$orderNumber;
 
                 $this->generateBeforeWashPDF($params);
