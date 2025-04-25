@@ -63,11 +63,13 @@
                 </button>
             </div>
 
-            <div class="mb-3 complete-button-div"  >
-                <button id="before_whatsapp" data-order-id="{{ $order->id }}" data-order-number="{{ $order->order_id }}" data-w-type="before_whatsapp" type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2 sendWhatsApp">
-                    {{$beforewhatsppTitle}}
-                </button>
-            </div>
+            @if (Auth::guard('web')->user()->email == 'admin@jabchaho.com')
+                <div class="mb-3 complete-button-div"  >
+                    <button id="before_whatsapp" data-order-id="{{ $order->id }}" data-order-number="{{ $order->order_id }}" data-w-type="before_whatsapp" type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2 sendWhatsApp">
+                        {{$beforewhatsppTitle}}
+                    </button>
+                </div>
+            @endif
 
             <!--<div class="mb-3 complete-button-div"  >
                 <button id="after_whatsapp" data-order-id="{{ $order->id }}" data-order-number="{{ $order->order_id }}" data-w-type="after_whatsapp" type="button" class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2 sendWhatsApp">

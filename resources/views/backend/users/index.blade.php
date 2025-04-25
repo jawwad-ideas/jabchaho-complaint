@@ -88,7 +88,7 @@
                     </thead>
                     <tbody>
                         @foreach ($users as $user)
-                            @if ($user->email == 'admin@gmail.com')
+                            @if ($user->email == 'admin@jabchaho.com')
                                 @php continue; @endphp
                             @endif
 
