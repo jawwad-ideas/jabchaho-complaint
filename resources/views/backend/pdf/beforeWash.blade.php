@@ -1,97 +1,152 @@
-<table class="wrapper" width="100%" style="border-collapse:collapse;margin:0 auto">
-    <tbody>
-        <tr>
-            <td class="wrapper-inner" align="center" style="vertical-align:top;padding-bottom:30px;width:100%;font-family:'Poppins','Helvetica Neue','Helvetica','Arial',sans-serif;">
-                <table class="main" align="center" style="border-collapse:collapse;margin:0 auto;text-align:left;width:660px;border-radius:30px;overflow:hidden;">
-                    <tbody style="background: #fce1004f;">
-                        <tr>
-                            <td class="header" style="vertical-align:top;background-color:#000;padding:40px 25px 25px;">
-                                <div>
-                                    <a class="logo" href="#" style="color:#000;text-decoration:none" target="_other" rel="nofollow">
-                                        <img width="190" height="39" src="{{public_path('assets/images/jc-logo.png') }}" alt="Jabchaho" style="border:0;height:auto;line-height:100%;outline:none;text-decoration:none;max-width:150px">
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="main-content" style="vertical-align:top;padding:30px;">
-                                <p class="greeting" style="margin-top:0;margin-bottom:10px">Dear <span style="font-size: 20px;font-weight: 600;display: block;">{{$name}},</span></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inspection Notice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 40px;
+      color: #333;
+    }
 
-                                <p class="greeting" style="font-style: italic;margin-top:0;margin-bottom:10px;">We hope this email finds you well.</p>
+    .header {
+      background-color: #000;
+      padding: 20px;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
 
-                                <p class="greeting" style="margin-top:0;margin:20px 0">Please allow us to inform you that during the inspection at our in-house facility, we discovered that there are defects in a few items which include <b>{{$options}}</b> (pictures are attached). </p>
+    .header img {
+      height: 40px;
+    }
 
+    .letter-container {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-top: none;
+      padding: 30px;
+      max-width: 800px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-                                <p class="greeting" style="margin-top:0;margin:20px 0">However, we will do our best to remove the stains, as long as it does not damage the fabric and we will be proceeding with the laundry services as requested.</p>
+    .letter-container p {
+      margin: 15px 0;
+      line-height: 1.6;
+    }
 
-                                @if(!empty($orderItems))
-                                    <table border="1" style="width:100%; border-collapse:collapse;border:none;">
-                                        <thead style="background: #fce100;">
-                                            <tr>
-                                                <th style="border: none;padding: 10px 10px;">#</th>
-                                                <th style="border: none;padding: 10px 10px;">Name</th>
-                                                <th style="border: none;padding: 10px 10px;">Before Wash Images</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody style="border:1px solid #fefad4;">
-                                        @php $beforeCounter = 1; @endphp
-                                            @foreach($orderItems as $orderItem)
-                                                <tr  @if($beforeCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
-                                                    <td style="border:none;padding:10px;">{{ $beforeCounter }}</td>
-                                                    <td  style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/> <small style="display:inline-block;font-weight:700;">Barcode:</small><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span>
-                                                        
-                                                            @if(!empty($orderItem->issues))
-                                                            <br/><small>Item having Issue:</small>
-                                                                <div class="form-check-label text-capitalize d-flex gap-2 flex-wrap mt-2 w-50 issuesPills " for="color fading" id="savedOrderItemIssues-{{$orderItem->id}}">
-                                                                    @foreach($orderItem->issues as $row)
-                                                                    <span style="border-radius: 50rem !important; background-color: #f7dd0282 !important; padding: .25rem !important; display: inline-block; padding: .35em .65em; font-size: .75em; font-weight: 700; line-height: 1; color: #000; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem; font-family: 'Comfortaa', sans-serif !important; text-transform: capitalize !important;">{{config('constants.issues.'.Arr::get($row, 'issue'))}}</span>
-                                                                    @endforeach
-                                                                </div>
+    .letter-container ul {
+      list-style: none;
+      padding-left: 0;
+    }
 
-                                                            @endif
-                                                    </td>
-                                                    <td  style="border:none;padding:10px;">
-                                                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+    .letter-container li {
+      margin: 10px 0;
+    }
 
-                                                            @php
-                                                                $imageName = Arr::get($orderItemsImage, 'imagename');
-                                                                $thumbPath = 'assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.$imageName;
-                                                                $fullPath = 'assets/uploads/orders/'.$orderNo.'/before/'.$imageName;
+    .image-section {
+      margin: 20px 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
 
-                                                                $thumbUrl = url($thumbPath);
-                                                                $fullUrl = url($fullPath);
-                                                            @endphp
+    .image-section img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      padding: 4px;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
 
-                                                            <div style="display:inline-block;margin-top:20px;">
-                                                                <a href="{{ $fullUrl }}" style="text-decoration: none;" download>
-                                                                    @if(File::exists(public_path($thumbPath)))  
-                                                                        <img src="{{ $thumbUrl }}"  style="max-width:60px;  height:60px; margin:2px;"/>
-                                                                    @else
-                                                                        <img src="{{ $fullUrl }}" style="max-width:60px;  height:60px; margin:2px;"/>
-                                                                    @endif
-                                                                </a>
-                                                            </div>
+  <div class="header">
+    <img width="190" height="39" src="{{public_path('assets/images/jc-logo.png') }}" alt="Jabchaho" style="border:0;height:auto;line-height:100%;outline:none;text-decoration:none;max-width:150px">
+  </div>
 
-                                                        @endforeach
+  <div class="letter-container">
+    <p>Dear {{$name}},</p>
 
-                                                    </td>
-                                                </tr>
-                                                @php $beforeCounter++; @endphp
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                @endif
+    <p>
+      Please be informed that during the inspection at our in-house facility, 
+      we discovered that there are defects in a few items which include <b>{{$options}}</b> 
+      (pictures are attached).
+    </p>
 
+    <p>
+      However, we will do our best to remove the stains, as long as it does not damage 
+      the fabric and we will be proceeding with the laundry services as requested.
+    </p>
 
+    <p>The following items have been affected:</p>
 
-                                <p>Please feel free to contact us at 021-111-524-246 for any queries or concerns.</p>
-                                <p>Best regards,</p>
-                                <p><b>JabChaho</b></p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table>
+    @if(!empty($orderItems))
+        @foreach($orderItems as $orderItem)
+            <ul>
+                <li><strong>{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}</strong> | {{ Arr::get($orderItem, 'barcode') }}</li>
+            </ul>
+            
+            @if(!empty($orderItem->issues))
+                <p>
+                    <strong>Item Issue:</strong>
+                    @foreach($orderItem->issues as $row)
+                        <span style="border-radius: 50rem !important; background-color: #f7dd0282 !important; padding: .25rem !important; display: inline-block; padding: .35em .65em; font-size: .75em; font-weight: 700; line-height: 1; color: #000; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem; font-family: 'Comfortaa', sans-serif !important; text-transform: capitalize !important;">{{config('constants.issues.'.Arr::get($row, 'issue'))}}</span>
+                    @endforeach 
+                </p>
+            @endif
+
+            <div class="image-section">
+                @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+
+                    @php
+                        $imageName = Arr::get($orderItemsImage, 'imagename');
+                        $thumbPath = 'assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.$imageName;
+                        $fullPath = 'assets/uploads/orders/'.$orderNo.'/before/'.$imageName;
+
+                        $thumbUrl = url($thumbPath);
+                        $fullUrl = url($fullPath);
+                    @endphp
+
+                    <div style="">
+                        <a href="{{ $fullUrl }}" style="text-decoration: none;">
+                            @if(File::exists(public_path($thumbPath)))  
+                                <img src="{{ $thumbUrl }}"  style="max-width:60px;  height:60px; margin:2px;"/>
+                            @else
+                                <img src="{{ $fullUrl }}" style="max-width:60px;  height:60px; margin:2px;"/>
+                            @endif
+                        </a>
+                    </div>
+
+                @endforeach                 
+               
+            </div>
+
+        @endforeach
+
+    @endif
+
+    <p><em>*All images are taken prior to washing and/or processing</em></p>
+
+    <p>
+      Contact us at <strong>021-111-524-246</strong> for any queries or concerns.
+    </p>
+
+    <p>
+        You are kindly requested to check the items within 7 days of delivery, with the attached bar code intact. Complaints received after this period will not be entertained.
+    </p>
+
+    <p>Best regards,</p>
+    <p><strong>JabChaho</strong></p>
+  </div>
+
+</body>
+</html>
