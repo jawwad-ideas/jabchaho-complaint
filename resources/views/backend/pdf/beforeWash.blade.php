@@ -57,7 +57,7 @@
                     <div style="width: 30%; margin: 5px; display: inline-block; vertical-align: top; font-size: 12px;">
                         <a href="{{ $fullUrl }}" style="text-decoration: none; display: block; width: 100%;">
                             @if(File::exists(public_path($thumbPath)))  
-                                <img src="{{ $thumbUrl }}"  style="width: 100%; max-width: 100%; height: 100px; object-fit: cover; overflow: hidden; border-radius: 10px;"/>
+                                <img src="{{ $thumbUrl }}"  style="width: 90px; max-width: 100%; height:90px; object-fit: cover; overflow: hidden; border-radius: 10px;"/>
                             @else
                                 <img src="{{ $fullUrl }}"  style="width: 100%; max-width: 100%; height: 100px; object-fit: cover; overflow: hidden; border-radius: 10px;" />
                             @endif

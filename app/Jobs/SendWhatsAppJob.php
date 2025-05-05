@@ -57,7 +57,7 @@ class SendWhatsAppJob implements ShouldQueue
             else
             {
                 $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/pdf/after");
-                $params['fileName']         = "jabchaho-after-wash-".$orderNumber.'.pdf';
+                $params['fileName']         = "jabchaho-after-wash-".$orderNumber.'-'.time().'.pdf';
                 $params['title']            = 'Your Order Is Ready for Dispatch  '.$orderNumber;
                 $this->generateAfterWashPDF($params);
                 $this->callWhatsAppApi($params);
@@ -254,6 +254,7 @@ class SendWhatsAppJob implements ShouldQueue
         {
             $orderId        = $params['orderId']; 
             $orderNumber    = $params['orderNumber']; 
+            $fileName       = Arr::get($params, 'fileName'); 
             
             $directoryPath = public_path("assets/uploads/orders/{$orderNumber}/pdf/after");
 
@@ -300,7 +301,6 @@ class SendWhatsAppJob implements ShouldQueue
             $pdf = Pdf::loadHTML($html);
             
             // Specify the file name and path
-            $fileName = "after-".Arr::get($orderData, 'order_id').'.pdf';
             $path = $directoryPath . '/' . $fileName;
 
             // Save the PDF file
