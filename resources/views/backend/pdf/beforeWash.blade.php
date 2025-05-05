@@ -78,7 +78,7 @@
     </p>
 
     <p style="margin: 15px 0; line-height: 1.6;">
-        You are kindly requested to check the items within 7 days of delivery, with the attached bar code intact. Complaints received after this period will not be entertained.
+        <strong> You are kindly requested to check the items within 7 days of delivery, with the attached bar code intact. Complaints received after this period will not be entertained. </strong>
     </p>
 
     <p style="margin: 15px 0; line-height: 1.6;">Best regards,</p>
