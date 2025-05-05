@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Inspection Notice</title>
 </head>
 <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 40px; color: #333;">
 
@@ -11,7 +10,7 @@
   </div>
 
   <div style="background: #fff; border: 1px solid #ddd; border-top: none; padding: 30px; max-width: 800px; margin: auto; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-  <p style="margin: 1px 0; line-height: 1.6;">Dear {{$name}},</p>
+  <p style="margin: 1px 0; line-height: 1.6;"><strong>Dear {{$name}},</strong></p>
 
   <p style="margin: 15px 0; line-height: 1.6;">
       Please be informed that during the inspection at our in-house facility, 
@@ -78,7 +77,7 @@
     </p>
 
     <p style="margin: 15px 0; line-height: 1.6;">
-        <strong> You are kindly requested to check the items within 7 days of delivery, with the attached bar code intact. Complaints received after this period will not be entertained. </strong>
+        <strong>Note: You are kindly requested to check the items within 7 days of delivery, with the attached bar code intact. Complaints received after this period will not be entertained. </strong>
     </p>
 
     <p style="margin: 15px 0; line-height: 1.6;">Best regards,</p>
