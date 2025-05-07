@@ -24,6 +24,15 @@
         height: auto; /* allow height to expand based on content */
     }
 }
+
+/* Change active/focus/hover background of dropdown items */
+.dropdown-menu .dropdown-item:active,
+.dropdown-menu .dropdown-item:focus,
+.dropdown-menu .dropdown-item:hover {
+    background-color: #343a40 !important; /* Replace with your desired color */
+    color: #fff !important; /* Optional: ensure text stays readable */
+}
+
 </style>
 <div
     class="page-title-section border-bottom mb-1 d-lg-flex justify-content-between align-items-center d-block bg-theme-yellow">
