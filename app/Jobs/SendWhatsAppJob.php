@@ -50,6 +50,7 @@ class SendWhatsAppJob implements ShouldQueue
                 $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/pdf/before");
                 $params['fileName']         = "JabChaho-Before-Wash-".$orderNumber.'-'.time().'.pdf';
                 $params['title']            = 'Product Issues In Order '.$orderNumber;
+                $params['templateName']     = 'order_issues';
 
                 $this->generateBeforeWashPDF($params);
                 $this->callWhatsAppApi($params);
@@ -57,8 +58,10 @@ class SendWhatsAppJob implements ShouldQueue
             else
             {
                 $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/pdf/after");
-                $params['fileName']         = "jabchaho-after-wash-".$orderNumber.'-'.time().'.pdf';
+                $params['fileName']         = "Jabchaho-After-Wash-".$orderNumber.'-'.time().'.pdf';
                 $params['title']            = 'Your Order Is Ready for Dispatch  '.$orderNumber;
+                $params['templateName']     = 'order_dispatached';
+
                 $this->generateAfterWashPDF($params);
                 $this->callWhatsAppApi($params);
             }
@@ -93,9 +96,10 @@ class SendWhatsAppJob implements ShouldQueue
                 $postURL        = Arr::get($configurations, 'laundry_order_whatsapp_api_url');
                 $apiToken       = Arr::get($configurations, 'laundry_order_whatsapp_api_token');
                 $mediaUrl       = $directoryPath.'/'.$fileName;
+                $templateName   = Arr::get($params, 'templateName'); 
                 ///$fileName       ='jabchaho-before-wash-101625.pdf';
                 //$mediaUrl       ='https://complaint.jabchaho.com/assets/uploads/orders/101882/before/pdf/jabchaho-before-wash-101882.pdf';
-                //$mediaUrl = 'https://eoceanwaba.com:3050/uploads/platform/builder/support/Playbook.pdf';
+                $mediaUrl = 'https://eoceanwaba.com:3050/uploads/platform/builder/support/Playbook.pdf';
                 $headers = [
                     'Content-Type' => 'application/json',
                     'Token' =>$apiToken,
@@ -105,7 +109,7 @@ class SendWhatsAppJob implements ShouldQueue
                     "phone_number" => $number,
                     "type" => "template",
                     "parameters" => [
-                        "name" => "order_issues",
+                        "name" => $templateName,
                         "language" => [
                             "code" => "en"
                         ],
@@ -135,7 +139,8 @@ class SendWhatsAppJob implements ShouldQueue
                     ]
                 ];
 
- 
+                //\Log::error('input' .print_r($input,true));
+
                 $params 						= array(); 	
                 $params['apiUrl']     			= $postURL;
                 $params['input']     			= $input;
@@ -146,7 +151,7 @@ class SendWhatsAppJob implements ShouldQueue
                 #call api
                 $axApiResponseDecode = Helper::sendRequestToGateway($params);
 
-                //\Log::error('input' .print_r($input,true));
+                
                 return true;
 
              
