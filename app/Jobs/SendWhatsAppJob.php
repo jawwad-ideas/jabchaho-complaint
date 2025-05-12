@@ -99,7 +99,7 @@ class SendWhatsAppJob implements ShouldQueue
                 $templateName   = Arr::get($params, 'templateName'); 
                 ///$fileName       ='jabchaho-before-wash-101625.pdf';
                 //$mediaUrl       ='https://complaint.jabchaho.com/assets/uploads/orders/101882/before/pdf/jabchaho-before-wash-101882.pdf';
-                $mediaUrl = 'https://eoceanwaba.com:3050/uploads/platform/builder/support/Playbook.pdf';
+                //$mediaUrl = 'https://eoceanwaba.com:3050/uploads/platform/builder/support/Playbook.pdf';
                 $headers = [
                     'Content-Type' => 'application/json',
                     'Token' =>$apiToken,
