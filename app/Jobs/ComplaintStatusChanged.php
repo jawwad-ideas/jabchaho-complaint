@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\URL;
 use App\Models\Complaint;
 use App\Models\ComplaintStatus;
 use App\Helpers\Helper;
-use App\Http\Traits\Configuration\ConfigurationTrait;
+use App\Traits\Configuration\ConfigurationTrait;
 
 class ComplaintStatusChanged implements ShouldQueue
 {

@@ -11,7 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Order;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\URL;
-use App\Http\Traits\Configuration\ConfigurationTrait;
+use App\Traits\Configuration\ConfigurationTrait;
 use App\Helpers\Helper;
 
 class SendWhatsAppJob implements ShouldQueue

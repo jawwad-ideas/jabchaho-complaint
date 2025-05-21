@@ -20,11 +20,13 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\URL;
 use App\Models\OrderItemIssue;
 use App\Jobs\SendWhatsAppJob as SendWhatsAppJob;
+use App\Traits\Configuration\ConfigurationTrait;
+use App\Traits\Orders\WhatsApp\Hold\ProcessHoldOrdersTrait;
 
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
-
+    use ConfigurationTrait,ProcessHoldOrdersTrait;
     public function uploadSave(Request $request)
     {
         dd($request->all());
@@ -329,6 +331,13 @@ class OrderController extends Controller
 
     public function edit($orderId)
     {
+        //configuration filters
+        $filters            = ['laundry_order_whatsapp_sending_start_time','laundry_order_whatsapp_sending_end_time'];
+        
+        //get configurations
+        $configurations     = $this->getConfigurations($filters);
+
+
         $order = Order::with(['orderItems.images' => function ($query) {
             $query->where('status', 1);
         },'orderItems.issues','orderItems.machineBarcode.machineDetail','orderItems.machineBarcode.machineDetail.machine','orderItems.machineBarcode.machineDetail.machineImages'])->find($orderId);
@@ -374,6 +383,7 @@ class OrderController extends Controller
             'disableAfterUploadInput' =>  $disableAfterUploadInput,
             'beforewhatsppTitle' => ($order->before_whatsapp == 2) ? 'Resend Whatsapp Before Wash' : 'Send Whatsapp Before Wash',
             'afterwhatsppTitle' => ($order->after_whatsapp == 2) ? 'Resend Whatsapp After Wash' : 'Send Whatsapp After Wash',
+            'configurations'    => $configurations    
         ]);
     }
 
@@ -1102,5 +1112,131 @@ class OrderController extends Controller
             \Log::error("OrderController->fetchOrderDetail->" . $e->getMessage());
             return false;
         }
+    }
+
+
+    public function markHoldWhatsAppOrder(Request $request)
+    {
+        try 
+        {
+            $orderId        = $request->input('orderId');
+            $orderNumber    = $request->input('orderNumber');
+            $whatsAppType   = $request->input('whatsAppType');
+
+            $order = Order::where(['id' => $orderId])->first();
+
+            $data             = null;
+            $orderUpdateArray = array();
+
+            if ($whatsAppType == "before_whatsapp")
+            {
+                $orderUpdateArray["before_whatsapp"] = 3;
+            } else {
+                $orderUpdateArray["after_whatsapp"] = 3;
+            }
+
+            $orderUpdateArray["updated_at"] = now();
+   
+            //Order Update
+            $order->update(
+                $orderUpdateArray
+            );
+
+            try {
+                $adminUser      = $request->user()->id;
+                $historyData = [
+                    'order_id'      => $orderId,
+                    'item_id'       => null,
+                    'item_image_id' => null,
+                    'action'        => $whatsAppType."_hold",
+                    'admin_user'    => $adminUser,
+                    'data'          => $data
+                ];
+
+                $this->addHistory($historyData);
+            } catch (\Exception $exception) 
+            {
+                die($exception->getMessage());
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    //List of hold whatsapp orders
+    public function holdWhatsAppOrders(Request $request)
+    {
+        try 
+        {
+            $data = array();
+            
+            $type             = $request->segment(3);
+            
+            if ($type && array_key_exists($type, config('constants.order_type')))
+            {
+                //configuration filters
+                $filters            = ['laundry_order_whatsapp_sending_start_time','laundry_order_whatsapp_sending_end_time'];
+                
+                //get configurations
+                $configurations     = $this->getConfigurations($filters);
+
+
+                $orders = Order::where($type, 3)
+                    ->orderBy('id', 'desc')
+                    ->get();
+
+                $data['orders'] = $orders;
+                $data['type']   = $type;
+                $data['configurations'] = $configurations;
+
+                return view('backend.orders.hold')->with($data);
+            }
+            else{
+                abort(404);
+            }
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+
+        
+    }
+
+    public function processHoldWhatsAppOrders(Request $request)
+    {
+        try 
+        {
+            $orderIds                = $request->input('order_ids');
+            $whatsAppType            = $request->input('whatsapp_type');
+            
+            if(!empty($orderIds) && array_key_exists($whatsAppType, config('constants.order_type')))
+            {
+                $holdWhatsAppOrders = Order::where($whatsAppType, 3)
+                ->whereIn('id', $orderIds)
+                ->get();
+
+                $data = "Selected WhatsApp order were manually released from hold.";
+                if($holdWhatsAppOrders->isNotEmpty())
+                {
+                    foreach ($holdWhatsAppOrders as $order) 
+                    {
+                        $this->processAndReleaseHoldOrders($order, $whatsAppType ,$data);
+                    } 
+                }
+
+                return response()->json(['success' => true,'message' =>'Orders released successfully.']);
+            }
+            else
+            {
+              return response()->json(['success' => false, 'message' =>'Request could not be processed.'], 500);
+            }
+            
+            
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+        
+        
     }
 }

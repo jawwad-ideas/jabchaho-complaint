@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Http\Traits\Configuration\ConfigurationTrait;
+use App\Traits\Configuration\ConfigurationTrait;
 use Illuminate\Support\Arr;
 
 class IpMiddleware

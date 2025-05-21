@@ -401,28 +401,71 @@ $(document).ready(function() {
         });
     }
 
-    function sendWhatsApp( data ){
-        var url = '{{route('send.whatsapp')}}';
-        $.ajax({
-            url: url,
-            type: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data: data ,
-            success: function (response) {
-                if (response.success) {
-                    alert('WhatsApp sent successfully!');
-                    location.reload(); // Refresh the page to reflect changes
-                } else {
-                    alert('Error sending WhatsApp.');
+    function sendWhatsApp( data )
+    {
+        const now = new Date();
+        const hour = now.getHours(); // returns 0–23
+
+        @php
+            $hourStart              = Arr::get($configurations, 'laundry_order_whatsapp_sending_start_time'); //id of array
+            $hourEnd                = Arr::get($configurations, 'laundry_order_whatsapp_sending_end_time'); //id of array
+
+            $hourStartTimeFormat    = config('constants.hours.'.$hourStart); //10:00 AM.
+            $hourEndTimeFormat      = config('constants.hours.'.$hourEnd); //10:00 PM.
+
+        @endphp
+
+        var hourStart  = "{{$hourStart}}";
+        var hourEnd  = "{{$hourEnd}}";
+
+        if (hour >= hourStart && hour < hourEnd) 
+        {
+            var url = '{{route('send.whatsapp')}}';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: data ,
+                success: function (response) {
+                    if (response.success) {
+                        alert('WhatsApp sent successfully!');
+                        location.reload(); // Refresh the page to reflect changes
+                    } else {
+                        alert('Error sending WhatsApp.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('An unexpected error occurred.');
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Error:', error);
-                alert('An unexpected error occurred.');
-            }
-        });
+            });    
+        } 
+        else 
+        {
+            //call hold method
+            var url = '{{route('mark.hold.whatsapp.order')}}';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: data ,
+                success: function (response) {
+                    if (response.success) {
+                        alert("WhatsApp messages can only be sent between {{$hourStartTimeFormat}} and {{$hourEndTimeFormat}}");
+                    } else {
+                        alert('Error holding WhatsApp.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('An unexpected error occurred.');
+                }
+            });    
+        }
     }
 
     //sendWhatsApp

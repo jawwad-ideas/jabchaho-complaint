@@ -13,7 +13,7 @@ use App\Helpers\Helper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
-use App\Http\Traits\Configuration\ConfigurationTrait;
+use App\Traits\Configuration\ConfigurationTrait;
 use App\Jobs\NotifyComplainant as NotifyComplainant;
 
 class OrderController extends Controller

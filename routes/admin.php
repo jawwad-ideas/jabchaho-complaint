@@ -149,6 +149,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             //Barcode Image Upload
             Route::get('/barcode-image-upload', 'OrderController@barcodeImageUpload')->name('barcode.image.upload');
             Route::get('/fetch-order-detail/{orderId}', 'OrderController@fetchOrderDetail')->name('fetch.order.detail'); 
+            //hold whatsapp for time duration in config and flaf set to 3
+            Route::post('/mark-hold-whatsapp-order', 'OrderController@markHoldWhatsAppOrder')->name('mark.hold.whatsapp.order'); 
+            
+            #hold orders of whatsapp
+            Route::get('/hold/{type}', 'OrderController@holdWhatsAppOrders')->name('hold.order.list');
+            #process.hold.orders
+            Route::post('/process-hold-whatsapp-orders', 'OrderController@processHoldWhatsAppOrders')->name('process.hold.whatsapp.orders');
+
         });
 
         Route::post('/upload-order-image', 'OrderController@uploadOrderImage')->name('upload.order.image');
@@ -181,8 +189,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             #Route::get('/{dryer}/edit', 'DryerController@edit')->name('sunny.dryer.edit');
             #Route::patch('/{dryer}/update', 'DryerController@update')->name('sunny.dryer.update');
             Route::get('/{status?}', 'DryerController@index')->name('sunny.dryer');
-
-       
         });
         
         Route::group(['prefix' => 'pricing'], function() {
@@ -195,7 +201,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
 
 
     Route::post('/send-whatsapp', 'OrderController@sendWhatsApp')->name('send.whatsapp');
-   
+ 
 
 });
 

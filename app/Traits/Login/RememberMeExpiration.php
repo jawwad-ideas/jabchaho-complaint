@@ -1,6 +1,6 @@
 <?php
 
-namespace App\HTTP\Traits\Login;
+namespace App\Traits\Login;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;

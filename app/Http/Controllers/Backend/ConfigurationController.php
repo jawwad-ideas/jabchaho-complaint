@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Traits\Configuration\ConfigurationTrait;
+use App\Traits\Configuration\ConfigurationTrait;
 use App\Models\Configuration; 
 use App\Models\ComplaintStatus;
 
@@ -22,6 +22,7 @@ class ConfigurationController extends Controller
         $data['complaintStatuses']              = $objectComplaintStatus->getComplaintStatuses();//
         $data['complaintStatusNotifyType']      = config('constants.complaint_status_notify_type');
         $data['booleanOptions']                 = config('constants.boolean_options'); 
+        $data['hours']                         = config('constants.hours'); 
 
         return view('backend.configurations.form')->with($data);
     }

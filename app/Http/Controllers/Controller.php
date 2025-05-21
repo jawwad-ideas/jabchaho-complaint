@@ -7,10 +7,11 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Storage;
 use App\Models\ComplaintDocument;
+use App\Traits\QueueWorker\QueueWorkerTrait;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, ValidatesRequests;
+    use AuthorizesRequests, ValidatesRequests,QueueWorkerTrait;
 
     #excetion response
     public function getCustomExceptionMessage($exception='')
@@ -58,24 +59,6 @@ class Controller extends BaseController
             
         }	
     }
-
-
-    //Function for queue worker start and termination
-    protected function queueWorker()
-    { 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') 
-        {
-            $artisanPath = str_replace('\\', '/', realpath(base_path('artisan')));
-            $command = "start /B php ".$artisanPath." queue:work --stop-when-empty";
-            pclose(popen($command, "r"));
-        } 
-        else 
-        {
-            exec('php ' . base_path('artisan') . ' queue:work --stop-when-empty --daemon --timeout=60 > /dev/null 2>&1 &');
-        }
-        
-    }
-
 
     public function uploadImages($request=null,$complaintId=0)
     {

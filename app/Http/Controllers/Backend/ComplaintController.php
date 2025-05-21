@@ -26,7 +26,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Jobs\NotifyComplainant as NotifyComplainant;
 use App\Jobs\AssignedComplaint as AssignedComplaint;
 use App\Jobs\ComplaintStatusChanged as ComplaintStatusChanged; 
-use App\Http\Traits\Configuration\ConfigurationTrait;
+use App\Traits\Configuration\ConfigurationTrait;
 
 
 class ComplaintController extends Controller

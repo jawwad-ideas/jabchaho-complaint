@@ -8,7 +8,7 @@ use App\Models\Order;
 use App\Models\OrderHistory;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Arr;
-use App\Http\Traits\Configuration\ConfigurationTrait;
+use App\Traits\Configuration\ConfigurationTrait as ConfigurationTrait;
 
 class RemoveLaundryData extends Command
 {

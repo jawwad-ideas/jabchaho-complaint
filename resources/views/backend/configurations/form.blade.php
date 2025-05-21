@@ -255,6 +255,48 @@
                                 value="{{Arr::get($configurations, 'laundry_order_whatsapp_api_token')}}">
                         </div>
 
+                        <div class="mb-3">
+                            <label for="inputName">WhatsApp Sending Start Time":</label>
+                            <select id="laundry_order_whatsapp_sending_start_time" class="form-control" name="laundry_order_whatsapp_sending_start_time">
+                                <option value="">--Select--</option>
+                                @if(!empty($hours) )
+                                @foreach($hours as $key =>$value)
+                                @if(old('_token') && old('laundry_order_whatsapp_sending_start_time') === $key)
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @elseif( old('_token') === null && Arr::get($configurations,
+                                'laundry_order_whatsapp_sending_start_time')==$key && array_key_exists(Arr::get($configurations,
+                                'laundry_order_whatsapp_sending_start_time'), config('constants.hours')) )
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @else
+                                <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                @endif
+                                @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+
+                             <div class="mb-3">
+                            <label for="inputName">WhatsApp Sending End Time":</label>
+                            <select id="laundry_order_whatsapp_sending_end_time" class="form-control" name="laundry_order_whatsapp_sending_end_time">
+                            <option value="">--Select--</option>    
+                            @if(!empty($hours) )
+                                @foreach($hours as $key =>$value)
+                                @if(old('_token') && old('laundry_order_whatsapp_sending_end_time') === $key)
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @elseif( old('_token') === null && Arr::get($configurations,
+                                'laundry_order_whatsapp_sending_end_time')==$key && array_key_exists(Arr::get($configurations,
+                                'laundry_order_whatsapp_sending_end_time'), config('constants.hours')) )
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @else
+                                <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                @endif
+                                @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+
                         <button type="submit"
                             class="btn bg-theme-yellow text-dark d-inline-flex align-items-center gap-3">Save
                             Changes</button>

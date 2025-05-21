@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Traits\Configuration;
+namespace App\Traits\Configuration;
 
 use App\Models\Configuration; 
 use Illuminate\Support\Arr;
