@@ -210,31 +210,29 @@
                                         </ul>
                                     </div>
 
-
-                                      <div class="collapse mt-3 ms-5" id="orders" style="">
-                                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                            @if(Auth::user()->can('hold.order.list'))
+                                    @if(Auth::user()->can('hold.order.list'))
+                                        <div class="collapse mt-3 ms-5" id="orders" style="">
+                                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                                 <li class="py-2 "><a href="{{route('hold.order.list', ['type' => 'before_whatsapp']) }}"
-                                                                     class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                                    class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
                                                         <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
-                                                         Before Wash whatsApp Hold </a>
+                                                        Before Wash whatsApp Hold </a>
                                                 </li>
-                                            @endif
-                                        </ul>
-                                    </div>
+                                            </ul>
+                                        </div>
+                                    @endif
 
-
+                                     @if(Auth::user()->can('hold.order.list'))
                                     <div class="collapse mt-3 ms-5" id="orders" style="">
                                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                            @if(Auth::user()->can('hold.order.list'))
-                                                <li class="py-2 "><a href="{{ route('hold.order.list', ['type' => 'after_whatsapp']) }}"
-                                                                     class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
-                                                        <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
-                                                         After Wash whatsApp Hold </a>
-                                                </li>
-                                            @endif
+                                            <li class="py-2 "><a href="{{ route('hold.order.list', ['type' => 'after_whatsapp']) }}"
+                                                                    class=" text-start text-decoration-none d-flex gap-3 align-items-center text-dark">
+                                                    <i class="fa fa-solid fa-list text-theme-yellow-light"></i>
+                                                        After Wash whatsApp Hold </a>
+                                            </li>
                                         </ul>
                                     </div>
+                                     @endif
 
 
                                     <div class="collapse mt-3 ms-5" id="orders" style="">
