@@ -175,7 +175,7 @@ class OrderController extends Controller
 
 
         if (!empty($telephone)) {
-            $orders->where('orders.telephone', '=',  '%' . $telephone . '%');
+            $orders->where('orders.telephone', '=',  $telephone );
         }
 
         if (!empty($status)) {
@@ -1173,9 +1173,15 @@ class OrderController extends Controller
             $data = array();
             
             $type             = $request->segment(3);
-            
+
             if ($type && array_key_exists($type, config('constants.order_type')))
             {
+                $order_number       = $request->input('order_number');
+                $customer_email     = $request->input('customer_email');
+                $customer_name      = $request->input('customer_name');
+                $telephone          = $request->input('telephone');
+                $location_type      = $request->input('location_type');
+                
                 //configuration filters
                 $filters            = ['laundry_order_whatsapp_sending_start_time','laundry_order_whatsapp_sending_end_time'];
                 
@@ -1184,14 +1190,53 @@ class OrderController extends Controller
 
 
                 $orders = Order::where($type, 3)
-                    ->orderBy('id', 'desc')
-                    ->get();
+                    ->orderBy('id', 'desc');
+                
+                if (!empty($order_number)) 
+                {
+                    $orders->where('orders.order_id', '=',  $order_number);
+                }
+
+                if (!empty($customer_email)) 
+                {
+                    $orders->where('orders.customer_email', 'like',  '%' . $customer_email . '%');
+                }
+
+                if (!empty($customer_name)) 
+                {
+                    $orders->where('orders.customer_name', 'like',  '%' . $customer_name . '%');
+                }
+
+                if (!empty($telephone)) 
+                {
+                    $orders->where('orders.telephone', '=',  $telephone );
+                }
+
+                if (!empty($location_type)) {
+
+                    if ($location_type == strtolower(config('constants.laundry_location_type.store'))) {
+                        $orders->whereNotNull('orders.location_type');
+                    } else {
+                        $orders->whereNull('orders.location_type');
+                    }
+                }
+                
+                $orders =$orders->get();
 
                 $data['orders'] = $orders;
                 $data['type']   = $type;
                 $data['configurations'] = $configurations;
 
-                return view('backend.orders.hold')->with($data);
+
+                $filterData = [
+                    'order_number'      => $order_number,
+                    'customer_email'    => $customer_email,
+                    'customer_name'     => $customer_name,
+                    'telephone'         => $telephone,
+                    'location_type'     => $location_type
+                ];
+
+                return view('backend.orders.hold')->with($data)->with($filterData);;
             }
             else{
                 abort(404);

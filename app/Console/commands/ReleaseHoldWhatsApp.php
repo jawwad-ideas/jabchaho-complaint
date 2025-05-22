@@ -9,10 +9,11 @@ use App\Jobs\SendWhatsAppJob as SendWhatsAppJob;
 use App\Models\OrderHistory;
 use App\Traits\QueueWorker\QueueWorkerTrait;
 use App\Traits\Orders\WhatsApp\Hold\ProcessHoldOrdersTrait;
+use App\Traits\Configuration\ConfigurationTrait as ConfigurationTrait;
 
 class ReleaseHoldWhatsApp extends Command
 {
-    use QueueWorkerTrait,ProcessHoldOrdersTrait;
+    use QueueWorkerTrait,ProcessHoldOrdersTrait,ConfigurationTrait;
     /**
      * The name and signature of the console command.
      *
@@ -36,13 +37,13 @@ class ReleaseHoldWhatsApp extends Command
         try
         {
             //configuration filters
-            $filters            = ['laundry_order_whatsapp_cron_enable'];
+            $filters            = ['laundry_order_release_hold_whatsapp_cron_enable'];
             
             //get configurations
             $configurations     = $this->getConfigurations($filters);
         
             //Check cron is enabled or not
-            if(!empty($configurations['laundry_order_whatsapp_cron_enable']))
+            if(!empty($configurations['laundry_order_release_hold_whatsapp_cron_enable']))
             {  
             
                 $data = "This task is executed via the ReleaseHoldWhatsApp cron command.";

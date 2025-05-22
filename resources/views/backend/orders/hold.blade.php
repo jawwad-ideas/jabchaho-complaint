@@ -10,7 +10,12 @@
         <small class="text-dark">Manage your WhatsApp Hold Orders here.</small>
     </div>
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
-        
+        <div class="btn-group" role="group">
+            <small id="showFilterBox" type="button"
+                    class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2"><i
+                    class="fa fa-solid fa-filter"></i> <span>Filter</span>
+            </small>
+        </div>
     </div>
     
 </div>
@@ -20,8 +25,70 @@
         <div class="bg-light p-2 rounded">
             <div id="modalDiv"></div>
 
-            <div class="" id="filterBox" >
-               
+            <div class="" id="filterBox"  
+            @if (request()->has('order_number')  )
+                     style="display:block;"
+                 @else
+                     style="display:none;"
+                @endif >
+                <form class="form-inline" method="GET" action="{{ route('hold.order.list', ['type' => $type]) }}">
+                    <div class="row mb-3">
+                        <div class="col-lg-12 d-flex flex-wrap">
+                            <div class="col-sm-3 px-2 mt-2">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="order_number"
+                                       value="{{ $order_number ?? '' }}" placeholder="Order Number">
+                            </div>
+
+                            <div class="col-sm-3 px-2 mt-2">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="customer_name"
+                                       value="{{ $customer_name ?? '' }}" placeholder="Customer Name">
+                            </div>
+
+                            <div class="col-sm-3 px-2 mt-2">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="customer_email"
+                                       value="{{ $customer_email ?? '' }}" placeholder="Customer Email">
+                            </div>
+
+                            <div class="col-sm-3 px-2 mt-2">
+                                <input type="text" class="form-control p-2" autocomplete="off" name="telephone"
+                                       value="{{ $telephone ?? '' }}" placeholder="Telephone">
+                            </div>
+
+                            <div class="col-sm-3 px-2 mt-2">
+                                <select class="form-select p-2" id="location_type" name="location_type">
+                                    <option value=''>Location</option>
+                                    @if(!empty(config('constants.laundry_location_type')) )
+                                        @foreach(config('constants.laundry_location_type') as $key => $option )
+                                            @if( $key == $location_type )
+                                                <option value="{{$key}}" selected>
+                                                    {{$option}}</option>
+                                            @else
+                                                <option value="{{$key}}">
+                                                    {{$option}}</option>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-lg-12 text-end mt-4">
+                            <button type="submit"
+                                    class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
+                                    id="consult">
+                                <span>Search</span>
+                                <i alt="Search" class="fa fa-search"></i>
+                            </button>
+                            <a href="{{ route('hold.order.list', ['type' => $type]) }}"
+                               class="btn bg-theme-dark-300 text-light p-2 d-inline-flex align-items-center gap-1 text-decoration-none">
+                                <span>Clear</span>
+                                <i class="fa fa-solid fa-arrows-rotate"></i></a>
+                        </div>
+
+                    </div>
+                </form>
             </div>
 
             <div class="table-scroll-hr">
@@ -64,10 +131,13 @@
 
     <script>
 
-     
+    $(document).ready(function () {
+        $("#showFilterBox").click(function() {
+            $("#filterBox").toggle();
+        });
+    });
 
-
-         // Select all checkboxes
+    // Select all checkboxes
     $('#select-all').on('click', function () {
         $('.order-checkbox').prop('checked', this.checked);
     });
