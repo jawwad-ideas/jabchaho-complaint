@@ -225,8 +225,8 @@
                         <div class="mb-3">
                             <label for="inputName">WhatsApp Api Enable:</label>
                             <select id="laundry_order_whatsapp_api_enable" class="form-control" name="laundry_order_whatsapp_api_enable">
-                                @if(!empty($enableDisableSmsApi) )
-                                @foreach($enableDisableSmsApi as $key =>$value)
+                                @if(!empty($booleanOptions) )
+                                @foreach($booleanOptions as $key =>$value)
                                 @if(old('_token') && old('laundry_order_whatsapp_api_enable') === $key)
                                 <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
                                 @elseif( old('_token') === null && Arr::get($configurations,
@@ -256,6 +256,23 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="inputName">Release Hold Whatsapp Cron Enable:</label>
+                            <select id="laundry_order_release_hold_whatsapp_cron_enable" class="form-control" name="laundry_order_release_hold_whatsapp_cron_enable">
+                                @if(!empty($booleanOptions) )
+                                @foreach($booleanOptions as $key =>$value)
+                                @if(old('_token') && old('laundry_order_release_hold_whatsapp_cron_enable') === $key)
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @elseif( old('_token') === null && Arr::get($configurations,'laundry_order_release_hold_whatsapp_cron_enable')==$key && array_key_exists(Arr::get($configurations,'laundry_order_release_hold_whatsapp_cron_enable'), config('constants.boolean_options')) )
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @else
+                                <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                @endif
+                                @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="inputName">WhatsApp Sending Start Time":</label>
                             <select id="laundry_order_whatsapp_sending_start_time" class="form-control" name="laundry_order_whatsapp_sending_start_time">
                                 <option value="">--Select--</option>
@@ -275,8 +292,7 @@
                             </select>
                         </div>
 
-
-                             <div class="mb-3">
+                        <div class="mb-3">
                             <label for="inputName">WhatsApp Sending End Time":</label>
                             <select id="laundry_order_whatsapp_sending_end_time" class="form-control" name="laundry_order_whatsapp_sending_end_time">
                             <option value="">--Select--</option>    

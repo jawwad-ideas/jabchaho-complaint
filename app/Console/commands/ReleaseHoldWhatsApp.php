@@ -33,27 +33,51 @@ class ReleaseHoldWhatsApp extends Command
      */
     public function handle()
     {
-        $data = "This task is executed via the ReleaseHoldWhatsApp cron command.";
-        // Fetch orders with before_whatsapp = 3
-        $beforeOrders = Order::where('before_whatsapp', 3)->get();
-
-        if($beforeOrders->isNotEmpty())
+        try
         {
-            foreach ($beforeOrders as $order) 
+            //configuration filters
+            $filters            = ['laundry_order_whatsapp_cron_enable'];
+            
+            //get configurations
+            $configurations     = $this->getConfigurations($filters);
+        
+            //Check cron is enabled or not
+            if(!empty($configurations['laundry_order_whatsapp_cron_enable']))
+            {  
+            
+                $data = "This task is executed via the ReleaseHoldWhatsApp cron command.";
+                // Fetch orders with before_whatsapp = 3
+                $beforeOrders = Order::where('before_whatsapp', 3)->get();
+
+                if($beforeOrders->isNotEmpty())
+                {
+                    foreach ($beforeOrders as $order) 
+                    {
+                        $this->processAndReleaseHoldOrders($order, 'before_whatsapp',$data);
+                    }
+                }
+                
+
+                // Fetch orders with after_whatsapp = 3
+                $afterOrders = Order::where('after_whatsapp', 3)->get();
+                
+                if($afterOrders->isNotEmpty())
+                {
+                    foreach ($afterOrders as $order) {
+                        $this->processAndReleaseHoldOrders($order, 'after_whatsapp',$data);
+                    }
+                }
+            }
+            else
             {
-                $this->processAndReleaseHoldOrders($order, 'before_whatsapp',$data);
+                \Log::error('Disable ReleaseHoldWhatsApp Cron');
+                return false;
             }
         }
-        
-
-        // Fetch orders with after_whatsapp = 3
-        $afterOrders = Order::where('after_whatsapp', 3)->get();
-        
-        if($afterOrders->isNotEmpty())
+        catch(\Exception $e) 
         {
-            foreach ($afterOrders as $order) {
-                $this->processAndReleaseHoldOrders($order, 'after_whatsapp',$data);
-            }
+            \Log::error("ReleaseHoldWhatsApp -> handle =>".$e->getMessage());
+            return false;
         }
     }
 
