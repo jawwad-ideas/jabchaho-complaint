@@ -455,7 +455,7 @@ $(document).ready(function() {
                 data: data ,
                 success: function (response) {
                     if (response.success) {
-                        alert("WhatsApp messages can only be sent between {{$hourStartTimeFormat}} and {{$hourEndTimeFormat}}");
+                        alert("WhatsApp messages can only be sent between {{$hourStartTimeFormat}} and {{$hourEndTimeFormat}}. Messages outside this time will be queued.");
                     } else {
                         alert('Error holding WhatsApp.');
                     }
