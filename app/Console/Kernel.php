@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('sync:laundry-orders')->withoutOverlapping()->everyFifteenMinutes();
         $schedule->command('remove:laundry-orders')->withoutOverlapping()->dailyAt('00:00'); // Runs at 12:00 AM;
-        $schedule->command('release:hold-whatsapps')->withoutOverlapping()->dailyAt('10:00'); 
+        $schedule->command('release:hold-whatsapp')->withoutOverlapping()->dailyAt('10:00'); 
     }
 
     /**
