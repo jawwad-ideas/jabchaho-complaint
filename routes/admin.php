@@ -156,8 +156,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::get('/hold/{type}', 'OrderController@holdWhatsAppOrders')->name('hold.order.list');
             #process.hold.orders
             Route::post('/process-hold-whatsapp-orders', 'OrderController@processHoldWhatsAppOrders')->name('process.hold.whatsapp.orders');
-
+            Route::post('/send-whatsapp', 'OrderController@sendWhatsApp')->name('send.whatsapp');
         });
+
+        
 
         Route::post('/upload-order-image', 'OrderController@uploadOrderImage')->name('upload.order.image');
         Route::post('/upload-order-image-whithoutbase64', 'OrderController@uploadOrderImageWithoutBase64')->name('upload.order.image.whithoutbase64');
@@ -196,12 +198,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::get('/sync', 'PricingController@syncPricing')->name('pricing.sync');
         });
     });
-
-    
-
-
-    Route::post('/send-whatsapp', 'OrderController@sendWhatsApp')->name('send.whatsapp');
- 
 
 });
 

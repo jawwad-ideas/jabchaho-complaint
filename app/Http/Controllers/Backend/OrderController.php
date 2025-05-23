@@ -1040,47 +1040,8 @@ class OrderController extends Controller
             $order = Order::where(['id' => $orderId])->first();
 
             $data             = null;
-            $orderUpdateArray = array();
+            $this->processAndReleaseHoldOrders($order, $whatsAppType ,$data);
 
-            if ($whatsAppType == "before_whatsapp")
-            {
-                $orderUpdateArray["before_whatsapp"] = 2;
-            } else {
-                $orderUpdateArray["after_whatsapp"] = 2;
-            }
-
-            $orderUpdateArray["updated_at"] = now();
-   
-            //Order Update
-            $order->update(
-                $orderUpdateArray
-            );
-
-            try {
-                $adminUser      = $request->user()->id;
-                $historyData = [
-                    'order_id'      => $orderId,
-                    'item_id'       => null,
-                    'item_image_id' => null,
-                    'action'        => $whatsAppType,
-                    'admin_user'    => $adminUser,
-                    'data'          => $data
-                ];
-
-                $this->addHistory($historyData);
-            } catch (\Exception $exception) {
-                die($exception->getMessage());
-            }
-
-
-
-            $params['orderId']              = $orderId;  
-            $params['orderNumber']          = $orderNumber;
-            $params['whatsAppType']         = $whatsAppType;
-            $params['order']                = $order;
-
-            //SendWhatsApp Queue Called.
-            dispatch(new SendWhatsAppJob($params));
             $this->queueWorker();
 
             return response()->json(['success' => true]);
