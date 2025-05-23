@@ -23,6 +23,8 @@ class SendWhatsAppJob implements ShouldQueue
      */
     protected $orderId;
     protected $params;
+    public $tries = 5;
+    public $backoff = 60;
     public function __construct($params)
     {
         $this->params = $params;

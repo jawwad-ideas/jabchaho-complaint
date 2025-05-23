@@ -68,6 +68,8 @@ class ReleaseHoldWhatsApp extends Command
                         $this->processAndReleaseHoldOrders($order, 'after_whatsapp',$data);
                     }
                 }
+                
+                $this->queueWorker();
             }
             else
             {

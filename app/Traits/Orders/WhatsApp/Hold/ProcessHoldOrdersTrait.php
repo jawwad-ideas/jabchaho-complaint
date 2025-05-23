@@ -45,8 +45,7 @@ trait ProcessHoldOrdersTrait
         }
 
         dispatch(new SendWhatsAppJob($params));
-        $this->queueWorker();
-
+        
         return true;
     }
 }

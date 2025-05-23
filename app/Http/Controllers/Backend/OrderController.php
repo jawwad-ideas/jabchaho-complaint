@@ -1268,6 +1268,8 @@ class OrderController extends Controller
                     {
                         $this->processAndReleaseHoldOrders($order, $whatsAppType ,$data);
                     } 
+
+                    $this->queueWorker();
                 }
 
                 return response()->json(['success' => true,'message' =>'Orders released successfully.']);
