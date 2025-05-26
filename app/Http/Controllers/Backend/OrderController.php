@@ -990,6 +990,12 @@ class OrderController extends Controller
             $orderItem = array();
             $barcode            = $request->input('barcode');
 
+            //configuration filters
+            $filters            = ['laundry_order_whatsapp_sending_start_time','laundry_order_whatsapp_sending_end_time'];
+            
+            //get configurations
+            $configurations     = $this->getConfigurations($filters);
+
             if(!empty($barcode))
             {
                 $orderItem = OrderItem::with(['images' => function ($query) {
@@ -999,6 +1005,7 @@ class OrderController extends Controller
 
             $data['barcode']    = $barcode;  
             $data['items']       = $orderItem;
+            $data['configurations'] = $configurations;
             
             return view('backend.orders.barcodeImageUpload')->with($data);
 
