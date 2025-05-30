@@ -77,7 +77,7 @@
 
 
             {{-- WhatsApp Actions Dropdown --}}
-            @if ($sendBeforeEmail || (Auth::guard('web')->user()->email == 'admin@jabchaho.com' && $sendFinalEmail))
+            @if ($sendBeforeEmail ||  $sendFinalEmail)
             <div class="mb-3 complete-button-div dropdown">
                 <button class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2 dropdown-toggle"
                     type="button" id="whatsappDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -94,7 +94,7 @@
                         </a>
                     </li>
                     @endif
-                    @if (Auth::guard('web')->user()->email == 'admin@jabchaho.com' && $sendFinalEmail)
+                    @if ($sendFinalEmail)
                     <li>
                         <a class="dropdown-item sendWhatsApp" href="#" id="after_whatsapp"
                             data-order-id="{{ $order->id }}"
