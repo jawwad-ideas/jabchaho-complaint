@@ -104,7 +104,12 @@
                     <div class="d-flex align-items-center gap-3">
                         <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
                     </div>
-
+<!-- open camera-->
+<button class="btn btn-primary" id="startWebcamBtn">Open Camera</button>
+<video id="webcamVideo" autoplay playsinline style="display:none;" class="mt-3"></video>
+<canvas id="webcamCanvas" width="400" height="300" style="display:none;"></canvas>
+<button class="btn btn-success mt-2" id="captureWebcamBtn" style="display:none;">Capture</button>
+<!-- open camera-->
                     <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
                         <input value="" type="file" class="form-control img-upload-input"
                             name="image[{{$item->id}}][pickup_images][]" placeholder="" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}" id="uploadImage-{{ $item->id }}">
@@ -347,5 +352,90 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return true; // Allow form submission
         }
+
+
+
+
+let stream;
+const video = document.getElementById('webcamVideo');
+const captureCanvas = document.getElementById('webcamCanvas');
+const captureBtn = document.getElementById('captureWebcamBtn');
+const itemType = 'delivery_images'; // Example
+let reader = new FileReader();
+
+$('#startWebcamBtn').on('click', function () {
+    if (itemType === 'delivery_images') {
+    $('#clearCanvasBtn').hide();
+    $('#imageModalLabel').text('After Wash Image');
+    } else {
+    $('#clearCanvasBtn').show();
+    $('#imageModalLabel').text('Mark The Affected Areas!');
+    }
+
+    navigator.mediaDevices.getUserMedia({ video: true }).then(function (mediaStream) {
+    stream = mediaStream;
+    video.srcObject = stream;
+    $('#webcamVideo, #captureWebcamBtn').show();
+    }).catch(function (err) {
+    alert('Unable to access webcam: ' + err.message);
+    });
+});
+
+
+$('#captureWebcamBtn').on('click', function () {
+  const ctx = captureCanvas.getContext('2d');
+  const w = captureCanvas.width;
+  const h = captureCanvas.height;
+
+  // Flip context to undo mirror effect
+  ctx.save();
+  ctx.translate(w, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(video, 0, 0, w, h);
+  ctx.restore();
+
+  captureCanvas.toBlob(function (blob) {
+    const file = new File([blob], 'captured-image.png', { type: 'image/png' });
+
+    // Stop webcam stream
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+
+    $('#webcamVideo, #captureWebcamBtn').hide();
+
+
+    if (file) {
+            activeItemId = 136;
+            activeItemType = itemType;
+            activeOrderNum = 101624;
+            activeOrderId = 11;
+            reader.value = null;
+            reader.readAsDataURL(file);
+
+        }
+
+
+  }, 'image/png');
+});
+
+$(document).ready(function () {
+reader.onload = function (e) {
+        imageData = e.target.result;
+        $('#imageModal').modal('show');
+    };
+});
+
 </script>
+  <style>
+    #webcamVideo {
+      width: 100%;
+      max-width: 400px;
+      transform: scaleX(-1); /* Flip video horizontally */
+    }
+    #modalImagePreview {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
 @endsection

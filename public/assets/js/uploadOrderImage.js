@@ -6,8 +6,11 @@ $(document).ready(function () {
     let activeOrderId = null;
     let canvas = null;
     let imageLoaded = false;
-    let imageData;
     let reader = new FileReader();
+
+    if (typeof imageData === 'undefined' || imageData === null) {
+    let imageData; // declare it
+    }
 
 
     $(document).on('change', '.img-upload-input-after', function (e) {
