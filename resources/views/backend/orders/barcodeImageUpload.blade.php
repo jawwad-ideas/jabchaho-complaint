@@ -104,16 +104,43 @@
                     <div class="d-flex align-items-center gap-3">
                         <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
                     </div>
+
+<!-- open desktop camera in modal-->
+   <!-- Trigger Button -->
+
+
+  <!-- Webcam Modal -->
+  <div class="modal fade webcamModal" id="webcamModal-{{ $item->id }}" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg webcam-modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Webcam Capture</h5>
+          
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <video class="webcamVideo" id="webcamVideo-{{ $item->id }}" autoplay playsinline></video>
+          <canvas id="webcamCanvas-{{ $item->id }}" width="2560" height="1440"  style="display: none;"></canvas>
+          <br>
+          <button class="btn btn-success mt-3 captureWebcamBtn" id="captureWebcamBtn-{{ $item->id }}" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}" style="display:none;">Capture</button>
+        </div>
+      </div>
+    </div>
+  </div>                   
 <!-- open desktop camera-->
-<button class="btn btn-primary startWebcamBtn" id="startWebcamBtn-{{ $item->id }}" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}">Open Camera</button>
+<!--<button class="btn btn-primary startWebcamBtn" id="startWebcamBtn-{{ $item->id }}" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}">Open Camera</button>
 <video id="webcamVideo-{{ $item->id }}" autoplay playsinline style="display:none;" class="webcamVideo mt-3"></video>
 <canvas id="webcamCanvas-{{ $item->id }}"  width="1280" height="720" style="display:none;"></canvas>
 <button class="btn btn-success mt-2 captureWebcamBtn" id="captureWebcamBtn-{{ $item->id }}" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}" style="display:none;">Capture</button>
-<!-- open desktop camera-->
+--><!-- open desktop camera-->
                     <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
+                        <span class="d-inline-flex gap-2">
                         <input value="" type="file" class="form-control img-upload-input"
                             name="image[{{$item->id}}][pickup_images][]" placeholder="" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}" id="uploadImage-{{ $item->id }}">
-
+                              <button class="btn btn-primary startWebcamBtn" id="startWebcamBtn-{{ $item->id }}" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}">
+    <i class="fa fa-camera" aria-hidden="true"></i>
+  </button>
+                        </span>
                         <div class="having-fault-radio-btns d-flex align-items-center gap-3 mt-3">
                             <small>Item having Issue:</small>
                             <div class="d-flex gap-2">
@@ -360,49 +387,79 @@ $(document).ready(function () {
 let stream;
 let reader = new FileReader();
 
-$('.startWebcamBtn').on('click', function () {
 
-    const itemId = $(this).data('item-id');
-    const itemType = $(this).data('item-type');
-    const orderNum = $(this).data('order-num');
-    const orderId = $(this).data('order-id');
-    
-    if (itemType === 'delivery_images') {
-        $('#clearCanvasBtn').hide();
-        $('#imageModalLabel').text('After Wash Image');
-    } else {
-        $('#clearCanvasBtn').show();
-        $('#imageModalLabel').text('Mark The Affected Areas!');
-    }
+    //$('.webcamModal').on('shown.bs.modal', function () 
+    $('.startWebcamBtn').on('click', function () {
 
-    var video = $('#webcamVideo-'+itemId)[0];
-    var captureCanvas = $('#webcamCanvas-'+itemId)[0];
+        const itemId = $(this).data('item-id');
+        const itemType = $(this).data('item-type');
+        const orderNum = $(this).data('order-num');
+        const orderId = $(this).data('order-id');
 
-    navigator.mediaDevices.getUserMedia({ video: true }).then(function (mediaStream) {
-    stream = mediaStream;
-    video.srcObject = stream;
 
-    $('#webcamVideo-'+itemId).show();
-    $('#captureWebcamBtn-'+itemId).show();
-    }).catch(function (err) {
-    alert('Unable to access webcam: ' + err.message);
+        $('#webcamModal-'+itemId).modal('show');
+
+        var video = $('#webcamVideo-'+itemId)[0];
+        var captureCanvas = $('#webcamCanvas-'+itemId)[0];
+        
+
+      navigator.mediaDevices.getUserMedia({ video: true }).then(function (mediaStream) {
+        stream = mediaStream;
+        video.srcObject = stream;
+       
+        $('#webcamVideo-'+itemId).show();
+        $('#captureWebcamBtn-'+itemId).show();
+      }).catch(function (err) {
+        alert('Unable to access webcam: ' + err.message);
+      });
     });
-});
+
+
+
+// $('.startWebcamBtn').on('click', function () {
+
+//     const itemId = $(this).data('item-id');
+//     const itemType = $(this).data('item-type');
+//     const orderNum = $(this).data('order-num');
+//     const orderId = $(this).data('order-id');
+    
+//     if (itemType === 'delivery_images') {
+//         $('#clearCanvasBtn').hide();
+//         $('#imageModalLabel').text('After Wash Image');
+//     } else {
+//         $('#clearCanvasBtn').show();
+//         $('#imageModalLabel').text('Mark The Affected Areas!');
+//     }
+
+//     var video = $('#webcamVideo-'+itemId)[0];
+//     var captureCanvas = $('#webcamCanvas-'+itemId)[0];
+
+//     navigator.mediaDevices.getUserMedia({ video: true }).then(function (mediaStream) {
+//     stream = mediaStream;
+//     video.srcObject = stream;
+
+//     $('#webcamVideo-'+itemId).show();
+//     $('#captureWebcamBtn-'+itemId).show();
+//     }).catch(function (err) {
+//     alert('Unable to access webcam: ' + err.message);
+//     });
+// });
 
 
 $('.captureWebcamBtn').on('click', function () {
-
   const itemId = $(this).data('item-id');
   const itemType = $(this).data('item-type');
   const orderNum = $(this).data('order-num');
   const orderId = $(this).data('order-id');
 
-  var video     = $('#webcamVideo-'+itemId)[0];
-  var captureCanvas = $('#webcamCanvas-'+itemId)[0];
-  
+  const video = $('#webcamVideo-' + itemId)[0];
+  const captureCanvas = $('#webcamCanvas-' + itemId)[0];
   const ctx = captureCanvas.getContext('2d');
+
   const w = captureCanvas.width;
   const h = captureCanvas.height;
+
+  console.log('Canvas size:', w, h);
 
   // Flip context to undo mirror effect
   ctx.save();
@@ -419,24 +476,21 @@ $('.captureWebcamBtn').on('click', function () {
       stream.getTracks().forEach(track => track.stop());
     }
 
-    $('#webcamVideo-'+itemId).hide();
-    $('#captureWebcamBtn-'+itemId).hide();
+    $('#webcamVideo-' + itemId).hide();
+    $('#captureWebcamBtn-' + itemId).hide();
+    $('#webcamModal-' + itemId).modal('hide');
 
     if (file) {
-
-            activeItemId = itemId;
-            activeItemType = itemType;
-            activeOrderNum = orderNum;
-            activeOrderId = orderId;
-
-            reader.value = null;
-            reader.readAsDataURL(file);
-
-        }
-
-
+      activeItemId = itemId;
+      activeItemType = itemType;
+      activeOrderNum = orderNum;
+      activeOrderId = orderId;
+      reader.value = null;
+      reader.readAsDataURL(file);
+    }
   }, 'image/png');
 });
+
 
 
 reader.onload = function (e) {
@@ -447,14 +501,27 @@ reader.onload = function (e) {
 
 </script>
   <style>
-    .webcamVideo {
+   
+
+.webcamVideo {
+  width: 100%;
+  max-width: 100%; /* Stretch fully within modal */
+  transform: scaleX(-1); /* Flip video horizontally */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.webcam-modal-dialog {
+  max-width: 60% !important;
+  width: 60% !important;
+}
+
+
+   
+
+    video {
       width: 100%;
-      max-width: 500px;
-      transform: scaleX(-1); /* Flip video horizontally */
-    }
-    #modalImagePreview {
-      max-width: 100%;
       height: auto;
     }
+   
   </style>
 @endsection
