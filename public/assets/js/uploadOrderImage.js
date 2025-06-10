@@ -1,15 +1,31 @@
 $(document).ready(function () {
 
-    let activeItemId = null;
-    let activeItemType = null;
-    let activeOrderNum = null;
-    let activeOrderId = null;
+    //let activeItemType = null;
+    //let activeOrderNum = null;
+    //let activeOrderId = null;
     let canvas = null;
     let imageLoaded = false;
     let reader = new FileReader();
 
     if (typeof imageData === 'undefined' || imageData === null) {
-    let imageData; // declare it
+       let imageData; // declare it
+    }
+
+    if (typeof activeItemId === 'undefined' || activeItemId === null) {
+       let activeItemId = null; // declare it
+    }
+
+
+    if (typeof activeItemType === 'undefined' || activeItemType === null) {
+       let activeItemType = null; // declare it
+    }
+
+    if (typeof activeOrderNum === 'undefined' || activeOrderNum === null) {
+       let activeOrderNum = null; // declare it
+    }
+
+    if (typeof activeOrderId === 'undefined' || activeOrderId === null) {
+       let activeOrderId = null; // declare it
     }
 
 
@@ -186,6 +202,7 @@ $(document).ready(function () {
 
 
     $('#saveImage').on('click', async function () {
+
         if (canvas && activeItemId) {
             $(".loader").addClass("show");
     

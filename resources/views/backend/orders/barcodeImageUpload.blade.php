@@ -104,12 +104,12 @@
                     <div class="d-flex align-items-center gap-3">
                         <label for="pickup_images" class="form-label fw-bold">Before Wash Images</label>
                     </div>
-<!-- open camera-->
-<button class="btn btn-primary" id="startWebcamBtn">Open Camera</button>
-<video id="webcamVideo" autoplay playsinline style="display:none;" class="mt-3"></video>
-<canvas id="webcamCanvas" width="400" height="300" style="display:none;"></canvas>
-<button class="btn btn-success mt-2" id="captureWebcamBtn" style="display:none;">Capture</button>
-<!-- open camera-->
+<!-- open desktop camera-->
+<button class="btn btn-primary startWebcamBtn" id="startWebcamBtn-{{ $item->id }}" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}">Open Camera</button>
+<video id="webcamVideo-{{ $item->id }}" autoplay playsinline style="display:none;" class="webcamVideo mt-3"></video>
+<canvas id="webcamCanvas-{{ $item->id }}"  width="1280" height="720" style="display:none;"></canvas>
+<button class="btn btn-success mt-2 captureWebcamBtn" id="captureWebcamBtn-{{ $item->id }}" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}" style="display:none;">Capture</button>
+<!-- open desktop camera-->
                     <div class="upload-img-input-sec" id="image-upload-container-pickup_images-{{ $item->id }}">
                         <input value="" type="file" class="form-control img-upload-input"
                             name="image[{{$item->id}}][pickup_images][]" placeholder="" data-order-num="{{$item->order->order_id}}" data-order-id="{{$item->order->id}}" data-item-type="pickup_images" data-item-id="{{ $item->id }}" id="uploadImage-{{ $item->id }}">
@@ -354,35 +354,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
+// start work on desktop camera
 
-
+$(document).ready(function () {
 let stream;
-const video = document.getElementById('webcamVideo');
-const captureCanvas = document.getElementById('webcamCanvas');
-const captureBtn = document.getElementById('captureWebcamBtn');
-const itemType = 'delivery_images'; // Example
 let reader = new FileReader();
 
-$('#startWebcamBtn').on('click', function () {
+$('.startWebcamBtn').on('click', function () {
+
+    const itemId = $(this).data('item-id');
+    const itemType = $(this).data('item-type');
+    const orderNum = $(this).data('order-num');
+    const orderId = $(this).data('order-id');
+    
     if (itemType === 'delivery_images') {
-    $('#clearCanvasBtn').hide();
-    $('#imageModalLabel').text('After Wash Image');
+        $('#clearCanvasBtn').hide();
+        $('#imageModalLabel').text('After Wash Image');
     } else {
-    $('#clearCanvasBtn').show();
-    $('#imageModalLabel').text('Mark The Affected Areas!');
+        $('#clearCanvasBtn').show();
+        $('#imageModalLabel').text('Mark The Affected Areas!');
     }
+
+    var video = $('#webcamVideo-'+itemId)[0];
+    var captureCanvas = $('#webcamCanvas-'+itemId)[0];
 
     navigator.mediaDevices.getUserMedia({ video: true }).then(function (mediaStream) {
     stream = mediaStream;
     video.srcObject = stream;
-    $('#webcamVideo, #captureWebcamBtn').show();
+
+    $('#webcamVideo-'+itemId).show();
+    $('#captureWebcamBtn-'+itemId).show();
     }).catch(function (err) {
     alert('Unable to access webcam: ' + err.message);
     });
 });
 
 
-$('#captureWebcamBtn').on('click', function () {
+$('.captureWebcamBtn').on('click', function () {
+
+  const itemId = $(this).data('item-id');
+  const itemType = $(this).data('item-type');
+  const orderNum = $(this).data('order-num');
+  const orderId = $(this).data('order-id');
+
+  var video     = $('#webcamVideo-'+itemId)[0];
+  var captureCanvas = $('#webcamCanvas-'+itemId)[0];
+  
   const ctx = captureCanvas.getContext('2d');
   const w = captureCanvas.width;
   const h = captureCanvas.height;
@@ -402,14 +419,16 @@ $('#captureWebcamBtn').on('click', function () {
       stream.getTracks().forEach(track => track.stop());
     }
 
-    $('#webcamVideo, #captureWebcamBtn').hide();
-
+    $('#webcamVideo-'+itemId).hide();
+    $('#captureWebcamBtn-'+itemId).hide();
 
     if (file) {
-            activeItemId = 136;
+
+            activeItemId = itemId;
             activeItemType = itemType;
-            activeOrderNum = 101624;
-            activeOrderId = 11;
+            activeOrderNum = orderNum;
+            activeOrderId = orderId;
+
             reader.value = null;
             reader.readAsDataURL(file);
 
@@ -419,7 +438,7 @@ $('#captureWebcamBtn').on('click', function () {
   }, 'image/png');
 });
 
-$(document).ready(function () {
+
 reader.onload = function (e) {
         imageData = e.target.result;
         $('#imageModal').modal('show');
@@ -428,9 +447,9 @@ reader.onload = function (e) {
 
 </script>
   <style>
-    #webcamVideo {
+    .webcamVideo {
       width: 100%;
-      max-width: 400px;
+      max-width: 500px;
       transform: scaleX(-1); /* Flip video horizontally */
     }
     #modalImagePreview {
