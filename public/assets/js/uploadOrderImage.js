@@ -334,8 +334,8 @@ $(document).ready(function () {
 
     // Flip context to undo mirror effect
     ctx.save();
-    ctx.translate(w, 0);
-    ctx.scale(-1, 1);
+    //ctx.translate(w, 0);
+    //ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, w, h);
     ctx.restore();
 
@@ -370,8 +370,8 @@ $(document).ready(function () {
 
         // Flip context to undo mirror effect
         ctx.save();
-        ctx.translate(w, 0);
-        ctx.scale(-1, 1);
+        // ctx.translate(w, 0);
+        // ctx.scale(-1, 1);
         ctx.drawImage(video, 0, 0, w, h);
         ctx.restore();
 

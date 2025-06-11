@@ -99,7 +99,7 @@
 .webcamVideo {
   width: 100%;
   max-width: 100%; /* Stretch fully within modal */
-  transform: scaleX(-1); /* Flip video horizontally */
+  /*transform: scaleX(-1);*/ /* Flip video horizontally */
   height: auto; /* Maintain aspect ratio */
 }
 
