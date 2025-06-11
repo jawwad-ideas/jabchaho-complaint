@@ -1,102 +1,30 @@
 $(document).ready(function () {
 
-    //let activeItemType = null;
-    //let activeOrderNum = null;
-    //let activeOrderId = null;
+    let activeItemId = null; 
+    let activeItemType = null;
+    let activeOrderNum = null;
+    let activeOrderId = null;
     let canvas = null;
     let imageLoaded = false;
     let reader = new FileReader();
-
-    if (typeof imageData === 'undefined' || imageData === null) {
-       let imageData; // declare it
-    }
-
-    if (typeof activeItemId === 'undefined' || activeItemId === null) {
-       let activeItemId = null; // declare it
-    }
-
-
-    if (typeof activeItemType === 'undefined' || activeItemType === null) {
-       let activeItemType = null; // declare it
-    }
-
-    if (typeof activeOrderNum === 'undefined' || activeOrderNum === null) {
-       let activeOrderNum = null; // declare it
-    }
-
-    if (typeof activeOrderId === 'undefined' || activeOrderId === null) {
-       let activeOrderId = null; // declare it
-    }
-
+    let imageData;
 
     $(document).on('change', '.img-upload-input-after', function (e) {
-        //alert("Debugging After Upload");
-        const itemId = $(this).data('item-id');
-        const itemType = $(this).data('item-type');
-        const orderNum = $(this).data('order-num');
-        const orderId = $(this).data('order-id');
-        const file = e.target.files[0];
-
-        if (!file) {
+   
+        if (!e.target.files[0]) {
             alert('Please select a file.');
             return;
         }
 
-        activeItemId = itemId;
-        activeItemType = itemType;
-        activeOrderNum = orderNum;
-        activeOrderId = orderId;
+        const data = {
+            itemId: $(this).data('item-id'),
+            itemType: $(this).data('item-type'),
+            orderNum: $(this).data('order-num'),
+            orderId: $(this).data('order-id'),
+            file: e.target.files[0]
+        };
 
-        let formData = new FormData();
-        formData.append('image', file);
-        formData.append('item_id', itemId);
-        formData.append('imageType', itemType);
-        formData.append('order_num', orderNum);
-        formData.append('order_id', orderId);
-        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-        $(".loader").addClass("show");
-
-        var url = '/upload-order-image-whithoutbase64';
-        $.ajax({
-            url: url,
-            method: 'POST',
-            data: formData,
-            processData: false, // Required for FormData
-            contentType: false,
-            success: function (response) {
-
-                if (response.success) {
-                    const imageHtml = `
-                            <div class="img-item">
-                                <a href="${response.image_url}" target="_blank">
-                                    <img class="img-thumbnail" src="${response.image_url}" alt="Edited Image">
-                                </a>
-                                <div class="item-img-action-btn">
-                                    <button class="btn btn-danger btn-sm delete-image ms-2" title="Delete" data-image-id="${response.item_image_id}" data-order-number="${activeOrderNum}">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                    $(`#items-images-sec-${activeItemType}-${activeItemId}`).append(imageHtml);
-
-
-                    $(`#uploadImage-${activeItemId}`).val('');
-                    $('.img-upload-input-after').val('');
-
-                    imageLoaded = false;
-
-                } else {
-                    alert('Failed to save image.');
-                }
-                $(".loader").removeClass("show");
-            },
-
-            error: function (xhr, status, error) {
-                alert('An error occurred while saving the image. Check the console for details.');
-                $(".loader").removeClass("show");
-            }
-        });
+        afterWashImageUpload(data);        
     });
 
     $('.img-upload-input').on('change', function (e) {
@@ -249,6 +177,7 @@ $(document).ready(function () {
                         $('#imageModal').modal('hide');
                         imageLoaded = false;
                         $(".img-upload-input-after").attr("disabled", false);
+                        $(".startWebcamBtn").attr("disabled", false);
                         $('.barcode-img-upload').attr("disabled", false);
                         canvas.clear();
                     } else {
@@ -351,10 +280,236 @@ $(document).ready(function () {
         });
     }
     
-    
-    
-    
-    
-    
-    
+
+/////////////////////////////////////////////////// start work on desktop Webcam
+
+
+    $('.startWebcamBtn').on('click', function () {
+
+        $('#captureWebcamBtnAfterWash').hide();
+        $('#captureWebcamBtnBeforeWash').hide();
+        $('#webCamItemId').val($(this).data('item-id'));
+        $('#webCamItemType').val($(this).data('item-type'));
+        $('#webCamOrderNum').val($(this).data('order-num'));
+        $('#webCamOrderId').val($(this).data('order-id'));
+
+        if ($(this).data('item-type') == 'delivery_images') 
+        {
+            $('#captureWebcamBtnAfterWash').show();
+            $('#webCamModalLabel').text("After Wash Webcam Capture");
+        } 
+        else 
+        {
+            $('#captureWebcamBtnBeforeWash').show();
+            $('#webCamModalLabel').text("Before Wash Webcam Capture!");
+        }
+
+        $('#webcamModal').modal('show');
+
+        var video = $('#webcamVideo')[0];
+        var captureCanvas = $('#webcamCanvas')[0];
+        
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function (mediaStream) {
+            stream = mediaStream;
+            video.srcObject = stream;
+        
+            $('#webcamVideo').show();
+
+        }).catch(function (err) {
+            alert('Unable to access webcam: ' + err.message);
+        });
+    });
+
+
+    $('#captureWebcamBtnBeforeWash').on('click', function () {
+    const itemId      = $('#webCamItemId').val();
+    const itemType    =  $('#webCamItemType').val();
+    const orderNum    = $('#webCamOrderNum').val();
+    const orderId     =  $('#webCamOrderId').val();
+    const video = $('#webcamVideo')[0];
+    const captureCanvas = $('#webcamCanvas')[0];
+    const ctx = captureCanvas.getContext('2d');
+    const w = captureCanvas.width;
+    const h = captureCanvas.height;
+
+    // Flip context to undo mirror effect
+    ctx.save();
+    ctx.translate(w, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0, w, h);
+    ctx.restore();
+
+    captureCanvas.toBlob(function (blob) {
+        const file = new File([blob], 'captured-image.png', { type: 'image/png' });
+
+        // Stop webcam stream
+        if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        }
+
+        $('#webcamModal').modal('hide');
+
+        if (file) {
+        activeItemId = itemId;
+        activeItemType = itemType;
+        activeOrderNum = orderNum;
+        activeOrderId = orderId;
+        reader.value = null;
+        reader.readAsDataURL(file);
+        }
+    }, 'image/png');
+    });
+
+    $('#captureWebcamBtnAfterWash').on('click', function () 
+    {
+        const video = $('#webcamVideo')[0];
+        const captureCanvas = $('#webcamCanvas')[0];
+        const ctx = captureCanvas.getContext('2d');
+        const w = captureCanvas.width;
+        const h = captureCanvas.height;
+
+        // Flip context to undo mirror effect
+        ctx.save();
+        ctx.translate(w, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, w, h);
+        ctx.restore();
+
+        captureCanvas.toBlob(function (blob) {
+            const file = new File([blob], 'captured-image.png', { type: 'image/png' });
+            // Stop webcam stream
+            if (stream) 
+            {
+                stream.getTracks().forEach(track => track.stop());
+            }
+
+            $('#webcamModal').modal('hide');
+
+            const data = 
+            {
+                itemId:     $('#webCamItemId').val(),
+                itemType:   $('#webCamItemType').val(),
+                orderNum:   $('#webCamOrderNum').val(),
+                orderId:    $('#webCamOrderId').val(),
+                file:       file
+            };
+
+        afterWashImageUpload(data);    
+
+        }, 'image/png');    
+    });
+
 });
+
+
+
+function afterWashImageUpload(data) {
+    const file = data.file;
+
+    // Pass both file and data to resize function
+    resizeAndCompressImage(file, function(compressedFile, filename) {
+        // Pass full data to upload function
+        afterWashResizeAndCompressImageUpload(compressedFile,filename, data);
+    });
+}
+
+function afterWashResizeAndCompressImageUpload(file, filename, data)
+{
+    activeItemId = data.itemId;
+    activeItemType = data.itemType;
+    activeOrderNum = data.orderNum;
+    activeOrderId = data.orderId;
+
+    let formData = new FormData();
+    formData.append('image', file, filename);
+    formData.append('item_id', activeItemId);
+    formData.append('imageType', activeItemType);
+    formData.append('order_num', activeOrderNum);
+    formData.append('order_id', activeOrderId);
+    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+    $(".loader").addClass("show");
+
+    var url = '/upload-order-image-whithoutbase64';
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: formData,
+        processData: false, // Required for FormData
+        contentType: false,
+        success: function (response) {
+
+            if (response.success) {
+                const imageHtml = `
+                        <div class="img-item">
+                            <a href="${response.image_url}" target="_blank">
+                                <img class="img-thumbnail" src="${response.image_url}" alt="Edited Image">
+                            </a>
+                            <div class="item-img-action-btn">
+                                <button class="btn btn-danger btn-sm delete-image ms-2" title="Delete" data-image-id="${response.item_image_id}" data-order-number="${activeOrderNum}">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                $(`#items-images-sec-${activeItemType}-${activeItemId}`).append(imageHtml);
+
+
+                $(`#uploadImage-${activeItemId}`).val('');
+                $('.img-upload-input-after').val('');
+
+                imageLoaded = false;
+
+            } else {
+                alert('Failed to save image.');
+            }
+            $(".loader").removeClass("show");
+        },
+
+        error: function (xhr, status, error) {
+            alert('An error occurred while saving the image. Check the console for details.');
+            $(".loader").removeClass("show");
+        }
+    });
+}
+
+
+
+// Function to resize and compress image
+function resizeAndCompressImage(file, callback) {
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const SCALE_FACTOR = 0.5;
+
+            let width = img.width * SCALE_FACTOR;
+            let height = img.height * SCALE_FACTOR;
+
+            const MAX_WIDTH = 1800;
+            const MAX_HEIGHT = 1800;
+
+            if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+                const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+                width *= ratio;
+                height *= ratio;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(function(blob) {
+                const filename = `image_${Date.now()}.jpg`;
+                callback(blob, filename);
+            }, 'image/jpeg', 0.5);
+        };
+
+        img.src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+}

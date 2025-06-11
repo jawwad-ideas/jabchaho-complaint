@@ -92,8 +92,32 @@
         padding: 10px 0 15px !important;
     }
 }
- </style>
 
+
+/* Webcam css */
+   
+.webcamVideo {
+  width: 100%;
+  max-width: 100%; /* Stretch fully within modal */
+  transform: scaleX(-1); /* Flip video horizontally */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.webcam-modal-dialog {
+  max-width: 45% !important;
+  width: 45% !important;
+}
+
+video {
+    width: 100%;
+    height: auto;
+}
+   
+/* Webcam css */
+</style>
+
+<script src="{{asset('assets/js/uploadOrderImage.js')}}?v={{config('constants.js_version')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 <script>
     document.addEventListener('scroll', () => {
         const pageTitleSection = document.querySelector('.page-title-section');
@@ -118,38 +142,11 @@
         behavior: 'smooth',
         })
     }
-    // function addMoreImageUpload(itemId,fieldName) {
-    //     event.preventDefault();
-    //     const container = document.getElementById(`image-upload-container-${fieldName}-${itemId}`);
-
-    //     const wrapperDiv = document.createElement('div');
-    //     wrapperDiv.className = 'input-wrapper d-flex align-items-center mt-2 addMoreinputWrapper';
-
-    //     // Create a new input element
-    //     const newInput = document.createElement('input');
-    //     newInput.type = 'file';
-    //     newInput.className = 'form-control img-upload-input ';
-    //     newInput.name = `image[${itemId}][${fieldName}][]`;
-    //     newInput.multiple = true;
 
 
-    //     const removeButton = document.createElement('span');
-    //     removeButton.type = 'span';
-    //     removeButton.className = 'bg-danger p-2 text-sm text-white rounded-circle fa fa-trash 2 ms-1';
-    //     //removeButton.innerText = 'Remove';
-
-    //     // Add click event to remove button
-    //     removeButton.onclick = function () {
-    //         wrapperDiv.remove();
-    //     };
-
-    //     // Append input and button to the wrapper
-    //     wrapperDiv.appendChild(newInput);
-    //     wrapperDiv.appendChild(removeButton);
-
-    //     // Append the wrapper to the container
-    //     container.appendChild(wrapperDiv);
-    // }
+$('.btn[data-toggle="collapse"]').on('click', function () {
+    $(this).find('.toggle-icon').toggleClass('fa-chevron-down fa-chevron-up');
+  });
 
 $(document).ready(function() {
     $(document).on('click', '.issueFixed', function(event) {
@@ -574,18 +571,16 @@ $(document).ready(function() {
             }
         });
     });
+
+
+
+
+
+
 });
 
-$('.btn[data-toggle="collapse"]').on('click', function () {
-    $(this).find('.toggle-icon').toggleClass('fa-chevron-down fa-chevron-up');
-  });
-
-
+//end Webcam
 </script>
-
-<script src="{{asset('assets/js/uploadOrderImage.js')}}?v={{config('constants.js_version')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
-
 
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -646,3 +641,30 @@ $('.btn[data-toggle="collapse"]').on('click', function () {
         </div>
     </div>
     <!--item issue modal end-->
+
+
+    <!-- Webcam Modal -->
+    <div class="modal fade webcamModal" id="webcamModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg webcam-modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="webCamModalLabel"></h5>
+            
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+            <video class="webcamVideo" id="webcamVideo" autoplay playsinline></video>
+            <canvas id="webcamCanvas" width="2560" height="1440"  style="display: none;"></canvas>
+            <input type="hidden" id="webCamOrderNum" value="" />
+            <input type="hidden" id="webCamOrderId" value="" />
+            <input type="hidden" id="webCamItemType" value="" />
+            <input type="hidden" id="webCamItemId" value="" /> 
+            <br>
+            <button class="btn btn-success mt-3 captureWebcamBtnBeforeWash" id="captureWebcamBtnBeforeWash"  style="display:none;">Capture</button>
+            <button class="btn btn-success mt-3 captureWebcamBtnAfterWash" id="captureWebcamBtnAfterWash"  style="display:none;">Capture</button>
+            </div>
+        </div>
+        </div>
+    </div>  
+        
+    <!-- //Webcam Modal -->

@@ -362,16 +362,7 @@ class OrderController extends Controller
             endif;
         endforeach;
 
-        $disableAfterUploadInput = false;
-        $orders = Order::with(['orderItems' => function ($query) {
-            $query->whereDoesntHave('images', function ($imageQuery) {
-                $imageQuery->where('image_type', 'Before Wash')->where('status', 1);
-            });
-        }])->find($orderId);
-        $orderItemsWithoutBeforeImage = $orders->orderItems;
-        if ( !$orderItemsWithoutBeforeImage->isEmpty()) {
-            $disableAfterUploadInput = true;
-        }
+        $disableAfterUploadInput = $this->isDisableAfterUploadInput($orderId); // return false if all before wash uploaded
 
         return view('backend.orders.edit', [
             'order' => $order,
@@ -385,6 +376,26 @@ class OrderController extends Controller
             'afterwhatsppTitle' => ($order->after_whatsapp == 2) ? 'Resend Whatsapp After Wash' : 'Send Whatsapp After Wash',
             'configurations'    => $configurations    
         ]);
+    }
+
+    public function isDisableAfterUploadInput($orderId=0)
+    {
+        $disableAfterUploadInput = false;
+        if(!empty($orderId))
+        {
+            $orders = Order::with(['orderItems' => function ($query) {
+                $query->whereDoesntHave('images', function ($imageQuery) {
+                    $imageQuery->where('image_type', 'Before Wash')->where('status', 1);
+                });
+            }])->find($orderId);
+            
+            $orderItemsWithoutBeforeImage = $orders->orderItems;
+            if ( $orderItemsWithoutBeforeImage->isNotEmpty()) {
+                $disableAfterUploadInput = true;
+            }    
+        }
+        
+        return $disableAfterUploadInput;
     }
 
     public function delete(Request $request)
@@ -491,7 +502,7 @@ class OrderController extends Controller
                     'imagename'  => $newFileName,
                     'admin_user' => $adminUser,
                     'status'     => 1,
-                ];
+            ];
 
                 $ordersImagesModel = new OrderItemImage;
                 $imageItemId = $ordersImagesModel->createOrderItemImage($orderImages);
@@ -996,16 +1007,34 @@ class OrderController extends Controller
             //get configurations
             $configurations     = $this->getConfigurations($filters);
 
+            $orderId = 0;
             if(!empty($barcode))
             {
                 $orderItem = OrderItem::with(['images' => function ($query) {
                     $query->where('status', 1);
                 },'order','issues','machineBarcode.machineDetail','machineBarcode.machineDetail.machine','machineBarcode.machineDetail.machineImages'])->where('barcode', 'like', '%'.$barcode.'%')->take(10)->get();
+                
+                if(!empty($orderItem))
+                {
+                    if(!empty($orderItem[0]))
+                    {
+                        if(!empty($orderItem[0]->order))
+                        {
+                            if(!empty($orderItem[0]->order->id))
+                            {
+                                $orderId = $orderItem[0]->order->id;
+                            }
+                        }
+                    }
+                }
             }
+            
+            $disableAfterUploadInput = $this->isDisableAfterUploadInput($orderId); // return false if all before wash uploaded
 
             $data['barcode']    = $barcode;  
             $data['items']       = $orderItem;
             $data['configurations'] = $configurations;
+            $data['disableAfterUploadInput'] = $disableAfterUploadInput;
             
             return view('backend.orders.barcodeImageUpload')->with($data);
 
