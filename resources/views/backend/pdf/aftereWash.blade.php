@@ -17,122 +17,123 @@
 
 
         @if(!empty($orderItems))
-        
-        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin: 0; padding: 0;">
-            <tr valign="top">
-                <!-- Before Wash Column -->
-                <td width="48%" style="padding-right: 10px;">
-                    <h3 style="color: #444; margin-bottom: 10px;">Before Wash</h3>
-                    @foreach($orderItems as $orderItem)
-                    @if(!empty(Arr::get($orderItem, 'before_wash_count')))
-                        <hr/>
-                        <div style="">
-                        <strong>{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 20, '...') }}</strong> | <span style="font-size:.6em">{{ Arr::get($orderItem, 'barcode') }}</span>
-                        </div>
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin: 0; padding: 0;">
+                <tr>
+                    <th style="padding-top: 15px; padding-bottom: 0px; text-align:left"><h3 style="color: #444;">Before Wash</h3></th>
+                    <th style="padding-top: 15px; padding-bottom: 0px; text-align:left"><h3 style="color: #444;">After Wash</h3></th>
+                </tr>
+                @foreach($orderItems as $orderItem)
+                
+                    <tr>
+                        <!--Before wash Start-->
+                        <td style="border-top: 1px dashed #A6A6A6; padding-top: 10px; padding-bottom: 10px; vertical-align: top;">
+                            @if(!empty(Arr::get($orderItem, 'before_wash_count')))
+                                <div style="">
+                                    <strong>{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 20, '...') }}</strong> | <span style="font-size:.6em">{{ Arr::get($orderItem, 'barcode') }}</span>
+                                </div>
 
-                        @if(!empty($orderItem->issues))
-                        <div style="margin: 5px 0px;">
-                            <strong style="display: inline-flex;"><small>Item Issue:</strong></small>
-                            @foreach($orderItem->issues as $row)
-                            <span style="background-color: #f7dd0282; padding: .35em .65em; font-size: .6em; font-weight: bold; color: #000; border-radius: 20px;text-wrap-mode: nowrap;flex-flow: nowrap;display: inline-flex; margin-top: 5px">
-                                {{ config('constants.issues.'.Arr::get($row, 'issue')) }}
-                            </span>
-                            @endforeach
-                        </div>
-                        @endif
+                                @if(!empty($orderItem->issues) && count($orderItem->issues) > 0)
+                                <div style="margin: 5px 0px;">
+                                    <strong style="display: inline-flex;"><small>Item Issue:</strong></small>
+                                    @foreach($orderItem->issues as $row)
+                                    <span style="background-color: #f7dd0282; padding: .35em .65em; font-size: .6em; font-weight: bold; color: #000; border-radius: 20px;text-wrap-mode: nowrap;flex-flow: nowrap;display: inline-flex; margin-top: 5px">
+                                        {{ config('constants.issues.'.Arr::get($row, 'issue')) }}
+                                    </span>
+                                    @endforeach
+                                </div>
+                                @endif
 
-                        <div style="margin-top: 5px;">
-                        @php $beforeCounter = 0; @endphp
-                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+                                <div style="margin-top: 5px;">
+                                @php $beforeCounter = 0; @endphp
+                                @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
 
-                            @if($beforeCounter == 3)
-                                @php break; @endphp
-                            @endif
-
-                        
-                            @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
-                            @php
-                                $imageName = Arr::get($orderItemsImage, 'imagename');
-                                $thumbPath = 'assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.$imageName;
-                                $fullPath = 'assets/uploads/orders/'.$orderNo.'/before/'.$imageName;
-                                $thumbUrl = url($thumbPath);
-                                $fullUrl = url($fullPath);
-
-                                $beforeCounter++;
-                            @endphp
-
-                            <div style="width: 20%; margin: 5px; display: inline-block; vertical-align: top; font-size: 12px;">
-                                <a href="{{ $fullUrl }}" style="text-decoration: none; display: block; width: 100%;">
-                                    @if(File::exists(public_path($thumbPath)))  
-                                        <img src="{{ $thumbUrl }}"  style="max-width:60px;height:70px;" />
-                                    @else
-                                        <img src="{{ $fullUrl }}"  style="max-width:60px;height:70px;" />
+                                    @if($beforeCounter == 3)
+                                        @php break; @endphp
                                     @endif
-                                </a>
-                            </div>
-                            @endif
-                        @endforeach
-                        </div>
-                    @endif
-                    @endforeach
-                </td>
 
-                <!-- After Wash Column -->
-                <td width="48%" style="padding-left: 10px">
-                    <h3 style="color: #444; margin-bottom: 10px;">After Wash</h3>
-                    @foreach($orderItems as $orderItem)
-                    @if(!empty(Arr::get($orderItem, 'after_wash_count')))
-                        <hr/>
-                        <div style="">
-                        <strong>{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 20, '...') }}</strong> | <span style="font-size:.6em">{{ Arr::get($orderItem, 'barcode') }}</span>
-                        </div>
+                                
+                                    @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
+                                    @php
+                                        $imageName = Arr::get($orderItemsImage, 'imagename');
+                                        $thumbPath = 'assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.$imageName;
+                                        $fullPath = 'assets/uploads/orders/'.$orderNo.'/before/'.$imageName;
+                                        $thumbUrl = url($thumbPath);
+                                        $fullUrl = url($fullPath);
 
-                        @if($orderItem->is_issue_identify == 2 && $orderItem->is_issue_fixed == 2)
-                        <div style="margin: 5px 0;">
-                            <strong style="display: inline-flex;"><small>Item Fixed:</strong></small>
-                            @foreach($orderItem->issues as $row)
-                            <span style="background-color: #f7dd0282; padding: .35em .65em; font-size: .6em; font-weight: bold; color: #000; border-radius: 20px;text-wrap-mode: nowrap;flex-flow: nowrap;display: inline-flex; margin-top: 5px">
-                                {{ config('constants.issues.'.Arr::get($row, 'issue')) }}
-                            </span>
-                            @endforeach
-                        </div>
-                        @endif
+                                        $beforeCounter++;
+                                    @endphp
 
-                        <div style="margin-top: 5px;">
-                        @php $afterCounter = 0; @endphp
-                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
-
-                            @if($afterCounter == 3)
-                                @php break; @endphp
-                            @endif
-
-                            @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
-                            @php
-                                $imageName = Arr::get($orderItemsImage, 'imagename');
-                                $thumbPath = 'assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.$imageName;
-                                $fullPath = 'assets/uploads/orders/'.$orderNo.'/after/'.$imageName;
-                                $thumbUrl = url($thumbPath);
-                                $fullUrl = url($fullPath);
-
-                                $afterCounter++;
-                            @endphp
-                            <div style="width: 20%; margin: 5px; display: inline-block; vertical-align: top; font-size: 12px;">
-                                <a href="{{ $fullUrl }}" style="text-decoration: none; display: block; width: 100%;">
-                                    @if(File::exists(public_path($thumbPath)))  
-                                        <img src="{{ $thumbUrl }}"  style="max-width:60px;height:70px;"/>
-                                    @else
-                                        <img src="{{ $fullUrl }}"  style="max-width:60px;height:70px;" />
+                                    <div style="width: 20%; margin: 5px; display: inline-block; vertical-align: top; font-size: 12px;">
+                                        <a href="{{ $fullUrl }}" style="text-decoration: none; display: block; width: 100%;">
+                                            @if(File::exists(public_path($thumbPath)))  
+                                                <img src="{{ $thumbUrl }}"  style="max-width:60px;height:70px;" />
+                                            @else
+                                                <img src="{{ $fullUrl }}"  style="max-width:60px;height:70px;" />
+                                            @endif
+                                        </a>
+                                    </div>
                                     @endif
-                                </a>
-                            </div>
+                                @endforeach
+                                </div>
                             @endif
-                        @endforeach
-                        </div>
-                    @endif
-                    @endforeach
-                </td>
-            </tr>
-        </table>
+
+                        </td>
+                        <!--Before wash End-->
+                        <!--After wash Start-->
+                        <td style="border-top: 1px dashed #A6A6A6; padding-top: 10px; margin-top: 10px; vertical-align: top;">
+                            @if(!empty(Arr::get($orderItem, 'after_wash_count')))
+                                <div style="">
+                                    <strong>{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 20, '...') }}</strong> | <span style="font-size:.6em">{{ Arr::get($orderItem, 'barcode') }}</span>
+                                </div>
+
+                                @if($orderItem->is_issue_identify == 2 && $orderItem->is_issue_fixed == 2)
+                                <div style="margin: 5px 0;">
+                                    <strong style="display: inline-flex;"><small>Item Fixed:</strong></small>
+                                    @foreach($orderItem->issues as $row)
+                                    <span style="background-color: #f7dd0282; padding: .35em .65em; font-size: .6em; font-weight: bold; color: #000; border-radius: 20px;text-wrap-mode: nowrap;flex-flow: nowrap;display: inline-flex; margin-top: 5px">
+                                        {{ config('constants.issues.'.Arr::get($row, 'issue')) }}
+                                    </span>
+                                    @endforeach
+                                </div>
+                                @endif
+
+                                <div style="margin-top: 5px;">
+                                @php $afterCounter = 0; @endphp
+                                @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+
+                                    @if($afterCounter == 3)
+                                        @php break; @endphp
+                                    @endif
+
+                                    @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
+                                    @php
+                                        $imageName = Arr::get($orderItemsImage, 'imagename');
+                                        $thumbPath = 'assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.$imageName;
+                                        $fullPath = 'assets/uploads/orders/'.$orderNo.'/after/'.$imageName;
+                                        $thumbUrl = url($thumbPath);
+                                        $fullUrl = url($fullPath);
+
+                                        $afterCounter++;
+                                    @endphp
+                                    <div style="width: 20%; margin: 5px; display: inline-block; vertical-align: top; font-size: 12px;">
+                                        <a href="{{ $fullUrl }}" style="text-decoration: none; display: block; width: 100%;">
+                                            @if(File::exists(public_path($thumbPath)))  
+                                                <img src="{{ $thumbUrl }}"  style="max-width:60px;height:70px;"/>
+                                            @else
+                                                <img src="{{ $fullUrl }}"  style="max-width:60px;height:70px;" />
+                                            @endif
+                                        </a>
+                                    </div>
+                                    @endif
+                                @endforeach
+                                </div>
+                            @endif
+                        </td>
+                        <!--After wash End -->
+                    </tr>
+                @endforeach
+            </table>    
+    
         @endif
 
         <hr/>
