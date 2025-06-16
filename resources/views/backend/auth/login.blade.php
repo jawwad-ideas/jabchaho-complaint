@@ -7,7 +7,7 @@
             <div class="col-lg-4 p-0 login-inner-section-col flex-grow-1 position-relative">
                 <div class="login-inner-section">
                     <div class="logo-section my-5 p-4">
-                        <a class="text-decoration-none" href="/complaint/admin"><img
+                        <a class="text-decoration-none"><img
                                 src="{{asset('assets/images/jc-logo.png')}}" class="w-50" alt="logo" srcset=""></a>
                     </div>
                     <div class="login-form-heading">
