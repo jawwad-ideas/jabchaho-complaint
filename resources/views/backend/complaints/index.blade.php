@@ -21,6 +21,24 @@ tr[data-url]:hover {
 
     <div class="text-xl-start text-md-center text-center mt-xl-0 mt-3">
         <div class="btn-group" role="group">
+            <form action="{{ route('complaints.export') }}" method="GET">                
+                <input type="hidden"  name="complaint_number" value="{{ request('complaint_number') }}">
+                <input type="hidden" name="order_id" value="{{ request('order_id') }}">
+                <input type="hidden" name="mobile_number" value="{{ request('mobile_number') }}">
+                <input type="hidden" name="name" value="{{ request('name') }}">
+                <input type="hidden" name="email" value="{{ request('email') }}">
+                <input type="hidden" name="complaint_status_id"
+                    value="{{ is_array(request('complaint_status_id')) ? implode(',', request('complaint_status_id')) : request('complaint_status_id') }}">
+                <input type="hidden" name="complaint_priority_id" 
+                    value="{{ is_array(request('complaint_priority_id')) ? implode(',', request('complaint_priority_id')) : request('complaint_priority_id') }}">
+                <input type="hidden" name="reported_from_id" 
+                    value="{{ is_array(request('reported_from_id')) ? implode(',', request('reported_from_id')) : request('reported_from_id') }}">
+                
+                <button type="submit" name="export" value="excel"
+                    class="btn btn-sm rounded bg-theme-dark-300 text-light me-2 border-0 fw-bold d-flex align-items-center p-2 gap-2">
+                    <i class="fa fa-file-export"></i> <span> Export CSV </span>
+                </button>
+            </form>
             @if (Auth::user()->can('complaints.create.form'))
                 <a href="{{ route('complaints.create.form') }}" class="text-decoration-none">
                     <small id="" type="button"
