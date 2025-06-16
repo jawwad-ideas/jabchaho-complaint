@@ -49,12 +49,12 @@ class ComplaintsExport implements FromCollection, WithHeadings, WithMapping
             $query->where('complaint_status_id', $this->filters['complaint_status_id']);
         }
 
-        if (!empty($this->filters['complaint_priority_id'])) {
-            $query->where('complaint_priority_id', $this->filters['complaint_priority_id']);
+        if (!empty($this->filters['complaintPriorityId'])) {
+            $query->where('complaint_priority_id', $this->filters['complaintPriorityId']);
         }
 
-        if (!empty($this->filters['reported_from_id'])) {
-            $query->where('reported_from', $this->filters['reported_from_id']);
+        if (!empty($this->filters['reportedFromId'])) {
+            $query->where('reported_from', $this->filters['reportedFromId']);
         }
 
         return $query->get();

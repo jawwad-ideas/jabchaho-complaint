@@ -83,7 +83,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::get('{complaint}/follow-up/', 'ComplaintController@followUp')->name('complaints.follow.up');
             Route::post('{complaint}/follow-up', 'ComplaintController@followUpSaved')->name('complaints.follow.up.saved');
             Route::delete('/{complaintFollowUp}/delete-follow-up', 'ComplaintController@followUpDestroy')->name('follow.up.Destroy');
-            Route::get('/export-complaints','ComplaintController@exportComplaints')->name('complaints.export');
 
         });
 

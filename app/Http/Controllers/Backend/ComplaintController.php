@@ -126,6 +126,11 @@ class ComplaintController extends Controller
         $data['complaintStatuses']      = $objectComplaintStatus->getComplaintStatuses();
         $data['complaintPriorities']    = $complaintPriorities;
         $data['reportedFrom']           = config('constants.complaint_reported_from');
+
+        if(!empty($request->input('exportComplaint')))
+        {
+            return Excel::download(new ComplaintsExport($filterData), 'complaints.xlsx');
+        }
         
         return view('backend.complaints.index')->with($data)->with($filterData);
     }
@@ -468,21 +473,4 @@ class ComplaintController extends Controller
         }
 
     }
-
-    public function exportComplaints(Request $request)
-    {
-        $filters = [
-            'complaint_number'      => $request->input('complaint_number'),
-            'order_id'              => $request->input('order_id'),
-            'mobile_number'         => $request->input('mobile_number'),
-            'name'                  => $request->input('name'),
-            'email'                 => $request->input('email'),
-            'complaint_status_id'   => $request->input('complaint_status_id'),
-            'complaint_priority_id' => $request->input('complaint_priority_id'),
-            'reported_from_id'      => $request->input('reported_from_id'),
-        ];
-
-        return Excel::download(new ComplaintsExport($filters), 'complaints.xlsx');
-    }
-
 }
