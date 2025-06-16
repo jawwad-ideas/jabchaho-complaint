@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class ComplaintsExport implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting
+class ComplaintsExport implements FromCollection, WithHeadings, WithMapping
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -19,13 +19,6 @@ class ComplaintsExport implements FromCollection, WithHeadings, WithMapping, Wit
     public function __construct($filters = [])
     {
         $this->filters = $filters;
-    }
-
-    public function columnFormats(): array
-    {
-        return [
-            'J' => NumberFormat::FORMAT_TEXT, // Assuming column J is "Mobile Number"
-        ];
     }
 
     public function collection()
