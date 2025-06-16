@@ -18,12 +18,7 @@
 
                         <h6>Please Login to our Complaint Portal.</h6>
                     </div>
-                    <div class="back-to-home">
-                        <a href="/complaint/admin"
-                            class="text-end text-dark d-flex justify-content-center text-light text-decoration-none gap-2 p-3">
-                            <i class="fa fa-solid fa-arrow-left-long"></i> <small> Back to Home</small>
-                        </a>
-                    </div>
+                    
                     <div class="login-form-section p-4  my-5">
                         <div class="login-form">
                             @include('backend.layouts.partials.messages')
