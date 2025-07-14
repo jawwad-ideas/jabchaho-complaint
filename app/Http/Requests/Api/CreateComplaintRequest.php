@@ -43,8 +43,8 @@ class CreateComplaintRequest extends FormRequest
     public function messages()
     {
         return [
-            'complaint_type.required'       => 'The Complaint/Inquiry Type is required.',
-            'complaint_type.in'             => 'The selected Complaint/Inquiry Type is invalid.',
+            'complaint_type.required'       => 'The Complaint Nature is required.',
+            'complaint_type.in'             => 'The selected Complaint Nature is invalid.',
             
             'order_id.required'             => 'The order ID is required.',
             'order_id.integer'              => 'The order ID must be an integer.',

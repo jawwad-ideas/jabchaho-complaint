@@ -49,6 +49,9 @@ class ComplaintController extends Controller
         $complaint_status_id        = $request->input('complaint_status_id');
         $complaint_priority_id      = $request->input('complaint_priority_id');
         $reported_from_id           = $request->input('reported_from_id');
+        $selectedComplaintPhase     = $request->input('complaint_phase');
+        $from                       = $request->input('from');
+        $to                         = $request->input('to');
 
         //complaint_number condition
         if (!empty($complaint_number)) 
@@ -90,6 +93,19 @@ class ComplaintController extends Controller
         {
             $query->where('complaints.reported_from','=', $reported_from_id);
         }
+
+        if (!empty($selectedComplaintPhase)) 
+        {
+            $query->where('complaints.complaint_phase','=', $selectedComplaintPhase);
+        }
+
+        if (!empty($from) && !empty($to)) 
+        {
+            $strat   = $from." 00:00:00";
+            $end     = $to." 23:59:59";
+
+            $query->whereBetween('created_at', [$strat,$end]);
+        } 
         
  
         $filterData = [
@@ -100,7 +116,10 @@ class ComplaintController extends Controller
             'email'                 => $email,
             'complaint_status_id'   => $complaint_status_id,
             'complaintPriorityId'   => $complaint_priority_id,
-            'reportedFromId'        => $reported_from_id
+            'reportedFromId'        => $reported_from_id,
+            'from'                  => $from,
+            'to'                    => $to,
+            'selectedComplaintPhase'=> $selectedComplaintPhase
 
         ];
         
@@ -126,6 +145,7 @@ class ComplaintController extends Controller
         $data['complaintStatuses']      = $objectComplaintStatus->getComplaintStatuses();
         $data['complaintPriorities']    = $complaintPriorities;
         $data['reportedFrom']           = config('constants.complaint_reported_from');
+        $data['complaintPhases']        = config('constants.complaint_phase');
 
         if(!empty($request->input('exportComplaint')))
         {
@@ -400,8 +420,9 @@ class ComplaintController extends Controller
         $users                          = User::get()->toArray();
         $complaintPriorities            = ComplaintPriority::get()->toArray();
 
-        $data['complaintTypes']          = config('constants.complaint_type'); 
-        $data['services']                = $servicesObject->getServices(['id','name']);
+        $data['complaintTypes']         = config('constants.complaint_type'); 
+        $data['complaintPhases']        = config('constants.complaint_phase'); 
+        $data['services']               = $servicesObject->getServices(['id','name']);
         $data['complaintPriorities']    = $complaintPriorities;
         $data['users']                  = $users;
         
@@ -416,6 +437,7 @@ class ComplaintController extends Controller
         $priorityId                                 = Arr::get($validateValues, 'complaint_priority_id');
 
         $insertData['device_type']                  = Helper::getdevice($request); 
+        $insertData['complaint_phase']              = Arr::get($validateValues, 'complaint_phase');  
         $insertData['complaint_type']               = Arr::get($validateValues, 'complaint_type');   
         $insertData['order_id']                     = Arr::get($validateValues, 'order_id');
         $insertData['service_id']                   = Arr::get($validateValues, 'service_id');

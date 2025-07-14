@@ -40,11 +40,29 @@
     </div>
 
     <div class="row mb-3">
+        <div class="col-md-12">
+            <label for="complaintPhase" class="form-label">Complaint Phase<span class="red"> *</span></label>
+            <select id="complaint_phase" class="form-select form-select-sm" name="complaint_phase" required>
+            <option value="">Select Complaint Phase</option>
+            @if(!empty($complaintPhases) )
+                @foreach($complaintPhases as $key =>$value)
+                    @if(old('_token') && old('complaint_type') == $key)
+                        <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                    @else
+                        <option value="{{trim($key)}}">{{trim($value)}}</option>
+                    @endif
+                @endforeach
+            @endif
+        </select>
+        </div>
+    </div>   
+
+    <div class="row mb-3">
       <div class="col-md-6">
-        <label for="complaintType" class="form-label">Complaint/Inquiry Type <span class="red"> *</span></label>
+        <label for="complaintType" class="form-label">Complaint Nature <span class="red"> *</span></label>
         <select id="complain_type" class="form-select form-select-sm"
             name="complaint_type" required>
-            <option value="">Select Complaint Type</option>
+            <option value="">Select Complaint Nature</option>
             @if(!empty($complaintTypes) )
                 @foreach($complaintTypes as $key =>$value)
                     @if(old('_token') && old('complaint_type') == $key)

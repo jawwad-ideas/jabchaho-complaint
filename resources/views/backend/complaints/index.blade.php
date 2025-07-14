@@ -129,6 +129,32 @@ tr[data-url]:hover {
                         </select>
                     </div>
 
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
+                        <label class="fw-bold text-dark" for="from_time">&nbsp;</label>    
+                        <select class="form-select p-2" id="complaint_phase" name="complaint_phase">
+                            <option value=''>Select Complaint Phase</option>
+                             @if(!empty($complaintPhases) )
+                                @foreach($complaintPhases as $key=>$value)
+                                    @if($selectedComplaintPhase == $key)
+                                        <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                    @else
+                                        <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                    @endif
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
+                        <label class="fw-bold text-dark" for="from_time">From:</label>
+                        <input type="date" class="form-control p-2" name="from" id="from" value="{{ $from}}"  autocomplete="off">
+                    </div>
+
+                    <div class="col-xxl-3 col-xl-3 col-lg-12 col-md-12 mb-2">
+                        <label class="fw-bold text-dark" for="to_time">To:</label>
+                        <input type="date" class="form-control p-2" name="to" id="to" value="{{ $to}}"  autocomplete="off">
+                    </div>
+
                     <div class="col-lg-12 text-end mt-4">
                         <button type="submit"
                             class="btn bg-theme-yellow text-dark p-2 d-inline-flex align-items-center gap-1"
@@ -160,6 +186,7 @@ tr[data-url]:hover {
 
                     <tr>
                         <th>Complaint #</th>
+                        <th>Phase</th>
                         <th>Reported From</th>
                         <th>Order Id</th>
                         <th>Assigned</th>
@@ -177,6 +204,7 @@ tr[data-url]:hover {
                     @foreach ($complaints as $key => $complaint)
                     <tr data-url="{{ route('complaints.show', $complaint->id) }}">
                         <td>{{Arr::get($complaint, 'complaint_number')}}</td>
+                         <td>@if(Arr::get($complaint, 'complaint_phase')) {{config('constants.complaint_phase.'.Arr::get($complaint, 'complaint_phase'))}} @else {{ "N/A" }} @endif</td>
                         <td>{{config('constants.complaint_reported_from.'.Arr::get($complaint, 'reported_from'))}}</td>
                         <td>{{Arr::get($complaint, 'order_id')}}</td>
                         <td>@if(!empty(Arr::get($complaint->user, 'name'))){{ Arr::get($complaint->user, 'name') }} @else <span class="text-danger">Unassigned</span> @endif</td>

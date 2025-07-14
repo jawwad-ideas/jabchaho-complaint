@@ -19,6 +19,7 @@ class StoreComplaintRequest extends FormRequest
             'email'                 => 'required|email|max:150',
             'mobile_number'         => 'required|string|min:13',
             'complaint_type'        => 'required|in:' . implode(',', array_keys(config('constants.complaint_type'))),
+            'complaint_phase'       => 'required|in:' . implode(',', array_keys(config('constants.complaint_phase'))),
             'service_id'            => 'required|exists:services,id',
             'user_id'               => 'required|exists:users,id',
             'complaint_priority_id' => 'required|exists:complaint_priorities,id', 
@@ -49,8 +50,11 @@ class StoreComplaintRequest extends FormRequest
             'mobile_number.min'             => 'The Mobile number must be at least 13 characters.',
             #'mobile_number.max'             => 'The Mobile number may not be greater than 15 characters.',
 
-            'complaint_type.required'       => 'The Complaint/Inquiry Type is required.',
-            'complaint_type.in'             => 'The selected Complaint/Inquiry Type is invalid.',
+            'complaint_type.required'       => 'The Complaint Nature is required.',
+            'complaint_type.in'             => 'The selected Complaint Nature is invalid.',
+
+            'complaint_phase.required'      => 'The Complaint Phase is required.',
+            'complaint_phase.in'            => 'The selected Complaint Phase is invalid.',
 
             'service_id.required'           => 'Please select a Service.',
             'service_id.exists'             => 'The selected Service is invalid.',

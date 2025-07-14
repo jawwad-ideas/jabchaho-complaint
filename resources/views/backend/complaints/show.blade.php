@@ -107,6 +107,15 @@
 
                 <div class="inner-row d-flex gap-4 my-1">
                     <div class="inner-label">
+                        <p class="mb-0"><b>Complaint Phase:</b></p>
+                    </div>
+                    <div class="inner-value">
+                        <p class="text-muted mb-0"> @if(Arr::get($complaintData, 'complaint_phase')) {{config('constants.complaint_phase.'.Arr::get($complaintData, 'complaint_phase'))}} @else {{ "N/A" }} @endif</p>
+                    </div>
+                </div>
+
+                <div class="inner-row d-flex gap-4 my-1">
+                    <div class="inner-label">
                         <p class="mb-0"><b>Reported From:</b></p>
                     </div>
                     <div class="inner-value">
@@ -143,7 +152,7 @@
             
                 <div class="inner-row d-flex gap-4 mb-0.5">
                     <div class="inner-label">
-                        <p class="mb-0"><b>Complaint/Inquiry Type:</b></p>
+                        <p class="mb-0"><b>Complaint Nature:</b></p>
                     </div>
                     <div class="inner-value">
                         <p class="text-muted mb-0">{{ config('constants.complaint_type.'.Arr::get($complaintData, 'complaint_type'))  }}</p>

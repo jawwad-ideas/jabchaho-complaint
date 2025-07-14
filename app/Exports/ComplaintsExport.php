@@ -57,13 +57,37 @@ class ComplaintsExport implements FromCollection, WithHeadings, WithMapping
             $query->where('reported_from', $this->filters['reportedFromId']);
         }
 
-        return $query->get();
+
+        if (!empty($this->filters['selectedComplaintPhase'])) 
+        {
+            $query->where('complaints.complaint_phase','=', $this->filters['selectedComplaintPhase']);
+        }
+
+        if (!empty($this->filters['from']) && !empty($this->filters['to'])) 
+        {
+            $strat   = $this->filters['from']." 00:00:00";
+            $end     = $this->filters['to']." 23:59:59";
+
+            $query->whereBetween('created_at', [$strat,$end]);
+        } 
+
+        return  $query->orderBy('id', 'DESC')->get();
     }
 
     public function map($complaint): array
     {
+        if(!empty($complaint->complaint_phase)) 
+        {
+            $complaintPhase = config('constants.complaint_phase.'.$complaint->complaint_phase);
+        } 
+        else 
+        {
+           $complaintPhase = "N/A";
+        }
+        
         return [
             $complaint->complaint_number,
+            $complaintPhase,
             $complaint->order_id,
             config('constants.complaint_reported_from.' . $complaint->reported_from),
             optional($complaint->complaintStatus)->name ?? '',
@@ -83,12 +107,13 @@ class ComplaintsExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'Complaint #',
+            'Phase',
             'Order ID',
             'Reported From',
             'Status',
             'Service',
             'Priority',
-            'Complaint/Inquiry Type',
+            'Complaint Nature',
             'Name',
             'Email',
             'Mobile Number',

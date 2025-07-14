@@ -12,6 +12,7 @@ return [
 	'date_time_format'  => 'F d, Y \a\t h:i A',
     'files_supported'=>'png, jpg, jpeg, doc, docx, xls, xlsx, pdf',
 	'complaint_type' =>[1=>'Damaged', 2=>'Incomplete Component', 3=>'Missing Article', 4=>'Stains', 5=>'Shrinkage issue', 7=>'Delivery related issues',8 => "Revise bill", 9 => "Redo", 10 => "Add item", 11 => "Add Service", 12 => "Change Service", 13 => "Coupon issued", 14 => "Slot issue", 15 => "Starch Issue", 16 => "Color Fade", 17 => "Color Bleed", 18 => "Hold for QC", 19 => "Price issue",6=>'Others'],
+	'complaint_phase' => [1 => 'Before Delivery', 2 => 'After Delivery'],
 	'services' => [
 		1 => "Dry Cleaning",
 		2 => "Iron Only",
