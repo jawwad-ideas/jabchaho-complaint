@@ -85,7 +85,7 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
         ],
 
@@ -117,13 +117,33 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
-        
+
         'request' => [
             'driver' => 'daily',
             'path' => storage_path('logs/request.log'),
             'level' => 'info',
             'days' => 10,
         ],
+
+        'complaint_assigned_history_insert_query' => [
+
+
+            'driver' => 'monolog',
+            'handler' => Monolog\Handler\StreamHandler::class,
+            'with' => [
+                'stream' => storage_path('logs/complaint_assigned_history_insert_query.log'),
+            ],
+            'formatter' => Monolog\Formatter\LineFormatter::class,
+            'formatter_with' => [
+                'format' => "%message%\n",  // Only log the message
+                'allow_inline_line_breaks' => true,
+                'ignore_empty_context_and_extra' => true,
+            ],
+        ],
+
+
+
+
     ],
 
 ];

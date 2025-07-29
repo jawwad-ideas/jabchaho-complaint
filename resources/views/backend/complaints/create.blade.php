@@ -46,7 +46,7 @@
             <option value="">Select Complaint Phase</option>
             @if(!empty($complaintPhases) )
                 @foreach($complaintPhases as $key =>$value)
-                    @if(old('_token') && old('complaint_type') == $key)
+                    @if(old('_token') && old('complaint_phase') == $key)
                         <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
                     @else
                         <option value="{{trim($key)}}">{{trim($value)}}</option>

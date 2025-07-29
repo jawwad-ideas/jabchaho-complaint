@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Jobs\NotifyComplainant as NotifyComplainant;
 use App\Jobs\AssignedComplaint as AssignedComplaint;
-use App\Jobs\ComplaintStatusChanged as ComplaintStatusChanged; 
+use App\Jobs\ComplaintStatusChanged as ComplaintStatusChanged;
 use App\Traits\Configuration\ConfigurationTrait;
 
 
@@ -39,7 +39,7 @@ class ComplaintController extends Controller
 
         $query                    = Complaint::select('*');
         $objectComplaintStatus    = new ComplaintStatus;
-        
+
         // Apply filters
         $complaint_number           = $request->input('complaint_number');
         $order_id                   = $request->input('order_id');
@@ -54,60 +54,50 @@ class ComplaintController extends Controller
         $to                         = $request->input('to');
 
         //complaint_number condition
-        if (!empty($complaint_number)) 
-        {
+        if (!empty($complaint_number)) {
             $query->where('complaints.complaint_number', 'like', '%' . $complaint_number . '%');
         }
 
-        if (!empty($order_id))
-        {
-            $query->where('complaints.order_id','like', '%' .$order_id. '%');
+        if (!empty($order_id)) {
+            $query->where('complaints.order_id', 'like', '%' . $order_id . '%');
         }
 
-        if (!empty($mobile_number))
-        {
-            $query->where('complaints.mobile_number','like', '%' .$mobile_number. '%');
+        if (!empty($mobile_number)) {
+            $query->where('complaints.mobile_number', 'like', '%' . $mobile_number . '%');
         }
 
-        if (!empty($name))
-        {
-            $query->where('complaints.name','like', '%' .$name. '%');
+        if (!empty($name)) {
+            $query->where('complaints.name', 'like', '%' . $name . '%');
         }
 
-        if (!empty($email))
-        {
-            $query->where('complaints.email','like', '%' .$email. '%');
+        if (!empty($email)) {
+            $query->where('complaints.email', 'like', '%' . $email . '%');
         }
 
-        if (!empty($complaint_status_id))
-        {
-            $query->where('complaints.complaint_status_id','=', $complaint_status_id);
+        if (!empty($complaint_status_id)) {
+            $query->where('complaints.complaint_status_id', '=', $complaint_status_id);
         }
 
-        if (!empty($complaint_priority_id)) 
-        {
-            $query->where('complaints.complaint_priority_id','=', $complaint_priority_id);
+        if (!empty($complaint_priority_id)) {
+            $query->where('complaints.complaint_priority_id', '=', $complaint_priority_id);
         }
 
-        if (!empty($reported_from_id)) 
-        {
-            $query->where('complaints.reported_from','=', $reported_from_id);
+        if (!empty($reported_from_id)) {
+            $query->where('complaints.reported_from', '=', $reported_from_id);
         }
 
-        if (!empty($selectedComplaintPhase)) 
-        {
-            $query->where('complaints.complaint_phase','=', $selectedComplaintPhase);
+        if (!empty($selectedComplaintPhase)) {
+            $query->where('complaints.complaint_phase', '=', $selectedComplaintPhase);
         }
 
-        if (!empty($from) && !empty($to)) 
-        {
-            $strat   = $from." 00:00:00";
-            $end     = $to." 23:59:59";
+        if (!empty($from) && !empty($to)) {
+            $strat   = $from . " 00:00:00";
+            $end     = $to . " 23:59:59";
 
-            $query->whereBetween('created_at', [$strat,$end]);
-        } 
-        
- 
+            $query->whereBetween('created_at', [$strat, $end]);
+        }
+
+
         $filterData = [
             'complaint_number'      => $complaint_number,
             'order_id'              => $order_id,
@@ -119,58 +109,53 @@ class ComplaintController extends Controller
             'reportedFromId'        => $reported_from_id,
             'from'                  => $from,
             'to'                    => $to,
-            'selectedComplaintPhase'=> $selectedComplaintPhase
+            'selectedComplaintPhase' => $selectedComplaintPhase
 
         ];
-        
-        if(!Auth::user()->hasRole(config('constants.roles.admin')) && !Auth::user()->hasRole(config('constants.roles.complaint_management_team')))
-        {
-            $userId= Auth::guard('web')->user()->id;
+
+        if (!Auth::user()->hasRole(config('constants.roles.admin')) && !Auth::user()->hasRole(config('constants.roles.complaint_management_team'))) {
+            $userId = Auth::guard('web')->user()->id;
 
             $query = Complaint::query()
-                        ->distinct()
-                        ->leftJoin('complaint_assigned_history', 'complaints.id', '=', 'complaint_assigned_history.complaint_id')
-                        ->where(function ($q) use ($userId) {
-                            $q->where('complaint_assigned_history.assigned_to', $userId)
-                            ->orWhere('complaint_assigned_history.assigned_by', $userId);
-                        })
-                        ->orWhere('complaints.user_id', $userId)
-                        ->select('complaints.*');
+                ->distinct()
+                ->leftJoin('complaint_assigned_history', 'complaints.id', '=', 'complaint_assigned_history.complaint_id')
+                ->where(function ($q) use ($userId) {
+                    $q->where('complaint_assigned_history.assigned_to', $userId)
+                        ->orWhere('complaint_assigned_history.assigned_by', $userId);
+                })
+                ->orWhere('complaints.user_id', $userId)
+                ->select('complaints.*');
         }
 
         $complaints                     = $query->orderBy('id', 'DESC')->paginate(config('constants.per_page'));
         $complaintPriorities            = ComplaintPriority::get()->toArray();
-        
+
         $data['complaints']             = $complaints;
         $data['complaintStatuses']      = $objectComplaintStatus->getComplaintStatuses();
         $data['complaintPriorities']    = $complaintPriorities;
         $data['reportedFrom']           = config('constants.complaint_reported_from');
         $data['complaintPhases']        = config('constants.complaint_phase');
 
-        if(!empty($request->input('exportComplaint')))
-        {
+        if (!empty($request->input('exportComplaint'))) {
             return Excel::download(new ComplaintsExport($filterData), 'complaints.xlsx');
         }
-        
+
         return view('backend.complaints.index')->with($data)->with($filterData);
     }
 
 
     public function destroy($complaintId)
     {
-        
-        //remove complaint documents
-        $complaintDocuments= ComplaintDocument::where(['complaint_id'=> $complaintId])->get();
-        if ($complaintDocuments->isNotEmpty())
-        {
-            
-            foreach($complaintDocuments as $complaintDocument)
-            {
-               //file name
-               $fileName = Arr::get($complaintDocument, 'file');
 
-               if(!empty($fileName))
-               {
+        //remove complaint documents
+        $complaintDocuments = ComplaintDocument::where(['complaint_id' => $complaintId])->get();
+        if ($complaintDocuments->isNotEmpty()) {
+
+            foreach ($complaintDocuments as $complaintDocument) {
+                //file name
+                $fileName = Arr::get($complaintDocument, 'file');
+
+                if (!empty($fileName)) {
                     //folder path
                     $uploadFolderPath = config('constants.files.complaint_documents');
 
@@ -182,40 +167,32 @@ class ComplaintController extends Controller
 
                     //remove File
                     Helper::removeFile($fileNameWithPath);
-               }
+                }
 
-               $complaintDocument->delete();
+                $complaintDocument->delete();
             }
         }
-        
-        ComplaintFollowUp::where(['complaint_id'=> $complaintId])->delete();
-        $deleted = Complaint::where(['id'=> $complaintId])->delete();
-        if($deleted)
-        {
+
+        ComplaintFollowUp::where(['complaint_id' => $complaintId])->delete();
+        $deleted = Complaint::where(['id' => $complaintId])->delete();
+        if ($deleted) {
             return redirect()->route('complaints.index')->with('success', 'Complaint has been deleted successfully.');
-        }
-        else
-        {
+        } else {
             return redirect()->back()->withErrors(['error' => "Whoops, looks like something went wrong."]);
-
         }
-
     }
 
     public function approve($complaintId)
     {
 
-        $complaint = Complaint::where(['id'=>$complaintId]);
+        $complaint = Complaint::where(['id' => $complaintId]);
         $updated = $complaint->update([
             'is_approved' => 1,
             'approved_by_user_id' => auth()->id()
         ]);
-        if($updated)
-        {
-            return redirect()->back()->with('success', 'Complaint id '.$complaint->first()->complaint_num.' has been Approved successfully.');
-        }
-        else
-        {
+        if ($updated) {
+            return redirect()->back()->with('success', 'Complaint id ' . $complaint->first()->complaint_num . ' has been Approved successfully.');
+        } else {
             return redirect()->back()->withErrors(['error' => "Whoops, looks like something went wrong."]);
         }
     }
@@ -234,13 +211,12 @@ class ComplaintController extends Controller
         $data['users']                  = $users;
 
         return view('backend.complaints.assign_complaint_form')->with($data);
-
     }
 
     public function assignComplaint(AssignToRequest $request)
     {
         $params = array();
-        
+
         $complaintId            = $request->input('complaintId');;
         $userId                 = $request->input('userId');
 
@@ -252,8 +228,7 @@ class ComplaintController extends Controller
 
         $assigned               = $complaint->assignTo($params);
 
-        if($assigned)
-        {
+        if ($assigned) {
             //add history
             $historyData = array();
 
@@ -262,20 +237,17 @@ class ComplaintController extends Controller
             $historyData['assigned_to']             = $userId;
             $historyData['assigned_by']             = auth()->id();
 
-            if($userId != auth()->id())
-            {
-                ComplaintAssignedHistory::insert($historyData);
+            if ($userId != auth()->id()) {
+                $this->storeAndLogComplaintAssignedHistory($historyData);
             }
-            
+
             // Dispatch job to send emails
-            dispatch(new AssignedComplaint($complaintId,$userId));
+            dispatch(new AssignedComplaint($complaintId, $userId));
             $this->queueWorker();
 
-            return response()->json(['status' => true, 'message'=>"Complaint has been assigned successfully."]);
-        }
-        else
-        {
-            return response()->json(['status' =>false, 'message'=> "Whoops, looks like something went wrong."]);
+            return response()->json(['status' => true, 'message' => "Complaint has been assigned successfully."]);
+        } else {
+            return response()->json(['status' => false, 'message' => "Whoops, looks like something went wrong."]);
         }
     }
 
@@ -289,8 +261,7 @@ class ComplaintController extends Controller
 
         $complaintId        = $request->route('complaintId');
         $complaintData      = $complaintObject->getComplaintDataById($complaintId);
-        if(!empty($complaintData))
-        {
+        if (!empty($complaintData)) {
             $complaintDocument  = $complaintDocumentObject->getComplaintDocumentById($complaintId);
 
             //Full data of complaint
@@ -300,15 +271,12 @@ class ComplaintController extends Controller
             $data['complaintAssignedHistory']       = $objectComplaintAssignedHistory->getComplaintAssignedHistory($complaintId);
 
             return view('backend.complaints.show')->with($data);
-        }
-        else
-        {
+        } else {
             return redirect()->route('complaints.index')->withErrors(['error' => "Invalid Complaint"]);
         }
-        
     }
 
-    
+
     /**
      * Folow up data
      *
@@ -323,7 +291,7 @@ class ComplaintController extends Controller
         $objectComplaintStatus    = new ComplaintStatus;
         $objectComplaintFollowUp  = new ComplaintFollowUp;
 
-        $complaintId = Arr::get($complaint,'id');
+        $complaintId = Arr::get($complaint, 'id');
 
         $data['complaintStatuses']       = $objectComplaintStatus->getComplaintStatuses();
         $data['complaint']               = $complaint;
@@ -341,20 +309,15 @@ class ComplaintController extends Controller
      */
     public function followUpDestroy(Request $request)
     {
-        if(Auth::user()->hasRole('admin'))
-        {
+        if (Auth::user()->hasRole('admin')) {
             $complaintFollowUpId = (int) $request->segment(4);
 
-            ComplaintFollowUp::where(['id'=>$complaintFollowUpId])->delete();
+            ComplaintFollowUp::where(['id' => $complaintFollowUpId])->delete();
             return redirect()->back()->with('success', "Description Removed Successfully.");
-        }
-        else
-        {
+        } else {
             return redirect()->back()
-            ->withErrors("Sorry you don't have permission to remove");
+                ->withErrors("Sorry you don't have permission to remove");
         }
-
-
     }
 
 
@@ -365,7 +328,8 @@ class ComplaintController extends Controller
      * @param  \App\Models\Complaint  $complaint
      * @return \Illuminate\Http\Response
      */
-    public function followUpSaved(ComplaintFollowUpRequest $request, Complaint $complaint){
+    public function followUpSaved(ComplaintFollowUpRequest $request, Complaint $complaint)
+    {
 
         $validateValues = $request->validated();
 
@@ -391,15 +355,14 @@ class ComplaintController extends Controller
         ]);
 
         //configuration filters
-        $filters            = ['complaint_sms_api_enable','complaint_sms_action','complaint_sms_sender','complaint_sms_username','complaint_sms_password','complaint_sms_format','complaint_sms_api_url','complaint_status_changed_sms_template','complaint_status_id','complaint_status_notify_type'];
-        
+        $filters            = ['complaint_sms_api_enable', 'complaint_sms_action', 'complaint_sms_sender', 'complaint_sms_username', 'complaint_sms_password', 'complaint_sms_format', 'complaint_sms_api_url', 'complaint_status_changed_sms_template', 'complaint_status_id', 'complaint_status_notify_type'];
+
         //get configurations
         $configurations     = $this->getConfigurations($filters);
 
-        if(in_array($complaintStatusId, explode(',',Arr::get($configurations, 'complaint_status_id'))))
-        {
+        if (in_array($complaintStatusId, explode(',', Arr::get($configurations, 'complaint_status_id')))) {
             // Dispatch job to send emails
-            dispatch(new ComplaintStatusChanged($complaintId,$complaintStatusId,$configurations));
+            dispatch(new ComplaintStatusChanged($complaintId, $complaintStatusId, $configurations));
             $this->queueWorker();
         }
 
@@ -407,7 +370,7 @@ class ComplaintController extends Controller
     }
 
 
-     /**
+    /**
      * Show form for creating user
      *
      * @return \Illuminate\Http\Response
@@ -420,25 +383,25 @@ class ComplaintController extends Controller
         $users                          = User::get()->toArray();
         $complaintPriorities            = ComplaintPriority::get()->toArray();
 
-        $data['complaintTypes']         = config('constants.complaint_type'); 
-        $data['complaintPhases']        = config('constants.complaint_phase'); 
-        $data['services']               = $servicesObject->getServices(['id','name']);
+        $data['complaintTypes']         = config('constants.complaint_type');
+        $data['complaintPhases']        = config('constants.complaint_phase');
+        $data['services']               = $servicesObject->getServices(['id', 'name']);
         $data['complaintPriorities']    = $complaintPriorities;
         $data['users']                  = $users;
-        
+
         return view('backend.complaints.create')->with($data);
     }
 
     public function store(StoreComplaintRequest $request)
     {
         $validateValues                             = $request->validated();
-            
+
         $userId                                     = Arr::get($validateValues, 'user_id');
         $priorityId                                 = Arr::get($validateValues, 'complaint_priority_id');
 
-        $insertData['device_type']                  = Helper::getdevice($request); 
-        $insertData['complaint_phase']              = Arr::get($validateValues, 'complaint_phase');  
-        $insertData['complaint_type']               = Arr::get($validateValues, 'complaint_type');   
+        $insertData['device_type']                  = Helper::getdevice($request);
+        $insertData['complaint_phase']              = Arr::get($validateValues, 'complaint_phase');
+        $insertData['complaint_type']               = Arr::get($validateValues, 'complaint_type');
         $insertData['order_id']                     = Arr::get($validateValues, 'order_id');
         $insertData['service_id']                   = Arr::get($validateValues, 'service_id');
         $insertData['name']                         = Arr::get($validateValues, 'name');
@@ -448,22 +411,21 @@ class ComplaintController extends Controller
         $insertData['user_id']                      = $userId;
         $insertData['complaint_priority_id']        = $priorityId;
         $insertData['reported_from']                = config('constants.complaint_reported_from_id.complaint_portal');
-        
+
         $complaintData  = array();
         $complaintData  = Complaint::create($insertData);
-        
-        if(!empty($complaintData))
-        { 
-            $complaintId    = Arr::get($complaintData, 'id',0);
 
-            $prefix =config('constants.complaint_number_starting_index'); //complaint_number_starting_index
-            $complaintNumber = "JB-".($prefix + $complaintId)."-".date('Y');
+        if (!empty($complaintData)) {
+            $complaintId    = Arr::get($complaintData, 'id', 0);
+
+            $prefix = config('constants.complaint_number_starting_index'); //complaint_number_starting_index
+            $complaintNumber = "JB-" . ($prefix + $complaintId) . "-" . date('Y');
 
             $complaintData->update(['complaint_number' => $complaintNumber]);
 
             //Files upload code
-            $this->uploadImages($request,$complaintId);
-            
+            $this->uploadImages($request, $complaintId);
+
             // Dispatch job to send emails and SMS
             dispatch(new NotifyComplainant($complaintId));
             $this->queueWorker();
@@ -475,24 +437,40 @@ class ComplaintController extends Controller
             $historyData['complaint_priority_id']   = $priorityId;
             $historyData['assigned_to']             = $userId;
             $historyData['assigned_by']             = auth()->id();
-            
-            ComplaintAssignedHistory::insert($historyData);
-                        
+
+            $this->storeAndLogComplaintAssignedHistory($historyData);
+
             // Dispatch job to send emails
-            dispatch(new AssignedComplaint($complaintId,$userId));
+            dispatch(new AssignedComplaint($complaintId, $userId));
             $this->queueWorker();
 
             return redirect()->route('complaints.show', ['complaintId' => $complaintId])
-            ->with('success', 'Complaint has been register and assigned successfully.');
-            
-        }
-        else
-        {
+                ->with('success', 'Complaint has been register and assigned successfully.');
+        } else {
             return redirect()->route('complaints.create.form')
-            ->withErrors(['error' => "Whoops, looks like something went wrong."])
-            ->withInput();
+                ->withErrors(['error' => "Whoops, looks like something went wrong."])
+                ->withInput();
+        }
+    }
 
+
+    public function storeAndLogComplaintAssignedHistory($historyData = array())
+    {
+
+        if (!empty($historyData)) {
+            ComplaintAssignedHistory::insert($historyData);
+
+            $complaintId         =  Arr::get($historyData, 'complaint_id');
+            $priorityId          =  Arr::get($historyData, 'complaint_priority_id');
+            $userId              =  Arr::get($historyData, 'assigned_to');
+            $assignedBy          =  Arr::get($historyData, 'assigned_by');
+
+            // Log the insert SQL
+            $sql = "INSERT INTO complaint_assigned_history (complaint_id, complaint_priority_id, assigned_to, assigned_by) VALUES ({$complaintId}, {$priorityId}, {$userId}, {$assignedBy});";
+
+            \Log::channel('complaint_assigned_history_insert_query')->info($sql);
         }
 
+        return true;
     }
 }
