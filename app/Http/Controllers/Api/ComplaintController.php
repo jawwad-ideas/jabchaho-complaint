@@ -27,58 +27,61 @@ class ComplaintController extends Controller
 
     public function create(CreateComplaintRequest $request)
     {
-        try
-        {
+        try {
             $responsearray                      = array();
             $responseStatus                     = false;
             $responseMessage                    = array();
-            
+
             $validateValues                     = $request->validated();
-            
-            $insertData['device_type']          = Helper::getdevice($request); 
-            $insertData['complaint_type']       = Arr::get($validateValues, 'complaint_type');   
+
+            $insertData['device_type']          = Helper::getdevice($request);
+            $insertData['complaint_type']       = Arr::get($validateValues, 'complaint_type');
             $insertData['order_id']             = Arr::get($validateValues, 'order_id');
             $insertData['service_id']           = Arr::get($validateValues, 'service_id');
             $insertData['name']                 = Arr::get($validateValues, 'name');
             $insertData['email']                = Arr::get($validateValues, 'email');
             $insertData['mobile_number']        = Arr::get($validateValues, 'mobile_number');
             $insertData['comments']             = Arr::get($validateValues, 'comments');
-             
-            
+
+
             $complaintData  = array();
             $complaintData  = Complaint::create($insertData);
 
-            if(!empty($complaintData))
-            { 
-                $responseStatus 	        = true;
+            if (!empty($complaintData)) {
+                //configuration filters
+                $filters            = ['complaint_customer_notify'];
 
-                $complaintId    = Arr::get($complaintData, 'id',0);
+                //get configurations
+                $configurations     = $this->getConfigurations($filters);
 
-                $prefix =config('constants.complaint_number_starting_index'); //complaint_number_starting_index
-                $complaintNumber = "JB-".($prefix + $complaintId)."-".date('Y');
-    
+
+                $responseStatus             = true;
+
+                $complaintId    = Arr::get($complaintData, 'id', 0);
+
+                $prefix = config('constants.complaint_number_starting_index'); //complaint_number_starting_index
+                $complaintNumber = "JB-" . ($prefix + $complaintId) . "-" . date('Y');
+
                 $complaintData->update(['complaint_number' => $complaintNumber]);
-    
+
                 //Files upload code
-                $this->uploadImages($request,$complaintId);
-                
-                // Dispatch job to send emails and SMS
-                dispatch(new NotifyComplainant($complaintId));
-                $this->queueWorker();
-                $responsearray['message'] 	        = 'Complaint Submitted Successfully';
+                $this->uploadImages($request, $complaintId);
+
+                if (!empty($configurations['complaint_customer_notify'])) {
+                    // Dispatch job to send emails and SMS
+                    dispatch(new NotifyComplainant($complaintId));
+                    $this->queueWorker();
+                }
+                $responsearray['message']             = 'Complaint Submitted Successfully';
+            } else {
+                $responsearray['message']             = 'Error Submitting Complaint';
             }
-            else
-            {
-                $responsearray['message'] 	        = 'Error Submitting Complaint';
-            }
-            
-            
-            $responsearray['status'] 	        = $responseStatus;
-        }
-        catch(\Exception $e) 
-        {
-            $responsearray['message'] 	        = 'Error Submitting Complaint '.$e->getMessage();
-            $responsearray['status'] 	        = false;
+
+
+            $responsearray['status']             = $responseStatus;
+        } catch (\Exception $e) {
+            $responsearray['message']             = 'Error Submitting Complaint ' . $e->getMessage();
+            $responsearray['status']             = false;
 
             // \Log::error("api/ComplaintController -> create =>".$e->getMessage());
         }
@@ -87,83 +90,72 @@ class ComplaintController extends Controller
 
     public function track(TrackComplaintRequest $request)
     {
-        try
-        {
+        try {
             $responsearray                      = array();
             $responseStatus                     = false;
             $responseMessage                    = array();
             $complainData                       = array();
-            
+
             $validateValues                     = $request->validated();
 
-            $complaintNumber                    = Arr::get($validateValues, 'complaint_number');   
-            
-            $complaint =  Complaint::where(['complaint_number' =>$complaintNumber])->first();
-            if(!empty($complaint))
-            {
+            $complaintNumber                    = Arr::get($validateValues, 'complaint_number');
+
+            $complaint =  Complaint::where(['complaint_number' => $complaintNumber])->first();
+            if (!empty($complaint)) {
                 //configuration filters
-                $filters            = ['complaint_track_initiated','complaint_track_in_progress','complaint_track_completed'];
-                    
+                $filters            = ['complaint_track_initiated', 'complaint_track_in_progress', 'complaint_track_completed'];
+
                 //get configurations
                 $configurations     = $this->getConfigurations($filters);
 
                 $complaintTrackInitiated  = explode(",", Arr::get($configurations, 'complaint_track_initiated'));
-                $complaintTrackInProgress = explode(",",Arr::get($configurations, 'complaint_track_in_progress'));
-                $complaintTrackCompleted  = explode(",",Arr::get($configurations, 'complaint_track_completed'));
+                $complaintTrackInProgress = explode(",", Arr::get($configurations, 'complaint_track_in_progress'));
+                $complaintTrackCompleted  = explode(",", Arr::get($configurations, 'complaint_track_completed'));
 
-                
+
                 $status = config('constants.complaint_tracking_status.initiated');
-                if(in_array(Arr::get($complaint, 'complaint_status_id'),$complaintTrackInProgress))
-                {
+                if (in_array(Arr::get($complaint, 'complaint_status_id'), $complaintTrackInProgress)) {
                     $status = config('constants.complaint_tracking_status.in_progress');
-                }
-                else if(in_array(Arr::get($complaint, 'complaint_status_id'),$complaintTrackCompleted))
-                {
+                } else if (in_array(Arr::get($complaint, 'complaint_status_id'), $complaintTrackCompleted)) {
                     $status = config('constants.complaint_tracking_status.completed');
                 }
-                
+
                 $responseStatus                 = true;
                 $responseMessage                = 'Successful';
                 $complainData['order_id']       = Arr::get($complaint, 'order_id');
                 $complainData['status']         = $status;
-                $complainData['complaint_type'] = config('constants.complaint_type.'.Arr::get($complaint, 'complaint_type'));
+                $complainData['complaint_type'] = config('constants.complaint_type.' . Arr::get($complaint, 'complaint_type'));
                 $complainData['service']        = Arr::get($complaint->service, 'name');
                 $complainData['name']           = Arr::get($complaint, 'name');
                 $complainData['email']          = Arr::get($complaint, 'email');
                 $complainData['mobile_number']  = Arr::get($complaint, 'mobile_number');
                 $complainData['comments']       = Arr::get($complaint, 'comments');
-            } 
-            else
-            {
+            } else {
                 $responseMessage                = 'No Complaint Found';
-                
             }
 
-            $responsearray['status'] 	        = $responseStatus;
-            $responsearray['message'] 	        = $responseMessage;
-            $responsearray['complainData'] 	    = $complainData;
-        
-            
+            $responsearray['status']             = $responseStatus;
+            $responsearray['message']             = $responseMessage;
+            $responsearray['complainData']         = $complainData;
+
+
             return response()->json($responsearray);
-        }    
-        catch(\Exception $e) 
-        {
-            \Log::error("api/ComplaintController -> track =>".$e->getMessage());
+        } catch (\Exception $e) {
+            \Log::error("api/ComplaintController -> track =>" . $e->getMessage());
             return Helper::customErrorMessage();
         }
     }
 
     public function review(ReviewRequest $request)
     {
-        try
-        {
+        try {
             $responsearray                          = array();
             $responseStatus                         = false;
             $responseMessage                        = array();
 
             $validateValues                         = $request->validated();
-            
-            $insertData['device_type']              = Helper::getdevice($request);  
+
+            $insertData['device_type']              = Helper::getdevice($request);
             $insertData['order_id']                 = Arr::get($validateValues, 'order_id');
             $insertData['name']                     = Arr::get($validateValues, 'name');
             $insertData['email']                    = Arr::get($validateValues, 'email');
@@ -176,61 +168,49 @@ class ComplaintController extends Controller
             $reviewInserted  = array();
             $reviewInserted  = Review::create($insertData);
 
-            if(!empty($reviewInserted))
-            { 
-                $responseStatus 	                = true;
-                $responsearray['message'] 	        = 'Review Submitted Successfully';
+            if (!empty($reviewInserted)) {
+                $responseStatus                     = true;
+                $responsearray['message']             = 'Review Submitted Successfully';
+            } else {
+                $responsearray['message']             = 'Error Submitting Review';
             }
-            else
-            {
-                $responsearray['message'] 	        = 'Error Submitting Review';
-            }
-            
-            
-            $responsearray['status'] 	        = $responseStatus;
-        
+
+
+            $responsearray['status']             = $responseStatus;
+
             return response()->json($responsearray);
-        }    
-        catch(\Exception $e) 
-        {
-            \Log::error("api/ComplaintController -> review =>".$e->getMessage());
+        } catch (\Exception $e) {
+            \Log::error("api/ComplaintController -> review =>" . $e->getMessage());
             return Helper::customErrorMessage();
         }
-    }  
-    
+    }
+
     public function getReviews()
     {
-        try
-        {
+        try {
             $responsearray                          = array();
             $responseStatus                         = false;
             $responseMessage                        = array();
 
-            
+
             $reviewObject = new Review();
 
             $reviews = $reviewObject->getReviewsByStatus(config('constants.review_statues_code.approved'));
 
-            if(!empty($reviews))
-            { 
-                $responseStatus 	                = true;
-                $responsearray['message'] 	        = 'Successful';
-                $responsearray['reviews'] 	        = $reviews;
-            }
-            else
-            {
-                $responsearray['message'] 	        = 'No review Found!';
-                $responsearray['reviews'] 	        = array();
-
+            if (!empty($reviews)) {
+                $responseStatus                     = true;
+                $responsearray['message']             = 'Successful';
+                $responsearray['reviews']             = $reviews;
+            } else {
+                $responsearray['message']             = 'No review Found!';
+                $responsearray['reviews']             = array();
             }
 
-            $responsearray['status'] 	        = $responseStatus;
-        
+            $responsearray['status']             = $responseStatus;
+
             return response()->json($responsearray);
-        }    
-        catch(\Exception $e) 
-        {
-            \Log::error("api/ComplaintController -> getReviews =>".$e->getMessage());
+        } catch (\Exception $e) {
+            \Log::error("api/ComplaintController -> getReviews =>" . $e->getMessage());
             return Helper::customErrorMessage();
         }
     }

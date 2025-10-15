@@ -148,6 +148,25 @@
                             </select>
                         </div>
 
+                        <div class="mb-3">
+                            <label for="inputName">Complaint Customer Notify :</label>
+                            <select id="complaint_customer_notify" class="form-control" name="complaint_customer_notify">
+                                @if(!empty($booleanOptions) )
+                                @foreach($booleanOptions as $key =>$value)
+                                @if(old('_token') && old('complaint_customer_notify') === $key)
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @elseif( old('_token') === null && Arr::get($configurations,
+                                'complaint_customer_notify')==$key && array_key_exists(Arr::get($configurations,
+                                'complaint_customer_notify'), config('constants.boolean_options')) )
+                                <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                                @else
+                                <option value="{{trim($key)}}">{{trim($value)}}</option>
+                                @endif
+                                @endforeach
+                                @endif
+                            </select>
+                        </div>
+
                         <h4>Tracking Status</h4>
                         <div class="mb-3">
                             <label for="complaint_track_initiated" class="form-label">Initiated:</label>

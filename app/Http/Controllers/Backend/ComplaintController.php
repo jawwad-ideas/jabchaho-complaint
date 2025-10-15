@@ -355,15 +355,17 @@ class ComplaintController extends Controller
         ]);
 
         //configuration filters
-        $filters            = ['complaint_sms_api_enable', 'complaint_sms_action', 'complaint_sms_sender', 'complaint_sms_username', 'complaint_sms_password', 'complaint_sms_format', 'complaint_sms_api_url', 'complaint_status_changed_sms_template', 'complaint_status_id', 'complaint_status_notify_type'];
+        $filters            = ['complaint_customer_notify', 'complaint_sms_api_enable', 'complaint_sms_action', 'complaint_sms_sender', 'complaint_sms_username', 'complaint_sms_password', 'complaint_sms_format', 'complaint_sms_api_url', 'complaint_status_changed_sms_template', 'complaint_status_id', 'complaint_status_notify_type'];
 
         //get configurations
         $configurations     = $this->getConfigurations($filters);
 
-        if (in_array($complaintStatusId, explode(',', Arr::get($configurations, 'complaint_status_id')))) {
-            // Dispatch job to send emails
-            dispatch(new ComplaintStatusChanged($complaintId, $complaintStatusId, $configurations));
-            $this->queueWorker();
+        if (!empty($configurations['complaint_customer_notify'])) {
+            if (in_array($complaintStatusId, explode(',', Arr::get($configurations, 'complaint_status_id')))) {
+                // Dispatch job to send emails
+                dispatch(new ComplaintStatusChanged($complaintId, $complaintStatusId, $configurations));
+                $this->queueWorker();
+            }
         }
 
         return redirect()->back()->with('success', "Description Added successfully.");
@@ -416,6 +418,12 @@ class ComplaintController extends Controller
         $complaintData  = Complaint::create($insertData);
 
         if (!empty($complaintData)) {
+
+            $filters            = ['complaint_customer_notify'];
+
+            //get configurations
+            $configurations     = $this->getConfigurations($filters);
+
             $complaintId    = Arr::get($complaintData, 'id', 0);
 
             $prefix = config('constants.complaint_number_starting_index'); //complaint_number_starting_index
@@ -426,9 +434,12 @@ class ComplaintController extends Controller
             //Files upload code
             $this->uploadImages($request, $complaintId);
 
-            // Dispatch job to send emails and SMS
-            dispatch(new NotifyComplainant($complaintId));
-            $this->queueWorker();
+
+            if (!empty($configurations['complaint_customer_notify'])) {
+                // Dispatch job to send emails and SMS
+                dispatch(new NotifyComplainant($complaintId));
+                $this->queueWorker();
+            }
 
             //add history
             $historyData = array();
