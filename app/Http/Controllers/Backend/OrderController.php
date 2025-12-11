@@ -142,6 +142,8 @@ class OrderController extends Controller
         $status             = $request->segment(3);
         $location_type      = $request->input('location_type');
         $issue_type         = $request->input('issue_type');
+        $from               = $request->input('from');
+        $to                 = $request->input('to');
 
         //$orders = Order::select('*')->orderBy('id', 'desc');
         $orders = Order::withCount([
@@ -198,6 +200,13 @@ class OrderController extends Controller
             }); // Filter orders where orderItems have issues of the given type
         }
 
+        if (!empty($from) && !empty($to)) {
+            $start   = $from . " 00:00:00";
+            $end     = $to . " 23:59:59";
+
+            $orders->whereBetween('created_at', [$start, $end]);
+        }
+
         $orders = $orders->latest()->paginate(config('constants.per_page'));
         //dd($orders);
         $filterData = [
@@ -210,7 +219,9 @@ class OrderController extends Controller
             'before_email' => $before_email,
             'after_email' => $after_email,
             'location_type' => $location_type,
-            'issue_type'    => $issue_type
+            'issue_type'    => $issue_type,
+            'from'                  => $from,
+            'to'                    => $to,
         ];
 
         return view('backend.orders.index', compact('orders'))->with($filterData);
