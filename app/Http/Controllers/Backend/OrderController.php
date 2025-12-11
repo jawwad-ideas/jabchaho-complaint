@@ -22,6 +22,7 @@ use App\Models\OrderItemIssue;
 use App\Jobs\SendWhatsAppJob as SendWhatsAppJob;
 use App\Traits\Configuration\ConfigurationTrait;
 use App\Traits\Orders\WhatsApp\Hold\ProcessHoldOrdersTrait;
+use League\CommonMark\Extension\Footnote\Event\FixOrphanedFootnotesAndRefsListener;
 
 #use App\Models\OrdersImages;
 class OrderController extends Controller
@@ -144,6 +145,7 @@ class OrderController extends Controller
         $issue_type         = $request->input('issue_type');
         $from               = $request->input('from');
         $to                 = $request->input('to');
+        $product            = $request->input('product_name');
 
         //$orders = Order::select('*')->orderBy('id', 'desc');
         $orders = Order::withCount([
@@ -207,21 +209,28 @@ class OrderController extends Controller
             $orders->whereBetween('created_at', [$start, $end]);
         }
 
+        if (!empty($product)) {
+            $orders->whereHas('orderItems', function ($q) use ($product) {
+                $q->where('order_items.item_name', 'like',  '%' .$product. '%');
+            });
+        }
+
         $orders = $orders->latest()->paginate(config('constants.per_page'));
         //dd($orders);
         $filterData = [
-            'order_number' => $order_number,
-            'order_status' => $status,
-            'customer_email' => $customer_email,
-            'customer_name' => $customer_name,
-            'telephone' => $telephone,
-            'email_status_options' => [1 => "No", 2 => "Yes"],
-            'before_email' => $before_email,
-            'after_email' => $after_email,
-            'location_type' => $location_type,
-            'issue_type'    => $issue_type,
+            'order_number'          => $order_number,
+            'order_status'          => $status,
+            'customer_email'        => $customer_email,
+            'customer_name'         => $customer_name,
+            'telephone'             => $telephone,
+            'email_status_options'  => [1 => "No", 2 => "Yes"],
+            'before_email'          => $before_email,
+            'after_email'           => $after_email,
+            'location_type'         => $location_type,
+            'issue_type'            => $issue_type,
             'from'                  => $from,
             'to'                    => $to,
+            'product'               => $product,
         ];
 
         return view('backend.orders.index', compact('orders'))->with($filterData);

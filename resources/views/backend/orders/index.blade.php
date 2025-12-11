@@ -148,6 +148,12 @@ tr[data-url]:hover {
                             </div>
 
                             <div class="col-sm-3 px-2 mt-2">
+                                <label class="fw-bold text-dark"></label>
+                                <input type="text" class="form-control p-2" autocomplete="off" name="product_name"
+                                       value="{{ $product ?? '' }}" placeholder="Product Name">
+                            </div>
+
+                            <div class="col-sm-3 px-2 mt-2">
                                 <label class="fw-bold text-dark" for="from_time">From:</label>
                                 <input type="date" class="form-control p-2" name="from" id="from" value="{{ $from}}"  autocomplete="off">
                             </div>
@@ -157,6 +163,7 @@ tr[data-url]:hover {
                                 <input type="date" class="form-control p-2" name="to" id="to" value="{{ $to}}"  autocomplete="off">
                             </div>
 
+                            
                         </div>
 
                         <div class="col-lg-12 text-end mt-4">
