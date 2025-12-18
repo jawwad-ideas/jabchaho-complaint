@@ -412,7 +412,16 @@ class ComplaintController extends Controller
         $insertData['comments']                     = Arr::get($validateValues, 'comments');
         $insertData['user_id']                      = $userId;
         $insertData['complaint_priority_id']        = $priorityId;
-        $insertData['reported_from']                = config('constants.complaint_reported_from_id.complaint_portal');
+        $reportedFrom                               = Arr::get($validateValues, 'reported_from');
+        
+        if(!empty($reportedFrom))
+        {
+            $insertData['reported_from']                = config('constants.complaint_reported_from_id.customer');
+        }
+        else
+        {
+            $insertData['reported_from']                = config('constants.complaint_reported_from_id.complaint_portal');
+        }
 
         $complaintData  = array();
         $complaintData  = Complaint::create($insertData);

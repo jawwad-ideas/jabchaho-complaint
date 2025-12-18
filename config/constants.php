@@ -61,8 +61,8 @@ return [
 	'complaint_status_notify_type'  =>[0=>'Disabled',1=>'SMS',2=>'Email', 3=>'Both'],
 	'complaint_status_notify_type_id'  =>['disabled'=>0,'sms'=>1 ,'email'=>2, 'both'=>3],
 
-	'complaint_reported_from'  		=>[1=>'Frontend',2=>'Backend'],
-	'complaint_reported_from_id'  	=>['website'=>1 ,'complaint_portal'=>2],
+	'complaint_reported_from'  		=>[1=>'Frontend',2=>'Backend',3=>'Customer'],
+	'complaint_reported_from_id'  	=>['website'=>1 ,'complaint_portal'=>2 ,'customer'=>3],
 
 	'admin_action_with_description' =>[
 			'logout.perform'				 			=> 'Logout',

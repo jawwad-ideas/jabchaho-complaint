@@ -40,20 +40,39 @@
     </div>
 
     <div class="row mb-3">
-        <div class="col-md-12">
+        <div class="col-md-6">
+            <label class="form-label mb-2">
+                Reported From
+            </label>
+
+            <div class="form-check">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="reported_from"
+                    name="reported_from"
+                    value="3"
+                    {{ old('reported_from') == 3 ? 'checked' : '' }}
+                />
+                <label class="form-check-label" for="reported_from">
+                    Customer Complaint
+                </label>
+            </div>
+        </div>
+        <div class="col-md-6">
             <label for="complaintPhase" class="form-label">Complaint Phase<span class="red"> *</span></label>
             <select id="complaint_phase" class="form-select form-select-sm" name="complaint_phase" required>
-            <option value="">Select Complaint Phase</option>
-            @if(!empty($complaintPhases) )
-                @foreach($complaintPhases as $key =>$value)
-                    @if(old('_token') && old('complaint_phase') == $key)
-                        <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
-                    @else
-                        <option value="{{trim($key)}}">{{trim($value)}}</option>
-                    @endif
-                @endforeach
-            @endif
-        </select>
+                <option value="">Select Complaint Phase</option>
+                @if(!empty($complaintPhases) )
+                    @foreach($complaintPhases as $key =>$value)
+                        @if(old('_token') && old('complaint_phase') == $key)
+                            <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                        @else
+                            <option value="{{trim($key)}}">{{trim($value)}}</option>
+                        @endif
+                    @endforeach
+                @endif
+            </select>
         </div>
     </div>   
 

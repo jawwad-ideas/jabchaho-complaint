@@ -20,6 +20,7 @@ class StoreComplaintRequest extends FormRequest
             'mobile_number'         => 'required|string|min:13',
             'complaint_type'        => 'required|in:' . implode(',', array_keys(config('constants.complaint_type'))),
             'complaint_phase'       => 'required|in:' . implode(',', array_keys(config('constants.complaint_phase'))),
+            'reported_from'         => 'nullable|in:' . implode(',', array_keys(config('constants.complaint_reported_from'))),
             'service_id'            => 'required|exists:services,id',
             'user_id'               => 'required|exists:users,id',
             'complaint_priority_id' => 'required|exists:complaint_priorities,id', 
