@@ -51,8 +51,8 @@ class SendWhatsAppJob implements ShouldQueue
 
                 $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/pdf/before");
                 $params['fileName']         = "JabChaho-Before-Wash-".$orderNumber.'-'.time().'.pdf';
-                $params['title']            = 'Product Issues In Order '.$orderNumber;
-                $params['templateName']     = 'order_issues';
+                $params['title']            = 'Your Pre-wash order number is '.$orderNumber.'. The product report is attached to this message.';
+                $params['templateName']     = 'order_report_created';
 
                 $this->generateBeforeWashPDF($params);
                 $this->callWhatsAppApi($params);
@@ -61,8 +61,8 @@ class SendWhatsAppJob implements ShouldQueue
             {
                 $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/pdf/after");
                 $params['fileName']         = "Jabchaho-After-Wash-".$orderNumber.'-'.time().'.pdf';
-                $params['title']            = 'Your Order Is Ready for Dispatch  '.$orderNumber;
-                $params['templateName']     = 'order_dispatached';
+                $params['title']            = 'Your Post-processing order number is '.$orderNumber.'. The product report is attached to this message.';
+                $params['templateName']     = 'order_processing_report';
 
                 $this->generateAfterWashPDF($params);
                 $this->callWhatsAppApi($params);
