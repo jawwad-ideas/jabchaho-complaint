@@ -119,10 +119,12 @@ class ComplaintController extends Controller
             $query->distinct()
                 ->leftJoin('complaint_assigned_history', 'complaints.id', '=', 'complaint_assigned_history.complaint_id')
                 ->where(function ($q) use ($userId) {
-                    $q->where('complaint_assigned_history.assigned_to', $userId)
-                        ->orWhere('complaint_assigned_history.assigned_by', $userId);
+                    $q->where(function ($qq) use ($userId) {
+                        $qq->where('complaint_assigned_history.assigned_to', $userId)
+                            ->orWhere('complaint_assigned_history.assigned_by', $userId);
+                    })
+                        ->orWhere('complaints.user_id', $userId);
                 })
-                ->orWhere('complaints.user_id', $userId)
                 ->select('complaints.*');
         }
 
@@ -412,13 +414,10 @@ class ComplaintController extends Controller
         $insertData['user_id']                      = $userId;
         $insertData['complaint_priority_id']        = $priorityId;
         $reportedFrom                               = Arr::get($validateValues, 'reported_from');
-        
-        if(!empty($reportedFrom))
-        {
+
+        if (!empty($reportedFrom)) {
             $insertData['reported_from']                = config('constants.complaint_reported_from_id.customer');
-        }
-        else
-        {
+        } else {
             $insertData['reported_from']                = config('constants.complaint_reported_from_id.complaint_portal');
         }
 
