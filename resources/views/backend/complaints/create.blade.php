@@ -40,25 +40,7 @@
     </div>
 
     <div class="row mb-3">
-        <div class="col-md-6">
-            <label class="form-label mb-2">
-                Reported From
-            </label>
 
-            <div class="form-check">
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="reported_from"
-                    name="reported_from"
-                    value="3"
-                    {{ old('reported_from') == 3 ? 'checked' : '' }}
-                />
-                <label class="form-check-label" for="reported_from">
-                    Customer Complaint
-                </label>
-            </div>
-        </div>
         <div class="col-md-6">
             <label for="complaintPhase" class="form-label">Complaint Phase<span class="red"> *</span></label>
             <select id="complaint_phase" class="form-select form-select-sm" name="complaint_phase" required>
@@ -69,6 +51,21 @@
                             <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
                         @else
                             <option value="{{trim($key)}}">{{trim($value)}}</option>
+                        @endif
+                    @endforeach
+                @endif
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="control-label col-sm-4" for="priorityId">Priority <span class="red"> *</span></label>
+            <select class="form-control c-select" name="complaint_priority_id" required>
+                <option value="">Select...</option>
+                @if(!empty($complaintPriorities))
+                    @foreach($complaintPriorities as $complaintPriority)
+                        @if(old('_token') && old('complaint_priority_id') == Arr::get($complaintPriority, 'id'))    
+                            <option value="{{ Arr::get($complaintPriority, 'id') }}" selected >{{ Arr::get($complaintPriority, 'name') }} @if(!empty(Arr::get($complaintPriority, 'days'))) ({{ Arr::get($complaintPriority, 'days') }} Days)   @endif</option>
+                        @else
+                        <option value="{{ Arr::get($complaintPriority, 'id') }}" >{{ Arr::get($complaintPriority, 'name') }} @if(!empty(Arr::get($complaintPriority, 'days'))) ({{ Arr::get($complaintPriority, 'days') }} Days)  @endif</option>
                         @endif
                     @endforeach
                 @endif
@@ -129,21 +126,7 @@
                 @endif
             </select>
         </div>
-        <div class="col-md-6">
-            <label class="control-label col-sm-4" for="priorityId">Priority <span class="red"> *</span></label>
-            <select class="form-control c-select" name="complaint_priority_id" required>
-                <option value="">Select...</option>
-                @if(!empty($complaintPriorities))
-                    @foreach($complaintPriorities as $complaintPriority)
-                        @if(old('_token') && old('complaint_priority_id') == Arr::get($complaintPriority, 'id'))    
-                            <option value="{{ Arr::get($complaintPriority, 'id') }}" selected >{{ Arr::get($complaintPriority, 'name') }} @if(!empty(Arr::get($complaintPriority, 'days'))) ({{ Arr::get($complaintPriority, 'days') }} Days)   @endif</option>
-                        @else
-                        <option value="{{ Arr::get($complaintPriority, 'id') }}" >{{ Arr::get($complaintPriority, 'name') }} @if(!empty(Arr::get($complaintPriority, 'days'))) ({{ Arr::get($complaintPriority, 'days') }} Days)  @endif</option>
-                        @endif
-                    @endforeach
-                @endif
-            </select>
-        </div>
+   
     </div>
 
 
