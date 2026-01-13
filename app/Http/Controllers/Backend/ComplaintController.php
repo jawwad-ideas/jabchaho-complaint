@@ -388,6 +388,7 @@ class ComplaintController extends Controller
 
         $data['complaintTypes']         = config('constants.complaint_type');
         $data['complaintPhases']        = config('constants.complaint_phase');
+        $data['reportedFrom']           = config('constants.complaint_reported_from');
         $data['services']               = $servicesObject->getServices(['id', 'name']);
         $data['complaintPriorities']    = $complaintPriorities;
         $data['users']                  = $users;
@@ -413,14 +414,8 @@ class ComplaintController extends Controller
         $insertData['comments']                     = Arr::get($validateValues, 'comments');
         $insertData['user_id']                      = $userId;
         $insertData['complaint_priority_id']        = $priorityId;
-        $reportedFrom                               = Arr::get($validateValues, 'reported_from');
-
-        if (!empty($reportedFrom)) {
-            $insertData['reported_from']                = config('constants.complaint_reported_from_id.customer');
-        } else {
-            $insertData['reported_from']                = config('constants.complaint_reported_from_id.complaint_portal');
-        }
-
+        $insertData['reported_from']                = Arr::get($validateValues, 'reported_from');
+        
         $complaintData  = array();
         $complaintData  = Complaint::create($insertData);
 

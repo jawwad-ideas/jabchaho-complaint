@@ -40,7 +40,27 @@
     </div>
 
     <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="form-label">
+                Reported From
+            </label>
 
+              <select class="form-select form-select-sm" id="reported_from_id" name="reported_from" >
+                @if(!empty($reportedFrom) )
+                    @foreach($reportedFrom as $key=>$value)
+                        @if(old('reported_from') == $key)
+                            <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
+                        @elseif(config('constants.complaint_reported_from_id.complaint_portal') == $key && !old('reported_from'))
+                            <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>    
+                        @else
+                            <option value="{{trim($key)}}">{{trim($value)}}</option>
+                        @endif
+                    @endforeach
+                @endif
+            </select>
+       
+            
+        </div>
         <div class="col-md-6">
             <label for="complaintPhase" class="form-label">Complaint Phase<span class="red"> *</span></label>
             <select id="complaint_phase" class="form-select form-select-sm" name="complaint_phase" required>
@@ -51,21 +71,6 @@
                             <option value="{{ trim($key) }}" selected>{{trim($value)}}</option>
                         @else
                             <option value="{{trim($key)}}">{{trim($value)}}</option>
-                        @endif
-                    @endforeach
-                @endif
-            </select>
-        </div>
-        <div class="col-md-6">
-            <label class="control-label col-sm-4" for="priorityId">Priority <span class="red"> *</span></label>
-            <select class="form-control c-select" name="complaint_priority_id" required>
-                <option value="">Select...</option>
-                @if(!empty($complaintPriorities))
-                    @foreach($complaintPriorities as $complaintPriority)
-                        @if(old('_token') && old('complaint_priority_id') == Arr::get($complaintPriority, 'id'))    
-                            <option value="{{ Arr::get($complaintPriority, 'id') }}" selected >{{ Arr::get($complaintPriority, 'name') }} @if(!empty(Arr::get($complaintPriority, 'days'))) ({{ Arr::get($complaintPriority, 'days') }} Days)   @endif</option>
-                        @else
-                        <option value="{{ Arr::get($complaintPriority, 'id') }}" >{{ Arr::get($complaintPriority, 'name') }} @if(!empty(Arr::get($complaintPriority, 'days'))) ({{ Arr::get($complaintPriority, 'days') }} Days)  @endif</option>
                         @endif
                     @endforeach
                 @endif
@@ -126,7 +131,21 @@
                 @endif
             </select>
         </div>
-   
+        <div class="col-md-6">
+            <label class="control-label col-sm-4" for="priorityId">Priority <span class="red"> *</span></label>
+            <select class="form-control c-select" name="complaint_priority_id" required>
+                <option value="">Select...</option>
+                @if(!empty($complaintPriorities))
+                    @foreach($complaintPriorities as $complaintPriority)
+                        @if(old('_token') && old('complaint_priority_id') == Arr::get($complaintPriority, 'id'))    
+                            <option value="{{ Arr::get($complaintPriority, 'id') }}" selected >{{ Arr::get($complaintPriority, 'name') }} @if(!empty(Arr::get($complaintPriority, 'days'))) ({{ Arr::get($complaintPriority, 'days') }} Days)   @endif</option>
+                        @else
+                        <option value="{{ Arr::get($complaintPriority, 'id') }}" >{{ Arr::get($complaintPriority, 'name') }} @if(!empty(Arr::get($complaintPriority, 'days'))) ({{ Arr::get($complaintPriority, 'days') }} Days)  @endif</option>
+                        @endif
+                    @endforeach
+                @endif
+            </select>
+        </div>
     </div>
 
 
