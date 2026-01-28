@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use App\Traits\Configuration\ConfigurationTrait;
 use App\Jobs\NotifyComplainant as NotifyComplainant;
+use App\Models\OrderItem;
+use App\Models\OrderItemImage;
+use Illuminate\Http\Request;
+
 
 class OrderController extends Controller
 {
@@ -47,4 +51,54 @@ class OrderController extends Controller
         //$responsearray['request']           = $validateValues;//json_decode($request->getContent(),true);
         return response()->json($responsearray);
     }
+
+    public function getOrderItemImages(Request $request)
+    {
+        $validated = $request->validate([
+            'barcode' => 'required|string',
+        ]);
+
+        $barcode = trim($validated['barcode']);
+
+        $item = OrderItem::select('id', 'barcode')
+            ->with(['images' => function ($q) {
+                $q->select('id', 'item_id', 'imagename', 'image_type')
+                ->where('status', 1);
+            }])
+            ->where('barcode', $barcode)
+            ->first();
+
+        if (!$item) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item not found for this barcode.',
+                'data' => [
+                    'before_wash_images' => [],
+                    'after_wash_images' => [],
+                ]
+            ], 404);
+        }
+
+        $beforeWashImages = [];
+        $afterWashImages  = [];
+
+        foreach ($item->images as $image) {
+            if ($image->image_type === 'Before Wash') {
+                $beforeWashImages[] = $image->imagename;
+            } elseif ($image->image_type === 'After Wash') {
+                $afterWashImages[] = $image->imagename;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'item_id' => $item->id,
+                'barcode' => $item->barcode,
+                'before_wash_images' => $beforeWashImages,
+                'after_wash_images' => $afterWashImages,
+            ]
+        ]);
+    }
+
 }

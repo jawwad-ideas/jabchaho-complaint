@@ -29,3 +29,4 @@ Route::group(['namespace' => 'App\Http\Controllers\Api','middleware' => ['custom
 
 
 Route::get('/pricing/{type}', 'App\Http\Controllers\Api\PricingController@index')->name('get.pricing');
+Route::post('/order-item/images', 'App\Http\Controllers\Api\OrderController@getOrderItemImages')->name('get.item.image');
