@@ -113,6 +113,11 @@ class ComplaintController extends Controller
 
         ];
 
+        $closedStatuses = [8, 9]; // Resolved, Closed are move to last
+
+        #to sort follow up date 
+        $lastFollowUp = ComplaintFollowUp::selectRaw('complaint_id, MAX(updated_at) as last_follow_up_at')->groupBy('complaint_id');
+
         if (!Auth::user()->hasRole(config('constants.roles.admin')) && !Auth::user()->hasRole(config('constants.roles.complaint_management_team'))) {
             $userId = Auth::guard('web')->user()->id;
 
@@ -128,7 +133,24 @@ class ComplaintController extends Controller
                 ->select('complaints.*');
         }
 
-        $complaints                     = $query->orderBy('id', 'DESC')->paginate(config('constants.per_page'));
+        #left join  with follow up to sort via updated at 
+        $query
+            ->leftJoinSub($lastFollowUp, 'cfu', function ($join) {
+                $join->on('cfu.complaint_id', '=', 'complaints.id');
+            })
+
+            // 1️⃣ Active first, Resolved/Closed last
+            ->orderByRaw(
+                'CASE WHEN complaints.complaint_status_id IN (' . implode(',', $closedStatuses) . ') THEN 1 ELSE 0 END ASC'
+            )
+
+            // 2️⃣ Latest follow-up on top
+            ->orderByDesc('cfu.last_follow_up_at')
+
+            // 3️⃣ Fallback
+            ->orderByDesc('complaints.id');
+
+        $complaints                     = $query->paginate(config('constants.per_page'));
         $complaintPriorities            = ComplaintPriority::get()->toArray();
 
         $data['complaints']             = $complaints;
@@ -415,7 +437,7 @@ class ComplaintController extends Controller
         $insertData['user_id']                      = $userId;
         $insertData['complaint_priority_id']        = $priorityId;
         $insertData['reported_from']                = Arr::get($validateValues, 'reported_from');
-        
+
         $complaintData  = array();
         $complaintData  = Complaint::create($insertData);
 
