@@ -20,6 +20,8 @@ use App\Models\OrderItem;
 use App\Models\OrderItemImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+
 
 class OrderController extends Controller
 {
@@ -56,107 +58,75 @@ class OrderController extends Controller
     public function getOrderItemImages(Request $request)
     {
         try {
-
             $validated = $request->validate([
-                'barcode' => 'required|string',
+                'item_bar_codes'   => 'required|array|min:1',
+                'item_bar_codes.*' => 'required|string',
             ]);
 
-            $barcode = trim($validated['barcode']);
+            $barcodes = collect($validated['item_bar_codes'])
+                ->map(fn ($b) => trim($b))
+                ->filter()
+                ->unique()
+                ->values();
 
-            $order = Order::with([
-                    'orderItems' => function ($q) use ($barcode) {
-                        $q->where('barcode', $barcode)
-                        ->with(['images' => function ($imgQ) {
-                            $imgQ->where('status', 1);
-                        }]);
-                    }
-                ])
-                ->whereHas('orderItems', function ($q) use ($barcode) {
-                    $q->where('barcode', $barcode);
-                })
-                ->first();
+            $items = OrderItem::with(['images' => function ($imgQ) {
+                    $imgQ->where('status', 1)
+                        ->where('image_type', 'After Wash')
+                        ->orderBy('id', 'asc');
+                }, 'order'])
+                ->whereIn('barcode', $barcodes)
+                ->get()
+                ->keyBy('barcode');
 
-            if (!$order || $order->orderItems->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Item not found for this barcode.',
-                    'data' => [
-                        'before_wash_images' => [],
-                        'after_wash_images'  => [],
-                    ]
-                ], 404);
-            }
+            $data = [];
 
-            $item = $order->orderItems->first();
+            foreach ($barcodes as $barcode) {
+                $item = $items->get($barcode);
 
-            if (!$item) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Order item missing.',
-                    'data' => []
-                ], 404);
-            }
-
-            $itemId  = $item->id;
-            $barcode = $item->barcode;
-            $service = $item->service_type;
-            $product = $item->item_name;
-
-            $orderNo = $order->order_id;
-
-            $beforeWashImages = [];
-            $afterWashImages  = [];
-
-            
-            $baseDir = config('constants.files.orders').$orderNo;
-
-            foreach ($item->images as $image) {
-
-                if (!in_array($image->image_type, ['Before Wash', 'After Wash'])) {
+                if (!$item) {
+                    $data[] = [
+                        'barcode' => $barcode,
+                        'found'   => false,
+                        'after_wash_image' => null,
+                    ];
                     continue;
                 }
 
-                $typeFolder = ($image->image_type === 'After Wash') ? 'after' : 'before';
-                $fileName   = $image->imagename;
+                $firstAfter = $item->images->first();
 
-                $thumbRel = "{$baseDir}/thumbnail/{$typeFolder}/{$fileName}";
-
-                $imageUrl = url($thumbRel);
-
-                if ($image->image_type === 'Before Wash') {
-                    $beforeWashImages[] = $imageUrl;
-                } else {
-                    $afterWashImages[] = $imageUrl;
+                $afterUrl = null;
+                if ($firstAfter && $item->order) {
+                    $orderNo  = $item->order->order_id ?? $item->order->id;
+                    $baseDir  = config('constants.files.orders') . $orderNo;
+                    $fileName = $firstAfter->imagename;
+                    $afterUrl = url("{$baseDir}/thumbnail/after/{$fileName}");
                 }
+
+                $data[] = [
+                    'barcode' => $barcode,
+                    'found'   => true,
+                    'item_id' => $item->id,
+                    'order_id' => optional($item->order)->order_id,
+                    'service' => $item->service_type ?? null,
+                    'product' => $item->item_name ?? null,
+                    'after_wash_image' => $afterUrl,
+                ];
             }
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'order_id'  => $orderNo, 
-                    'item_id'   => $itemId,
-                    'barcode'   => $barcode,
-                    'service'   => $service,
-                    'product'   => $product,
-                    'before_wash_images' => $beforeWashImages,
-                    'after_wash_images'  => $afterWashImages,
-                ]
+                'data'    => $data
             ]);
 
         } catch (\Throwable $e) {
-
-            Log::error('getOrderItemImages error', [
-                'barcode' => $request->barcode ?? null,
-                'error'   => $e->getMessage(),
-                'line'    => $e->getLine(),
-            ]);
-
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong while fetching item images.',
             ], 500);
         }
     }
+
+
 
 
 }
