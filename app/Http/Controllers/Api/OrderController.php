@@ -105,7 +105,7 @@ class OrderController extends Controller
                 $data[] = [
                     'barcode' => $barcode,
                     'found'   => true,
-                    'item_id' => $item->id,
+                    'item_id' => $item->laundry_item_id,
                     'order_id' => optional($item->order)->order_id,
                     'service' => $item->service_type ?? null,
                     'product' => $item->item_name ?? null,
