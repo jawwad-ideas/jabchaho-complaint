@@ -144,14 +144,15 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::post('/delete', 'OrderController@delete')->name('orders.delete');
             Route::post('/complete-order', 'OrderController@completeOrder')->name('orders.complete');
             Route::post('/sync-order', 'OrderController@syncOrder')->name('orders.sync');
+            Route::post('/sync-single-order', 'OrderController@syncOrderSingle')->name('orders.sync.single');
             Route::post('/send-email', 'OrderController@sendEmail')->name('send.email');
             Route::get('/barcode-image', 'OrderController@itemImage')->name('orders.barcode.images');
             //Barcode Image Upload
             Route::get('/barcode-image-upload', 'OrderController@barcodeImageUpload')->name('barcode.image.upload');
-            Route::get('/fetch-order-detail/{orderId}', 'OrderController@fetchOrderDetail')->name('fetch.order.detail'); 
+            Route::get('/fetch-order-detail/{orderId}', 'OrderController@fetchOrderDetail')->name('fetch.order.detail');
             //hold whatsapp for time duration in config and flaf set to 3
-            Route::post('/mark-hold-whatsapp-order', 'OrderController@markHoldWhatsAppOrder')->name('mark.hold.whatsapp.order'); 
-            
+            Route::post('/mark-hold-whatsapp-order', 'OrderController@markHoldWhatsAppOrder')->name('mark.hold.whatsapp.order');
+
             #hold orders of whatsapp
             Route::get('/hold/{type}', 'OrderController@holdWhatsAppOrders')->name('hold.order.list');
             #process.hold.orders
@@ -159,7 +160,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             Route::post('/send-whatsapp', 'OrderController@sendWhatsApp')->name('send.whatsapp');
         });
 
-        
+
 
         Route::post('/upload-order-image', 'OrderController@uploadOrderImage')->name('upload.order.image');
         Route::post('/upload-order-image-whithoutbase64', 'OrderController@uploadOrderImageWithoutBase64')->name('upload.order.image.whithoutbase64');
@@ -192,7 +193,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend','prefix' => config('
             #Route::patch('/{dryer}/update', 'DryerController@update')->name('sunny.dryer.update');
             Route::get('/{status?}', 'DryerController@index')->name('sunny.dryer');
         });
-        
+
         Route::group(['prefix' => 'pricing'], function() {
             Route::get('/', 'PricingController@index')->name('pricing');
             Route::get('/sync', 'PricingController@syncPricing')->name('pricing.sync');
