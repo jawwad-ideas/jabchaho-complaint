@@ -60,45 +60,16 @@ class SyncSingleLaundryOrder extends Command
                 return SymfonyCommand::FAILURE;
             }
 
-            // Optional: if you only want processing orders, uncomment this:
-            // if ($order->order_status !== 'processing') {
-            //     $this->error("Order status is not processing. Current status: {$order->order_status}");
-            //     return Command::FAILURE;
-            // }
-
-            // Check if already synced
-            // $exists = Order::where('order_id', $order->id)->exists();
-
-            // if ($exists) {
-            //     $this->info("This Order ID: {$order->id} already exists in local DB.");
-            //     return SymfonyCommand::SUCCESS;
-            // }
-
-            // Insert order into local DB
-            // $insertData = [
-            //     'order_id' => $order->id,
-            //     'customer_id' => $order->customer_id,
-            //     'customer_name' => $order->customer_name,
-            //     'telephone' => $order->telephone,
-            //     'customer_email' => $order->customer_email,
-            //     // 'created_at'    => $order->created_at, // enable if needed
-            //     'pick_date' => $order->pick_date,
-            //     'delivery_date' => $order->delivery_date,
-            //     'location_type' => $order->store_id,
-            // ];
-
-            // $localOrderId = Order::insertGetId($insertData);
-            // $this->info("Inserted local Order ID: {$localOrderId}");
             $orderModel = Order::updateOrCreate(
                 ['order_id' => $order->id], // condition
                 [
-                    'customer_id' => $order->customer_id,
-                    'customer_name' => $order->customer_name,
-                    'telephone' => $order->telephone,
+                    'customer_id'    => $order->customer_id,
+                    'customer_name'  => $order->customer_name,
+                    'telephone'      => $order->telephone,
                     'customer_email' => $order->customer_email,
-                    'pick_date' => $order->pick_date,
-                    'delivery_date' => $order->delivery_date,
-                    'location_type' => $order->store_id,
+                    'pick_date'      => $order->pick_date,
+                    'delivery_date'  => $order->delivery_date,
+                    'location_type'  => $order->store_id,
                 ]
             );
             $localOrderId = $orderModel->id;
@@ -120,7 +91,7 @@ class SyncSingleLaundryOrder extends Command
                 ->where('od.laundry_orders_id', $order->id)
                 ->get();
 
-            $this->info('orderItems=>'.json_encode($orderItems));
+            $this->info('orderItems=>' . json_encode($orderItems));
 
             if ($orderItems->count() > 0) {
                 foreach ($orderItems as $item) {
@@ -143,6 +114,34 @@ class SyncSingleLaundryOrder extends Command
                         $this->warn("Item insert failed for barcode: {$item->barcode} (check logs)");
                         continue;
                     }
+                }
+                // Fetch barcodes from laundry items
+                $incomingBarcodes = $orderItems->pluck('barcode')->filter()->values()->all();
+
+                // Upsert items
+                foreach ($orderItems as $item) {
+                    OrderItem::updateOrCreate(
+                        [
+                            'order_id' => $localOrderId,
+                            'barcode'  => $item->barcode,
+                        ],
+                        [
+                            'service_type'    => $item->service_type,
+                            'item_name'       => $item->item_name,
+                            'qty'             => $item->qty,
+                            'laundry_item_id' => $item->laundry_item_id,
+                        ]
+                    );
+                }
+
+                // ✅ Delete removed items from local DB
+                OrderItem::where('order_id', $localOrderId)
+                    ->whereNotIn('barcode', $incomingBarcodes)
+                    ->delete();
+
+                if ($orderItems->count() === 0) {
+                    OrderItem::where('order_id', $localOrderId)->delete();
+                    $this->warn("No items found, local items deleted for order: {$localOrderId}");
                 }
             } else {
                 $this->warn("No items found for laundry order ID: {$order->id}");
