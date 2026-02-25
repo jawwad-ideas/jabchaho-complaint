@@ -36,40 +36,40 @@
                                                 <tbody style="border:1px solid #fefad4;">
                                                     @php $beforeCounter = 1; @endphp
                                                     @foreach($orderItems as $orderItem)
-                                                        @if(!empty(Arr::get($orderItem, 'before_wash_count')))
-                                                            
-                                                                <tr  @if($beforeCounter % 2 == 0) style="background-color: #ffffff75;" @else style="border:1px solid #36342145;" @endif>
-                                                                    <td style="border:none;padding:10px;">{{ $beforeCounter }}</td>
-                                                                    <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/><small style="display:inline-block;font-weight:700;">Barcode:</small><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span>
-                                                                        @if(!empty($orderItem->issues))
-                                                                        <br/><small>Item having Issue:</small>
-                                                                            <div class="form-check-label text-capitalize d-flex gap-2 flex-wrap mt-2 w-50 issuesPills " for="color fading" id="savedOrderItemIssues-{{$orderItem->id}}">
-                                                                                @foreach($orderItem->issues as $row)
-                                                                                <span style="border-radius: 50rem !important; background-color: #f7dd0282 !important; padding: .25rem !important; display: inline-block; padding: .35em .65em; font-size: .75em; font-weight: 700; line-height: 1; color: #000; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem; font-family: 'Comfortaa', sans-serif !important; text-transform: capitalize !important;">{{config('constants.issues.'.Arr::get($row, 'issue'))}}</span>
-                                                                                @endforeach
-                                                                            </div>
+                                                    @if(!empty(Arr::get($orderItem, 'before_wash_count')))
 
-                                                                        @endif
-                                                                </td>
-                                                                    <td style="border:none;padding:10px;">
-                                                                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
-                                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
-                                                                            <span style="width:50%;float:left;">
-                                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none; display:block;" download>
-                                                                                    @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename'))))
-                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;height:35px;"  />
-                                                                                    @else
-                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;height:35px;"  />
-                                                                                    @endif
-                                                                                </a>
-                                                                            </span>
-                                                                            @endif
-                                                                        @endforeach
-                                                                    </td>
-                                                                </tr>
-                                                                @php $beforeCounter++; @endphp
-                                                            
-                                                        @endif
+                                                    <tr @if($beforeCounter % 2==0) style="background-color: #ffffff75;" @else style="border:1px solid #36342145;" @endif>
+                                                        <td style="border:none;padding:10px;">{{ $beforeCounter }}</td>
+                                                        <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br /><small style="display:inline-block;font-weight:700;">Barcode:</small><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span>
+                                                            @if(!empty($orderItem->issues))
+                                                            <br /><small>Item having Issue:</small>
+                                                            <div class="form-check-label text-capitalize d-flex gap-2 flex-wrap mt-2 w-50 issuesPills " for="color fading" id="savedOrderItemIssues-{{$orderItem->id}}">
+                                                                @foreach($orderItem->issues as $row)
+                                                                <span style="border-radius: 50rem !important; background-color: #f7dd0282 !important; padding: .25rem !important; display: inline-block; padding: .35em .65em; font-size: .75em; font-weight: 700; line-height: 1; color: #000; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem; font-family: 'Comfortaa', sans-serif !important; text-transform: capitalize !important;">{{config('constants.issues.'.Arr::get($row, 'issue'))}}</span>
+                                                                @endforeach
+                                                            </div>
+
+                                                            @endif
+                                                        </td>
+                                                        <td style="border:none;padding:10px;">
+                                                            @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'Before Wash')
+                                                            <span style="width:50%;float:left;">
+                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none; display:block;" download>
+                                                                    @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename'))))
+                                                                    <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;height:35px;" />
+                                                                    @else
+                                                                    <img src="{{ url('assets/uploads/orders/'.$orderNo.'/before/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;height:35px;" />
+                                                                    @endif
+                                                                </a>
+                                                            </span>
+                                                            @endif
+                                                            @endforeach
+                                                        </td>
+                                                    </tr>
+                                                    @php $beforeCounter++; @endphp
+
+                                                    @endif
                                                     @endforeach
                                                 </tbody>
                                             </table>
@@ -88,46 +88,46 @@
                                                 <tbody style="border:1px solid #fefad4;">
                                                     @php $afterCounter = 1; @endphp
                                                     @foreach($orderItems as $orderItem)
-                                                        @if(!empty(Arr::get($orderItem, 'after_wash_count')))
-                                                           
-                                                                <tr  @if($afterCounter % 2 == 0) style="background-color: #ffffff75;" @endif>
-                                                                    <td style="border:none;padding:10px;">{{ $afterCounter }}</td>
-                                                                    <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br/><small style="display:inline-block;font-weight:700;">Barcode:</small><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span>
-                                                                    @if( $orderItem->is_issue_identify == 2 )
-                                                                        
-                                                                        @if( $orderItem->is_issue_fixed == 2 )
-                                                                            <small>Issue Fixed:</small>
-                                                                            @if(!empty($orderItem->issues))
-                                                                                <div class="form-check-label text-capitalize d-flex gap-2 flex-wrap mt-2 w-50 issuesPills " for="color fading" id="savedOrderItemIssues-{{$orderItem->id}}">
-                                                                                    @foreach($orderItem->issues as $row)
-                                                                                    <span style="border-radius: 50rem !important; background-color: #f7dd0282 !important; padding: .25rem !important; display: inline-block; padding: .35em .65em; font-size: .75em; font-weight: 700; line-height: 1; color: #000; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem; font-family: 'Comfortaa', sans-serif !important; text-transform: capitalize !important;">{{config('constants.issues.'.Arr::get($row, 'issue'))}}</span>
-                                                                                    @endforeach
-                                                                                </div>
+                                                    @if(!empty(Arr::get($orderItem, 'after_wash_count')))
 
-                                                                            @endif
+                                                    <tr @if($afterCounter % 2==0) style="background-color: #ffffff75;" @endif>
+                                                        <td style="border:none;padding:10px;">{{ $afterCounter }}</td>
+                                                        <td style="border:none;padding:10px;">{{ \Illuminate\Support\Str::limit(Arr::get($orderItem, 'item_name'), 10, '...') }}<br /><small style="display:inline-block;font-weight:700;">Barcode:</small><span style="font-size: 12px; color: #555;">{{ Arr::get($orderItem, 'barcode') }}</span>
+                                                            @if( $orderItem->is_issue_identify == 2 )
 
-                                                                        @endif
+                                                            @if( $orderItem->is_issue_fixed == 2 )
+                                                            <small>Issue Fixed:</small>
+                                                            @if(!empty($orderItem->issues))
+                                                            <div class="form-check-label text-capitalize d-flex gap-2 flex-wrap mt-2 w-50 issuesPills " for="color fading" id="savedOrderItemIssues-{{$orderItem->id}}">
+                                                                @foreach($orderItem->issues as $row)
+                                                                <span style="border-radius: 50rem !important; background-color: #f7dd0282 !important; padding: .25rem !important; display: inline-block; padding: .35em .65em; font-size: .75em; font-weight: 700; line-height: 1; color: #000; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem; font-family: 'Comfortaa', sans-serif !important; text-transform: capitalize !important;">{{config('constants.issues.'.Arr::get($row, 'issue'))}}</span>
+                                                                @endforeach
+                                                            </div>
+
+                                                            @endif
+
+                                                            @endif
+                                                            @endif
+                                                        </td>
+                                                        <td style="border:none;padding:10px;">
+                                                            @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
+                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
+                                                            <span style="width:50%;float:left;">
+                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none;display:block;" download>
+                                                                    @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename'))))
+                                                                    <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;" />
+                                                                    @else
+                                                                    <img src="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;" />
                                                                     @endif
-                                                                </td>
-                                                                    <td style="border:none;padding:10px;">
-                                                                        @foreach(Arr::get($orderItem, 'images', []) as $orderItemsImage)
-                                                                            @if(Arr::get($orderItemsImage, 'image_type') == 'After Wash')
-                                                                            <span style="width:50%;float:left;">
-                                                                                <a href="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="text-decoration: none;display:block;" download>
-                                                                                    @if(File::exists(public_path('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename'))))
-                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/thumbnail/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;" />
-                                                                                    @else
-                                                                                        <img src="{{ url('assets/uploads/orders/'.$orderNo.'/after/'.Arr::get($orderItemsImage, 'imagename')) }}" style="max-width:30px;" />
-                                                                                    @endif
-                                                                                </a>
-                                                                            </span>
-                                                                            @endif
-                                                                        @endforeach
-                                                                    </td>
-                                                                </tr>
-                                                                @php $afterCounter++; @endphp
-                                                           
-                                                        @endif
+                                                                </a>
+                                                            </span>
+                                                            @endif
+                                                            @endforeach
+                                                        </td>
+                                                    </tr>
+                                                    @php $afterCounter++; @endphp
+
+                                                    @endif
                                                     @endforeach
                                                 </tbody>
                                             </table>
@@ -136,6 +136,9 @@
                                 </table>
                                 @endif
                                 <p>Please feel free to contact us at 021-111-524-246 for any queries or concerns.</p>
+                                <p style="margin: 15px 0; line-height: 1.6;">
+                                    <strong>Note: You are kindly requested to check the items within 7 days of delivery, with the attached bar code intact. Complaints received after this period will not be entertained. </strong>
+                                </p>
                                 <p>Best regards,</p>
                                 <p><b>JabChaho</b></p>
                             </td>

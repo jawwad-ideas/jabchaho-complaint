@@ -16,7 +16,7 @@ use App\Helpers\Helper;
 
 class SendWhatsAppJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,ConfigurationTrait;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ConfigurationTrait;
 
     /**
      * Create a new job instance.
@@ -38,75 +38,69 @@ class SendWhatsAppJob implements ShouldQueue
         $this->sendWhatsApp($this->params);
     }
 
-    public function sendWhatsApp($params=array())
+    public function sendWhatsApp($params = array())
     {
         try {
-            $orderId        = Arr::get($params, 'orderId'); 
-            $orderNumber    = Arr::get($params, 'orderNumber'); 
+            $orderId        = Arr::get($params, 'orderId');
+            $orderNumber    = Arr::get($params, 'orderNumber');
             $whatsAppType   = Arr::get($params, 'whatsAppType');
 
-            if($whatsAppType == 'before_whatsapp')
-            {
-                
+            if ($whatsAppType == 'before_whatsapp') {
+
 
                 $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/pdf/before");
-                $params['fileName']         = "JabChaho-Pre-Wash-".$orderNumber.'-'.time().'.pdf';
-                $params['title']            = 'Your Pre-wash order number is '.$orderNumber.'. The product report is attached to this message.';
+                $params['fileName']         = "JabChaho-Pre-Wash-" . $orderNumber . '-' . time() . '.pdf';
+                $params['title']            = 'Your Pre-wash order number is ' . $orderNumber . '. The product report is attached to this message.';
                 $params['templateName']     = 'order_report_created';
 
                 $this->generateBeforeWashPDF($params);
                 $this->callWhatsAppApi($params);
-            }
-            else
-            {
+            } else {
                 $params['directoryPath']    = url("assets/uploads/orders/{$orderNumber}/pdf/after");
-                $params['fileName']         = "Jabchaho-Post-Processing-".$orderNumber.'-'.time().'.pdf';
-                $params['title']            = 'Your Post-processing order number is '.$orderNumber.'. The product report is attached to this message.';
+                $params['fileName']         = "Jabchaho-Post-Processing-" . $orderNumber . '-' . time() . '.pdf';
+                $params['title']            = 'Your Post-processing order number is ' . $orderNumber . '. The product report is attached to this message.';
                 $params['templateName']     = 'order_processing_report';
 
                 $this->generateAfterWashPDF($params);
                 $this->callWhatsAppApi($params);
             }
-            
         } catch (\Exception $e) {
             // Log the error message for debugging
             \Log::error('Error generating PDF: ' . $e->getMessage());
             return false;
         }
-    
     }
 
-    public function callWhatsAppApi($params=array())
+    public function callWhatsAppApi($params = array())
     {
-        try{
+        try {
 
             //configuration filters
-            $filters            = ['laundry_order_whatsapp_api_enable','laundry_order_whatsapp_api_url','laundry_order_whatsapp_api_token'];
-            
+            $filters            = ['laundry_order_whatsapp_api_enable', 'laundry_order_whatsapp_api_url', 'laundry_order_whatsapp_api_token'];
+
             //get configurations
             $configurations     = $this->getConfigurations($filters);
 
             //Check cron is enabled or not
-            if(!empty(Arr::get($configurations, 'laundry_order_whatsapp_api_enable')))
-            {
-                $order          = Arr::get($params, 'order'); 
+            if (!empty(Arr::get($configurations, 'laundry_order_whatsapp_api_enable'))) {
+                $order          = Arr::get($params, 'order');
                 $directoryPath  = Arr::get($params, 'directoryPath');
-                $orderNumber    = Arr::get($params, 'orderNumber'); 
-                $fileName       = Arr::get($params, 'fileName'); 
-                $title          = Arr::get($params, 'title'); 
-                $number         = Arr::get($order, 'telephone'); 
+                $orderNumber    = Arr::get($params, 'orderNumber');
+                $fileName       = Arr::get($params, 'fileName');
+                $title          = Arr::get($params, 'title');
+                $number         = Arr::get($order, 'telephone');
                 $postURL        = Arr::get($configurations, 'laundry_order_whatsapp_api_url');
                 $apiToken       = Arr::get($configurations, 'laundry_order_whatsapp_api_token');
-                $mediaUrl       = $directoryPath.'/'.$fileName;
-                $templateName   = Arr::get($params, 'templateName'); 
+                $mediaUrl       = $directoryPath . '/' . $fileName;
+                $templateName   = Arr::get($params, 'templateName');
                 ///$fileName       ='jabchaho-before-wash-101625.pdf';
                 //$mediaUrl       ='https://complaint.jabchaho.com/assets/uploads/orders/101882/before/pdf/jabchaho-before-wash-101882.pdf';
                 //$mediaUrl = 'https://eoceanwaba.com:3050/uploads/platform/builder/support/Playbook.pdf';
                 $headers = [
                     'Content-Type' => 'application/json',
-                    'Token' =>$apiToken,
+                    'Token' => $apiToken,
                 ];
-        
+
                 $input = [
                     "phone_number" => $number,
                     "type" => "template",
@@ -143,26 +137,40 @@ class SendWhatsAppJob implements ShouldQueue
 
                 //\Log::error('input' .print_r($input,true));
 
-                $params 						= array(); 	
-                $params['apiUrl']     			= $postURL;
-                $params['input']     			= $input;
+                $params                         = array();
+                $params['apiUrl']                 = $postURL;
+                $params['input']                 = $input;
                 $params['headerParams']         = $headers;
-                $params['httpMethod']     		= config('constants.http_methods.post');
-                $params['apiType']     			= config('constants.content_type.json');
+                $params['httpMethod']             = config('constants.http_methods.post');
+                $params['apiType']                 = config('constants.content_type.json');
 
                 #call api
                 $axApiResponseDecode = Helper::sendRequestToGateway($params);
 
-                
-                return true;
+                # Initialize $apiResponse with default values
+                $apiResponse = [
+                    'status'                => 'error',  // Default to error
+                    'message_status'        => 'No response received',
+                    'phone_number'          => $number,
+                    'order_number'          => $orderNumber,
+                    'title'                 => $title,
+                ];
 
-             
-            }
-            else{
+                # If the API response is not empty, overwrite the defaults
+                if (!empty($axApiResponseDecode)) {
+                    $apiResponse['status']         = Arr::get($axApiResponseDecode, 'status', 'error');
+                    $apiResponse['message_status'] = Arr::get($axApiResponseDecode, 'message.messages.0.message_status', 'No response received');
+                }
+
+                //loging goes here
+                \Log::channel('whatsapp_api_response')->info("sendOceanDigitailWhatsAppMsg response:", $apiResponse);
+
+
+                return true;
+            } else {
                 \Log::error('Disable WhatsApp Api');
                 return false;
             }
-
         } catch (\Exception $e) {
             // Log the error message for debugging
             \Log::error('Error generating PDF: ' . $e->getMessage());
@@ -171,20 +179,18 @@ class SendWhatsAppJob implements ShouldQueue
     }
 
 
-    public function generateBeforeWashPDF($params=array())
+    public function generateBeforeWashPDF($params = array())
     {
-        
-        try 
-        {
-            $orderId        = Arr::get($params, 'orderId'); 
-            $orderNumber    = Arr::get($params, 'orderNumber'); 
-            $fileName       = Arr::get($params, 'fileName'); 
-            
+
+        try {
+            $orderId        = Arr::get($params, 'orderId');
+            $orderNumber    = Arr::get($params, 'orderNumber');
+            $fileName       = Arr::get($params, 'fileName');
+
             $directoryPath = public_path("assets/uploads/orders/{$orderNumber}/pdf/before");
 
             // Ensure the directory exists
-            if (!file_exists($directoryPath)) 
-            {
+            if (!file_exists($directoryPath)) {
                 mkdir($directoryPath, 0755, true); // Create directory if it doesn't exist
             }
 
@@ -192,36 +198,30 @@ class SendWhatsAppJob implements ShouldQueue
             $optionsString = '';
             $orderData = Order::with(['orderItems' => function ($query) {
                 $query->where('is_issue_identify', 2)
-                ->with(['images' => function ($imageQuery) {
-                    $imageQuery->where('image_type', 'Before Wash');
-                    $imageQuery->where('status', 1);
-                }]);
-            },'orderItems.issues'])
-            ->where(['id' =>$orderId ])
-            ->first();
+                    ->with(['images' => function ($imageQuery) {
+                        $imageQuery->where('image_type', 'Before Wash');
+                        $imageQuery->where('status', 1);
+                    }]);
+            }, 'orderItems.issues'])
+                ->where(['id' => $orderId])
+                ->first();
 
-            if(!empty(Arr::get($orderData, 'orderItems')))
-            {
+            if (!empty(Arr::get($orderData, 'orderItems'))) {
                 $orderItems = Arr::get($orderData, 'orderItems');
 
-                foreach($orderItems as $orderItem)
-                {
-                    if(!empty(Arr::get($orderItem, 'issues')))
-                    {
+                foreach ($orderItems as $orderItem) {
+                    if (!empty(Arr::get($orderItem, 'issues'))) {
                         $orderItemIssues = Arr::get($orderItem, 'issues');
-                        foreach($orderItemIssues as $orderItemIssue)
-                        {
-                            if(!empty(Arr::get($orderItemIssue, 'issue')))
-                            {
-                                $options[] = config('constants.issues.'.Arr::get($orderItemIssue, 'issue'));//Arr::get($orderItemIssue, 'issue');
+                        foreach ($orderItemIssues as $orderItemIssue) {
+                            if (!empty(Arr::get($orderItemIssue, 'issue'))) {
+                                $options[] = config('constants.issues.' . Arr::get($orderItemIssue, 'issue')); //Arr::get($orderItemIssue, 'issue');
                             }
                         }
                     }
                 }
             }
 
-            if(!empty($options))
-            {
+            if (!empty($options)) {
                 $options = array_unique($options);
                 $optionsString = implode(', ', $options);
             }
@@ -234,11 +234,11 @@ class SendWhatsAppJob implements ShouldQueue
                 'orderItems'            => Arr::get($orderData, 'orderItems'),
             ];
 
-            
+
             $html = view('backend.pdf.beforeWash', $data)->render();
             PDF::setOptions(['isRemoteEnabled' => true]);
             $pdf = Pdf::loadHTML($html);
-            
+
             // Specify the file name and path
             $path = $directoryPath . '/' . $fileName;
 
@@ -251,27 +251,24 @@ class SendWhatsAppJob implements ShouldQueue
             \Log::error('Error beforeWash PDF: ' . $e->getMessage());
             return false;
         }
-
     }
 
 
-    public function generateAfterWashPDF($params=array())
+    public function generateAfterWashPDF($params = array())
     {
-        try 
-        {
-            $orderId        = $params['orderId']; 
-            $orderNumber    = $params['orderNumber']; 
-            $fileName       = Arr::get($params, 'fileName'); 
-            
+        try {
+            $orderId        = $params['orderId'];
+            $orderNumber    = $params['orderNumber'];
+            $fileName       = Arr::get($params, 'fileName');
+
             $directoryPath = public_path("assets/uploads/orders/{$orderNumber}/pdf/after");
 
             // Ensure the directory exists
-            if (!file_exists($directoryPath)) 
-            {
+            if (!file_exists($directoryPath)) {
                 mkdir($directoryPath, 0755, true); // Create directory if it doesn't exist
             }
 
-            $orderData=array();
+            $orderData = array();
             $orderData = Order::with([
                 'orderItems' => function ($query) {
                     $query->whereHas('images', function ($query) {
@@ -289,24 +286,24 @@ class SendWhatsAppJob implements ShouldQueue
                     $query->where('status', 1);
                 }
             ])
-            ->withCount(['orderItems as items_count'])
-            ->where('id', $orderId)
-            ->first();
+                ->withCount(['orderItems as items_count'])
+                ->where('id', $orderId)
+                ->first();
 
 
-            $data = 
-            [
-                'orderNo'               => Arr::get($orderData, 'order_id'),
-                'name'                  => Arr::get($orderData, 'customer_name'),
-                'app_url'               => URL::to('/'),
-                'orderItems'            => Arr::get($orderData, 'orderItems'),
-                'orderItemCount'        => Arr::get($orderData, 'items_count'),
-            ];
+            $data =
+                [
+                    'orderNo'               => Arr::get($orderData, 'order_id'),
+                    'name'                  => Arr::get($orderData, 'customer_name'),
+                    'app_url'               => URL::to('/'),
+                    'orderItems'            => Arr::get($orderData, 'orderItems'),
+                    'orderItemCount'        => Arr::get($orderData, 'items_count'),
+                ];
 
 
             $html = view('backend.pdf.aftereWash', $data)->render();
             $pdf = Pdf::loadHTML($html);
-            
+
             // Specify the file name and path
             $path = $directoryPath . '/' . $fileName;
 
@@ -314,9 +311,6 @@ class SendWhatsAppJob implements ShouldQueue
             $pdf->save($path);
 
             return true;
-            
-
-
         } catch (\Exception $e) {
             // Log the error message for debugging
             \Log::error('Error afterWashPDF PDF: ' . $e->getMessage());

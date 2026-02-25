@@ -125,6 +125,13 @@ return [
             'days' => 10,
         ],
 
+        'whatsapp_api_response' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/whatsapp_api_response.log'),
+            'level' => 'info',
+            'days' => 30,
+        ],
+
         'complaint_assigned_history_insert_query' => [
 
 
