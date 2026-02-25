@@ -27,7 +27,7 @@ use League\CommonMark\Extension\Footnote\Event\FixOrphanedFootnotesAndRefsListen
 #use App\Models\OrdersImages;
 class OrderController extends Controller
 {
-    use ConfigurationTrait,ProcessHoldOrdersTrait;
+    use ConfigurationTrait, ProcessHoldOrdersTrait;
     public function uploadSave(Request $request)
     {
         dd($request->all());
@@ -41,12 +41,12 @@ class OrderController extends Controller
     public function itemImage(Request $request)
     {
 
-        $orderItemImage = OrderItemImage::with(['orderItem.order','orderItem.issues'])
+        $orderItemImage = OrderItemImage::with(['orderItem.order', 'orderItem.issues'])
             ->where('status', 1)
             ->orderBy('id', 'desc');
 
         $filterData = [
-            'barcode'               => $request->get('barcode', ''),
+            'barcode' => $request->get('barcode', ''),
             'service_type' => $request->get('service_type', ''),
             'item_name' => $request->get('item_name', ''),
             'order_number' => $request->get('order_number', ''),
@@ -54,9 +54,9 @@ class OrderController extends Controller
             'is_issue_identify_options' => [1 => "No", 2 => "Yes"],
             'customer_name' => $request->get('customer_name', ''),
             'telephone' => $request->get('telephone', ''),
-            'issue' =>  $request->get('issue', ''),
-            'location_type' =>  $request->get('location_type', ''),
-            'issue_type' =>  $request->get('issue_type', '')
+            'issue' => $request->get('issue', ''),
+            'location_type' => $request->get('location_type', ''),
+            'issue_type' => $request->get('issue_type', '')
         ];
 
         // Apply filters based on request
@@ -68,7 +68,7 @@ class OrderController extends Controller
 
         if ($filterData['issue']) {
             $orderItemImage->whereHas('orderItem', function ($query) use ($filterData) {
-                $query->where('is_issue_identify', '=',  $filterData['issue']);
+                $query->where('is_issue_identify', '=', $filterData['issue']);
             });
         }
 
@@ -134,18 +134,18 @@ class OrderController extends Controller
     }
     public function index(Request $request)
     {
-        $order_number       = $request->input('order_number');
-        $customer_email     = $request->input('customer_email');
-        $customer_name      = $request->input('customer_name');
-        $telephone          = $request->input('telephone');
-        $before_email       = $request->input('before_email');
-        $after_email        = $request->input('after_email');
-        $status             = $request->segment(3);
-        $location_type      = $request->input('location_type');
-        $issue_type         = $request->input('issue_type');
-        $from               = $request->input('from');
-        $to                 = $request->input('to');
-        $product            = $request->input('product_name');
+        $order_number = $request->input('order_number');
+        $customer_email = $request->input('customer_email');
+        $customer_name = $request->input('customer_name');
+        $telephone = $request->input('telephone');
+        $before_email = $request->input('before_email');
+        $after_email = $request->input('after_email');
+        $status = $request->segment(3);
+        $location_type = $request->input('location_type');
+        $issue_type = $request->input('issue_type');
+        $from = $request->input('from');
+        $to = $request->input('to');
+        $product = $request->input('product_name');
 
         //$orders = Order::select('*')->orderBy('id', 'desc');
         $orders = Order::withCount([
@@ -158,32 +158,32 @@ class OrderController extends Controller
             ->orderBy('id', 'desc');
 
         if (!empty($order_number)) {
-            $orders->where('orders.order_id', '=',  $order_number);
+            $orders->where('orders.order_id', '=', $order_number);
         }
 
         if (!empty($customer_email)) {
-            $orders->where('orders.customer_email', 'like',  '%' . $customer_email . '%');
+            $orders->where('orders.customer_email', 'like', '%' . $customer_email . '%');
         }
 
         if (!empty($customer_name)) {
-            $orders->where('orders.customer_name', 'like',  '%' . $customer_name . '%');
+            $orders->where('orders.customer_name', 'like', '%' . $customer_name . '%');
         }
 
         if (!empty($after_email)) {
-            $orders->where('orders.final_email', '=',  $after_email);
+            $orders->where('orders.final_email', '=', $after_email);
         }
 
         if (!empty($before_email)) {
-            $orders->where('orders.before_email', '=',  $before_email);
+            $orders->where('orders.before_email', '=', $before_email);
         }
 
 
         if (!empty($telephone)) {
-            $orders->where('orders.telephone', '=',  $telephone );
+            $orders->where('orders.telephone', '=', $telephone);
         }
 
         if (!empty($status)) {
-            $orders->where('orders.status', '=',  $status);
+            $orders->where('orders.status', '=', $status);
         }
 
         if (!empty($location_type)) {
@@ -203,34 +203,34 @@ class OrderController extends Controller
         }
 
         if (!empty($from) && !empty($to)) {
-            $start   = $from . " 00:00:00";
-            $end     = $to . " 23:59:59";
+            $start = $from . " 00:00:00";
+            $end = $to . " 23:59:59";
 
             $orders->whereBetween('created_at', [$start, $end]);
         }
 
         if (!empty($product)) {
             $orders->whereHas('orderItems', function ($q) use ($product) {
-                $q->where('order_items.item_name', 'like',  '%' .$product. '%');
+                $q->where('order_items.item_name', 'like', '%' . $product . '%');
             });
         }
 
         $orders = $orders->latest()->paginate(config('constants.per_page'));
         //dd($orders);
         $filterData = [
-            'order_number'          => $order_number,
-            'order_status'          => $status,
-            'customer_email'        => $customer_email,
-            'customer_name'         => $customer_name,
-            'telephone'             => $telephone,
-            'email_status_options'  => [1 => "No", 2 => "Yes"],
-            'before_email'          => $before_email,
-            'after_email'           => $after_email,
-            'location_type'         => $location_type,
-            'issue_type'            => $issue_type,
-            'from'                  => $from,
-            'to'                    => $to,
-            'product'               => $product,
+            'order_number' => $order_number,
+            'order_status' => $status,
+            'customer_email' => $customer_email,
+            'customer_name' => $customer_name,
+            'telephone' => $telephone,
+            'email_status_options' => [1 => "No", 2 => "Yes"],
+            'before_email' => $before_email,
+            'after_email' => $after_email,
+            'location_type' => $location_type,
+            'issue_type' => $issue_type,
+            'from' => $from,
+            'to' => $to,
+            'product' => $product,
         ];
 
         return view('backend.orders.index', compact('orders'))->with($filterData);
@@ -240,18 +240,18 @@ class OrderController extends Controller
     {
         $orderId = $request->input('orderId');
         try {
-            $order     = new Order();
+            $order = new Order();
             $order->where('id', $orderId)->first()->update(['updated_at' => now(), 'status' => 2]);
 
             try {
-                $adminUser      = $request->user()->id;
+                $adminUser = $request->user()->id;
                 $historyData = [
-                    'order_id'      => $orderId,
-                    'item_id'       => null,
+                    'order_id' => $orderId,
+                    'item_id' => null,
                     'item_image_id' => null,
-                    'action'        => 'order_complete',
-                    'admin_user'    => $adminUser,
-                    'data'          => null
+                    'action' => 'order_complete',
+                    'admin_user' => $adminUser,
+                    'data' => null
                 ];
 
                 $this->addHistory($historyData);
@@ -271,8 +271,7 @@ class OrderController extends Controller
             $orderId = $request->input('orderId');
             $emailType = $request->input('emailType');
             $data = null;
-            if ($emailType == "before_email")
-            {
+            if ($emailType == "before_email") {
                 $orderUpdateArray["before_email"] = 2;
             } else {
                 $orderUpdateArray["final_email"] = 2;
@@ -290,14 +289,14 @@ class OrderController extends Controller
             $this->queueWorker();
 
             try {
-                $adminUser      = $request->user()->id;
+                $adminUser = $request->user()->id;
                 $historyData = [
-                    'order_id'      => $orderId,
-                    'item_id'       => null,
+                    'order_id' => $orderId,
+                    'item_id' => null,
                     'item_image_id' => null,
-                    'action'        => $emailType,
-                    'admin_user'    => $adminUser,
-                    'data'          => $data
+                    'action' => $emailType,
+                    'admin_user' => $adminUser,
+                    'data' => $data
                 ];
 
                 $this->addHistory($historyData);
@@ -322,14 +321,14 @@ class OrderController extends Controller
             $output = \Artisan::output();
 
             try {
-                $adminUser      = $request->user()->id;
+                $adminUser = $request->user()->id;
                 $historyData = [
-                    'order_id'      => null,
-                    'item_id'       => null,
+                    'order_id' => null,
+                    'item_id' => null,
                     'item_image_id' => null,
-                    'action'        => 'sync_orders',
-                    'admin_user'    => $adminUser,
-                    'data'          => null
+                    'action' => 'sync_orders',
+                    'admin_user' => $adminUser,
+                    'data' => null
                 ];
 
                 $this->addHistory($historyData);
@@ -349,20 +348,74 @@ class OrderController extends Controller
         }
     }
 
+    public function syncOrderSingle(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required' // laundry order id
+        ]);
+
+        try {
+            $laundryOrderId = $request->order_id;
+
+            // ✅ Correct: call command with argument
+            \Artisan::call('app:sync-single-laundry-order', [
+                'order_id' => $laundryOrderId
+            ]);
+
+            $output = \Artisan::output();
+
+            // history (optional)
+            try {
+                $adminUser = $request->user()->id;
+                $historyData = [
+                    'order_id'      => $laundryOrderId,           // ✅ yahan set kar do
+                    'item_id'       => null,
+                    'item_image_id' => null,
+                    'action'        => 're_sync_single_orders',
+                    'admin_user'    => $adminUser,
+                    'data'          => null
+                ];
+
+                $this->addHistory($historyData);
+            } catch (\Exception $exception) {
+                \Log::error("reSyncOrder history error: " . $exception->getMessage());
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Order synced successfully!',
+                'output' => $output,
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error("reSyncOrder error: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function edit($orderId)
     {
         //configuration filters
-        $filters            = ['laundry_order_whatsapp_sending_start_time','laundry_order_whatsapp_sending_end_time'];
-        
+        $filters = ['laundry_order_whatsapp_sending_start_time', 'laundry_order_whatsapp_sending_end_time'];
+
         //get configurations
-        $configurations     = $this->getConfigurations($filters);
+        $configurations = $this->getConfigurations($filters);
 
 
-        $order = Order::with(['orderItems.images' => function ($query) {
-            $query->where('status', 1);
-        },'orderItems.issues','orderItems.machineBarcode.machineDetail','orderItems.machineBarcode.machineDetail.machine','orderItems.machineBarcode.machineDetail.machineImages'])->find($orderId);
+        $order = Order::with([
+            'orderItems.images' => function ($query) {
+                $query->where('status', 1);
+            },
+            'orderItems.issues',
+            'orderItems.machineBarcode.machineDetail',
+            'orderItems.machineBarcode.machineDetail.machine',
+            'orderItems.machineBarcode.machineDetail.machineImages'
+        ])->find($orderId);
 
-        
+
 
         $beforeEmailShow = $afterEmailShow = false;
         foreach ($order->orderItems as $item):
@@ -386,35 +439,36 @@ class OrderController extends Controller
 
         return view('backend.orders.edit', [
             'order' => $order,
-            'showCompleteButton'   => $afterEmailShow && $order->status != 2,
-            'sendFinalEmail'       => $afterEmailShow,
-            'sendFinalEmailTitle'       => ($order->final_email == 2) ? 'Resend Email After Wash' : 'Send Email After Wash',
+            'showCompleteButton' => $afterEmailShow && $order->status != 2,
+            'sendFinalEmail' => $afterEmailShow,
+            'sendFinalEmailTitle' => ($order->final_email == 2) ? 'Resend Email After Wash' : 'Send Email After Wash',
             'sendBeforeEmail' => $beforeEmailShow,
             'sendBeforeEmailTitle' => ($order->before_email == 2) ? 'Resend Email Before Wash' : 'Send Email Before Wash',
-            'disableAfterUploadInput' =>  $disableAfterUploadInput,
+            'disableAfterUploadInput' => $disableAfterUploadInput,
             'beforewhatsppTitle' => ($order->before_whatsapp == 2) ? 'Resend Whatsapp Before Wash' : 'Send Whatsapp Before Wash',
             'afterwhatsppTitle' => ($order->after_whatsapp == 2) ? 'Resend Whatsapp After Wash' : 'Send Whatsapp After Wash',
-            'configurations'    => $configurations    
+            'configurations' => $configurations
         ]);
     }
 
-    public function isDisableAfterUploadInput($orderId=0)
+    public function isDisableAfterUploadInput($orderId = 0)
     {
         $disableAfterUploadInput = false;
-        if(!empty($orderId))
-        {
-            $orders = Order::with(['orderItems' => function ($query) {
-                $query->whereDoesntHave('images', function ($imageQuery) {
-                    $imageQuery->where('image_type', 'Before Wash')->where('status', 1);
-                });
-            }])->find($orderId);
-            
+        if (!empty($orderId)) {
+            $orders = Order::with([
+                'orderItems' => function ($query) {
+                    $query->whereDoesntHave('images', function ($imageQuery) {
+                        $imageQuery->where('image_type', 'Before Wash')->where('status', 1);
+                    });
+                }
+            ])->find($orderId);
+
             $orderItemsWithoutBeforeImage = $orders->orderItems;
-            if ( $orderItemsWithoutBeforeImage->isNotEmpty()) {
+            if ($orderItemsWithoutBeforeImage->isNotEmpty()) {
                 $disableAfterUploadInput = true;
-            }    
+            }
         }
-        
+
         return $disableAfterUploadInput;
     }
 
@@ -446,15 +500,15 @@ class OrderController extends Controller
                 if (File::exists($deleteImage)) {
 
                     try {
-                        $adminUser      = $request->user()->id;
-                        $itemId         = $orderImagesModel->item_id;
+                        $adminUser = $request->user()->id;
+                        $itemId = $orderImagesModel->item_id;
                         $orderItemModel = OrderItem::where('id', $itemId)->first();
                         $historyData = [
-                            'order_id'      => $orderItemModel->order_id,
-                            'item_id'       => $itemId,
+                            'order_id' => $orderItemModel->order_id,
+                            'item_id' => $itemId,
                             'item_image_id' => $imageId,
-                            'action'        => "delete_image",
-                            'admin_user'    => $adminUser,
+                            'action' => "delete_image",
+                            'admin_user' => $adminUser,
                             'data' => null
                         ];
 
@@ -485,74 +539,74 @@ class OrderController extends Controller
         try {
             $image = $thumbnail = $imageType = $imageTypeDirectory = '';
             $status = false;
-            $imageItemId= 0;
+            $imageItemId = 0;
             $message = "Oops! We couldn't upload your image. Please check the file and try again.";
 
-            $type           = $request->imageType;
-            $itemId         = $request->item_id;
-            $orderNumber    = $request->order_num;
-            $orderId        = $request->order_id;
+            $type = $request->imageType;
+            $itemId = $request->item_id;
+            $orderNumber = $request->order_num;
+            $orderId = $request->order_id;
             // Get the base64 string from the request
-            $adminUser      = $request->user()->id;
+            $adminUser = $request->user()->id;
 
-            $uploadFolderPath   = config('constants.files.orders') . $orderNumber;
-            $thumbnailPath      = $uploadFolderPath . '/thumbnail';
+            $uploadFolderPath = config('constants.files.orders') . $orderNumber;
+            $thumbnailPath = $uploadFolderPath . '/thumbnail';
 
             if ($type == "pickup_images" || $type == "pickup_image") {
-                $imageType          = "Before Wash";
+                $imageType = "Before Wash";
                 $imageTypeDirectory = "before";
-                $mainImagePath      = $uploadFolderPath . "/" . $imageTypeDirectory;
+                $mainImagePath = $uploadFolderPath . "/" . $imageTypeDirectory;
                 $thumbnailImagePath = $thumbnailPath . "/" . $imageTypeDirectory;
             } else if ($type == "delivery_images" || $type == "delivery_image") {
                 $imageTypeDirectory = "after";
-                $imageType          = "After Wash";
-                $mainImagePath      = $uploadFolderPath . "/" . $imageTypeDirectory;
+                $imageType = "After Wash";
+                $mainImagePath = $uploadFolderPath . "/" . $imageTypeDirectory;
                 $thumbnailImagePath = $thumbnailPath . "/" . $imageTypeDirectory;
             }
             $historyData = [];
 
-            if( $request->has('image') ) {
+            if ($request->has('image')) {
                 $file = $request->file('image');
                 $newFileName = $orderNumber . '-' . $itemId . '-' . time() . '-' . uniqid(rand(), true) . '.' . $file->getClientOriginalExtension();
-                $this->uploadMainImage( $file, $mainImagePath, $newFileName , $thumbnailImagePath );
+                $this->uploadMainImage($file, $mainImagePath, $newFileName, $thumbnailImagePath);
 
                 $orderImages = [
-                    'item_id'    => $itemId,
+                    'item_id' => $itemId,
                     'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
-                    'imagename'  => $newFileName,
+                    'imagename' => $newFileName,
                     'admin_user' => $adminUser,
-                    'status'     => 1,
-            ];
+                    'status' => 1,
+                ];
 
                 $ordersImagesModel = new OrderItemImage;
                 $imageItemId = $ordersImagesModel->createOrderItemImage($orderImages);
 
-                $data = [ 'image_type' => $imageType , 'imagename' => $newFileName  ];
+                $data = ['image_type' => $imageType, 'imagename' => $newFileName];
                 $historyData[] = [
-                    'order_id'      => $orderId,
-                    'item_id'       => $itemId,
+                    'order_id' => $orderId,
+                    'item_id' => $itemId,
                     'item_image_id' => $imageItemId,
-                    'action'        => "image_upload",
-                    'admin_user'    => $adminUser,
+                    'action' => "image_upload",
+                    'admin_user' => $adminUser,
                     'data' => json_encode($data)
                 ];
                 $this->addHistory($historyData);
 
-                $status     = true;
-                $message    = "Image uploaded successfully";
+                $status = true;
+                $message = "Image uploaded successfully";
                 $baseUrl = URL::to('/');
-                $image      = $baseUrl . '/' . $mainImagePath . '/' . $newFileName;
-                $thumbnail  =  $baseUrl . '/' . $thumbnailImagePath . '/' . $newFileName;
+                $image = $baseUrl . '/' . $mainImagePath . '/' . $newFileName;
+                $thumbnail = $baseUrl . '/' . $thumbnailImagePath . '/' . $newFileName;
             }
 
             return response()->json([
-                'success'                   => $status,
-                'image_url'                 => $image,
-                'thumbnail'                 => $thumbnail,
-                'item_id'                   => $itemId,
-                'imageType'                 => $type,
-                'item_image_id'             => $imageItemId,
-                'message'                   => $message
+                'success' => $status,
+                'image_url' => $image,
+                'thumbnail' => $thumbnail,
+                'item_id' => $itemId,
+                'imageType' => $type,
+                'item_image_id' => $imageItemId,
+                'message' => $message
             ]);
         } catch (\Exception $e) {
             \Log::error("OrderController->uploadOrderImage->" . $e->getMessage());
@@ -563,19 +617,19 @@ class OrderController extends Controller
     {
         //dd( $request->all() );
         if ($request->has('order_id')) {
-            $orderImages        = $historyData =  [];
-            $adminUser          = $request->user()->id;
-            $orderId            = $request->get('order_id');
-            $remarks            = $request->get('remarks');
-            $orderNumber        = $request->get('order_number');
+            $orderImages = $historyData = [];
+            $adminUser = $request->user()->id;
+            $orderId = $request->get('order_id');
+            $remarks = $request->get('remarks');
+            $orderNumber = $request->get('order_number');
             //$issues             = $request->get('is_issue_identify');
-            $uploadFolderPath   = config('constants.files.orders') . '/' . $orderNumber;
-            $thumbnailPath      = $uploadFolderPath . '/thumbnail';
-            $orderUpdateArray   =  ['updated_at' => now(), 'remarks' => $remarks];
+            $uploadFolderPath = config('constants.files.orders') . '/' . $orderNumber;
+            $thumbnailPath = $uploadFolderPath . '/thumbnail';
+            $orderUpdateArray = ['updated_at' => now(), 'remarks' => $remarks];
 
             if ($request->has('remarks_attachment')) {
-                $attachment                      = $request->file('remarks_attachment');
-                $newFileName                     =   $orderNumber . '-' . time() . '-' . uniqid(rand(), true) . '.' . $attachment->getClientOriginalExtension();
+                $attachment = $request->file('remarks_attachment');
+                $newFileName = $orderNumber . '-' . time() . '-' . uniqid(rand(), true) . '.' . $attachment->getClientOriginalExtension();
                 $this->uploadMainImage($attachment, $uploadFolderPath, $newFileName, $thumbnailPath);
                 $orderUpdateArray["attachments"] = $newFileName;
             }
@@ -585,7 +639,7 @@ class OrderController extends Controller
             $isToken = Arr::get($order, 'token');
             if (is_null($isToken)) {
                 $token = sha1(uniqid(mt_rand(), true));
-                $orderUpdateArray["token"]  = $token;
+                $orderUpdateArray["token"] = $token;
             }
 
             try {
@@ -603,11 +657,11 @@ class OrderController extends Controller
 
                 $data = ['image_type' => isset($orderUpdateArray["attachments"]) ? 'Main Image' : null, 'remarks' => $remarks, 'imagename' => ($orderUpdateArray["attachments"] ?? null)];
                 $historyData[] = [
-                    'order_id'      => $orderId,
-                    'item_id'       => null,
+                    'order_id' => $orderId,
+                    'item_id' => null,
                     'item_image_id' => null,
-                    'action'        => "order_update",
-                    'admin_user'    => $adminUser,
+                    'action' => "order_update",
+                    'admin_user' => $adminUser,
                     'data' => json_encode($data)
                 ];
 
@@ -667,8 +721,8 @@ class OrderController extends Controller
 
     public function uploadMainImage($file, $filePath, $filename, $thumbnailPath)
     {
-        $filePath               = public_path($filePath);
-        $thumbnailPath          = public_path($thumbnailPath);
+        $filePath = public_path($filePath);
+        $thumbnailPath = public_path($thumbnailPath);
         if (!File::exists($filePath)) {
             File::makeDirectory($filePath, 0777, true, true);
         }
@@ -747,29 +801,29 @@ class OrderController extends Controller
         try {
             $image = $thumbnail = $imageType = $imageTypeDirectory = '';
             $status = false;
-            $imageItemId= 0;
+            $imageItemId = 0;
             $message = "Oops! We couldn't upload your image. Please check the file and try again.";
 
-            $type           = $request->imageType;
-            $itemId         = $request->item_id;
-            $orderNumber    = $request->order_num;
-            $orderId        = $request->order_id;
+            $type = $request->imageType;
+            $itemId = $request->item_id;
+            $orderNumber = $request->order_num;
+            $orderId = $request->order_id;
             // Get the base64 string from the request
-            $base64Image    = $request->image_data;
-            $adminUser      = $request->user()->id;
+            $base64Image = $request->image_data;
+            $adminUser = $request->user()->id;
 
-            $uploadFolderPath   = config('constants.files.orders') . $orderNumber;
-            $thumbnailPath      = $uploadFolderPath . '/thumbnail';
+            $uploadFolderPath = config('constants.files.orders') . $orderNumber;
+            $thumbnailPath = $uploadFolderPath . '/thumbnail';
 
             if ($type == "pickup_images" || $type == "pickup_image") {
-                $imageType          = "Before Wash";
+                $imageType = "Before Wash";
                 $imageTypeDirectory = "before";
-                $mainImagePath      = $uploadFolderPath . "/" . $imageTypeDirectory;
+                $mainImagePath = $uploadFolderPath . "/" . $imageTypeDirectory;
                 $thumbnailImagePath = $thumbnailPath . "/" . $imageTypeDirectory;
             } else if ($type == "delivery_images" || $type == "delivery_image") {
                 $imageTypeDirectory = "after";
-                $imageType          = "After Wash";
-                $mainImagePath      = $uploadFolderPath . "/" . $imageTypeDirectory;
+                $imageType = "After Wash";
+                $mainImagePath = $uploadFolderPath . "/" . $imageTypeDirectory;
                 $thumbnailImagePath = $thumbnailPath . "/" . $imageTypeDirectory;
             }
 
@@ -777,8 +831,7 @@ class OrderController extends Controller
             // Remove the base64 encoding prefix (data:image/png;base64, etc.)
             $imageData = base64_decode(preg_replace('/^data:image\/\w+;base64,/', '', $base64Image));
 
-            if (!empty($imageData))
-            {
+            if (!empty($imageData)) {
                 // Detect the image type (MIME type)
                 $imageInfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mimeType = finfo_buffer($imageInfo, $imageData);
@@ -808,20 +861,19 @@ class OrderController extends Controller
 
 
 
-                if (!empty($result))
-                {
-                    $status     = true;
-                    $message    = "Image uploaded successfully";
-                    $image      = Arr::get($result, 'image');
-                    $thumbnail  = Arr::get($result, 'thumbnail');
+                if (!empty($result)) {
+                    $status = true;
+                    $message = "Image uploaded successfully";
+                    $image = Arr::get($result, 'image');
+                    $thumbnail = Arr::get($result, 'thumbnail');
 
 
                     $orderImages = [
-                        'item_id'    => $itemId,
+                        'item_id' => $itemId,
                         'image_type' => $imageType, // 'pickup_images' or 'delivery_images'
-                        'imagename'  => $newFileName,
+                        'imagename' => $newFileName,
                         'admin_user' => $adminUser,
-                        'status'     => 1,
+                        'status' => 1,
                     ];
 
                     $ordersImagesModel = new OrderItemImage;
@@ -830,11 +882,11 @@ class OrderController extends Controller
                     $data = ['image_type' => $imageType, 'imagename' => $newFileName];
 
                     $historyData = [
-                        'order_id'      => $orderId,
-                        'item_id'       => $itemId,
+                        'order_id' => $orderId,
+                        'item_id' => $itemId,
                         'item_image_id' => $imageItemId,
-                        'action'        => "image_upload",
-                        'admin_user'    => $adminUser,
+                        'action' => "image_upload",
+                        'admin_user' => $adminUser,
                         'data' => json_encode($data)
                     ];
 
@@ -843,26 +895,28 @@ class OrderController extends Controller
             }
 
             $disableAfterUploadInput = false;
-            $orders = Order::with(['orderItems' => function ($query) {
-                $query->whereDoesntHave('images', function ($imageQuery) {
-                    $imageQuery->where('image_type', 'Before Wash')->where('status', 1);
-                });
-            }])->find($orderId);
+            $orders = Order::with([
+                'orderItems' => function ($query) {
+                    $query->whereDoesntHave('images', function ($imageQuery) {
+                        $imageQuery->where('image_type', 'Before Wash')->where('status', 1);
+                    });
+                }
+            ])->find($orderId);
             $orderItemsWithoutBeforeImage = $orders->orderItems;
-            if ( !$orderItemsWithoutBeforeImage->isEmpty()) {
+            if (!$orderItemsWithoutBeforeImage->isEmpty()) {
                 $disableAfterUploadInput = true;
             }
 
 
             return response()->json([
-                'success'                   => $status,
-                'image_url'                 => $image,
-                'thumbnail'                 => $thumbnail,
-                'item_id'                   => $itemId,
-                'imageType'                 => $type,
-                'item_image_id'             => $imageItemId,
-                'message'                   => $message,
-                'disableAfterUploadInput'  => $disableAfterUploadInput
+                'success' => $status,
+                'image_url' => $image,
+                'thumbnail' => $thumbnail,
+                'item_id' => $itemId,
+                'imageType' => $type,
+                'item_image_id' => $imageItemId,
+                'message' => $message,
+                'disableAfterUploadInput' => $disableAfterUploadInput
             ]);
         } catch (\Exception $e) {
             \Log::error("OrderController->uploadOrderImage->" . $e->getMessage());
@@ -914,41 +968,36 @@ class OrderController extends Controller
 
     public function saveItemIssue(Request $request)
     {
-        try
-        {
+        try {
 
-            $itemId             = $request->itemId;
-            $itemIssueList      = $request->itemIssueList;
+            $itemId = $request->itemId;
+            $itemIssueList = $request->itemIssueList;
 
             //delete all record w.r.t to item
-            OrderItemIssue::where(['item_id'=> $itemId])->delete();
+            OrderItemIssue::where(['item_id' => $itemId])->delete();
 
             //then insert record
             $orderItemIssue = array();
-            if(!empty($itemIssueList))
-            {
-                foreach($itemIssueList as $itemissue)
-                {
-                    $orderItemIssue[] = array('item_id'=>$itemId, 'issue' =>$itemissue);
+            if (!empty($itemIssueList)) {
+                foreach ($itemIssueList as $itemissue) {
+                    $orderItemIssue[] = array('item_id' => $itemId, 'issue' => $itemissue);
                 }
             }
 
             $isInserted = OrderItemIssue::insert($orderItemIssue);
 
-            if ($isInserted)
-            {
+            if ($isInserted) {
                 //update order item field is_issue_identify
                 OrderItem::where('id', $itemId)->update(['is_issue_identify' => 2]);
 
                 return response()->json([
-                    'status'                   => true,
-                    'message'                  => "Issues Saved successfully!!"
+                    'status' => true,
+                    'message' => "Issues Saved successfully!!"
                 ]);
-            } else
-            {
+            } else {
                 return response()->json([
-                    'status'                   => false,
-                    'message'                  => "Issues were not saved successfully. Please try again!"
+                    'status' => false,
+                    'message' => "Issues were not saved successfully. Please try again!"
                 ]);
             }
 
@@ -963,18 +1012,17 @@ class OrderController extends Controller
 
     public function removeItemIssue(Request $request)
     {
-        try
-        {
-            $itemId             = $request->itemId;
+        try {
+            $itemId = $request->itemId;
 
             //delete all record w.r.t to item
-            OrderItemIssue::where(['item_id'=> $itemId])->delete();
+            OrderItemIssue::where(['item_id' => $itemId])->delete();
 
             //update order item field is_issue_identify
             OrderItem::where('id', $itemId)->update(['is_issue_identify' => 1]);
 
             return response()->json([
-                'status'                   => true,
+                'status' => true,
             ]);
 
 
@@ -987,24 +1035,21 @@ class OrderController extends Controller
 
     public function isItemIssueFixed(Request $request)
     {
-        try
-        {
-            $itemId             = $request->itemId;
-            $isIssueFixed       = $request->isIssueFixed;
+        try {
+            $itemId = $request->itemId;
+            $isIssueFixed = $request->isIssueFixed;
 
 
             //update order item field is_issue_identify is yes mean 2
-            if($isIssueFixed == 2)
-            {
-                OrderItem::where(['id'=> $itemId, 'is_issue_identify' => 2])->update(['is_issue_fixed' => $isIssueFixed]);
-            }else
-            {
-                OrderItem::where(['id'=> $itemId])->update(['is_issue_fixed' => $isIssueFixed]);
+            if ($isIssueFixed == 2) {
+                OrderItem::where(['id' => $itemId, 'is_issue_identify' => 2])->update(['is_issue_fixed' => $isIssueFixed]);
+            } else {
+                OrderItem::where(['id' => $itemId])->update(['is_issue_fixed' => $isIssueFixed]);
             }
 
 
             return response()->json([
-                'status'                   => true,
+                'status' => true,
             ]);
 
 
@@ -1016,46 +1061,47 @@ class OrderController extends Controller
 
     public function barcodeImageUpload(Request $request)
     {
-        try
-        {
+        try {
             $orderItem = array();
-            $barcode            = $request->input('barcode');
+            $barcode = $request->input('barcode');
 
             //configuration filters
-            $filters            = ['laundry_order_whatsapp_sending_start_time','laundry_order_whatsapp_sending_end_time'];
-            
+            $filters = ['laundry_order_whatsapp_sending_start_time', 'laundry_order_whatsapp_sending_end_time'];
+
             //get configurations
-            $configurations     = $this->getConfigurations($filters);
+            $configurations = $this->getConfigurations($filters);
 
             $orderId = 0;
-            if(!empty($barcode))
-            {
-                $orderItem = OrderItem::with(['images' => function ($query) {
-                    $query->where('status', 1);
-                },'order','issues','machineBarcode.machineDetail','machineBarcode.machineDetail.machine','machineBarcode.machineDetail.machineImages'])->where('barcode', 'like', '%'.$barcode.'%')->take(10)->get();
-                
-                if(!empty($orderItem))
-                {
-                    if(!empty($orderItem[0]))
-                    {
-                        if(!empty($orderItem[0]->order))
-                        {
-                            if(!empty($orderItem[0]->order->id))
-                            {
+            if (!empty($barcode)) {
+                $orderItem = OrderItem::with([
+                    'images' => function ($query) {
+                        $query->where('status', 1);
+                    },
+                    'order',
+                    'issues',
+                    'machineBarcode.machineDetail',
+                    'machineBarcode.machineDetail.machine',
+                    'machineBarcode.machineDetail.machineImages'
+                ])->where('barcode', 'like', '%' . $barcode . '%')->take(10)->get();
+
+                if (!empty($orderItem)) {
+                    if (!empty($orderItem[0])) {
+                        if (!empty($orderItem[0]->order)) {
+                            if (!empty($orderItem[0]->order->id)) {
                                 $orderId = $orderItem[0]->order->id;
                             }
                         }
                     }
                 }
             }
-            
+
             $disableAfterUploadInput = $this->isDisableAfterUploadInput($orderId); // return false if all before wash uploaded
 
-            $data['barcode']    = $barcode;  
-            $data['items']       = $orderItem;
+            $data['barcode'] = $barcode;
+            $data['items'] = $orderItem;
             $data['configurations'] = $configurations;
             $data['disableAfterUploadInput'] = $disableAfterUploadInput;
-            
+
             return view('backend.orders.barcodeImageUpload')->with($data);
 
         } catch (\Exception $e) {
@@ -1071,7 +1117,7 @@ class OrderController extends Controller
         $imagePath = public_path("assets/uploads/orders/{$orderNo}/{$folder}/{$imageName}");
         $fallbackImagePath = public_path("assets/uploads/orders/{$orderNo}/thumbnail/{$folder}/{$imageName}");
         $defaultPlaceholder = public_path('assets/uploads/default-placeholder.png'); // Your fallback placeholder image
-        
+
         // Check if the original image exists
         if (file_exists($imagePath)) {
             return response()->file($imagePath); // Return the original image
@@ -1089,14 +1135,14 @@ class OrderController extends Controller
     public function sendWhatsApp(Request $request)
     {
         try {
-            $orderId        = $request->input('orderId');
-            $orderNumber    = $request->input('orderNumber');
-            $whatsAppType   = $request->input('whatsAppType');
+            $orderId = $request->input('orderId');
+            $orderNumber = $request->input('orderNumber');
+            $whatsAppType = $request->input('whatsAppType');
 
             $order = Order::where(['id' => $orderId])->first();
 
-            $data             = null;
-            $this->processAndReleaseHoldOrders($order, $whatsAppType ,$data);
+            $data = null;
+            $this->processAndReleaseHoldOrders($order, $whatsAppType, $data);
 
             $this->queueWorker();
 
@@ -1106,23 +1152,22 @@ class OrderController extends Controller
         }
     }
 
-    public function fetchOrderDetail($orderId=0)
+    public function fetchOrderDetail($orderId = 0)
     {
-        try
-        {
+        try {
             $status = false;
             $order = [];
-            
-            $orderModel = Order::where('order_id', $orderId)->select('customer_name','customer_email','telephone')->first();
-            
+
+            $orderModel = Order::where('order_id', $orderId)->select('customer_name', 'customer_email', 'telephone')->first();
+
             if ($orderModel) {
                 $order = $orderModel->toArray();
                 $status = true;
             }
-            
+
             return response()->json([
                 'success' => $status,
-                'order'   => $order
+                'order' => $order
             ]);
 
         } catch (\Exception $e) {
@@ -1134,45 +1179,42 @@ class OrderController extends Controller
 
     public function markHoldWhatsAppOrder(Request $request)
     {
-        try 
-        {
-            $orderId        = $request->input('orderId');
-            $orderNumber    = $request->input('orderNumber');
-            $whatsAppType   = $request->input('whatsAppType');
+        try {
+            $orderId = $request->input('orderId');
+            $orderNumber = $request->input('orderNumber');
+            $whatsAppType = $request->input('whatsAppType');
 
             $order = Order::where(['id' => $orderId])->first();
 
-            $data             = null;
+            $data = null;
             $orderUpdateArray = array();
 
-            if ($whatsAppType == "before_whatsapp")
-            {
+            if ($whatsAppType == "before_whatsapp") {
                 $orderUpdateArray["before_whatsapp"] = 3;
             } else {
                 $orderUpdateArray["after_whatsapp"] = 3;
             }
 
             $orderUpdateArray["updated_at"] = now();
-   
+
             //Order Update
             $order->update(
                 $orderUpdateArray
             );
 
             try {
-                $adminUser      = $request->user()->id;
+                $adminUser = $request->user()->id;
                 $historyData = [
-                    'order_id'      => $orderId,
-                    'item_id'       => null,
+                    'order_id' => $orderId,
+                    'item_id' => null,
                     'item_image_id' => null,
-                    'action'        => $whatsAppType."_hold",
-                    'admin_user'    => $adminUser,
-                    'data'          => $data
+                    'action' => $whatsAppType . "_hold",
+                    'admin_user' => $adminUser,
+                    'data' => $data
                 ];
 
                 $this->addHistory($historyData);
-            } catch (\Exception $exception) 
-            {
+            } catch (\Exception $exception) {
                 die($exception->getMessage());
             }
 
@@ -1185,48 +1227,42 @@ class OrderController extends Controller
     //List of hold whatsapp orders
     public function holdWhatsAppOrders(Request $request)
     {
-        try 
-        {
+        try {
             $data = array();
-            
-            $type             = $request->segment(3);
 
-            if ($type && array_key_exists($type, config('constants.order_type')))
-            {
-                $order_number       = $request->input('order_number');
-                $customer_email     = $request->input('customer_email');
-                $customer_name      = $request->input('customer_name');
-                $telephone          = $request->input('telephone');
-                $location_type      = $request->input('location_type');
-                
+            $type = $request->segment(3);
+
+            if ($type && array_key_exists($type, config('constants.order_type'))) {
+                $order_number = $request->input('order_number');
+                $customer_email = $request->input('customer_email');
+                $customer_name = $request->input('customer_name');
+                $telephone = $request->input('telephone');
+                $location_type = $request->input('location_type');
+
                 //configuration filters
-                $filters            = ['laundry_order_whatsapp_sending_start_time','laundry_order_whatsapp_sending_end_time'];
-                
+                $filters = ['laundry_order_whatsapp_sending_start_time', 'laundry_order_whatsapp_sending_end_time'];
+
                 //get configurations
-                $configurations     = $this->getConfigurations($filters);
+                $configurations = $this->getConfigurations($filters);
 
 
                 $orders = Order::where($type, 3)
                     ->orderBy('id', 'desc');
-                
-                if (!empty($order_number)) 
-                {
-                    $orders->where('orders.order_id', '=',  $order_number);
+
+                if (!empty($order_number)) {
+                    $orders->where('orders.order_id', '=', $order_number);
                 }
 
-                if (!empty($customer_email)) 
-                {
-                    $orders->where('orders.customer_email', 'like',  '%' . $customer_email . '%');
+                if (!empty($customer_email)) {
+                    $orders->where('orders.customer_email', 'like', '%' . $customer_email . '%');
                 }
 
-                if (!empty($customer_name)) 
-                {
-                    $orders->where('orders.customer_name', 'like',  '%' . $customer_name . '%');
+                if (!empty($customer_name)) {
+                    $orders->where('orders.customer_name', 'like', '%' . $customer_name . '%');
                 }
 
-                if (!empty($telephone)) 
-                {
-                    $orders->where('orders.telephone', '=',  $telephone );
+                if (!empty($telephone)) {
+                    $orders->where('orders.telephone', '=', $telephone);
                 }
 
                 if (!empty($location_type)) {
@@ -1237,70 +1273,64 @@ class OrderController extends Controller
                         $orders->whereNull('orders.location_type');
                     }
                 }
-                
-                $orders =$orders->get();
+
+                $orders = $orders->get();
 
                 $data['orders'] = $orders;
-                $data['type']   = $type;
+                $data['type'] = $type;
                 $data['configurations'] = $configurations;
 
 
                 $filterData = [
-                    'order_number'      => $order_number,
-                    'customer_email'    => $customer_email,
-                    'customer_name'     => $customer_name,
-                    'telephone'         => $telephone,
-                    'location_type'     => $location_type
+                    'order_number' => $order_number,
+                    'customer_email' => $customer_email,
+                    'customer_name' => $customer_name,
+                    'telephone' => $telephone,
+                    'location_type' => $location_type
                 ];
 
-                return view('backend.orders.hold')->with($data)->with($filterData);;
-            }
-            else{
+                return view('backend.orders.hold')->with($data)->with($filterData);
+                ;
+            } else {
                 abort(404);
             }
         } catch (\Exception $e) {
             return $e->getMessage();
         }
 
-        
+
     }
 
     public function processHoldWhatsAppOrders(Request $request)
     {
-        try 
-        {
-            $orderIds                = $request->input('order_ids');
-            $whatsAppType            = $request->input('whatsapp_type');
-            
-            if(!empty($orderIds) && array_key_exists($whatsAppType, config('constants.order_type')))
-            {
+        try {
+            $orderIds = $request->input('order_ids');
+            $whatsAppType = $request->input('whatsapp_type');
+
+            if (!empty($orderIds) && array_key_exists($whatsAppType, config('constants.order_type'))) {
                 $holdWhatsAppOrders = Order::where($whatsAppType, 3)
-                ->whereIn('id', $orderIds)
-                ->get();
+                    ->whereIn('id', $orderIds)
+                    ->get();
 
                 $data = "Selected WhatsApp order were manually released from hold.";
-                if($holdWhatsAppOrders->isNotEmpty())
-                {
-                    foreach ($holdWhatsAppOrders as $order) 
-                    {
-                        $this->processAndReleaseHoldOrders($order, $whatsAppType ,$data);
-                    } 
+                if ($holdWhatsAppOrders->isNotEmpty()) {
+                    foreach ($holdWhatsAppOrders as $order) {
+                        $this->processAndReleaseHoldOrders($order, $whatsAppType, $data);
+                    }
 
                     $this->queueWorker();
                 }
 
-                return response()->json(['success' => true,'message' =>'Orders released successfully.']);
+                return response()->json(['success' => true, 'message' => 'Orders released successfully.']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Request could not be processed.'], 500);
             }
-            else
-            {
-              return response()->json(['success' => false, 'message' =>'Request could not be processed.'], 500);
-            }
-            
-            
+
+
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
-        
-        
+
+
     }
 }
