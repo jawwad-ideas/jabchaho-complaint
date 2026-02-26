@@ -373,7 +373,7 @@ class OrderController extends Controller
                     'item_image_id' => null,
                     'action'        => 're_sync_single_orders',
                     'admin_user'    => $adminUser,
-                    'data'          => null
+                    'data'          => $output
                 ];
 
                 $this->addHistory($historyData);
